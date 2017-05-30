@@ -1,0 +1,3 @@
+M:\Git\King-of-the-Castle\King_of_the_Castle\Source\King_of_the_Castle\King_of_the_Castle.Build.cs
+M:\Git\King-of-the-Castle\King_of_the_Castle\Source\King_of_the_Castle.Target.cs
+M:\Git\King-of-the-Castle\King_of_the_Castle\Source\King_of_the_CastleEditor.Target.cs

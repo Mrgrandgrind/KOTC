@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<ItemGroup>
+		<None Include="..\..\King_of_the_Castle.uproject" />
+		<Filter Include="Source">
+			<UniqueIdentifier>{6B883885-C334-4B9F-AC1A-C52EFDF9FB12}</UniqueIdentifier>
+		</Filter>
+		<None Include="..\..\Source\King_of_the_Castle.Target.cs">
+			<Filter>Source</Filter>
+		</None >
+		<None Include="..\..\Source\King_of_the_CastleEditor.Target.cs">
+			<Filter>Source</Filter>
+		</None >
+		<Filter Include="Config">
+			<UniqueIdentifier>{3D2F2B2E-3556-4527-9CB3-33F6624CBDBF}</UniqueIdentifier>
+		</Filter>
+		<None Include="..\..\Config\DefaultEditor.ini">
+			<Filter>Config</Filter>
+		</None >
+		<None Include="..\..\Config\DefaultEditorPerProjectUserSettings.ini">
+			<Filter>Config</Filter>
+		</None >
+		<None Include="..\..\Config\DefaultEngine.ini">
+			<Filter>Config</Filter>
+		</None >
+		<None Include="..\..\Config\DefaultGame.ini">
+			<Filter>Config</Filter>
+		</None >
+		<None Include="..\..\Config\DefaultInput.ini">
+			<Filter>Config</Filter>
+		</None >
+		<Filter Include="Source\King_of_the_Castle">
+			<UniqueIdentifier>{16EBD8C5-F9DC-446A-8A20-1539DEF1178F}</UniqueIdentifier>
+		</Filter>
+		<None Include="..\..\Source\King_of_the_Castle\King_of_the_Castle.Build.cs">
+			<Filter>Source\King_of_the_Castle</Filter>
+		</None >
+		<ClCompile Include="..\..\Source\King_of_the_Castle\King_of_the_Castle.cpp">
+			<Filter>Source\King_of_the_Castle</Filter>
+		</ClCompile >
+		<ClInclude Include="..\..\Source\King_of_the_Castle\King_of_the_Castle.h">
+			<Filter>Source\King_of_the_Castle</Filter>
+		</ClInclude >
+		<ClCompile Include="..\..\Source\King_of_the_Castle\King_of_the_CastleCharacter.cpp">
+			<Filter>Source\King_of_the_Castle</Filter>
+		</ClCompile >
+		<ClInclude Include="..\..\Source\King_of_the_Castle\King_of_the_CastleCharacter.h">
+			<Filter>Source\King_of_the_Castle</Filter>
+		</ClInclude >
+		<ClCompile Include="..\..\Source\King_of_the_Castle\King_of_the_CastleGameMode.cpp">
+			<Filter>Source\King_of_the_Castle</Filter>
+		</ClCompile >
+		<ClInclude Include="..\..\Source\King_of_the_Castle\King_of_the_CastleGameMode.h">
+			<Filter>Source\King_of_the_Castle</Filter>
+		</ClInclude >
+	</ItemGroup>
+</Project>
