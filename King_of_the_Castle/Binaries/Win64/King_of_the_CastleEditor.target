@@ -2,7 +2,7 @@
 	"TargetName" : "King_of_the_CastleEditor",
 	"Platform" : "Win64",
 	"Configuration" : "Development",
-	"BuildId" : "",
+	"BuildId" : "60080970-3a14-46dd-9f7b-102fc3b6732b",
 	"Version" : 
 	{
 		"MajorVersion" : 4,
@@ -17,15 +17,15 @@
 	"BuildProducts" :
 	[
 		{
-			"Path" : "$(ProjectDir)/Binaries/Win64/UE4Editor-King_of_the_Castle.dll",
+			"Path" : "$(ProjectDir)/Binaries/Win64/UE4Editor-King_of_the_Castle-7944.dll",
 			"Type" : "DynamicLibrary"
 		},
 		{
-			"Path" : "$(ProjectDir)/Binaries/Win64/UE4Editor-King_of_the_Castle.pdb",
+			"Path" : "$(ProjectDir)/Binaries/Win64/UE4Editor-King_of_the_Castle-7944.pdb",
 			"Type" : "SymbolFile"
 		},
 		{
-			"Path" : "$(ProjectDir)/Intermediate/Build/Win64/UE4Editor/Development/UE4Editor-King_of_the_Castle.lib",
+			"Path" : "$(ProjectDir)/Intermediate/Build/Win64/UE4Editor/Development/UE4Editor-King_of_the_Castle-7944.lib",
 			"Type" : "ImportLibrary"
 		},
 		{

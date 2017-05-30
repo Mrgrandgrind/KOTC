@@ -1,0 +1,25 @@
+/NOLOGO
+/errorReport:prompt
+/MACHINE:x64
+/SUBSYSTEM:WINDOWS
+/DEF
+/NAME:"UE4Editor-King_of_the_Castle-7708.dll"
+/IGNORE:4221
+/NODEFAULTLIB:"LIBCMT"
+/NODEFAULTLIB:"LIBCPMT"
+/NODEFAULTLIB:"LIBCMTD"
+/NODEFAULTLIB:"LIBCPMTD"
+/NODEFAULTLIB:"MSVCRTD"
+/NODEFAULTLIB:"MSVCPRTD"
+/NODEFAULTLIB:"LIBC"
+/NODEFAULTLIB:"LIBCP"
+/NODEFAULTLIB:"LIBCD"
+/NODEFAULTLIB:"LIBCPD"
+"M:\Git\King-of-the-Castle\King_of_the_Castle\Intermediate\Build\Win64\UE4Editor\Development\King_of_the_Castle\PCH.King_of_the_Castle.h.obj"
+"M:\Git\King-of-the-Castle\King_of_the_Castle\Intermediate\Build\Win64\UE4Editor\Development\King_of_the_Castle\King_of_the_Castle.cpp.obj"
+"M:\Git\King-of-the-Castle\King_of_the_Castle\Intermediate\Build\Win64\UE4Editor\Development\King_of_the_Castle\King_of_the_CastleCharacter.cpp.obj"
+"M:\Git\King-of-the-Castle\King_of_the_Castle\Intermediate\Build\Win64\UE4Editor\Development\King_of_the_Castle\King_of_the_CastleGameMode.cpp.obj"
+"M:\Git\King-of-the-Castle\King_of_the_Castle\Intermediate\Build\Win64\UE4Editor\Development\King_of_the_Castle\King_of_the_Castle.generated.cpp.obj"
+"C:\Program Files\Epic Games\UE_4.15\Engine\Intermediate\Build\Win64\UE4Editor\Development\King_of_the_Castle\PCLaunch.rc.res"
+"C:\Program Files\Epic Games\UE_4.15\Engine\Intermediate\Build\Win64\UE4Editor\Development\ModuleVersionResource.rc.inl.res"
+/OUT:"M:\Git\King-of-the-Castle\King_of_the_Castle\Intermediate\Build\Win64\UE4Editor\Development\UE4Editor-King_of_the_Castle-7708.lib"
