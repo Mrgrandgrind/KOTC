@@ -7,7 +7,10 @@
 		{
 			"Name": "King_of_the_Castle",
 			"Type": "Runtime",
-			"LoadingPhase": "Default"
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"Engine"
+			]
 		}
 	]
 }
