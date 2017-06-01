@@ -3,12 +3,9 @@
 #include "King_of_the_Castle.h"
 
 #include "Gamemode/BaseGameMode.h"
-#include "Block.h"
+#include "BlockEntity.h"
 
-#define BLOCK_DEFAULT_MASS 1000000.0f //kg
-#define BLOCK_DEFAULT_HEALTH 100.0f
-#define BLOCK_DEFAULT_SCALE 74.660522f
-#define BLOCK_DEFAULT_MESH_LOCATION TEXT("StaticMesh'/Game/ThirdPersonBP/Meshes/M_Cube.M_Cube'")
+#include "Block.h"
 
 #define MATERIAL_DAMAGE_NAME TEXT("DamageColor")
 #define BLOCK_DEFAULT_MAX_HEALTH_COLOR FLinearColor(1.0f, 1.0f, 1.0f, 1.0f)
@@ -49,6 +46,13 @@ void ABlock::BeginPlay()
 		body->bLockXTranslation = true;
 		body->bLockYTranslation = true;
 	}
+}
+
+// Drop block
+void ABlock::DropBlock(AActor *source, const bool& restrictPickup)
+{
+	ABlockEntity::SpawnBlockEntity(this, source, restrictPickup);
+	this->DestroyBlock();
 }
 
 // Destroy block
@@ -124,7 +128,7 @@ float ABlock::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AControl
 	this->SetHealth(this->GetHealth() - actual);
 	if (this->m_Health <= 0.0f) // if dead
 	{
-		//this->DropBlock(DamageCauser, true);
+		this->DropBlock(DamageCauser, true);
 	}
 	return actual;
 }
@@ -138,7 +142,7 @@ void ABlock::PostEditChangeProperty(FPropertyChangedEvent& event)
 
 	if (name == GET_MEMBER_NAME_CHECKED(ABlock, m_bDebugBreakBlock))
 	{
-		//this->DropBlock(nullptr, false);
+		this->DropBlock(nullptr, false);
 		this->m_bDebugBreakBlock = false;
 	}
 }

@@ -1,9 +1,12 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "GameFramework/Actor.h"
 #include "Block.generated.h"
+
+#define BLOCK_DEFAULT_MASS 1000000.0f //kg
+#define BLOCK_DEFAULT_HEALTH 100.0f
+#define BLOCK_DEFAULT_SCALE 74.660522f
+#define BLOCK_DEFAULT_MESH_LOCATION TEXT("StaticMesh'/Game/Meshes/M_Block.M_Block'")
 
 UCLASS()
 class KING_OF_THE_CASTLE_API ABlock : public AActor
@@ -18,11 +21,17 @@ public:
 	// Whether or not this block can be destroyed
 	virtual bool IsDestructable() { return true; }
 
+	// Create a block entity for this block and then call DestroyBlock on ourself
+	virtual void DropBlock(AActor *source, const bool& restrictPickup = true);
+
 	// Destroy this block (remove it form game)
 	virtual void DestroyBlock();
 
 	// Set the blocks health
 	virtual void SetHealth(const float& health);
+
+	// The id of this block
+	virtual FName GetNameId() { return FName("Undefined"); }
 
 	// Get the material of this block. If the material is not dynamic, make it.
 	virtual UMaterialInstanceDynamic* GetDynamicMaterial() const;
@@ -42,6 +51,8 @@ public:
 	FORCEINLINE UStaticMeshComponent* GetMesh() const { return this->m_Mesh; }
 
 	FORCEINLINE void SetRecipe(TArray<ABlock*> recipe) { this->m_Recipe = recipe; }
+
+	FORCEINLINE TArray<ABlock*>& GetRecipe() { return this->m_Recipe; }
 
 	UFUNCTION()
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent,
@@ -80,7 +91,7 @@ private:
 	// Blocks used to make this block
 	TArray<ABlock*> m_Recipe;
 
-	// DEBUG VARIABLES //
+	/////////////////////
 	// Manually break a block using the editor
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Debug", meta = (AllowPrivateAccess = "true", DisplayName = "Break Block"))
 	bool m_bDebugBreakBlock;
