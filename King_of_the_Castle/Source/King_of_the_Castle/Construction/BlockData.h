@@ -5,7 +5,7 @@
 #include "UObject/NoExportTypes.h"
 #include "BlockData.generated.h"
 
-UCLASS()
+UCLASS(Blueprintable)
 class KING_OF_THE_CASTLE_API UBlockData : public UObject
 {
 	GENERATED_BODY()

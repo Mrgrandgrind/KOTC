@@ -14,8 +14,8 @@
 #define BRUSH_DESTROY_COLOR FLinearColor(0.9f, 0.0f, 0.0f, 1.0f)
 #define BRUSH_COMBINE_COLOR FLinearColor(1.0f, 0.5f, 0.0f, 1.0f)
 
-#define COMBINE_MATERIAL_LOCATION TEXT("Material'/Game/ThirdPersonBP/Materials/M_CombineBox.M_CombineBox'")
-#define CUBE_MESH_LOCATION TEXT("StaticMesh'/Game/ThirdPersonBP/Meshes/Shape_Cube.Shape_Cube'")
+#define COMBINE_MATERIAL_LOCATION TEXT("Material'/Game/Materials/M_CombineBox.M_CombineBox'")
+#define CUBE_MESH_LOCATION TEXT("StaticMesh'/Game/Meshes/M_Cube.M_Cube'")
 
 USecondaryBrush::USecondaryBrush() : m_Mode(EModifyMode::Undefined), m_bCombining(false),
 m_CombineLock(nullptr), m_CraftTimer(nullptr), m_ActiveRecipe(nullptr)

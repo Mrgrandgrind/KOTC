@@ -11,13 +11,12 @@
 #include "Runtime/Engine/Classes/Components/BillboardComponent.h"
 #include "Runtime/Engine/Classes/Components/TextRenderComponent.h"
 
-#define BRUSH_MESH_LOCATION TEXT("StaticMesh'/Game/ThirdPersonBP/Meshes/M_BuildBrush.M_BuildBrush'")
-#define BRUSH_MATERIAL_LOCATION TEXT("Material'/Game/ThirdPersonBP/Materials/M_BrushMaterial.M_BrushMaterial'")
-#define BRUSH_TEXT_MATERIAL_LOCATION TEXT("Material'/Game/ThirdPersonBP/Materials/M_BillboardFont.M_BillboardFont'")
+#define BRUSH_MESH_LOCATION TEXT("StaticMesh'/Game/Meshes/M_BuildBrush.M_BuildBrush'")
+#define BRUSH_TEXT_MATERIAL_LOCATION TEXT("Material'/Game/Materials/M_BillboardFont.M_BillboardFont'")
 
-#define DOOR_BLOCK_LOCATION TEXT("/Game/ThirdPersonBP/Blueprints/Construction/BP_DoorBlock")
-#define GOLDEN_BLOCK_LOCATION TEXT("/Game/ThirdPersonBP/Blueprints/Construction/BP_GoldenBlock")
-#define CONSTRUCTION_BLOCK_LOCATION TEXT("/Game/ThirdPersonBP/Blueprints/Construction/BP_ConstructionBlock")
+#define DOOR_BLOCK_LOCATION TEXT("/Game/Blueprints/Construction/BP_DoorBlock")
+#define GOLDEN_BLOCK_LOCATION TEXT("/Game/Blueprints/Construction/BP_GoldenBlock")
+#define CONSTRUCTION_BLOCK_LOCATION TEXT("/Game/Blueprints/Construction/BP_ConstructionBlock")
 
 #define DEFAULT_MAX_BLOCK_COUNT 10
 
@@ -33,16 +32,15 @@
 #define BRUSH_SPAWN_Z_OFFSET 16.0f // How far up from desired location to spawn a block when placed (so it falls into place)
 #define BRUSH_CREATE_TOP_PERCENTAGE 0.25f // The top of the block is defined by this percentage. (i.e. we pretend the top 25% of the block surface is the top)
 
-UBlockBrush::UBlockBrush() : m_Team(nullptr), m_TextActor(nullptr)
+UBlockBrush::UBlockBrush() : m_Team(nullptr), m_TextActor(nullptr), m_Material(nullptr)
 {
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> Mesh(BRUSH_MESH_LOCATION);
-	static ConstructorHelpers::FObjectFinder<UMaterialInterface> Material(BRUSH_MATERIAL_LOCATION);
 
 	if (Mesh.Succeeded())
 	{
 		Super::SetStaticMesh(Mesh.Object);
+		this->m_Material = Mesh.Object->GetMaterial(0);
 	}
-	this->m_Material = Material.Object;
 
 	Super::SetCollisionProfileName(TEXT("OverlapAll"));
 	Super::SetCollisionEnabled(ECollisionEnabled::QueryOnly);
@@ -115,7 +113,7 @@ void UBlockBrush::SetChainMode(const bool& enable)
 UMaterialInstanceDynamic* UBlockBrush::GetMaterialDynamic()
 {
 	UMaterialInstanceDynamic *material = Cast<UMaterialInstanceDynamic>(Super::GetMaterial(0));
-	if (material == nullptr)
+	if (material == nullptr && this->m_Material != nullptr)
 	{
 		material = UMaterialInstanceDynamic::Create(this->m_Material, this->GetOuter());
 		Super::SetMaterial(0, material);

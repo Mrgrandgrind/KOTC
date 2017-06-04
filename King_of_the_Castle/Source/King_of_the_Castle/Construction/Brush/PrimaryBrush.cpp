@@ -12,19 +12,19 @@
 
 #define BRUSH_SPAWN_Z_OFFSET 16.0f // How far up from desired location to spawn a block when placed (so it falls into place)
 
-#define BRUSH_TEXT_MATERIAL_LOCATION TEXT("Material'/Game/ThirdPersonBP/Materials/M_BillboardFont.M_BillboardFont'")
+#define BRUSH_TEXT_MATERIAL_LOCATION TEXT("Material'/Game/Materials/M_BillboardFont.M_BillboardFont'")
 
-#define DATA_DOOR_LOCATION TEXT("/Game/ThirdPersonBP/Blueprints/Construction/BlockData/BP_Data_DoorBlock")
-#define DATA_GOLD_LOCATION TEXT("/Game/ThirdPersonBP/Blueprints/Construction/BlockData/BP_Data_GoldBlock")
-#define DATA_CONSTRUCTION_LOCATION TEXT("/Game/ThirdPersonBP/Blueprints/Construction/BlockData/BP_Data_ConstructionBlock")
+#define DATA_DOOR_LOCATION TEXT("/Game/Blueprints/Construction/BrushData/BP_DoorBlock_Data")
+#define DATA_GOLD_LOCATION TEXT("/Game/Blueprints/Construction/BrushData/BP_GoldBlock_Data")
+#define DATA_BASIC_LOCATION TEXT("/Game/Blueprints/Construction/BrushData/BP_BasicBlock_Data")
 
 UPrimaryBrush::UPrimaryBrush() : m_bValid(false), m_Child(nullptr), m_SelectedTypeIndex(0)
 {
 	//Set default create brush blocks. Can be modified in blueprints.
-	static ConstructorHelpers::FClassFinder<UBlockData> DataConstruction(DATA_CONSTRUCTION_LOCATION);
-	if (DataConstruction.Succeeded())
+	static ConstructorHelpers::FClassFinder<UBlockData> DataBasic(DATA_BASIC_LOCATION);
+	if (DataBasic.Succeeded())
 	{
-		this->m_BlockDataClasses.Add(DataConstruction.Class);
+		this->m_BlockDataClasses.Add(DataBasic.Class);
 	}
 
 	static ConstructorHelpers::FClassFinder<UBlockData> DataDoor(DATA_DOOR_LOCATION);
@@ -36,7 +36,7 @@ UPrimaryBrush::UPrimaryBrush() : m_bValid(false), m_Child(nullptr), m_SelectedTy
 	static ConstructorHelpers::FClassFinder<UBlockData> DataGold(DATA_GOLD_LOCATION);
 	if (DataGold.Succeeded())
 	{
-		this->m_BlockDataClasses.Add(DataGold.Class);
+		//this->m_BlockDataClasses.Add(DataGold.Class);
 	}
 
 	Super::bAbsoluteRotation = true;
