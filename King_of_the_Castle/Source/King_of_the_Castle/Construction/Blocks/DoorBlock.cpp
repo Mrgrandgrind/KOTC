@@ -23,6 +23,6 @@ void ADoorBlock::SetTeam(const int& team)
 {
 	Super::SetTeam(team);
 
-	Super::m_Mesh->SetCollisionProfileName(team == 1 ? TEXT("Team1Block")
-		: team == 2 ? TEXT("Team2Block") : TEXT("BlockAllDynamic"));
+	Super::m_Mesh->SetCollisionProfileName(team == 1 ? TEXT("Team1Door")
+		: team == 2 ? TEXT("Team2Door") : TEXT("BlockAllDynamic"));
 }

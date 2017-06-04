@@ -1,9 +1,12 @@
 #include "King_of_the_Castle.h"
 
 #include "../Character/PlayerCharacter.h"
-#include "Runtime/Engine/Public/EngineUtils.h"
 
+#include "BlockData.h"
 #include "BlockEntity.h"
+#include "Brush/PrimaryBrush.h"
+
+#include "Runtime/Engine/Public/EngineUtils.h"
 
 #define SCALE_MULTIPLIER 0.5f
 #define ATTRACTION_FORCE 50.0f
@@ -22,7 +25,7 @@ ABlockEntity::ABlockEntity() : m_bRestrictedPickup(true)
 	sde.BindUFunction(this, "EndOverlap");
 	Super::m_Mesh->OnComponentEndOverlap.Add(sde);
 
-	Super::m_Mesh->SetCollisionProfileName(TEXT("DroppedBlock"));
+	Super::m_Mesh->SetCollisionProfileName(FName("BlockEntity"));
 
 	Super::m_PointValue = 0;
 	Super::PrimaryActorTick.bCanEverTick = true;
@@ -38,7 +41,7 @@ void ABlockEntity::BeginPlay()
 void ABlockEntity::SetTo(ABlock *block)
 {
 	Super::SetActorScale3D(block->GetActorScale3D() * SCALE_MULTIPLIER);
-	Super::m_Mesh->SetStaticMesh(block->GetMesh()->StaticMesh);
+	Super::m_Mesh->SetStaticMesh(block->GetMesh()->GetStaticMesh());
 	Super::m_Mesh->SetMaterial(0, block->GetMesh()->GetMaterial(0));
 
 	this->m_ParentBlockNameId = block->GetNameId();
@@ -46,28 +49,26 @@ void ABlockEntity::SetTo(ABlock *block)
 
 bool ABlockEntity::CanBePickedUp(APlayerCharacter *character) const
 {
-	//UCreateBrush *brush = character->GetCreateBrush();
-	//int index = brush->GetIndexOf(this->m_ParentBlockType);
-	//if (index == -1)
-	//{
-	//	return false;
-	//}
-	//UBlockData *data = brush->GetBlockData(index);
-	//return (!this->m_bLimitedPickup && this->m_Owner != nullptr) || data->GetCount() < data->GetMaxCount();
-	return false;
+	UPrimaryBrush *brush = character->GetPrimaryBrush();
+	int index = brush->GetIndexOf(this->m_ParentBlockNameId);
+	if (index == -1)
+	{
+		return false;
+	}
+	UBlockData *data = brush->GetBlockData(index);
+	return (!this->m_bRestrictedPickup && this->m_Owner != nullptr) || data->GetCount() < data->GetMaxCount();
 }
 
 void ABlockEntity::Pickup(APlayerCharacter* character)
 {
-	//UCreateBrush *brush = character->GetCreateBrush();
-	//UBlockData *data = brush->GetBlockData(brush->GetIndexOf(this->m_ParentBlockType));
-	//if (data != nullptr)
-	//{
-	//	data->SetCount(brush, data->GetCount() + 1);
-	//}
-
-	//// Destroy this dropped block. Only happens if the block is a valid pickup.
-	//Super::Destroy();
+	UPrimaryBrush *brush = character->GetPrimaryBrush();
+	UBlockData *data = brush->GetBlockData(brush->GetIndexOf(this->m_ParentBlockNameId));
+	if (data != nullptr)
+	{
+		data->SetCount(brush, data->GetCount() + 1);
+	}
+	// Destroy this dropped block. Only happens if the block is a valid pickup.
+	Super::Destroy();
 }
 
 void ABlockEntity::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,

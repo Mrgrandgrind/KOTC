@@ -60,10 +60,10 @@ protected:
 
 	TArray<FIntVector> m_Chained;
 
+	UPROPERTY()
+	class ATextRenderActor *m_TextActor;
+
 private:
 	UPROPERTY()
 	UMaterialInterface *m_Material;
-
-	UPROPERTY()
-	class ATextRenderActor *m_TextActor;
 };

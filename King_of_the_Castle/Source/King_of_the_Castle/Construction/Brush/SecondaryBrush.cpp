@@ -9,6 +9,8 @@
 #include "../BuildArea.h"
 #include "../../Character/PlayerCharacter.h"
 
+#include "Runtime/Engine/Classes/Engine/TextRenderActor.h"
+
 #define COMBINE_DEAD_TIME 0.4f // How many seconds before the combining begins
 
 #define BRUSH_DESTROY_COLOR FLinearColor(0.9f, 0.0f, 0.0f, 1.0f)
@@ -198,6 +200,7 @@ void USecondaryBrush::Update(APlayerCharacter *character, ABuildArea* area, cons
 	{
 		//this->UpdateChain(area);
 	}
+	Super::m_TextActor->SetActorHiddenInGame(primary->IsBrushVisible());
 
 	if (Super::IsBrushVisible() && combineValid && this->GetMode() == EModifyMode::Combine
 		&& this->m_CraftTimer != nullptr && this->m_ActiveRecipe != nullptr && !primary->IsChaining())

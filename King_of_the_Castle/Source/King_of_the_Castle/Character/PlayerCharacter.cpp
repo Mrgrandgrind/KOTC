@@ -23,10 +23,37 @@ APlayerCharacter::APlayerCharacter() : m_Team(-1), m_PressTimer(0.0f), m_bPresse
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	Super::PrimaryActorTick.bCanEverTick = true;
 
+	this->m_BaseTurnRate = 45.0f;
+	this->m_BaseLookUpRate = 45.0f;
+
+	// Don't rotate when the controller rotates. Let that just affect the camera.
+	Super::bUseControllerRotationPitch = false;
+	Super::bUseControllerRotationYaw = false;
+	Super::bUseControllerRotationRoll = false;
+
+	// Configure character movement
+	Super::GetCharacterMovement()->bOrientRotationToMovement = true; // Character moves in the direction of input...	
+	Super::GetCharacterMovement()->RotationRate = FRotator(0.0f, 540.0f, 0.0f); // ...at this rotation rate
+	Super::GetCharacterMovement()->JumpZVelocity = 600.f;
+	Super::GetCharacterMovement()->AirControl = 0.2f;
+
+	// Create a camera boom (pulls in towards the player if there is a collision)
+	this->m_CameraBoom = UObject::CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
+	this->m_CameraBoom->SetupAttachment(Super::RootComponent);
+	this->m_CameraBoom->TargetArmLength = 300.0f; 	
+	this->m_CameraBoom->bUsePawnControlRotation = true; 
+
+	// Create a follow camera
+	this->m_Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
+	this->m_Camera->SetupAttachment(this->m_CameraBoom, USpringArmComponent::SocketName);
+	this->m_Camera->bUsePawnControlRotation = false;
+
+	// Create the primary brush
 	this->m_PrimaryBrush = UObject::CreateDefaultSubobject<UPrimaryBrush>(TEXT("PrimaryBrush"));
 	this->m_PrimaryBrush->SetTeam(&this->m_Team);
 	this->m_PrimaryBrush->SetupAttachment(Super::RootComponent);
 
+	// Create the secondary brush
 	this->m_SecondaryBrush = UObject::CreateDefaultSubobject<USecondaryBrush>(TEXT("SecondaryBrush"));
 	this->m_SecondaryBrush->SetTeam(&this->m_Team);
 	this->m_SecondaryBrush->SetCraftTimer(&this->m_PressTimer);
@@ -61,10 +88,6 @@ void APlayerCharacter::BeginPlay()
 	//		Super::GetMesh()->SetMaterial(0, (*materials)[index]);
 	//	}
 	//}
-
-	// Since the camera component is created within the blueprint, we will need to find it so we can use it
-	//this->m_Camera = Super::FindComponentByClass<UCameraComponent>();
-	//checkf(this->m_Camera != nullptr, TEXT("The player has no camera component?"));
 }
 
 // Called every frame
@@ -79,9 +102,6 @@ void APlayerCharacter::Tick(float delta)
 
 	if (this->m_BuildArea != nullptr && this->m_bBuildingEnabled && this->m_BuildArea->GetTeam() == this->m_Team)
 	{
-		// TODO For some reason we cannot get the camera component in BeginPlay. Look into why.
-		this->m_Camera = Super::FindComponentByClass<UCameraComponent>();
-
 		FVector cameraLoc = this->m_Camera->GetComponentLocation(), forward = this->m_Camera->GetForwardVector();
 		FVector cameraToPlayer = Super::GetMesh()->GetSocketLocation(TRACE_SOCKET) - cameraLoc;
 
@@ -202,10 +222,52 @@ void APlayerCharacter::InputMouseRightUpEvent()
 	this->m_SecondaryBrush->SetChainMode(false);
 }
 
+
+void APlayerCharacter::TurnAtRate(float rate)
+{
+	Super::AddControllerYawInput(rate * this->m_BaseTurnRate * Super::GetWorld()->GetDeltaSeconds());
+}
+
+void APlayerCharacter::LookUpAtRate(float rate)
+{
+	Super::AddControllerPitchInput(rate * this->m_BaseLookUpRate * Super::GetWorld()->GetDeltaSeconds());
+}
+
+void APlayerCharacter::MoveForward(float value)
+{
+	if (Super::Controller != nullptr && value != 0.0f)
+	{
+		// find out which way is forward and add the movement
+		const FRotator yaw(0.0f, Super::Controller->GetControlRotation().Yaw, 0.0f);
+		Super::AddMovementInput(FRotationMatrix(yaw).GetUnitAxis(EAxis::X), value);
+	}
+}
+
+void APlayerCharacter::MoveRight(float value)
+{
+	if (Super::Controller != nullptr && value != 0.0f)
+	{
+		// find out which way is right and add the movement
+		const FRotator yaw(0.0f, Super::Controller->GetControlRotation().Yaw, 0.0f);
+		AddMovementInput(FRotationMatrix(yaw).GetUnitAxis(EAxis::Y), value);
+	}
+}
+
 // Called to bind functionality to input
-void APlayerCharacter::SetupPlayerInputComponent(class UInputComponent* InputComponent)
+void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *InputComponent)
 {
 	Super::SetupPlayerInputComponent(InputComponent);
+
+	InputComponent->BindAxis("MoveForward", this, &APlayerCharacter::MoveForward);
+	InputComponent->BindAxis("MoveRight", this, &APlayerCharacter::MoveRight);
+
+	InputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
+	InputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
+
+	InputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
+	InputComponent->BindAxis("TurnRate", this, &APlayerCharacter::TurnAtRate);
+	InputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
+	InputComponent->BindAxis("LookUpRate", this, &APlayerCharacter::LookUpAtRate);
 
 	InputComponent->BindAction("Place", IE_Pressed, this, &APlayerCharacter::InputMouseLeftDownEvent);
 	InputComponent->BindAction("Place", IE_Released, this, &APlayerCharacter::InputMouseLeftUpEvent);

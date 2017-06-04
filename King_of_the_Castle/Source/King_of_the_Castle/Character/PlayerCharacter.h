@@ -24,6 +24,18 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Index")
 	int GetPlayerIndex() const;
 
+	UFUNCTION()
+	void MoveForward(float value);
+
+	UFUNCTION()
+	void MoveRight(float value);
+
+	UFUNCTION()
+	void TurnAtRate(float rate);
+
+	UFUNCTION()
+	void LookUpAtRate(float rate);
+
 	// Called whenever the player moved up a block type with their brush
 	UFUNCTION(BlueprintCallable, Category = "Event")
 	void InputBlockTypeUpEvent();
@@ -71,8 +83,21 @@ protected:
 	UFUNCTION()
 	void ToggleBuildMode() { this->SetBuildModeEnabled(!this->m_bBuildingEnabled); }
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true", DisplayName = "Camera"))
+	// Follow camera 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (DisplayName = "Camera"))
 	class UCameraComponent *m_Camera;
+
+	// Camera boom positioning the camera behind the character 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (DisplayName = "Camera Boom"))
+	class USpringArmComponent *m_CameraBoom;
+
+	// Base turn rate, in deg/sec. Other scaling may affect final turn rate. 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (DisplayName = "BaseTurnRate"))
+	float m_BaseTurnRate;
+
+	// Base look up/down rate, in deg/sec. Other scaling may affect final rate. 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (DisplayName = "BaseLookUpRate"))
+	float m_BaseLookUpRate;
 
 private:
 	// Result of last trace. The trace happens every tick when building mode is enabled.
