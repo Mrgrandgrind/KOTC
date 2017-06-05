@@ -64,6 +64,14 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Team")
 	void SetTeam(const int& team);
 
+	// Melee attack
+	UFUNCTION(BlueprintCallable, Category = "Combat")
+	void MeleeAttack();
+
+	// Special attack
+	UFUNCTION(BlueprintCallable, Category = "Combat")
+	virtual void SpecialAttack() { }
+
 	// Whether or not the player is in build mode
 	FORCEINLINE bool IsBuildModeEnabled() const { return this->m_bBuildingEnabled; }
 

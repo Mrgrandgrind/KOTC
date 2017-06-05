@@ -2,6 +2,7 @@
 #include "BlockData.h"
 
 #include "Block.h"
+#include "Brush/PrimaryBrush.h"
 
 #define DEFAULT_BLOCK_COUNT 0
 #define DEFAULT_MAX_BLOCK_COUNT 10
@@ -35,9 +36,10 @@ void UBlockData::SetCount(UPrimaryBrush *brush, const int& count)
 	{
 		return;
 	}
-	//UBlockData *data = brush->GetBlockData(brush->GetSelectedIndex());
+	UBlockData *data = brush->GetBlockData(brush->GetSelectedIndex());
 	//if (data != nullptr && (data == this || data == this->m_Join))
-	//{
-	//	brush->UpdateCountText(data);
-	//}
+	if (data == this)
+	{
+		brush->UpdateCountText(data);
+	}
 }

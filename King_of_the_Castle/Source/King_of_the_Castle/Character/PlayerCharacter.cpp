@@ -65,6 +65,18 @@ void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// For some strange reason the primary brush gets unset by unreal. This will ensure that it is set. (Otherwise the game will crash)
+	if(this->m_PrimaryBrush == nullptr)
+	{
+		this->m_PrimaryBrush = Super::FindComponentByClass<UPrimaryBrush>();
+		check(this->m_PrimaryBrush);
+	}
+	if(this->m_SecondaryBrush == nullptr)
+	{
+		this->m_SecondaryBrush = Super::FindComponentByClass<USecondaryBrush>();
+		check(this->m_SecondaryBrush);
+	}
+
 	// Connect construction and door block data counts
 	//UBlockData *construction = this->m_PrimaryBrush->GetBlockData(EBlockType::Construction);
 	//UBlockData *door = this->m_PrimaryBrush->GetBlockData(EBlockType::Door);
@@ -117,10 +129,15 @@ void APlayerCharacter::Tick(float delta)
 		Super::GetWorld()->LineTraceSingleByChannel(this->m_TraceResult, start, end, ECollisionChannel::ECC_WorldDynamic, params);
 
 		// Update create brush
-		this->m_PrimaryBrush->Update(this, this->m_BuildArea, this->m_TraceResult);
-
+		if(this->m_PrimaryBrush != nullptr)
+		{
+			this->m_PrimaryBrush->Update(this, this->m_BuildArea, this->m_TraceResult);
+		}
 		// Update modify brush
-		this->m_SecondaryBrush->Update(this, this->m_BuildArea, this->m_TraceResult);
+		if(this->m_SecondaryBrush != nullptr)
+		{
+			this->m_SecondaryBrush->Update(this, this->m_BuildArea, this->m_TraceResult);
+		}
 
 #if WITH_EDITOR
 		// If we want to draw the line trace (for debugging purposes)
@@ -193,6 +210,7 @@ void APlayerCharacter::InputMouseLeftUpEvent()
 {
 	this->m_bPressed = false;
 	this->m_PressTimer = 0.0f;
+
 	if (this->m_BuildArea != nullptr && this->m_bBuildingEnabled && this->m_BuildArea->GetTeam() == this->m_Team)
 	{
 		// Check to see if the player was combining a block and then stopped
@@ -251,6 +269,11 @@ void APlayerCharacter::MoveRight(float value)
 		const FRotator yaw(0.0f, Super::Controller->GetControlRotation().Yaw, 0.0f);
 		AddMovementInput(FRotationMatrix(yaw).GetUnitAxis(EAxis::Y), value);
 	}
+}
+
+void APlayerCharacter::MeleeAttack() 
+{
+
 }
 
 // Called to bind functionality to input
