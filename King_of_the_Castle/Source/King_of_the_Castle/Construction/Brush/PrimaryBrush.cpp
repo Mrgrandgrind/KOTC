@@ -36,7 +36,7 @@ UPrimaryBrush::UPrimaryBrush() : m_bValid(false), m_Child(nullptr), m_SelectedTy
 	static ConstructorHelpers::FClassFinder<UBlockData> DataGold(DATA_GOLD_LOCATION);
 	if (DataGold.Succeeded())
 	{
-		//this->m_BlockDataClasses.Add(DataGold.Class);
+		this->m_BlockDataClasses.Add(DataGold.Class);
 	}
 
 	Super::bAbsoluteRotation = true;

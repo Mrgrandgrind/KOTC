@@ -129,15 +129,10 @@ void APlayerCharacter::Tick(float delta)
 		Super::GetWorld()->LineTraceSingleByChannel(this->m_TraceResult, start, end, ECollisionChannel::ECC_WorldDynamic, params);
 
 		// Update create brush
-		if(this->m_PrimaryBrush != nullptr)
-		{
-			this->m_PrimaryBrush->Update(this, this->m_BuildArea, this->m_TraceResult);
-		}
+		this->m_PrimaryBrush->Update(this, this->m_BuildArea, this->m_TraceResult);
+
 		// Update modify brush
-		if(this->m_SecondaryBrush != nullptr)
-		{
-			this->m_SecondaryBrush->Update(this, this->m_BuildArea, this->m_TraceResult);
-		}
+		this->m_SecondaryBrush->Update(this, this->m_BuildArea, this->m_TraceResult);
 
 #if WITH_EDITOR
 		// If we want to draw the line trace (for debugging purposes)
