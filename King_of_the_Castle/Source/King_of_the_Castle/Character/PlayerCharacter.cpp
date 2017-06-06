@@ -20,6 +20,10 @@
 // Sets default values
 APlayerCharacter::APlayerCharacter() : m_Team(-1), m_PressTimer(0.0f), m_bPressed(false)
 {
+	MeleeCapsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("MeleeComponent"));
+	MeleeCapsule->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	MeleeCapsule->SetupAttachment(RootComponent);
+
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	Super::PrimaryActorTick.bCanEverTick = true;
 
@@ -268,7 +272,61 @@ void APlayerCharacter::MoveRight(float value)
 
 void APlayerCharacter::MeleeAttack() 
 {
+	if (!IsAttacking) {
+		if (!IsStunned) {
+			AnimWeakPunch = true;
+			IsAttacking = true;
+			FDamageEvent ThisDamage;
+			TArray<AActor*> EnemyList;
+			MeleeCapsule->GetOverlappingActors(EnemyList, TSubclassOf<APlayerCharacter>());
+			//for every enemy that's within the capsule, check and apply collision
+			for (auto Enemies : EnemyList) {
+				if (Enemies != this) {
+					if (Enemies->IsA(APlayerCharacter::StaticClass()))
+					{
+						auto Enemy = (APlayerCharacter*)Enemies;
+						if (MeleeCapsule->IsOverlappingComponent(Enemy->GetCapsuleComponent())) {
+							if (Enemy->Health > 0) {
+								Enemy->TakeDamage(MeleeAttackDamage, ThisDamage, this->GetController(), this);
+								auto loc1 = Enemies->GetActorLocation();
+								auto loc2 = this->GetActorLocation();
+								FVector LaunchDir = (loc1 - loc2);
+								FVector Launch = (LaunchDir.GetSafeNormal() + FVector(0, 0, 0.2f))*PlayerKnockback;
+								Enemy->LaunchCharacter(Launch, 0, 0);
+							}
+						}
+					}
+					else if (Enemies->IsA(ABlock::StaticClass()) && ((ABlock*)Enemies)->IsDestructable())
+					{
+						Enemies->TakeDamage(this->MeleeAttackDamage * 3.0f, ThisDamage, this->GetController(), this);
+					}
+				}
+			}
+			IsAttacking = false;
+		}
+	}
+}
 
+float APlayerCharacter::TakeDamage(float DamageAmount,
+	struct FDamageEvent const & DamageEvent,
+	class AController * EventInstigator,
+	AActor * DamageCauser) {
+	if (!IsStunned) {
+		//apply damage, stun if 0 health, set timer to end stun
+		Health -= DamageAmount;
+		FTimerHandle ThisHandle;
+		if (Health <= 0) {
+
+			IsStunned = true;
+			GetWorldTimerManager().SetTimer(ThisHandle, this, &APlayerCharacter::EndStun, StunDuration);
+		}
+	}
+	return DamageAmount;
+}
+
+void APlayerCharacter::EndStun() {
+	IsStunned = false;
+	Health = MaxHealth;
 }
 
 // Called to bind functionality to input
