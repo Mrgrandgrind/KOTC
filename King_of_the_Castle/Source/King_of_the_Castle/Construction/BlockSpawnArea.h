@@ -20,6 +20,8 @@ public:
 #endif
 
 private:
+	bool TrySpawnNextTo(class ABlock *block, FVector& out) const;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Area", meta = (AllowPrivateAccess = "true", DisplayName = "Box Area"))
 	UBoxComponent *m_Area;
 

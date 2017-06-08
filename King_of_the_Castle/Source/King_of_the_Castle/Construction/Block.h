@@ -6,6 +6,8 @@
 #define BLOCK_DEFAULT_MASS 1000000.0f //kg
 #define BLOCK_DEFAULT_HEALTH 100.0f
 #define BLOCK_DEFAULT_SCALE 1.0f //74.660522f
+#define BRUSH_SPAWN_Z_OFFSET 16.0f // How far up from desired location to spawn a block when placed (so it falls into place)
+
 #define BLOCK_DEFAULT_MESH_LOCATION TEXT("StaticMesh'/Game/Meshes/M_Block.M_Block'")
 
 UCLASS()

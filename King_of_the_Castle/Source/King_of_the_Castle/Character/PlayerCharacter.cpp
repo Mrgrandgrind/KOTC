@@ -65,6 +65,9 @@ void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// Update team collision (required for doors to function)
+	this->SetTeam(this->m_Team);
+
 	// For some strange reason the primary brush gets unset by unreal. This will ensure that it is set. (Otherwise the game will crash)
 	if(this->m_PrimaryBrush == nullptr)
 	{
@@ -175,9 +178,9 @@ void APlayerCharacter::SetBuildModeEnabled(const bool& enable)
 void APlayerCharacter::SetTeam(const int& team)
 {
 	this->m_Team = team;
-
-	Super::GetCapsuleComponent()->SetCollisionProfileName(team == 1
-		? TEXT("PawnTeam1") : team == 2 ? TEXT("PawnTeam2") : TEXT("Pawn"));
+	UE_LOG(LogClass, Log, TEXT("1"));
+	Super::GetCapsuleComponent()->SetCollisionProfileName(team <= 1
+		? TEXT("PawnTeam1") : team >= 2 ? TEXT("PawnTeam2") : TEXT("Pawn"));
 }
 
 void APlayerCharacter::InputBlockTypeUpEvent()

@@ -3,6 +3,12 @@
 #include "King_of_the_Castle.h"
 #include "BlockSpawnArea.h"
 
+#include "Block.h"
+#include "BlockEntity.h"
+
+#define SPAWN_Z_MAX_OFFSET 5.0f
+#define SPAWN_BOX_UP_SCALE 1.75f
+
 ABlockSpawnArea::ABlockSpawnArea()
 {
 	this->m_SpawnRating = 100.0f;
@@ -25,29 +31,31 @@ ABlockSpawnArea::ABlockSpawnArea()
 bool ABlockSpawnArea::TrySpawn(FVector& out) const
 {
 	// Place spawn block somewhere inside the spawn area
+	this->m_SpawnBox->SetWorldScale3D(FVector(SPAWN_BOX_UP_SCALE));
+
 	FVector extent = this->m_SpawnBox->GetScaledBoxExtent(), areaExtent = this->m_Area->GetScaledBoxExtent();
 	FVector loc = (this->m_Area->GetComponentLocation() - areaExtent + extent)
 		+ (areaExtent * 2.0f - extent * 2.0f) * FVector(FMath::FRand(), FMath::FRand(), FMath::FRand());
-	this->m_SpawnBox->SetWorldRotation(FRotator(0.0f, FMath::FRandRange(0.0f, 360.0f), 0.0f));
+	//this->m_SpawnBox->SetWorldRotation(FRotator(0.0f, FMath::FRandRange(0.0f, 360.0f), 0.0f));
 	this->m_SpawnBox->SetWorldLocation(loc);
 
 	// Check for overlaps in the new position
 	TArray<UPrimitiveComponent*> overlap;
 	this->m_SpawnBox->GetOverlappingComponents(overlap);
 
-	int count = 0;
 	for (UPrimitiveComponent *next : overlap)
 	{
-		// Only collide with static mesh components
+		ABlock *block = Cast<ABlock>(next->GetOwner());
+		if (block != nullptr && !block->IsA(ABlockEntity::StaticClass()))
+		{
+			// If our spawn box has hit a block
+			return this->TrySpawnNextTo(block, out);
+		}
 		if (next->IsA(UStaticMeshComponent::StaticClass()))
 		{
-			count++;
+			// Don't collide with static mesh components
+			return false;
 		}
-	}
-	if (count > 0)
-	{
-		// We are overlapping with a mesh. Our spawn position has failed.
-		return false;
 	}
 
 	// We are in an empty position. Cast a ray down from the four corners of the box to check for a flat surface below to spawn on.
@@ -58,11 +66,11 @@ bool ABlockSpawnArea::TrySpawn(FVector& out) const
 		loc + FVector(-extent.X, extent.Y, -extent.Z),
 		loc + FVector(extent.X, -extent.Y, -extent.Z)
 	};
+	FHitResult result;
 	for (int i = 0; i < 4; i++)
 	{
 		float zDiff = arr[i].Z - this->m_Area->GetComponentLocation().Z + areaExtent.Z;
 
-		FHitResult result;
 		Super::GetWorld()->LineTraceSingleByChannel(result, arr[i], arr[i] - FVector(0.0f, 0.0f, zDiff),
 			ECollisionChannel::ECC_WorldDynamic, FCollisionQueryParams::DefaultQueryParam);
 		//DrawDebugLine(Super::GetWorld(), arr[i], arr[i] - FVector(0.0f, 0.0f, zDiff), FColor::Red, true, 50, 0, 4);
@@ -72,18 +80,75 @@ bool ABlockSpawnArea::TrySpawn(FVector& out) const
 			// We didn't hit any ground that we can spawn on. Position failed.
 			return false;
 		}
-		// Validate that all impact points have the same Z value. We use an optimization here and do it within the same array and loop.
+		// Store the impact point. We use an optimization here and do it within the same array and loop.
 		arr[i] = result.ImpactPoint;
-		if (i != 0 && !FMath::IsNearlyEqual(arr[i].Z, arr[i - 1].Z))
-		{
-			// Uneven platform for spawning. We need a flat surface. Position failed.
-			return false;
-		}
+	}
+	float zMax = arr[0].Z, zMin = zMax;
+	for (int i = 1; i < 4; i++)
+	{
+		zMax = FMath::Max(arr[i].Z, zMax);
+		zMin = FMath::Min(arr[i].Z, zMin);
+	}
+	if (zMax - zMin > SPAWN_Z_MAX_OFFSET)
+	{
+		// Uneven platform for spawning. We need a flatish surface. Position failed.
+		return false;
 	}
 
 	// If we get here then all position tests passed. We can spawn a block at our random (grounded) position. 
 	// Let the caller know the location and tell them the test was successful.
 	out = FVector(loc.X, loc.Y, arr[0].Z + extent.Z);
+	return true;
+}
+
+bool ABlockSpawnArea::TrySpawnNextTo(ABlock* block, FVector& out) const
+{
+	this->m_SpawnBox->SetWorldScale3D(FVector(1.0f));
+	this->m_SpawnBox->SetWorldRotation(block->GetActorRotation());
+
+	FVector extent = this->m_SpawnBox->GetScaledBoxExtent();
+
+	// Get all the various offsets for all the positions around the block (except diagonal and -z)
+	FVector offsets[] =
+	{
+		FVector(extent.X, 0.0f, 0.0f),
+		FVector(-extent.X, 0.0f, 0.0f),
+		FVector(0.0f, extent.Y, 0.0f),
+		FVector(0.0f, -extent.Y, 0.0f),
+		FVector(0.0f, 0.0f, extent.Z)
+	};
+	this->m_SpawnBox->SetWorldLocation(block->GetActorLocation() + offsets[FMath::RandRange(0, 4)] * 2.0f); //where 0 and 4 if offsets bounds
+
+	// Check for overlaps in the new position
+	TArray<UPrimitiveComponent*> overlap;
+	this->m_SpawnBox->GetOverlappingComponents(overlap);
+
+	for(UPrimitiveComponent *next : overlap)
+	{
+		if(next->GetOwner() == block)
+		{
+			continue;
+		}
+		if(next->IsA(UStaticMeshComponent::StaticClass()))
+		{
+			return false;
+		}
+	}
+	FVector loc = this->m_SpawnBox->GetComponentLocation();
+
+	// New position looks good to spawn. Run an additional check to stop blocks spawning mid-air. 
+	// Add the offset to the Z so that we can still spawn next to blocks which are falling.
+	FHitResult result;
+	Super::GetWorld()->LineTraceSingleByChannel(result, loc, loc - FVector(0.0f, 0.0f, extent.Z * 2.0f + BRUSH_SPAWN_Z_OFFSET), 
+		ECollisionChannel::ECC_WorldDynamic, FCollisionQueryParams::DefaultQueryParam);
+	if(!result.IsValidBlockingHit())
+	{
+		// There's nothing below this spawn point. Lets not use it.
+		return false;
+	}
+
+	// If the position is good, use it
+	out = loc;
 	return true;
 }
 
