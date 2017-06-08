@@ -68,9 +68,22 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Combat")
 	void MeleeAttack();
 
-	// Special attack
+	//virtual function for ranged special attack
+	UFUNCTION(BlueprintCallable, Category = "Combat")
+	virtual void RangedAttack() { }
+
+	//virtual function for regular special attack
 	UFUNCTION(BlueprintCallable, Category = "Combat")
 	virtual void SpecialAttack() { }
+
+	//damage handling
+	UFUNCTION(BlueprintCallable, Category = "Combat")
+	float TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent,
+		class AController * EventInstigator, AActor * DamageCauser);
+
+	//functon called to end stun
+	UFUNCTION(BlueprintCallable, Category = "Combat")
+	void EndStun();
 
 	// Whether or not the player is in build mode
 	FORCEINLINE bool IsBuildModeEnabled() const { return this->m_bBuildingEnabled; }
@@ -84,6 +97,10 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
+
+	//the melee collision capsule
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true", DisplayName = "Melee Attack Capsule"))
+	UCapsuleComponent* MeleeCapsule;
 
 protected:
 	virtual UClass* GetDefaultClass() const { return APlayerCharacter::StaticClass(); }
@@ -106,6 +123,48 @@ protected:
 	// Base look up/down rate, in deg/sec. Other scaling may affect final rate. 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (DisplayName = "BaseLookUpRate"))
 	float m_BaseLookUpRate;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true", DisplayName = "Is Attacking?"))
+	bool IsAttacking;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true", DisplayName = "Is Stunned?"))
+	bool IsStunned;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true", DisplayName = "Player Knockback"))
+	float PlayerKnockback;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Stamina"))
+	float Stamina;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Max Stamina"))
+	float MaxStamina;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Health"))
+	float Health;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Max Health"))
+	float MaxHealth;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Ranged Attack Cost"))
+	float RangeAttackCost;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Ranged Attack Damage"))
+	float RangeAttackDamage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Special Attack Cost"))
+	float SpecialAttackCost;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Special Attack Damage"))
+	float SpecialAttackDamage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Melee Attack Damage"))
+	float MeleeAttackDamage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Heavy Attack Damage"))
+	float HeavyAttackDamage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Stun Duration"))
+	float StunDuration;
 
 private:
 	// Result of last trace. The trace happens every tick when building mode is enabled.
@@ -131,10 +190,33 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Build", meta = (AllowPrivateAccess = "true", DisplayName = "Secondary Brush"))
 	class USecondaryBrush *m_SecondaryBrush;
+
+public:
+	//Animation flags
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation Flags")
+	bool AnimWalk;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation Flags")
+	bool AnimSprint;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation Flags")
+	bool AnimJump;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation Flags")
+	bool AnimKnockback;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation Flags")
+	bool AnimWeakPunch;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation Flags")
+	bool AnimStrongPunch;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation Flags")
+	bool AnimIdle;
 	
-	// DEBUG VARIABLES //
+// DEBUG VARIABLES //
 	// Draw the line trace for block placement
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Debug", meta = (AllowPrivateAccess = "true", DisplayName = "Draw trace"))
 	bool m_bDebugDrawTrace;
-	/////////////////////
+/////////////////////
 };
