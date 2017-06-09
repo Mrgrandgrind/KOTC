@@ -118,7 +118,9 @@ void APlayerCharacter::Tick(float delta)
 	{
 		this->m_PressTimer += delta;
 	}
-
+	if (m_ChargeActive) {
+		m_ChargeTimer += delta;
+	}
 	if (this->m_BuildArea != nullptr && this->m_bBuildingEnabled && this->m_BuildArea->GetTeam() == this->m_Team)
 	{
 		FVector cameraLoc = this->m_Camera->GetComponentLocation(), forward = this->m_Camera->GetForwardVector();
@@ -316,6 +318,68 @@ void APlayerCharacter::MeleeAttack()
 	}
 }
 
+void APlayerCharacter::PunchChargeUp() {
+	m_ChargeActive = true;
+}
+void APlayerCharacter::ChargePunchAttack() {
+	m_ChargeActive = false;
+	float damage;
+	if (m_ChargeTimer > 1) {
+		if (m_ChargeTimer <= 2) {
+			damage = m_ChargeBaseDamage * 0.25;
+		}
+		else if (m_ChargeTimer <= 3) {
+			damage = m_ChargeBaseDamage *0.5;
+		}
+		else {
+			damage = m_ChargeBaseDamage;
+		}
+	}
+	else {
+		damage = 0;
+	}
+	m_ChargeTimer = 0;
+	if (damage != 0) {
+		if (!IsAttacking)
+		{
+			if (!IsStunned)
+			{
+				IsAttacking = true;
+				FDamageEvent ThisDamage;
+				TArray<AActor*> EnemyList;
+				MeleeCapsule->GetOverlappingActors(EnemyList, TSubclassOf<APlayerCharacter>());
+				//for every enemy that's within the capsule, check and apply collision
+				for (auto Enemies : EnemyList)
+				{
+					if (Enemies != this)
+					{
+						if (Enemies->IsA(APlayerCharacter::StaticClass()))
+						{
+							auto Enemy = (APlayerCharacter*)Enemies;
+							if (MeleeCapsule->IsOverlappingComponent(Enemy->GetCapsuleComponent()))
+							{
+								if (Enemy->Health > 0)
+								{
+									Enemy->TakeDamage(damage, ThisDamage, this->GetController(), this);
+									auto loc1 = Enemies->GetActorLocation();
+									auto loc2 = this->GetActorLocation();
+									FVector LaunchDir = (loc1 - loc2);
+									FVector Launch = (LaunchDir.GetSafeNormal() + FVector(0, 0, 0.2f))*PlayerKnockback;
+									Enemy->LaunchCharacter(Launch, 0, 0);
+								}
+							}
+						}
+						else if (Enemies->IsA(ABlock::StaticClass()) && ((ABlock*)Enemies)->IsDestructable())
+						{
+							Enemies->TakeDamage(this->MeleeAttackDamage * 3.0f, ThisDamage, this->GetController(), this);
+						}
+					}
+				}
+				IsAttacking = false;
+			}
+		}
+	}
+}
 float APlayerCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent,
 		class AController * EventInstigator, AActor * DamageCauser) {
 	if (!IsStunned) 
@@ -349,6 +413,9 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *InputComponent
 
 	InputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	InputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
+
+	InputComponent->BindAction("Charge Punch", IE_Pressed, this, &APlayerCharacter::PunchChargeUp);
+	InputComponent->BindAction("Charge Punch", IE_Released, this, &APlayerCharacter::ChargePunchAttack);
 
 	InputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
 	InputComponent->BindAxis("TurnRate", this, &APlayerCharacter::TurnAtRate);

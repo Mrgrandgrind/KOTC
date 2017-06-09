@@ -85,6 +85,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Combat")
 	void EndStun();
 
+	UFUNCTION(BlueprintCallable, Category = "Combat")
+	void PunchChargeUp();
+
+	UFUNCTION(BlueprintCallable, Category = "Combat")
+	void ChargePunchAttack();
+
 	// Whether or not the player is in build mode
 	FORCEINLINE bool IsBuildModeEnabled() const { return this->m_bBuildingEnabled; }
 
@@ -166,6 +172,14 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Stun Duration"))
 	float StunDuration;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Timer"))
+	float m_ChargeTimer;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Base Damage"))
+		int m_ChargeBaseDamage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Active"))
+		bool m_ChargeActive;
 private:
 	// Result of last trace. The trace happens every tick when building mode is enabled.
 	FHitResult m_TraceResult; //the result of the last trace
