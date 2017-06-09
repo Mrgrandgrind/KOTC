@@ -1,13 +1,6 @@
 Event	ID	Name			Wwise Object Path	Notes
 	2248455103	SampleTest			\Default Work Unit\SampleTest	
 
-Game Parameter	ID	Name			Wwise Object Path	Notes
-	3939353941	Effect_Mix			\Default Work Unit\Effect_Mix	
-
-Effect plug-ins	ID	Name	Type				Notes
-	2653529179	Three_Voices	Wwise Harmonizer			
-	3164629247	Holy	Wwise RoomVerb			
-
 In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
-	565128765	TestSample	Y:\Tethered\Game Projects\King of the Castle\King-of-the-Castle\King_of_the_Castle\King_of_the_Castle_WwiseProject\.cache\Mac\SFX\TestSample_4B8CC0C5.wem		\Actor-Mixer Hierarchy\Default Work Unit\TestSample		3709344
+	565128765	TestSample	Y:\Tethered\Game Projects\King of the Castle\King-of-the-Castle\King_of_the_Castle\King_of_the_Castle_WwiseProject\.cache\Mac\SFX\TestSample_9E69E797.wem		\Actor-Mixer Hierarchy\Default Work Unit\TestSample		3709344
 
