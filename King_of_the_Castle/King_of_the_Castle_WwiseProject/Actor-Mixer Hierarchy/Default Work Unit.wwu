@@ -4,6 +4,13 @@
 		<WorkUnit Name="Default Work Unit" ID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}" PersistMode="Standalone">
 			<ChildrenList>
 				<Sound Name="TestSample" ID="{2CF96DFC-7E4E-4F14-A9DA-ADCDF8230B87}" ShortID="147001088" Type="SoundFX">
+					<PropertyList>
+						<Property Name="Volume" Type="Real64">
+							<ValueList>
+								<Value>-96</Value>
+							</ValueList>
+						</Property>
+					</PropertyList>
 					<ReferenceList>
 						<Reference Name="Conversion">
 							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ValidationCache Version="1" SchemaVersion="75">
-	<ValidationCacheItem File="Y:\Tethered\Game Projects\King of the Castle\King-of-the-Castle\King_of_the_Castle\King_of_the_Castle_WwiseProject\Actor-Mixer Hierarchy\Default Work Unit.wwu" DateLow="1497369600" DateHigh="30597400"/>
+	<ValidationCacheItem File="Y:\Tethered\Game Projects\King of the Castle\King-of-the-Castle\King_of_the_Castle\King_of_the_Castle_WwiseProject\Actor-Mixer Hierarchy\Default Work Unit.wwu" DateLow="3273187200" DateHigh="30597425"/>
 	<ValidationCacheItem File="Y:\Tethered\Game Projects\King of the Castle\King-of-the-Castle\King_of_the_Castle\King_of_the_Castle_WwiseProject\Attenuations\Default Work Unit.wwu" DateLow="1322075264" DateHigh="30597391"/>
 	<ValidationCacheItem File="Y:\Tethered\Game Projects\King of the Castle\King-of-the-Castle\King_of_the_Castle\King_of_the_Castle_WwiseProject\Audio Devices\Default Work Unit.wwu" DateLow="1322075264" DateHigh="30597391"/>
 	<ValidationCacheItem File="Y:\Tethered\Game Projects\King of the Castle\King-of-the-Castle\King_of_the_Castle\King_of_the_Castle_WwiseProject\Control Surface Sessions\Default Work Unit.wwu" DateLow="2137173376" DateHigh="30597394"/>
@@ -12,6 +12,7 @@
 	<ValidationCacheItem File="Y:\Tethered\Game Projects\King of the Castle\King-of-the-Castle\King_of_the_Castle\King_of_the_Castle_WwiseProject\Events\Default Work Unit.wwu" DateLow="2137173376" DateHigh="30597394"/>
 	<ValidationCacheItem File="Y:\Tethered\Game Projects\King of the Castle\King-of-the-Castle\King_of_the_Castle\King_of_the_Castle_WwiseProject\Game Parameters\Default Work Unit.wwu" DateLow="2137173376" DateHigh="30597394"/>
 	<ValidationCacheItem File="Y:\Tethered\Game Projects\King of the Castle\King-of-the-Castle\King_of_the_Castle\King_of_the_Castle_WwiseProject\Interactive Music Hierarchy\Default Work Unit.wwu" DateLow="1322075264" DateHigh="30597391"/>
+	<ValidationCacheItem File="Y:\Tethered\Game Projects\King of the Castle\King-of-the-Castle\King_of_the_Castle\King_of_the_Castle_WwiseProject\King_of_the_Castle_WwiseProject.crossover.wsettings" DateLow="2107369600" DateHigh="30597400"/>
 	<ValidationCacheItem File="Y:\Tethered\Game Projects\King of the Castle\King-of-the-Castle\King_of_the_Castle\King_of_the_Castle_WwiseProject\King_of_the_Castle_WwiseProject.wproj" DateLow="1322075264" DateHigh="30597391"/>
 	<ValidationCacheItem File="Y:\Tethered\Game Projects\King of the Castle\King-of-the-Castle\King_of_the_Castle\King_of_the_Castle_WwiseProject\Master-Mixer Hierarchy\Default Work Unit.wwu" DateLow="1322075264" DateHigh="30597391"/>
 	<ValidationCacheItem File="Y:\Tethered\Game Projects\King of the Castle\King-of-the-Castle\King_of_the_Castle\King_of_the_Castle_WwiseProject\Mixing Sessions\Default Work Unit.wwu" DateLow="1322075264" DateHigh="30597391"/>
