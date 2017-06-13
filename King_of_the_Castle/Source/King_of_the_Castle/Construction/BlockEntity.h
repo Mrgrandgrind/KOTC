@@ -40,12 +40,16 @@ public:
 
 	FORCEINLINE void SetRestrictedPickup(const bool& restrict) { this->m_bRestrictedPickup = restrict; }
 
+	FORCEINLINE void SetIgnoreOwner(const bool& ignore) { this->m_bIgnoreOwner = ignore; }
+
 	UFUNCTION()
 	void BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult);
 
 	UFUNCTION()
 	void EndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	static TArray<ABlockEntity*> SpawnBlockEntity(ABlock *block, UWorld *world, AActor *source, const bool& restrictPickup = true);
 
 	static TArray<ABlockEntity*> SpawnBlockEntity(ABlock *block, AActor *source, const bool& restrictPickup = true);
 
@@ -57,6 +61,9 @@ private:
 	// Who is responsible for this block spawning
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dropped", meta = (AllowPrivateAccess = "true", DisplayName = "Owner"))
 	AActor *m_Owner;
+
+	// Whether or not to ignore the owner for pickup up or only go to the owner
+	bool m_bIgnoreOwner;
 
 	// Whether or not this block can be picked up regardless of the players current count of this block
 	bool m_bRestrictedPickup;

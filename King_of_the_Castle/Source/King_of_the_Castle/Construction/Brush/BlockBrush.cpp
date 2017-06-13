@@ -1,7 +1,6 @@
 #include "King_of_the_Castle.h"
 #include "BlockBrush.h"
 
-#include "../Block.h"
 #include "../BlockData.h"
 #include "../BuildArea.h"
 #include "../BlockEntity.h"
@@ -12,7 +11,7 @@
 #include "Runtime/Engine/Classes/Components/TextRenderComponent.h"
 
 #define BRUSH_MESH_LOCATION TEXT("StaticMesh'/Game/Meshes/M_BuildBrush.M_BuildBrush'")
-#define BRUSH_TEXT_MATERIAL_LOCATION TEXT("Material'/Game/Materials/M_BillboardFont.M_BillboardFont'")
+#define BRUSH_MATERIAL_LOCATION TEXT("Material'/Game/Materials/M_Brush.M_Brush'")
 
 #define DOOR_BLOCK_LOCATION TEXT("/Game/Blueprints/Construction/BP_DoorBlock")
 #define GOLDEN_BLOCK_LOCATION TEXT("/Game/Blueprints/Construction/BP_GoldenBlock")
@@ -35,12 +34,13 @@
 UBlockBrush::UBlockBrush() : m_Team(nullptr), m_TextActor(nullptr), m_Material(nullptr)
 {
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> Mesh(BRUSH_MESH_LOCATION);
+	static ConstructorHelpers::FObjectFinder<UMaterialInterface> Material(BRUSH_MATERIAL_LOCATION);
 
 	if (Mesh.Succeeded())
 	{
 		Super::SetStaticMesh(Mesh.Object);
-		this->m_Material = Mesh.Object->GetMaterial(0);
 	}
+	this->m_Material = Material.Object;
 
 	Super::SetCollisionProfileName(TEXT("OverlapAll"));
 	Super::SetCollisionEnabled(ECollisionEnabled::QueryOnly);
@@ -113,7 +113,7 @@ void UBlockBrush::SetChainMode(const bool& enable)
 UMaterialInstanceDynamic* UBlockBrush::GetMaterialDynamic()
 {
 	UMaterialInstanceDynamic *material = Cast<UMaterialInstanceDynamic>(Super::GetMaterial(0));
-	if (material == nullptr && this->m_Material != nullptr)
+	if (material == nullptr)
 	{
 		material = UMaterialInstanceDynamic::Create(this->m_Material, this->GetOuter());
 		Super::SetMaterial(0, material);

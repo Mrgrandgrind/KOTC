@@ -5,9 +5,8 @@
 #include "Construction/Block.h"
 #include "DoorBlock.generated.h"
 
-/**
- * 
- */
+#define ID_DOOR_BLOCK FName("DoorBlock")
+
 UCLASS()
 class KING_OF_THE_CASTLE_API ADoorBlock : public ABlock
 {
@@ -18,5 +17,5 @@ public:
 
 	virtual void SetTeam(const int& team) override;
 
-	virtual FName GetNameId() override { return FName("DoorBlock"); }
+	virtual FName GetNameId() override { return ID_DOOR_BLOCK; }
 };

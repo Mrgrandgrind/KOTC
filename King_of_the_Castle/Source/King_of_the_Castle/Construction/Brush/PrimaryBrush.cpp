@@ -14,6 +14,7 @@
 
 #define DATA_DOOR_LOCATION TEXT("/Game/Blueprints/Construction/BrushData/BP_DoorBlock_Data")
 #define DATA_GOLD_LOCATION TEXT("/Game/Blueprints/Construction/BrushData/BP_GoldBlock_Data")
+#define DATA_FLAG_LOCATION TEXT("/Game/Blueprints/Construction/BrushData/BP_FlagBlock_Data")
 #define DATA_BASIC_LOCATION TEXT("/Game/Blueprints/Construction/BrushData/BP_BasicBlock_Data")
 
 UPrimaryBrush::UPrimaryBrush() : m_bValid(false), m_Child(nullptr), m_SelectedTypeIndex(0)
@@ -31,10 +32,16 @@ UPrimaryBrush::UPrimaryBrush() : m_bValid(false), m_Child(nullptr), m_SelectedTy
 		this->m_BlockDataClasses.Add(DataDoor.Class);
 	}
 
-	static ConstructorHelpers::FClassFinder<UBlockData> DataGold(DATA_GOLD_LOCATION);
-	if (DataGold.Succeeded())
+	//static ConstructorHelpers::FClassFinder<UBlockData> DataGold(DATA_GOLD_LOCATION);
+	//if (DataGold.Succeeded())
+	//{
+	//	this->m_BlockDataClasses.Add(DataGold.Class);
+	//}
+
+	static ConstructorHelpers::FClassFinder<UBlockData> DataFlag(DATA_FLAG_LOCATION);
+	if (DataFlag.Succeeded())
 	{
-		this->m_BlockDataClasses.Add(DataGold.Class);
+		this->m_BlockDataClasses.Add(DataFlag.Class);
 	}
 
 	Super::bAbsoluteRotation = true;

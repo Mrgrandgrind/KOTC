@@ -44,6 +44,18 @@ m_CombineLock(nullptr), m_CraftTimer(nullptr), m_ActiveRecipe(nullptr)
 	//this->m_Recipes.Add({ 3.0f, EBlockType::Construction, EBlockType::Golden, AInfinityBlock::StaticClass() });
 }
 
+void USecondaryBrush::BeginPlay()
+{
+	Super::BeginPlay();
+
+	// Set material for brush
+	UMaterialInstanceDynamic *material = Super::GetMaterialDynamic();
+	if (material != nullptr)
+	{
+		material->SetVectorParameterValue(BRUSH_COLOR_NAME, BRUSH_DESTROY_COLOR);
+	}
+}
+
 void USecondaryBrush::SetMode(const EModifyMode& mode)
 {
 	if (this->m_Mode == mode)

@@ -39,6 +39,8 @@ class KING_OF_THE_CASTLE_API USecondaryBrush : public UBlockBrush
 public:
 	USecondaryBrush();
 
+	virtual void BeginPlay() override;
+
 	// Set the mode of the modify brush
 	UFUNCTION(BlueprintCallable, Category = "Mode")
 	void SetMode(const EModifyMode& mode);

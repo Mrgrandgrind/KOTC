@@ -5,9 +5,8 @@
 #include "Construction/Block.h"
 #include "BasicBlock.generated.h"
 
-/**
- * 
- */
+#define ID_BASIC_BLOCK FName("BasicBlock")
+
 UCLASS()
 class KING_OF_THE_CASTLE_API ABasicBlock : public ABlock
 {
@@ -20,5 +19,5 @@ public:
 
 	virtual void SetTeam(const int& team) override;
 
-	virtual FName GetNameId() override { return FName("BasicBlock"); }
+	virtual FName GetNameId() override { return ID_BASIC_BLOCK; }
 };

@@ -15,7 +15,7 @@
 
 #define OWNERSHIP_DURATION 3.0f // block is owned by owner for 3 seconds
 
-ABlockEntity::ABlockEntity() : m_bRestrictedPickup(true)
+ABlockEntity::ABlockEntity() : m_bIgnoreOwner(false), m_bRestrictedPickup(true)
 {
 	FScriptDelegate sdb;
 	sdb.BindUFunction(this, "BeginOverlap");
@@ -49,6 +49,10 @@ void ABlockEntity::SetTo(ABlock *block)
 
 bool ABlockEntity::CanBePickedUp(APlayerCharacter *character) const
 {
+	if(character->IsPlayerStunned() || (this->m_bIgnoreOwner && this->m_Owner == character))
+	{
+		return false;
+	}
 	UPrimaryBrush *brush = character->GetPrimaryBrush();
 	int index = brush->GetIndexOf(this->m_ParentBlockNameId);
 	if (index == -1)
@@ -154,7 +158,17 @@ void ABlockEntity::Tick(float delta)
 	}
 }
 
-TArray<ABlockEntity*> ABlockEntity::SpawnBlockEntity(ABlock *block, AActor *source, const bool& restrictPickup)
+TArray<ABlockEntity*> ABlockEntity::SpawnBlockEntity(ABlock* block, AActor* source, const bool& restrictPickup)
+{
+	UWorld *world = block->GetWorld();
+	if (world == nullptr && source != nullptr)
+	{
+		world = source->GetWorld();
+	}
+	return ABlockEntity::SpawnBlockEntity(block, world, source, restrictPickup);
+}
+
+TArray<ABlockEntity*> ABlockEntity::SpawnBlockEntity(ABlock *block, UWorld* world, AActor *source, const bool& restrictPickup)
 {
 	TArray<ABlockEntity*> blocks;
 
@@ -165,7 +179,7 @@ TArray<ABlockEntity*> ABlockEntity::SpawnBlockEntity(ABlock *block, AActor *sour
 	}
 	for (int i = 0; i < recipe.Num(); i++)
 	{
-		ABlockEntity *entity = (ABlockEntity*)ABlock::SpawnBlock(block->GetWorld(), ABlockEntity::StaticClass(), block->GetTeam());
+		ABlockEntity *entity = (ABlockEntity*)ABlock::SpawnBlock(world, ABlockEntity::StaticClass(), block->GetTeam());
 		if (entity != nullptr)
 		{
 			entity->SetBlockOwner(source);

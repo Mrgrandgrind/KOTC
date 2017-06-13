@@ -20,6 +20,12 @@ public:
 	// Called every frame
 	virtual void Tick(float delta) override;
 
+	// Drop x amount of blocks from primary brush
+	virtual void DropBlock();
+
+	// Drop x amount of blocks from primary brush
+	virtual void DropBlock(class UBlockData *data, int count);
+
 	// Return the player index (e.g. 0 for player1, 1 for player2, etc..)
 	UFUNCTION(BlueprintPure, Category = "Index")
 	int GetPlayerIndex() const;
@@ -101,6 +107,8 @@ public:
 
 	FORCEINLINE void SetBuildArea(class ABuildArea *area) { this->m_BuildArea = area; }
 
+	FORCEINLINE const bool& IsPlayerStunned() const { return this->IsStunned; }
+
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 
@@ -176,10 +184,11 @@ protected:
 	float m_ChargeTimer;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Base Damage"))
-		int m_ChargeBaseDamage;
+	int m_ChargeBaseDamage;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Active"))
-		bool m_ChargeActive;
+	bool m_ChargeActive;
+
 private:
 	// Result of last trace. The trace happens every tick when building mode is enabled.
 	FHitResult m_TraceResult; //the result of the last trace

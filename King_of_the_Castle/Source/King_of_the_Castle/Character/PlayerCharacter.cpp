@@ -6,6 +6,8 @@
 #include "../Construction/Block.h"
 #include "../Construction/BlockData.h"
 #include "../Construction/BuildArea.h"
+#include "../Construction/BlockEntity.h"
+#include "../Construction/Blocks/FlagBlock.h"
 #include "../Construction/Brush/PrimaryBrush.h"
 #include "../Construction/Brush/SecondaryBrush.h"
 #include "../Gamemode/BaseGameMode.h"
@@ -16,6 +18,10 @@
 
 #define TRACE_SOCKET TEXT("Head") // The socket (of the player) which the trace originates from
 #define REACH_DISTANCE (150.0f * KOTC_CONSTRUCTION_REACH_DISTANCE) // The reach distance of the trace (roughly 4 blocks)
+
+#define DROP_STRENGTH_MAX 750.0f
+#define DROP_STRENGTH_MIN 900.0f
+#define DROP_ROTATION_OFFSET 100.0f //degrees
 
 // Sets default values
 APlayerCharacter::APlayerCharacter() : m_Team(-1), m_PressTimer(0.0f), m_bPressed(false)
@@ -275,6 +281,37 @@ void APlayerCharacter::MoveRight(float value)
 	}
 }
 
+void APlayerCharacter::DropBlock()
+{
+	this->DropBlock(this->m_PrimaryBrush->GetBlockData(this->m_PrimaryBrush->GetSelectedIndex()), 1);
+}
+
+void APlayerCharacter::DropBlock(UBlockData* data, int count)
+{
+	if(data == nullptr || count <= 0)
+	{
+		return;
+	}
+	count = FMath::Min(count, data->GetCount());
+	// Drop count amount of blocks (limited to count of data - will not drop a block if it doesn't have it)
+	for(int i = 0; i < count; i++)
+	{
+		for(ABlockEntity *next : ABlockEntity::SpawnBlockEntity((ABlock*)data->GetClassType()->GetDefaultObject(), Super::GetWorld(), nullptr, true))
+		{
+			next->SetBlockOwner(this);
+			next->SetIgnoreOwner(true);
+
+			next->SetActorLocation(Super::GetActorLocation());
+			next->SetActorRotation(Super::GetActorRotation());
+			
+			FVector rotation = Super::GetActorRotation().Vector();
+			((UPrimitiveComponent*)next->GetRootComponent())->AddImpulse(rotation
+				* FMath::FRandRange(DROP_STRENGTH_MIN, DROP_STRENGTH_MAX));
+		}
+	}
+	data->SetCount(this->m_PrimaryBrush, data->GetCount() - count);
+}
+
 void APlayerCharacter::MeleeAttack() 
 {
 	if (!IsAttacking) 
@@ -389,6 +426,11 @@ float APlayerCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const
 		FTimerHandle ThisHandle;
 		if (Health <= 0) 
 		{
+			UBlockData *data = this->m_PrimaryBrush->GetBlockData(this->m_PrimaryBrush->GetIndexOf(ID_FLAG_BLOCK));
+			if(data != nullptr && data->GetCount() > 0)
+			{
+				this->DropBlock(data, data->GetCount());
+			}
 
 			IsStunned = true;
 			GetWorldTimerManager().SetTimer(ThisHandle, this, &APlayerCharacter::EndStun, StunDuration);
@@ -407,6 +449,8 @@ void APlayerCharacter::EndStun()
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *InputComponent)
 {
 	Super::SetupPlayerInputComponent(InputComponent);
+
+	InputComponent->BindAction("Drop Block", IE_Pressed, this, &APlayerCharacter::DropBlock);
 
 	InputComponent->BindAxis("MoveForward", this, &APlayerCharacter::MoveForward);
 	InputComponent->BindAxis("MoveRight", this, &APlayerCharacter::MoveRight);

@@ -5,9 +5,8 @@
 #include "Construction/Block.h"
 #include "GoldBlock.generated.h"
 
-/**
- * 
- */
+#define ID_GOLD_BLOCK FName("GoldBlock")
+
 UCLASS()
 class KING_OF_THE_CASTLE_API AGoldBlock : public ABlock
 {
@@ -16,5 +15,5 @@ class KING_OF_THE_CASTLE_API AGoldBlock : public ABlock
 public:
 	AGoldBlock();
 
-	virtual FName GetNameId() override { return FName("GoldBlock"); }
+	virtual FName GetNameId() override { return ID_GOLD_BLOCK; }
 };
