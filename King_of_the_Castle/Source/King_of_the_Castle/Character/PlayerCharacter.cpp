@@ -129,7 +129,11 @@ void APlayerCharacter::Tick(float delta)
 	}
 	if (m_ChargeMove) {
 		if (this->GetActorLocation() != m_ChargeMoveTo) {
-			this->SetActorLocation(FMath::VInterpTo(this->GetActorLocation(), m_ChargeMoveTo, delta, m_ChargeSpeed), true);
+			/*if (!this->SetActorLocation(FMath::VInterpTo(this->GetActorLocation(), m_ChargeMoveTo, delta, m_ChargeSpeed), false)) {
+				ChargePunchAttack();
+			}*/
+			const FRotator yaw(0.0f, Super::Controller->GetControlRotation().Yaw, 0.0f);
+			Super::AddMovementInput(FRotationMatrix(yaw).GetUnitAxis(EAxis::X), m_ChargeMove);
 		}
 		else {
 			ChargePunchAttack();
@@ -396,16 +400,21 @@ float movedist;
 void APlayerCharacter::ChargePunchAttack() {
 	m_ChargeMove = false;
 	float damage;
-
+	bool stun;
+	float knockback;
 	if (m_ChargeTimer > 1) {
 		if (m_ChargeTimer <= 2) {
 			damage = m_ChargeBaseDamage * 0.25;
+			knockback = 0;
+			stun = false;
 		}
 		else if (m_ChargeTimer <= 3) {
 			damage = m_ChargeBaseDamage *0.5;
+			knockback = PlayerKnockback / 2;
 		}
 		else {
 			damage = m_ChargeBaseDamage;
+			knockback = PlayerKnockback;
 		}
 	}
 	else {
@@ -439,7 +448,7 @@ void APlayerCharacter::ChargePunchAttack() {
 									auto loc1 = Enemies->GetActorLocation();
 									auto loc2 = this->GetActorLocation();
 									FVector LaunchDir = (loc1 - loc2);
-									FVector Launch = (LaunchDir.GetSafeNormal() + FVector(0, 0, 0.2f))*PlayerKnockback;
+									FVector Launch = (LaunchDir.GetSafeNormal() + FVector(0, 0, 0.2f))*knockback;
 									Enemy->LaunchCharacter(Launch, 0, 0);
 								}
 							}
