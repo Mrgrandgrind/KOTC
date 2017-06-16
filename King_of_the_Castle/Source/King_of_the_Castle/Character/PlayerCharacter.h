@@ -95,6 +95,9 @@ public:
 	void PunchChargeUp();
 
 	UFUNCTION(BlueprintCallable, Category = "Combat")
+	void ChargePunchMove();
+
+	UFUNCTION(BlueprintCallable, Category = "Combat")
 	void ChargePunchAttack();
 
 	// Whether or not the player is in build mode
@@ -189,6 +192,17 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Active"))
 	bool m_ChargeActive;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Punch Moving"))
+	bool m_ChargeMove;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Punch Target"))
+	FVector m_ChargeMoveTo;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Punch Speed"))
+	float m_ChargeSpeed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Punch Distance"))
+	float m_ChargeDist;
 private:
 	// Result of last trace. The trace happens every tick when building mode is enabled.
 	FHitResult m_TraceResult; //the result of the last trace

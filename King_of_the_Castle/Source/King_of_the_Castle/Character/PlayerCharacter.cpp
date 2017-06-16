@@ -127,6 +127,14 @@ void APlayerCharacter::Tick(float delta)
 	if (m_ChargeActive) {
 		m_ChargeTimer += delta;
 	}
+	if (m_ChargeMove) {
+		if (this->GetActorLocation() != m_ChargeMoveTo) {
+			this->SetActorLocation(FMath::VInterpTo(this->GetActorLocation(), m_ChargeMoveTo, delta, m_ChargeSpeed), true);
+		}
+		else {
+			ChargePunchAttack();
+		}
+	}
 	if (this->m_BuildArea != nullptr && this->m_bBuildingEnabled && this->m_BuildArea->GetTeam() == this->m_Team)
 	{
 		FVector cameraLoc = this->m_Camera->GetComponentLocation(), forward = this->m_Camera->GetForwardVector();
@@ -358,9 +366,37 @@ void APlayerCharacter::MeleeAttack()
 void APlayerCharacter::PunchChargeUp() {
 	m_ChargeActive = true;
 }
+
+void APlayerCharacter::ChargePunchMove() {
+m_ChargeActive = false;
+float movedist;
+	if (m_ChargeTimer > 1) {
+		if (m_ChargeTimer <= 2) {
+			movedist = m_ChargeDist;
+		}
+		else if (m_ChargeTimer <= 3) {
+			movedist = m_ChargeDist*2;
+		}
+		else {
+			movedist = m_ChargeDist*3;
+		}
+	}
+	else {
+		movedist = 0;
+	}
+	if (movedist != 0) {
+		m_ChargeMoveTo = this->GetActorLocation() + (this->GetActorForwardVector()*movedist);
+		m_ChargeMove = true;
+	}
+	else {
+		ChargePunchAttack();
+	}
+}
+
 void APlayerCharacter::ChargePunchAttack() {
-	m_ChargeActive = false;
+	m_ChargeMove = false;
 	float damage;
+
 	if (m_ChargeTimer > 1) {
 		if (m_ChargeTimer <= 2) {
 			damage = m_ChargeBaseDamage * 0.25;
@@ -382,6 +418,7 @@ void APlayerCharacter::ChargePunchAttack() {
 			if (!IsStunned)
 			{
 				IsAttacking = true;
+				const FRotator yaw(0.0f, GetActorRotation().Yaw, 0.0f);
 				FDamageEvent ThisDamage;
 				TArray<AActor*> EnemyList;
 				MeleeCapsule->GetOverlappingActors(EnemyList, TSubclassOf<APlayerCharacter>());
@@ -397,6 +434,7 @@ void APlayerCharacter::ChargePunchAttack() {
 							{
 								if (Enemy->Health > 0)
 								{
+									
 									Enemy->TakeDamage(damage, ThisDamage, this->GetController(), this);
 									auto loc1 = Enemies->GetActorLocation();
 									auto loc2 = this->GetActorLocation();
@@ -459,7 +497,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *InputComponent
 	InputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
 	InputComponent->BindAction("Charge Punch", IE_Pressed, this, &APlayerCharacter::PunchChargeUp);
-	InputComponent->BindAction("Charge Punch", IE_Released, this, &APlayerCharacter::ChargePunchAttack);
+	InputComponent->BindAction("Charge Punch", IE_Released, this, &APlayerCharacter::ChargePunchMove);
 
 	InputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
 	InputComponent->BindAxis("TurnRate", this, &APlayerCharacter::TurnAtRate);
