@@ -1,8 +1,10 @@
 #include "King_of_the_Castle.h"
 #include "BaseGameMode.h"
 
+#include "../HUD/GameHUD.h"
 #include "../Event/LowGravityEvent.h"
 #include "../Event/FloorIsLavaEvent.h"
+#include "../Character/DefaultPlayerController.h"
 
 #define DEFAULT_GAME_DURATION 10.0f * 60.0f //seconds
 
@@ -13,6 +15,8 @@ ABaseGameMode::ABaseGameMode() : m_Timer(0.0f), m_GameDuration(DEFAULT_GAME_DURA
 	{
 		Super::DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
+	Super::HUDClass = AGameHUD::StaticClass();
+	Super::PlayerControllerClass = ADefaultPlayerController::StaticClass();
 	
 	Super::PrimaryActorTick.bCanEverTick = true;
 

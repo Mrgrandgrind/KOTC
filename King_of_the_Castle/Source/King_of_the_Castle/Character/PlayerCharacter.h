@@ -62,6 +62,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Event")
 	void InputMouseRightUpEvent();
 
+	UFUNCTION(BlueprintCallable, Category = "Event")
+	void InputShowBuildWheel();
+
+	UFUNCTION(BlueprintCallable, Category = "Event")
+	void InputHideBuildWheel();
+
 	// Toggle the building mechanics
 	UFUNCTION(BlueprintCallable, Category = "Build")
 	void SetBuildModeEnabled(const bool& enable);
@@ -114,6 +120,10 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
+
+#if WITH_EDITOR
+	void PostEditChangeProperty(struct FPropertyChangedEvent& event) override;
+#endif
 
 	//the melee collision capsule
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true", DisplayName = "Melee Attack Capsule"))

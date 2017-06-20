@@ -5,6 +5,8 @@
 
 #include "EngineMinimal.h"
 
+#define PI2 (PI * 2.0f)
+
 // Configuration //
 #define KOTC_EVENTS_ENABLED true	// Whether or not events should be triggered (does not disable ability to manually trigger events)
 
