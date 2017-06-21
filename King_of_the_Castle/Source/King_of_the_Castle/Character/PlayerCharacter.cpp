@@ -276,21 +276,25 @@ void APlayerCharacter::LookUpAtRate(float rate)
 
 void APlayerCharacter::MoveForward(float value)
 {
-	if (Super::Controller != nullptr && value != 0.0f)
-	{
-		// find out which way is forward and add the movement
-		const FRotator yaw(0.0f, Super::Controller->GetControlRotation().Yaw, 0.0f);
-		Super::AddMovementInput(FRotationMatrix(yaw).GetUnitAxis(EAxis::X), value);
+	if (!IsStunned) {
+		if (Super::Controller != nullptr && value != 0.0f)
+		{
+			// find out which way is forward and add the movement
+			const FRotator yaw(0.0f, Super::Controller->GetControlRotation().Yaw, 0.0f);
+			Super::AddMovementInput(FRotationMatrix(yaw).GetUnitAxis(EAxis::X), value);
+		}
 	}
 }
 
 void APlayerCharacter::MoveRight(float value)
 {
-	if (Super::Controller != nullptr && value != 0.0f)
-	{
-		// find out which way is right and add the movement
-		const FRotator yaw(0.0f, Super::Controller->GetControlRotation().Yaw, 0.0f);
-		AddMovementInput(FRotationMatrix(yaw).GetUnitAxis(EAxis::Y), value);
+	if (!IsStunned) {
+		if (Super::Controller != nullptr && value != 0.0f)
+		{
+			// find out which way is right and add the movement
+			const FRotator yaw(0.0f, Super::Controller->GetControlRotation().Yaw, 0.0f);
+			AddMovementInput(FRotationMatrix(yaw).GetUnitAxis(EAxis::Y), value);
+		}
 	}
 }
 
@@ -369,7 +373,9 @@ void APlayerCharacter::MeleeAttack()
 }
 
 void APlayerCharacter::PunchChargeUp() {
-	m_ChargeActive = true;
+	if (!IsStunned) {
+		m_ChargeActive = true;
+	}
 }
 
 void APlayerCharacter::ChargePunchMove() {
@@ -412,10 +418,12 @@ void APlayerCharacter::ChargePunchAttack() {
 		else if (m_ChargeTimer <= 3) {
 			damage = m_ChargeBaseDamage *0.5;
 			knockback = PlayerKnockback / 2;
+			stun = false;
 		}
 		else {
 			damage = m_ChargeBaseDamage;
 			knockback = PlayerKnockback;
+			stun = true;
 		}
 	}
 	else {
@@ -451,6 +459,9 @@ void APlayerCharacter::ChargePunchAttack() {
 									FVector LaunchDir = (loc1 - loc2);
 									FVector Launch = (LaunchDir.GetSafeNormal() + FVector(0, 0, 0.2f))*knockback;
 									Enemy->LaunchCharacter(Launch, 0, 0);
+									if (stun == true) {
+										Enemy->Stun(m_ChargeStun);
+									}
 								}
 							}
 						}
@@ -486,7 +497,11 @@ float APlayerCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const
 	}
 	return DamageAmount;
 }
-
+void APlayerCharacter::Stun(float StunLength) {
+	FTimerHandle ThisHandle;
+	IsStunned = true;
+	GetWorldTimerManager().SetTimer(ThisHandle, this, &APlayerCharacter::EndStun, StunLength);
+}
 void APlayerCharacter::EndStun() 
 {
 	IsStunned = false;
