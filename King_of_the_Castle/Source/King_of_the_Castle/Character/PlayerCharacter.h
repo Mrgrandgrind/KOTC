@@ -213,9 +213,13 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Punch Distance"))
 	float m_ChargeDist;
+
 private:
 	// Result of last trace. The trace happens every tick when building mode is enabled.
 	FHitResult m_TraceResult; //the result of the last trace
+
+	// Stop the player from moving
+	bool m_bBlockMovement;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Team", meta = (AllowPrivateAccess = "true", DisplayName = "Team"))
 	int m_Team;

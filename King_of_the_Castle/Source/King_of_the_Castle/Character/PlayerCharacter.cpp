@@ -137,6 +137,24 @@ void APlayerCharacter::Tick(float delta)
 			ChargePunchAttack();
 		}
 	}
+	if (Super::GetController() != nullptr)
+	{
+		// Update building wheel
+		AGameHUD *hud = Cast<AGameHUD>(((APlayerController*)Super::GetController())->GetHUD());
+		if (hud != nullptr && hud->GetBuildWheel()->IsVisible())
+		{
+			float x = Super::InputComponent->GetAxisValue(TEXT("LeftThumbX")),
+				y = Super::InputComponent->GetAxisValue(TEXT("LeftThumbY"));
+			if(x == 0.0f && y == 0.0f)
+			{
+				hud->GetBuildWheel()->SetSelected(-1);
+			}
+			else
+			{
+				hud->GetBuildWheel()->SetSelected(FMath::Atan2(y, x));
+			}
+		}
+	}
 	if (this->m_BuildArea != nullptr && this->m_bBuildingEnabled && this->m_BuildArea->GetTeam() == this->m_Team)
 	{
 		FVector cameraLoc = this->m_Camera->GetComponentLocation(), forward = this->m_Camera->GetForwardVector();
@@ -201,11 +219,14 @@ void APlayerCharacter::SetTeam(const int& team)
 {
 	this->m_Team = team;
 	
-	AGameHUD *hud = Cast<AGameHUD>(((APlayerController*)Super::GetController())->GetHUD());
-	if (hud != nullptr)
+	if(Super::GetController() != nullptr)
 	{
-		// Update the border color of build wheel
-		hud->GetBuildWheel()->SetTeam(team);
+		AGameHUD *hud = Cast<AGameHUD>(((APlayerController*)Super::GetController())->GetHUD());
+		if (hud != nullptr)
+		{
+			// Update the border color of build wheel
+			hud->GetBuildWheel()->SetTeam(team);
+		}
 	}
 	Super::GetCapsuleComponent()->SetCollisionProfileName(team <= 1
 		? TEXT("PawnTeam1") : team >= 2 ? TEXT("PawnTeam2") : TEXT("Pawn"));
@@ -273,6 +294,7 @@ void APlayerCharacter::InputShowBuildWheel()
 	{
 		hud->GetBuildWheel()->SetVisible(true);
 	}
+	this->m_bBlockMovement = true;
 }
 
 void APlayerCharacter::InputHideBuildWheel()
@@ -282,6 +304,7 @@ void APlayerCharacter::InputHideBuildWheel()
 	{
 		hud->GetBuildWheel()->SetVisible(false);
 	}
+	this->m_bBlockMovement = false;
 }
 
 void APlayerCharacter::TurnAtRate(float rate)
@@ -296,7 +319,7 @@ void APlayerCharacter::LookUpAtRate(float rate)
 
 void APlayerCharacter::MoveForward(float value)
 {
-	if (Super::Controller != nullptr && value != 0.0f)
+	if (Super::Controller != nullptr && value != 0.0f && !this->m_bBlockMovement)
 	{
 		// find out which way is forward and add the movement
 		const FRotator yaw(0.0f, Super::Controller->GetControlRotation().Yaw, 0.0f);
@@ -306,7 +329,7 @@ void APlayerCharacter::MoveForward(float value)
 
 void APlayerCharacter::MoveRight(float value)
 {
-	if (Super::Controller != nullptr && value != 0.0f)
+	if (Super::Controller != nullptr && value != 0.0f && !this->m_bBlockMovement)
 	{
 		// find out which way is right and add the movement
 		const FRotator yaw(0.0f, Super::Controller->GetControlRotation().Yaw, 0.0f);
@@ -512,6 +535,9 @@ void APlayerCharacter::EndStun()
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *input)
 {
 	Super::SetupPlayerInputComponent(input);
+
+	input->BindAxis("LeftThumbX");
+	input->BindAxis("LeftThumbY");
 
 	input->BindAction("Drop Block", IE_Pressed, this, &APlayerCharacter::DropBlock);
 

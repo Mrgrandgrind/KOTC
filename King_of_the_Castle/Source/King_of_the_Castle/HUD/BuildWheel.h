@@ -7,7 +7,15 @@
 
 struct KING_OF_THE_CASTLE_API WheelMenuSegment
 {
-	FString m_Name;
+	FString name;
+};
+
+struct KING_OF_THE_CASTLE_API WheelSelectData
+{
+	bool updated = false;
+
+	int index = -1;
+	float theta_begin, theta_end;
 };
 
 class KING_OF_THE_CASTLE_API WheelMenu
@@ -35,13 +43,21 @@ public:
 
 	void SetTeam(const int& team);
 
-	void Render(class AHUD *display, FVector2D& screen) const;
+	void Render(class AHUD *display, FVector2D& screen);
+
+	void SetSelected(float radians);
+
+	FORCEINLINE void SetSelected(const int& index) { this->m_SelectData.index = index; this->m_SelectData.updated = false; }
 
 	FORCEINLINE const bool& IsVisible() const { return this->m_bIsVisible; }
 
 	FORCEINLINE void SetVisible(const bool& visible) { this->m_bIsVisible = visible; }
+
+	FORCEINLINE bool IsMenuValid() const { return this->m_CurrentMenu != nullptr && this->m_CurrentMenu->m_Segments.Num() != 0;  }
 	
 protected:
+	void UpdateSelectMaterial() const;
+
 	bool m_bIsVisible;
 
 	FLinearColor m_PrimaryColor, m_SecondaryColor;
@@ -50,9 +66,14 @@ private:
 	WheelMenu m_RootMenu;
 	WheelMenu *m_CurrentMenu;
 
+	WheelSelectData m_SelectData;
+
 	UPROPERTY()
 	UMaterialInterface *m_WheelMaterial;
 
 	UPROPERTY()
 	UMaterialInterface *m_InnerWheelMaterial;
+
+	UPROPERTY()
+	UMaterialInterface *m_SelectMaterial;
 };
