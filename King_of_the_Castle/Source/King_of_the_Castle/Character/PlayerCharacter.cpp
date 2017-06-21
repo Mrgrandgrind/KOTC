@@ -128,16 +128,17 @@ void APlayerCharacter::Tick(float delta)
 		m_ChargeTimer += delta;
 	}
 	if (m_ChargeMove) {
-		if (this->GetActorLocation() != m_ChargeMoveTo) {
-			/*if (!this->SetActorLocation(FMath::VInterpTo(this->GetActorLocation(), m_ChargeMoveTo, delta, m_ChargeSpeed), false)) {
-				ChargePunchAttack();
-			}*/
-			const FRotator yaw(0.0f, Super::Controller->GetControlRotation().Yaw, 0.0f);
-			Super::AddMovementInput(FRotationMatrix(yaw).GetUnitAxis(EAxis::X), m_ChargeMove);
-		}
-		else {
-			ChargePunchAttack();
-		}
+					if (this->GetActorLocation() != m_ChargeMoveTo) {
+						if (!this->SetActorLocation(FMath::VInterpTo(this->GetActorLocation(), m_ChargeMoveTo, delta, m_ChargeSpeed), true)) {
+							ChargePunchAttack();
+						}
+
+						/*const FRotator yaw(0.0f, Super::Controller->GetControlRotation().Yaw, 0.0f);
+						Super::AddMovementInput(FRotationMatrix(yaw).GetUnitAxis(EAxis::X), m_ChargeMove);*/
+					}
+					else {
+						ChargePunchAttack();
+					}
 	}
 	if (this->m_BuildArea != nullptr && this->m_bBuildingEnabled && this->m_BuildArea->GetTeam() == this->m_Team)
 	{
