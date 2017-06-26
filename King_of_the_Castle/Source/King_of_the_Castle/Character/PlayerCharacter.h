@@ -42,11 +42,14 @@ public:
 	UFUNCTION()
 	void LookUpAtRate(float rate);
 
+	UFUNCTION(BlueprintCallable, Category = "Event")
+	void Jump() override;
+
 	// Called whenever the player moved up a block type with their brush
 	UFUNCTION(BlueprintCallable, Category = "Event")
 	void InputBlockTypeUpEvent();
 
-	// Called whenever the player moves down a block type with their brush`
+	// Called whenever the player moves down a block type with their brush
 	UFUNCTION(BlueprintCallable, Category = "Event")
 	void InputBlockTypeDownEvent();
 
@@ -67,6 +70,12 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Event")
 	void InputHideBuildWheel();
+
+	UFUNCTION(BlueprintCallable, Category = "Event")
+	void InputBuildWheelBack();
+
+	UFUNCTION(BlueprintCallable, Category = "Event")
+	void InputBuildWheelSelect();
 
 	// Toggle the building mechanics
 	UFUNCTION(BlueprintCallable, Category = "Build")
@@ -106,6 +115,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Combat")
 	void ChargePunchAttack();
 
+	// Get the build wheel
+	class UBuildWheel* GetBuildWheel() const;
+
 	// Whether or not the player is in build mode
 	FORCEINLINE bool IsBuildModeEnabled() const { return this->m_bBuildingEnabled; }
 
@@ -133,7 +145,7 @@ protected:
 	virtual UClass* GetDefaultClass() const { return APlayerCharacter::StaticClass(); }
 
 	UFUNCTION()
-	void ToggleBuildMode() { this->SetBuildModeEnabled(!this->m_bBuildingEnabled); }
+	void ToggleBuildMode() { if(!this->m_bBlockMovement) this->SetBuildModeEnabled(!this->m_bBuildingEnabled); }
 
 	// Follow camera 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (DisplayName = "Camera"))

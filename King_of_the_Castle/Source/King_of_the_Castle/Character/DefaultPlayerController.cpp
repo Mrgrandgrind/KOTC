@@ -3,6 +3,8 @@
 #include "King_of_the_Castle.h"
 #include "DefaultPlayerController.h"
 
+#include "HUD/GameHUD.h"
+
 void ADefaultPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
