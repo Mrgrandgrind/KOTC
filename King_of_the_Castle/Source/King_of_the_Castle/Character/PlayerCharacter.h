@@ -42,11 +42,14 @@ public:
 	UFUNCTION()
 	void LookUpAtRate(float rate);
 
+	UFUNCTION(BlueprintCallable, Category = "Event")
+	void Jump() override;
+
 	// Called whenever the player moved up a block type with their brush
 	UFUNCTION(BlueprintCallable, Category = "Event")
 	void InputBlockTypeUpEvent();
 
-	// Called whenever the player moves down a block type with their brush`
+	// Called whenever the player moves down a block type with their brush
 	UFUNCTION(BlueprintCallable, Category = "Event")
 	void InputBlockTypeDownEvent();
 
@@ -61,6 +64,18 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Event")
 	void InputMouseRightUpEvent();
+
+	UFUNCTION(BlueprintCallable, Category = "Event")
+	void InputShowBuildWheel();
+
+	UFUNCTION(BlueprintCallable, Category = "Event")
+	void InputHideBuildWheel();
+
+	UFUNCTION(BlueprintCallable, Category = "Event")
+	void InputBuildWheelBack();
+
+	UFUNCTION(BlueprintCallable, Category = "Event")
+	void InputBuildWheelSelect();
 
 	// Toggle the building mechanics
 	UFUNCTION(BlueprintCallable, Category = "Build")
@@ -101,16 +116,19 @@ public:
 	void ChargePunchAttack();
 
 	UFUNCTION(BlueprintCallable, Category = "Combat")
-		void Stun(float StunLength);
+	void Stun(float StunLength);
 
 	UFUNCTION(BlueprintCallable, Category = "Player Stats")
-		void ToggleDodge();
+	void ToggleDodge();
 
 	UFUNCTION(BlueprintCallable, Category = "Player Stats")
-		void ToggleRush();
+	void ToggleRush();
 
 	UFUNCTION(BlueprintCallable, Category = "Player Stats")
-		void Dodge(float x, float y);
+	void Dodge(float x, float y);
+		
+	// Get the build wheel
+	class UBuildWheel* GetBuildWheel() const;
 
 	// Whether or not the player is in build mode
 	FORCEINLINE bool IsBuildModeEnabled() const { return this->m_bBuildingEnabled; }
@@ -127,6 +145,10 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 
+#if WITH_EDITOR
+	void PostEditChangeProperty(struct FPropertyChangedEvent& event) override;
+#endif
+
 	//the melee collision capsule
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true", DisplayName = "Melee Attack Capsule"))
 	UCapsuleComponent* MeleeCapsule;
@@ -135,7 +157,7 @@ protected:
 	virtual UClass* GetDefaultClass() const { return APlayerCharacter::StaticClass(); }
 
 	UFUNCTION()
-	void ToggleBuildMode() { this->SetBuildModeEnabled(!this->m_bBuildingEnabled); }
+	void ToggleBuildMode() { if(!this->m_bBlockMovement) this->SetBuildModeEnabled(!this->m_bBuildingEnabled); }
 
 	// Follow camera 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (DisplayName = "Camera"))
@@ -217,44 +239,47 @@ protected:
 	float m_ChargeDist;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Charge Punch", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Punch Stun Duration"))
-		float m_ChargeStun;
+	float m_ChargeStun;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dodge", meta = (AllowPrivateAccess = "true", DisplayName = "Dodge Toggle"))
-		bool m_DodgeTrigger;
+	bool m_DodgeTrigger;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dodge", meta = (AllowPrivateAccess = "true", DisplayName = "Dodge Status"))
-		bool m_Dodging;
+	bool m_Dodging;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dodge", meta = (AllowPrivateAccess = "true", DisplayName = "Dodge Distance"))
-		float m_DodgeDist;
+	float m_DodgeDist;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dodge", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Punch Target"))
-		FVector m_DodgeTo;
+	FVector m_DodgeTo;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dodge", meta = (AllowPrivateAccess = "true", DisplayName = "Dodge Speed"))
-		float m_DodgeSpeed;
+	float m_DodgeSpeed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rush", meta = (AllowPrivateAccess = "true", DisplayName = "Rush Speed"))
-		float m_RushSpeed;
+	float m_RushSpeed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rush", meta = (AllowPrivateAccess = "true", DisplayName = "Rush Status"))
-		bool m_Rushing;
+	bool m_Rushing;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rush", meta = (AllowPrivateAccess = "true", DisplayName = "Rush Cost"))
-		float m_RushCost;
+	float m_RushCost;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rush", meta = (AllowPrivateAccess = "true", DisplayName = "Rush Knockback"))
-		float m_RushKnockback;
+	float m_RushKnockback;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Run Speed"))
-		float m_RunSpeed;
+	float m_RunSpeed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Stamina Regen"))
-		float m_StamRegen;
+	float m_StamRegen;
 
 private:
 	// Result of last trace. The trace happens every tick when building mode is enabled.
 	FHitResult m_TraceResult; //the result of the last trace
+
+	// Stop the player from moving
+	bool m_bBlockMovement;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Team", meta = (AllowPrivateAccess = "true", DisplayName = "Team"))
 	int m_Team;

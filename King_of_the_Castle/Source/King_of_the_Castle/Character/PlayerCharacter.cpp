@@ -3,6 +3,7 @@
 #include "King_of_the_Castle.h"
 #include "PlayerCharacter.h"
 
+#include "../HUD/GameHUD.h"
 #include "../Construction/Block.h"
 #include "../Construction/BlockData.h"
 #include "../Construction/BuildArea.h"
@@ -26,10 +27,6 @@
 // Sets default values
 APlayerCharacter::APlayerCharacter() : m_Team(-1), m_PressTimer(0.0f), m_bPressed(false)
 {
-	this->MeleeCapsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("MeleeComponent"));
-	this->MeleeCapsule->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	this->MeleeCapsule->SetupAttachment(RootComponent);
-
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	Super::PrimaryActorTick.bCanEverTick = true;
 
@@ -57,6 +54,11 @@ APlayerCharacter::APlayerCharacter() : m_Team(-1), m_PressTimer(0.0f), m_bPresse
 	this->m_Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	this->m_Camera->SetupAttachment(this->m_CameraBoom, USpringArmComponent::SocketName);
 	this->m_Camera->bUsePawnControlRotation = false;
+
+	// Create the melee capsule
+	this->MeleeCapsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("MeleeComponent"));
+	this->MeleeCapsule->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	this->MeleeCapsule->SetupAttachment(RootComponent);
 
 	// Create the primary brush
 	this->m_PrimaryBrush = UObject::CreateDefaultSubobject<UPrimaryBrush>(TEXT("PrimaryBrush"));
@@ -166,6 +168,24 @@ void APlayerCharacter::Tick(float delta)
 			GetCharacterMovement()->MaxWalkSpeed = m_RunSpeed;
 		}
 	}
+	if (Super::GetController() != nullptr)
+	{
+		// Update building wheel
+		AGameHUD *hud = Cast<AGameHUD>(((APlayerController*)Super::GetController())->GetHUD());
+		if (hud != nullptr && hud->GetBuildWheel()->IsVisible())
+		{
+			float x = Super::InputComponent->GetAxisValue(TEXT("LeftThumbX")),
+				y = Super::InputComponent->GetAxisValue(TEXT("LeftThumbY"));
+			if(x == 0.0f && y == 0.0f)
+			{
+				hud->GetBuildWheel()->SetSelected(-1);
+			}
+			else
+			{
+				hud->GetBuildWheel()->SetSelected(FMath::Atan2(y, x));
+			}
+		}
+	}
 	if (this->m_BuildArea != nullptr && this->m_bBuildingEnabled && this->m_BuildArea->GetTeam() == this->m_Team)
 	{
 		FVector cameraLoc = this->m_Camera->GetComponentLocation(), forward = this->m_Camera->GetForwardVector();
@@ -206,6 +226,16 @@ void APlayerCharacter::Tick(float delta)
 	}
 }
 
+UBuildWheel* APlayerCharacter::GetBuildWheel() const
+{
+	if(Super::GetController() == nullptr)
+	{
+		return nullptr;
+	}
+	AGameHUD *hud = Cast<AGameHUD>(((APlayerController*)Super::GetController())->GetHUD());
+	return hud == nullptr ? nullptr : hud->GetBuildWheel();
+}
+
 int APlayerCharacter::GetPlayerIndex() const
 {
 	ULocalPlayer *player = Cast<ULocalPlayer>(((APlayerController*)Super::GetController())->Player);
@@ -230,8 +260,22 @@ void APlayerCharacter::SetTeam(const int& team)
 {
 	this->m_Team = team;
 	
+	UBuildWheel *wheel = this->GetBuildWheel();
+	if(wheel != nullptr)
+	{
+		wheel->SetTeam(team);
+	}
 	Super::GetCapsuleComponent()->SetCollisionProfileName(team <= 1
 		? TEXT("PawnTeam1") : team >= 2 ? TEXT("PawnTeam2") : TEXT("Pawn"));
+}
+
+void APlayerCharacter::Jump()
+{
+	if(this->m_bBlockMovement)
+	{
+		return;
+	}
+	Super::Jump();
 }
 
 void APlayerCharacter::InputBlockTypeUpEvent()
@@ -289,6 +333,43 @@ void APlayerCharacter::InputMouseRightUpEvent()
 	this->m_SecondaryBrush->SetChainMode(false);
 }
 
+void APlayerCharacter::InputShowBuildWheel()
+{
+	UBuildWheel *wheel = this->GetBuildWheel();
+	if(wheel != nullptr)
+	{
+		wheel->SetVisible(true);
+	}
+	this->m_bBlockMovement = true;
+}
+
+void APlayerCharacter::InputHideBuildWheel()
+{
+	UBuildWheel *wheel = this->GetBuildWheel();
+	if (wheel != nullptr)
+	{
+		wheel->SetVisible(false);
+	}
+	this->m_bBlockMovement = false;
+}
+
+void APlayerCharacter::InputBuildWheelBack()
+{
+	UBuildWheel *wheel = this->GetBuildWheel();
+	if (wheel != nullptr && wheel->IsVisible())
+	{
+		wheel->Back();
+	}
+}
+
+void APlayerCharacter::InputBuildWheelSelect()
+{
+	UBuildWheel *wheel = this->GetBuildWheel();
+	if (wheel != nullptr && wheel->IsVisible())
+	{
+		wheel->Select(this);
+	}
+}
 
 void APlayerCharacter::TurnAtRate(float rate)
 {
@@ -302,6 +383,16 @@ void APlayerCharacter::LookUpAtRate(float rate)
 
 void APlayerCharacter::MoveForward(float value)
 {
+	//if (Super::Controller != nullptr && value != 0.0f && !this->m_bBlockMovement)
+	//{
+	//	// find out which way is forward and add the movement
+	//	const FRotator yaw(0.0f, Super::Controller->GetControlRotation().Yaw, 0.0f);
+	//	Super::AddMovementInput(FRotationMatrix(yaw).GetUnitAxis(EAxis::X), value);
+	//}
+	if(this->m_bBlockMovement)
+	{
+		return;
+	}
 	if (!IsStunned) {
 		if (Super::Controller != nullptr && value != 0.0f)
 		{
@@ -354,6 +445,16 @@ void APlayerCharacter::MoveForward(float value)
 
 void APlayerCharacter::MoveRight(float value)
 {
+	//if (Super::Controller != nullptr && value != 0.0f && !this->m_bBlockMovement)
+	//{
+	//	// find out which way is right and add the movement
+	//	const FRotator yaw(0.0f, Super::Controller->GetControlRotation().Yaw, 0.0f);
+	//	AddMovementInput(FRotationMatrix(yaw).GetUnitAxis(EAxis::Y), value);
+	//}
+	if(this->m_bBlockMovement)
+	{
+		return;
+	}
 	if (!IsStunned) {
 		if (Super::Controller != nullptr && value != 0.0f)
 		{
@@ -601,11 +702,14 @@ float APlayerCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const
 	}
 	return DamageAmount;
 }
-void APlayerCharacter::Stun(float StunLength) {
+
+void APlayerCharacter::Stun(float StunLength) 
+{
 	FTimerHandle ThisHandle;
 	IsStunned = true;
 	GetWorldTimerManager().SetTimer(ThisHandle, this, &APlayerCharacter::EndStun, StunLength);
 }
+
 void APlayerCharacter::EndStun() 
 {
 	IsStunned = false;
@@ -637,44 +741,73 @@ void APlayerCharacter::ToggleRush() {
 		GetCharacterMovement()->MaxWalkSpeed = m_RunSpeed;
 	}
 }
-void APlayerCharacter::Dodge(float x, float y) {
+
+void APlayerCharacter::Dodge(float x, float y) 
+{
 	m_DodgeTo = this->GetActorLocation() + ((this->GetActorForwardVector()*m_DodgeDist)*x) +((this->GetActorRightVector()*m_DodgeDist)*y);
 	m_Dodging = true;
 }
 
 // Called to bind functionality to input
-void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *InputComponent)
+void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *input)
 {
-	Super::SetupPlayerInputComponent(InputComponent);
+	Super::SetupPlayerInputComponent(input);
 
-	InputComponent->BindAction("Drop Block", IE_Pressed, this, &APlayerCharacter::DropBlock);
+	input->BindAxis("LeftThumbX");
+	input->BindAxis("LeftThumbY");
 
-	InputComponent->BindAxis("MoveForward", this, &APlayerCharacter::MoveForward);
-	InputComponent->BindAxis("MoveRight", this, &APlayerCharacter::MoveRight);
+	input->BindAction("Drop Block", IE_Pressed, this, &APlayerCharacter::DropBlock);
 
-	InputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
-	InputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
+	input->BindAxis("MoveForward", this, &APlayerCharacter::MoveForward);
+	input->BindAxis("MoveRight", this, &APlayerCharacter::MoveRight);
 
-	InputComponent->BindAction("Charge Punch", IE_Pressed, this, &APlayerCharacter::PunchChargeUp);
-	InputComponent->BindAction("Charge Punch", IE_Released, this, &APlayerCharacter::ChargePunchMove);
+	input->BindAction("Jump", IE_Pressed, this, &APlayerCharacter::Jump);
+	input->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
-	InputComponent->BindAction("Dodge", IE_Pressed, this, &APlayerCharacter::ToggleDodge);
-	InputComponent->BindAction("Dodge", IE_Released, this, &APlayerCharacter::ToggleDodge);
+	input->BindAction("Dodge", IE_Pressed, this, &APlayerCharacter::ToggleDodge);
+	input->BindAction("Dodge", IE_Released, this, &APlayerCharacter::ToggleDodge);
 
-	InputComponent->BindAction("Rush", IE_Pressed, this, &APlayerCharacter::ToggleRush);
-	InputComponent->BindAction("Rush", IE_Released, this, &APlayerCharacter::ToggleRush);
+	input->BindAction("Rush", IE_Pressed, this, &APlayerCharacter::ToggleRush);
+	input->BindAction("Rush", IE_Released, this, &APlayerCharacter::ToggleRush);
 
-	InputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
-	InputComponent->BindAxis("TurnRate", this, &APlayerCharacter::TurnAtRate);
-	InputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
-	InputComponent->BindAxis("LookUpRate", this, &APlayerCharacter::LookUpAtRate);
+	input->BindAxis("Turn", this, &APawn::AddControllerYawInput);
+	input->BindAxis("TurnRate", this, &APlayerCharacter::TurnAtRate);
+	input->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
+	input->BindAxis("LookUpRate", this, &APlayerCharacter::LookUpAtRate);
+	
+	input->BindAction("Charge Punch", IE_Pressed, this, &APlayerCharacter::PunchChargeUp);
+	input->BindAction("Charge Punch", IE_Released, this, &APlayerCharacter::ChargePunchMove);
 
-	InputComponent->BindAction("Place", IE_Pressed, this, &APlayerCharacter::InputMouseLeftDownEvent);
-	InputComponent->BindAction("Place", IE_Released, this, &APlayerCharacter::InputMouseLeftUpEvent);
-	InputComponent->BindAction("Destroy", IE_Pressed, this, &APlayerCharacter::InputMouseRightDownEvent);
-	InputComponent->BindAction("Destroy", IE_Released, this, &APlayerCharacter::InputMouseRightUpEvent);
+	input->BindAxis("Turn", this, &APawn::AddControllerYawInput);
+	input->BindAxis("TurnRate", this, &APlayerCharacter::TurnAtRate);
+	input->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
+	input->BindAxis("LookUpRate", this, &APlayerCharacter::LookUpAtRate);
 
-	InputComponent->BindAction("Brush up", IE_Pressed, this, &APlayerCharacter::InputBlockTypeUpEvent);
-	InputComponent->BindAction("Brush down", IE_Pressed, this, &APlayerCharacter::InputBlockTypeDownEvent);
-	InputComponent->BindAction("Building toggle", IE_Pressed, this, &APlayerCharacter::ToggleBuildMode);
+	input->BindAction("Place", IE_Pressed, this, &APlayerCharacter::InputMouseLeftDownEvent);
+	input->BindAction("Place", IE_Released, this, &APlayerCharacter::InputMouseLeftUpEvent);
+	input->BindAction("Destroy", IE_Pressed, this, &APlayerCharacter::InputMouseRightDownEvent);
+	input->BindAction("Destroy", IE_Released, this, &APlayerCharacter::InputMouseRightUpEvent);
+
+	input->BindAction("Build Wheel", IE_Pressed, this, &APlayerCharacter::InputShowBuildWheel);
+	input->BindAction("Build Wheel", IE_Released, this, &APlayerCharacter::InputHideBuildWheel);
+	input->BindAction("Build Wheel Back", IE_Pressed, this, &APlayerCharacter::InputBuildWheelBack);
+	input->BindAction("Build Wheel Select", IE_Pressed, this, &APlayerCharacter::InputBuildWheelSelect);
+
+	input->BindAction("Brush up", IE_Pressed, this, &APlayerCharacter::InputBlockTypeUpEvent);
+	input->BindAction("Brush down", IE_Pressed, this, &APlayerCharacter::InputBlockTypeDownEvent);
+	input->BindAction("Building toggle", IE_Pressed, this, &APlayerCharacter::ToggleBuildMode);
 }
+
+#if WITH_EDITOR
+void APlayerCharacter::PostEditChangeProperty(FPropertyChangedEvent& event)
+{
+	Super::PostEditChangeProperty(event);
+
+	FName name = event.MemberProperty != nullptr ? event.MemberProperty->GetFName() : NAME_None;
+
+	if (name == GET_MEMBER_NAME_CHECKED(APlayerCharacter, m_Team))
+	{
+		this->SetTeam(this->m_Team);
+	}
+}
+#endif
