@@ -78,6 +78,8 @@ void APlayerCharacter::BeginPlay()
 	// Update team collision (required for doors to function)
 	this->SetTeam(this->m_Team);
 
+	m_RunSpeed = GetCharacterMovement()->MaxWalkSpeed;
+
 	// For some strange reason the primary brush gets unset by unreal. This will ensure that it is set. (Otherwise the game will crash)
 	if(this->m_PrimaryBrush == nullptr)
 	{
@@ -120,6 +122,14 @@ void APlayerCharacter::Tick(float delta)
 {
 	Super::Tick(delta);
 
+	if (Stamina < MaxStamina) {
+		if ((Stamina += m_StamRegen) > MaxStamina) {
+			Stamina = MaxStamina;
+		}
+		else {
+			Stamina += m_StamRegen;
+		}
+	}
 	if (this->m_bPressed)
 	{
 		this->m_PressTimer += delta;
@@ -148,6 +158,12 @@ void APlayerCharacter::Tick(float delta)
 		}
 		else {
 			m_Dodging = false;
+		}
+	}
+	if (m_Rushing == true) {
+		if (Stamina <= 0) {
+			m_Rushing = false;
+			GetCharacterMovement()->MaxWalkSpeed = m_RunSpeed;
 		}
 	}
 	if (this->m_BuildArea != nullptr && this->m_bBuildingEnabled && this->m_BuildArea->GetTeam() == this->m_Team)
@@ -290,17 +306,45 @@ void APlayerCharacter::MoveForward(float value)
 		if (Super::Controller != nullptr && value != 0.0f)
 		{
 			if (m_DodgeTrigger == true) {
-				if (value > 0.5 || value < -0.5) {
-					Dodge(value, 0);
+				if (m_Dodging != true) {
+					if (value > 0.5 || value < -0.5) {
+						Dodge(value, 0);
+					}
 				}
 			}
 			// find out which way is forward and add the movement
 			else {
 				const FRotator yaw(0.0f, Super::Controller->GetControlRotation().Yaw, 0.0f);
+				Super::AddMovementInput(FRotationMatrix(yaw).GetUnitAxis(EAxis::X), value);
 				if (m_Rushing == true) {
 					Stamina -= m_RushCost;
+					TArray<AActor*> EnemyList;
+					MeleeCapsule->GetOverlappingActors(EnemyList, TSubclassOf<APlayerCharacter>());	
+					
+					//for every enemy that's within the capsule, check and apply collision
+					for (auto Enemies : EnemyList)
+					{
+						if (Enemies != this)
+						{
+							if (Enemies->IsA(APlayerCharacter::StaticClass()))
+							{
+								auto Enemy = (APlayerCharacter*)Enemies;
+								if (MeleeCapsule->IsOverlappingComponent(Enemy->GetCapsuleComponent()))
+								{
+									if (Enemy->Health > 0)
+									{
+										auto loc1 = Enemies->GetActorLocation();
+										auto loc2 = this->GetActorLocation();
+										FVector LaunchDir = (loc1 - loc2);
+										FVector Launch = (LaunchDir.GetSafeNormal() + FVector(0, 0, 0.2f))*m_RushKnockback;
+										Enemy->LaunchCharacter(Launch, 0, 0);
+									}
+								}
+							}
+						}
+					}
 				}
-					Super::AddMovementInput(FRotationMatrix(yaw).GetUnitAxis(EAxis::X), value);
+
 			}
 		
 
@@ -314,17 +358,45 @@ void APlayerCharacter::MoveRight(float value)
 		if (Super::Controller != nullptr && value != 0.0f)
 		{
 			if (m_DodgeTrigger == true) {
-				if (value > 0.5 || value < -0.5) {
-					Dodge(0, value);
+				if (m_Dodging != true) {
+					if (value > 0.5 || value < -0.5) {
+						Dodge(0, value);
+					}
 				}
 			}
 			else {
 				// find out which way is right and add the movement
 				const FRotator yaw(0.0f, Super::Controller->GetControlRotation().Yaw, 0.0f);
+				AddMovementInput(FRotationMatrix(yaw).GetUnitAxis(EAxis::Y), value);
 				if (m_Rushing == true) {
 					Stamina -= m_RushCost;
+						TArray<AActor*> EnemyList;
+						MeleeCapsule->GetOverlappingActors(EnemyList, TSubclassOf<APlayerCharacter>());
+
+						//for every enemy that's within the capsule, check and apply collision
+						for (auto Enemies : EnemyList)
+						{
+							if (Enemies != this)
+							{
+								if (Enemies->IsA(APlayerCharacter::StaticClass()))
+								{
+									auto Enemy = (APlayerCharacter*)Enemies;
+									if (MeleeCapsule->IsOverlappingComponent(Enemy->GetCapsuleComponent()))
+									{
+										if (Enemy->Health > 0)
+										{
+											auto loc1 = Enemies->GetActorLocation();
+											auto loc2 = this->GetActorLocation();
+											FVector LaunchDir = (loc1 - loc2);
+											FVector Launch = (LaunchDir.GetSafeNormal() + FVector(0, 0, 0.2f))*m_RushKnockback;
+											Enemy->LaunchCharacter(Launch, 0, 0);
+										}
+									}
+								}
+							}
+						}
 				}
-					AddMovementInput(FRotationMatrix(yaw).GetUnitAxis(EAxis::Y), value);
+					
 			}
 		}
 	}
@@ -550,11 +622,19 @@ void APlayerCharacter::ToggleDodge() {
 }
 
 void APlayerCharacter::ToggleRush() {
-	if (m_Rushing != true) {
-		m_Rushing = true;
+	if (Stamina > 0) {
+		if (m_Rushing != true) {
+			m_Rushing = true;
+			GetCharacterMovement()->MaxWalkSpeed = m_RushSpeed;
+		}
+		else {
+			m_Rushing = false;
+			GetCharacterMovement()->MaxWalkSpeed = m_RunSpeed;
+		}
 	}
 	else {
 		m_Rushing = false;
+		GetCharacterMovement()->MaxWalkSpeed = m_RunSpeed;
 	}
 }
 void APlayerCharacter::Dodge(float x, float y) {

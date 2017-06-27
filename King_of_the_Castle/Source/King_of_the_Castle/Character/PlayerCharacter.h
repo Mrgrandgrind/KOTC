@@ -241,7 +241,16 @@ protected:
 		bool m_Rushing;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rush", meta = (AllowPrivateAccess = "true", DisplayName = "Rush Cost"))
-		bool m_RushCost;
+		float m_RushCost;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rush", meta = (AllowPrivateAccess = "true", DisplayName = "Rush Knockback"))
+		float m_RushKnockback;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Run Speed"))
+		float m_RunSpeed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Stamina Regen"))
+		float m_StamRegen;
 
 private:
 	// Result of last trace. The trace happens every tick when building mode is enabled.
