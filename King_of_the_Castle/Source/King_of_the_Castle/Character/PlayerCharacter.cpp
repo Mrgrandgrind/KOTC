@@ -140,6 +140,16 @@ void APlayerCharacter::Tick(float delta)
 						ChargePunchAttack();
 					}
 	}
+	else if (m_Dodging) {
+		if (this->GetActorLocation() != m_DodgeTo) {
+			if (!this->SetActorLocation(FMath::VInterpTo(this->GetActorLocation(), m_DodgeTo, delta, m_DodgeSpeed), true)) {
+				m_Dodging = false;
+			}
+		}
+		else {
+			m_Dodging = false;
+		}
+	}
 	if (this->m_BuildArea != nullptr && this->m_bBuildingEnabled && this->m_BuildArea->GetTeam() == this->m_Team)
 	{
 		FVector cameraLoc = this->m_Camera->GetComponentLocation(), forward = this->m_Camera->GetForwardVector();
@@ -279,9 +289,21 @@ void APlayerCharacter::MoveForward(float value)
 	if (!IsStunned) {
 		if (Super::Controller != nullptr && value != 0.0f)
 		{
+			if (m_DodgeTrigger == true) {
+				if (value > 0.5 || value < -0.5) {
+					Dodge(value, 0);
+				}
+			}
 			// find out which way is forward and add the movement
-			const FRotator yaw(0.0f, Super::Controller->GetControlRotation().Yaw, 0.0f);
-			Super::AddMovementInput(FRotationMatrix(yaw).GetUnitAxis(EAxis::X), value);
+			else {
+				const FRotator yaw(0.0f, Super::Controller->GetControlRotation().Yaw, 0.0f);
+				if (m_Rushing == true) {
+					Stamina -= m_RushCost;
+				}
+					Super::AddMovementInput(FRotationMatrix(yaw).GetUnitAxis(EAxis::X), value);
+			}
+		
+
 		}
 	}
 }
@@ -291,9 +313,19 @@ void APlayerCharacter::MoveRight(float value)
 	if (!IsStunned) {
 		if (Super::Controller != nullptr && value != 0.0f)
 		{
-			// find out which way is right and add the movement
-			const FRotator yaw(0.0f, Super::Controller->GetControlRotation().Yaw, 0.0f);
-			AddMovementInput(FRotationMatrix(yaw).GetUnitAxis(EAxis::Y), value);
+			if (m_DodgeTrigger == true) {
+				if (value > 0.5 || value < -0.5) {
+					Dodge(0, value);
+				}
+			}
+			else {
+				// find out which way is right and add the movement
+				const FRotator yaw(0.0f, Super::Controller->GetControlRotation().Yaw, 0.0f);
+				if (m_Rushing == true) {
+					Stamina -= m_RushCost;
+				}
+					AddMovementInput(FRotationMatrix(yaw).GetUnitAxis(EAxis::Y), value);
+			}
 		}
 	}
 }
@@ -508,6 +540,28 @@ void APlayerCharacter::EndStun()
 	Health = MaxHealth;
 }
 
+void APlayerCharacter::ToggleDodge() {
+	if (m_DodgeTrigger != true) {
+		m_DodgeTrigger = true;
+	}
+	else {
+		m_DodgeTrigger = false;
+	}
+}
+
+void APlayerCharacter::ToggleRush() {
+	if (m_Rushing != true) {
+		m_Rushing = true;
+	}
+	else {
+		m_Rushing = false;
+	}
+}
+void APlayerCharacter::Dodge(float x, float y) {
+	m_DodgeTo = this->GetActorLocation() + ((this->GetActorForwardVector()*m_DodgeDist)*x) +((this->GetActorRightVector()*m_DodgeDist)*y);
+	m_Dodging = true;
+}
+
 // Called to bind functionality to input
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *InputComponent)
 {
@@ -523,6 +577,12 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *InputComponent
 
 	InputComponent->BindAction("Charge Punch", IE_Pressed, this, &APlayerCharacter::PunchChargeUp);
 	InputComponent->BindAction("Charge Punch", IE_Released, this, &APlayerCharacter::ChargePunchMove);
+
+	InputComponent->BindAction("Dodge", IE_Pressed, this, &APlayerCharacter::ToggleDodge);
+	InputComponent->BindAction("Dodge", IE_Released, this, &APlayerCharacter::ToggleDodge);
+
+	InputComponent->BindAction("Rush", IE_Pressed, this, &APlayerCharacter::ToggleRush);
+	InputComponent->BindAction("Rush", IE_Released, this, &APlayerCharacter::ToggleRush);
 
 	InputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
 	InputComponent->BindAxis("TurnRate", this, &APlayerCharacter::TurnAtRate);

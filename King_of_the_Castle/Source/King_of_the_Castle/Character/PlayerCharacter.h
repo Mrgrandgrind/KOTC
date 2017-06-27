@@ -103,6 +103,15 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Combat")
 		void Stun(float StunLength);
 
+	UFUNCTION(BlueprintCallable, Category = "Player Stats")
+		void ToggleDodge();
+
+	UFUNCTION(BlueprintCallable, Category = "Player Stats")
+		void ToggleRush();
+
+	UFUNCTION(BlueprintCallable, Category = "Player Stats")
+		void Dodge(float x, float y);
+
 	// Whether or not the player is in build mode
 	FORCEINLINE bool IsBuildModeEnabled() const { return this->m_bBuildingEnabled; }
 
@@ -186,29 +195,54 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Stun Duration"))
 	float StunDuration;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Timer"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Charge Punch", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Timer"))
 	float m_ChargeTimer;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Base Damage"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Charge Punch", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Base Damage"))
 	int m_ChargeBaseDamage;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Active"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Charge Punch", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Active"))
 	bool m_ChargeActive;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Punch Moving"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Charge Punch", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Punch Moving"))
 	bool m_ChargeMove;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Punch Target"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Charge Punch", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Punch Target"))
 	FVector m_ChargeMoveTo;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Punch Speed"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Charge Punch", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Punch Speed"))
 	float m_ChargeSpeed;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Punch Distance"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Charge Punch", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Punch Distance"))
 	float m_ChargeDist;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Punch Stun Duration"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Charge Punch", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Punch Stun Duration"))
 		float m_ChargeStun;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dodge", meta = (AllowPrivateAccess = "true", DisplayName = "Dodge Toggle"))
+		bool m_DodgeTrigger;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dodge", meta = (AllowPrivateAccess = "true", DisplayName = "Dodge Status"))
+		bool m_Dodging;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dodge", meta = (AllowPrivateAccess = "true", DisplayName = "Dodge Distance"))
+		float m_DodgeDist;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dodge", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Punch Target"))
+		FVector m_DodgeTo;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dodge", meta = (AllowPrivateAccess = "true", DisplayName = "Dodge Speed"))
+		float m_DodgeSpeed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rush", meta = (AllowPrivateAccess = "true", DisplayName = "Rush Speed"))
+		float m_RushSpeed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rush", meta = (AllowPrivateAccess = "true", DisplayName = "Rush Status"))
+		bool m_Rushing;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rush", meta = (AllowPrivateAccess = "true", DisplayName = "Rush Cost"))
+		bool m_RushCost;
+
 private:
 	// Result of last trace. The trace happens every tick when building mode is enabled.
 	FHitResult m_TraceResult; //the result of the last trace
