@@ -578,8 +578,11 @@ void APlayerCharacter::MeleeAttack()
 }
 
 void APlayerCharacter::PunchChargeUp() {
-	if (!IsStunned) {
-		m_ChargeActive = true;
+	if (!m_ChargePunch) {
+		if (!IsStunned) {
+			m_ChargeActive = true;
+			m_ChargePunch = true;
+		}
 	}
 }
 
@@ -622,12 +625,12 @@ void APlayerCharacter::ChargePunchAttack() {
 		}
 		else if (m_ChargeTimer <= 3) {
 			damage = m_ChargeBaseDamage *0.5;
-			knockback = PlayerKnockback / 2;
+			knockback = m_ChargeKnockback / 2;
 			stun = false;
 		}
 		else {
 			damage = m_ChargeBaseDamage;
-			knockback = PlayerKnockback;
+			knockback = m_ChargeKnockback;
 			stun = true;
 		}
 	}
@@ -677,6 +680,7 @@ void APlayerCharacter::ChargePunchAttack() {
 					}
 				}
 				IsAttacking = false;
+				m_ChargePunch = false;
 			}
 		}
 	}
