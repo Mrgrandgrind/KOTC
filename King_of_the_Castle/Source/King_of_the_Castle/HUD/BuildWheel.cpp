@@ -81,98 +81,6 @@ UBuildWheel::UBuildWheel() : m_bIsVisible(false)
 
 		this->m_SelectMaterial = material;
 	}
-
-	WheelMenu root(TEXT("menu"));
-	{
-		root.AddSegment({ TEXT("Events"), [this](APlayerCharacter *character) 
-			{
-				WheelMenu eventMenu(TEXT("events"));
-				{
-					std::function<void(EGameEvent, FName, const int&)> trigger =
-						[this, character](EGameEvent type, FName id, const int& cost)
-					{
-						UBlockData *data = character->GetPrimaryBrush()->GetBlockData(id);
-						if(data == nullptr || data->GetCount() < cost)
-						{
-							return;
-						}
-						data->SetCount(character->GetPrimaryBrush(), data->GetCount() - cost);
-						ABaseGameMode *gamemode = Cast<ABaseGameMode>(character->GetWorld()->GetAuthGameMode());
-						if (gamemode != nullptr)
-						{
-							gamemode->TriggerEvent(type);
-						}
-					};
-					eventMenu.AddSegment({ TEXT("Enable Low Gravity"), [this, trigger](APlayerCharacter *character)
-						{
-							trigger(EGameEvent::LowGravity, ID_BASIC_BLOCK, 1);
-							return false;
-						}
-					});
-					eventMenu.AddSegment({ TEXT("Enable Lava"), [this, trigger](APlayerCharacter *character)
-						{
-							trigger(EGameEvent::FloorIsLava, ID_BASIC_BLOCK, 1);
-							return false;
-						}
-					});
-				}
-				return this->OpenMenu(eventMenu);
-			}
-		});
-
-		root.AddSegment({ TEXT("Power-up"), [this](APlayerCharacter *character)
-			{
-				WheelMenu powerMenu(TEXT("etc"));
-				{
-					powerMenu.AddSegment({ TEXT("1"), [this](APlayerCharacter *character)
-						{
-							return true;
-						}
-					});
-					powerMenu.AddSegment({ TEXT("2"), [this](APlayerCharacter *character)
-						{
-							return true;
-						}
-					});
-					powerMenu.AddSegment({ TEXT("3"), [this](APlayerCharacter *character)
-						{
-							return true;
-						}
-					});
-					powerMenu.AddSegment({ TEXT("4"), [this](APlayerCharacter *character)
-						{
-							return true;
-						}
-					});
-				}
-				return this->OpenMenu(powerMenu);
-			}
-		});
-
-		root.AddSegment({ TEXT("Upgrades"), [this](APlayerCharacter *character) 
-			{
-				WheelMenu upgradeMenu(TEXT("upgrade"));
-				{
-					upgradeMenu.AddSegment({ TEXT("Increase Stamina"), [this](APlayerCharacter *character)
-						{
-							return false;
-						}
-					});
-					upgradeMenu.AddSegment({ TEXT("Increase Health"), [this](APlayerCharacter *character)
-						{
-							return false;
-						}
-					});
-				}
-				return this->OpenMenu(upgradeMenu);
-			}
-		});
-
-	}
-	// We must open the initial root menu or else we will crash
-	this->OpenMenu(root);
-
-	this->m_SelectData.index = 0;
 }
 
 void UBuildWheel::UpdateSelectMaterial() const
@@ -190,20 +98,20 @@ void UBuildWheel::SetSelected(float radians)
 	radians = PI2 - FMath::Fmod(radians + PI2, PI2);
 
 	WheelMenu& active = this->GetActiveMenu();
-	float delta = PI2 / active.m_Segments.Num();
-	this->SetSelected(int(radians / delta) % active.m_Segments.Num());
+	float delta = PI2 / active.m_Segments.size();
+	this->SetSelected(int(radians / delta) % int(active.m_Segments.size()));
 }
 
 void UBuildWheel::Select(APlayerCharacter *character)
 {
-	if(character == nullptr)
+	if (character == nullptr)
 	{
 		return;
 	}
 	if (this->m_SelectData.index != -1)
 	{
 		auto action = this->GetActiveMenu().m_Segments[this->m_SelectData.index].action;
-		if(action != nullptr && !action(character))
+		if (action != nullptr && !action(character))
 		{
 			this->SetVisible(false);
 		}
@@ -241,6 +149,93 @@ void UBuildWheel::SetTeam(const int& team)
 	}
 }
 
+WheelMenu UBuildWheel::CreateWheelMenu()
+{
+	WheelMenu root(TEXT("menu"));
+	{
+		root.AddSegment({ TEXT("Events"), [this](APlayerCharacter *character)
+		{
+			WheelMenu eventMenu(TEXT("events"));
+			{
+				std::function<bool(EGameEvent, FName, const int&)> trigger =
+					[this, character](EGameEvent type, FName id, const int& cost)
+				{
+					UBlockData *data = character->GetPrimaryBrush()->GetBlockData(id);
+					if (data == nullptr || data->GetCount() < cost)
+					{
+						return true;
+					}
+					data->SetCount(character->GetPrimaryBrush(), data->GetCount() - cost);
+					ABaseGameMode *gamemode = Cast<ABaseGameMode>(character->GetWorld()->GetAuthGameMode());
+					if (gamemode != nullptr)
+					{
+						gamemode->TriggerEvent(type);
+					}
+					return false;
+				};
+				eventMenu.AddSegment({ TEXT("Enable Low Gravity"), [this, trigger](APlayerCharacter *character)
+				{
+					return trigger(EGameEvent::LowGravity, ID_BASIC_BLOCK, 1);
+				} });
+				eventMenu.AddSegment({ TEXT("Enable Lava"), [this, trigger](APlayerCharacter *character)
+				{
+					return trigger(EGameEvent::FloorIsLava, ID_BASIC_BLOCK, 1);
+				} });
+			}
+			return this->OpenMenu(eventMenu);
+		} });
+
+		root.AddSegment({ TEXT("Power-up"), [this](APlayerCharacter *character)
+		{
+			WheelMenu powerMenu(TEXT("etc"));
+			{
+				powerMenu.AddSegment({ TEXT("1"), [this](APlayerCharacter *character)
+				{
+					return true;
+				} });
+				powerMenu.AddSegment({ TEXT("2"), [this](APlayerCharacter *character)
+				{
+					return true;
+				} });
+				powerMenu.AddSegment({ TEXT("3"), [this](APlayerCharacter *character)
+				{
+					return true;
+				} });
+				powerMenu.AddSegment({ TEXT("4"), [this](APlayerCharacter *character)
+				{
+					return true;
+				} });
+				powerMenu.AddSegment({ TEXT("5"), [this](APlayerCharacter *character)
+				{
+					return true;
+				} });
+				powerMenu.AddSegment({ TEXT("6"), [this](APlayerCharacter *character)
+				{
+					return true;
+				} });
+			}
+			return this->OpenMenu(powerMenu);
+		} });
+
+		root.AddSegment({ TEXT("Upgrades"), [this](APlayerCharacter *character)
+		{
+			WheelMenu upgradeMenu(TEXT("upgrade"));
+			{
+				upgradeMenu.AddSegment({ TEXT("Increase Stamina"), [this](APlayerCharacter *character)
+				{
+					return false;
+				} });
+				upgradeMenu.AddSegment({ TEXT("Increase Health"), [this](APlayerCharacter *character)
+				{
+					return false;
+				} });
+			}
+			return this->OpenMenu(upgradeMenu);
+		} });
+	}
+	return root;
+}
+
 void UBuildWheel::Render(AHUD* display, FVector4& screen)
 {
 	if (!this->IsVisible())
@@ -261,11 +256,11 @@ void UBuildWheel::Render(AHUD* display, FVector4& screen)
 
 	// Draw lines and text
 	float inner = radius - (radius / MAX_MAT_RADIUS) * (OUTER_RADIUS / 2.0f);
-	for (int i = 0; i < activeMenu.m_Segments.Num(); i++)
+	for (int i = 0; i < activeMenu.m_Segments.size(); i++)
 	{
 		WheelMenuSegment& segment = activeMenu.m_Segments[i];
 
-		float delta = PI2 / activeMenu.m_Segments.Num();
+		float delta = PI2 / activeMenu.m_Segments.size();
 		float c = FMath::Cos(i * delta), s = FMath::Sin(i * delta);
 
 		float offsetX = c * (inner - centerRadius) * SEGMENT_SEPARATOR_OFFSET,

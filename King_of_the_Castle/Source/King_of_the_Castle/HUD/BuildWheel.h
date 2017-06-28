@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include <vector>
 #include <stack>
 #include <functional>
 
@@ -30,11 +31,12 @@ public:
 	WheelMenu(FString name = TEXT("unnamed")) : m_Name(name) { }
 
 private:
-	FORCEINLINE void AddSegment(const WheelMenuSegment& segment) { this->m_Segments.Add(segment); }
+	FORCEINLINE void AddSegment(const WheelMenuSegment& segment) { this->m_Segments.push_back(segment); }
 
 	FString m_Name;
 
-	TArray<WheelMenuSegment> m_Segments;
+	//TArray<WheelMenuSegment> m_Segments;
+	std::vector<WheelMenuSegment> m_Segments;
 };
 
 UCLASS()
@@ -61,14 +63,27 @@ public:
 
 	FORCEINLINE void SetVisible(const bool& visible) { this->m_bIsVisible = visible; while (this->m_MenuStack.size() > 1) this->m_MenuStack.pop(); }
 
-	FORCEINLINE WheelMenu& GetActiveMenu() { return this->m_MenuStack.top(); }
+	FORCEINLINE WheelMenu& GetActiveMenu()
+	{
+		if(this->m_MenuStack.size() == 0)
+		{
+			// If there is no active menu, set it to the default.
+			this->OpenMenu(this->CreateWheelMenu());
+			check(this->m_MenuStack.size() != 0);
+		}
+		return this->m_MenuStack.top();
+	}
 	
 protected:
+	WheelMenu CreateWheelMenu();
+
 	void UpdateSelectMaterial() const;
 
 	FORCEINLINE bool OpenMenu(WheelMenu menu)
 	{
 		this->m_MenuStack.push(menu);
+		this->m_SelectData.index = -1;
+		this->m_SelectData.updated = false;
 		return true;
 	}
 
