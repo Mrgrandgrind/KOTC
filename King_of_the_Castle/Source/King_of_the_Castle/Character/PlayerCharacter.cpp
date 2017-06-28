@@ -138,6 +138,12 @@ void APlayerCharacter::Tick(float delta)
 	}
 	if (m_ChargeActive) {
 		m_ChargeTimer += delta;
+		if (m_ChargeTimer >= 1) {
+			if (m_ChargeLevel != 3) {
+				m_ChargeLevel++;
+				m_ChargeTimer = 0;
+			}
+		}
 	}
 	if (m_ChargeMove) {
 					if (this->GetActorLocation() != m_ChargeMoveTo) {
@@ -589,11 +595,11 @@ void APlayerCharacter::PunchChargeUp() {
 void APlayerCharacter::ChargePunchMove() {
 m_ChargeActive = false;
 float movedist;
-	if (m_ChargeTimer > 1) {
-		if (m_ChargeTimer <= 2) {
+	if (m_ChargeLevel >= 1) {
+		if (m_ChargeLevel < 2) {
 			movedist = m_ChargeDist;
 		}
-		else if (m_ChargeTimer <= 3) {
+		else if (m_ChargeLevel < 3) {
 			movedist = m_ChargeDist*2;
 		}
 		else {
@@ -617,13 +623,13 @@ void APlayerCharacter::ChargePunchAttack() {
 	float damage;
 	bool stun;
 	float knockback;
-	if (m_ChargeTimer > 1) {
-		if (m_ChargeTimer <= 2) {
+	if (m_ChargeLevel >= 1) {
+		if (m_ChargeLevel < 2) {
 			damage = m_ChargeBaseDamage * 0.25;
 			knockback = 0;
 			stun = false;
 		}
-		else if (m_ChargeTimer <= 3) {
+		else if (m_ChargeLevel < 3) {
 			damage = m_ChargeBaseDamage *0.5;
 			knockback = m_ChargeKnockback / 2;
 			stun = false;

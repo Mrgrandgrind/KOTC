@@ -220,6 +220,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Charge Punch", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Timer"))
 	float m_ChargeTimer;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Charge Punch", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Level"))
+	int m_ChargeLevel;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Charge Punch", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Knockback"))
 	float m_ChargeKnockback;
 
