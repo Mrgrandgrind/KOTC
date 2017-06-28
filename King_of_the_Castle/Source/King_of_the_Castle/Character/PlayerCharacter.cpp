@@ -643,6 +643,7 @@ void APlayerCharacter::ChargePunchAttack() {
 	else {
 		damage = 0;
 	}
+	m_ChargeLevel = 0;
 	m_ChargeTimer = 0;
 	if (damage != 0) {
 		if (!IsAttacking)
