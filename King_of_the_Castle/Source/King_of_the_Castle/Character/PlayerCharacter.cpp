@@ -597,13 +597,13 @@ m_ChargeActive = false;
 float movedist;
 	if (m_ChargeLevel >= 1) {
 		if (m_ChargeLevel < 2) {
-			movedist = m_ChargeDist;
+			movedist = m_ChargeL1Dist;
 		}
 		else if (m_ChargeLevel < 3) {
-			movedist = m_ChargeDist*2;
+			movedist = m_ChargeL2Dist;
 		}
 		else {
-			movedist = m_ChargeDist*3;
+			movedist = m_ChargeL3Dist;
 		}
 	}
 	else {
@@ -625,18 +625,18 @@ void APlayerCharacter::ChargePunchAttack() {
 	float knockback;
 	if (m_ChargeLevel >= 1) {
 		if (m_ChargeLevel < 2) {
-			damage = m_ChargeBaseDamage * 0.25;
+			damage = m_ChargeL1Damage;
 			knockback = 0;
 			stun = false;
 		}
 		else if (m_ChargeLevel < 3) {
-			damage = m_ChargeBaseDamage *0.5;
-			knockback = m_ChargeKnockback / 2;
+			damage = m_ChargeL2Damage;
+			knockback = m_ChargeL2Knockback;
 			stun = false;
 		}
 		else {
-			damage = m_ChargeBaseDamage;
-			knockback = m_ChargeKnockback;
+			damage = m_ChargeL3Damage;
+			knockback = m_ChargeL3Knockback;
 			stun = true;
 		}
 	}

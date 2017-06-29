@@ -223,11 +223,20 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Charge Punch", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Level"))
 	int m_ChargeLevel;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Charge Punch", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Knockback"))
-	float m_ChargeKnockback;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Charge Punch", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Level 2 Knockback"))
+	float m_ChargeL2Knockback;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Charge Punch", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Base Damage"))
-	int m_ChargeBaseDamage;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Charge Punch", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Level 3 Knockback"))
+	float m_ChargeL3Knockback;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Charge Punch", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Level 1 Damage"))
+	int m_ChargeL1Damage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Charge Punch", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Level 2 Damage"))
+	int m_ChargeL2Damage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Charge Punch", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Level 3 Damage"))
+	int m_ChargeL3Damage;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Charge Punch", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Active"))
 	bool m_ChargeActive;
@@ -244,8 +253,14 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Charge Punch", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Punch Speed"))
 	float m_ChargeSpeed;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Charge Punch", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Punch Distance"))
-	float m_ChargeDist;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Charge Punch", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Punch Level 1 Distance"))
+	float m_ChargeL1Dist;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Charge Punch", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Punch Level 2 Distance"))
+	float m_ChargeL2Dist;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Charge Punch", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Punch Level 3 Distance"))
+	float m_ChargeL3Dist;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Charge Punch", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Punch Stun Duration"))
 	float m_ChargeStun;
