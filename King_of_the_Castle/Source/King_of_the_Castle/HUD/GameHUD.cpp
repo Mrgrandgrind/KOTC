@@ -8,14 +8,16 @@
 #include "Runtime/UMG/Public/UMG.h"
 #include "Runtime/UMG/Public/Blueprint/UserWidget.h"
 
+#define WIDGET_HUD_LOCATION TEXT("/Game/Blueprints/BP_HUD")
+
 #define FONT_LOCATION TEXT("Font'/Engine/EngineFonts/RobotoDistanceField.RobotoDistanceField'")
 
-AGameHUD::AGameHUD() : m_Widget(nullptr)
+AGameHUD::AGameHUD() : m_WidgetHUD(nullptr)
 {
-	static ConstructorHelpers::FClassFinder<UUserWidget> Widget(TEXT("/Game/Blueprints/BP_HUD"));
-	if (Widget.Succeeded())
+	static ConstructorHelpers::FClassFinder<UUserWidget> WidgetHUD(WIDGET_HUD_LOCATION);
+	if (WidgetHUD.Succeeded())
 	{
-		this->m_WidgetClass = Widget.Class;
+		this->m_WidgetHUDClass = WidgetHUD.Class;
 	}
 
 	static ConstructorHelpers::FObjectFinder<UFont> Font(FONT_LOCATION);
@@ -31,10 +33,10 @@ void AGameHUD::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (this->m_WidgetClass != nullptr)
+	if (this->m_WidgetHUDClass != nullptr)
 	{
-		this->m_Widget = CreateWidget<UUserWidget>(Super::GetOwningPlayerController(), this->m_WidgetClass);
-		this->m_Widget->AddToPlayerScreen();
+		this->m_WidgetHUD = CreateWidget<UUserWidget>(Super::GetOwningPlayerController(), this->m_WidgetHUDClass);
+		this->m_WidgetHUD->AddToPlayerScreen();
 	}
 }
 

@@ -18,6 +18,9 @@ public:
 
 	virtual void DrawHUD() override;
 
+	UFUNCTION(BlueprintPure, Category = "Widget")
+	class UUserWidget* GetWidgetHUD() const { return this->m_WidgetHUD; }
+
 	FORCEINLINE UBuildWheel* GetBuildWheel() const { return this->m_BuildWheel; }
 
 protected:
@@ -29,8 +32,8 @@ private:
 	UFont *m_Font;
 
 	UPROPERTY()
-	UClass *m_WidgetClass;
+	UClass *m_WidgetHUDClass;
 
 	UPROPERTY()
-	class UUserWidget *m_Widget;
+	class UUserWidget *m_WidgetHUD;
 };
