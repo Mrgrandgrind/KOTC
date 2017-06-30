@@ -180,7 +180,7 @@ ABlock* UPrimaryBrush::Action(ABuildArea* area, AActor* source)
 		}
 	}
 	// If everything is fine and we should try to spawn
-	ABlock *actor = area->SpawnBlockAt(Super::m_ActiveCell, data->GetClassType());
+	ABlock *actor = area->SpawnBlockAt(Super::m_ActiveCell, data->GetClassType(), Super::GetOwner());
 	if (actor != nullptr)
 	{
 		// Spawn the block in the air slightly so it drops

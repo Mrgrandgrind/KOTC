@@ -521,9 +521,13 @@ void APlayerCharacter::DropBlock(UBlockData* data, int count)
 		return;
 	}
 	count = FMath::Min(count, data->GetCount());
+
+	ABaseGameMode *gamemode = Cast<ABaseGameMode>(Super::GetWorld()->GetAuthGameMode());
 	// Drop count amount of blocks (limited to count of data - will not drop a block if it doesn't have it)
 	for(int i = 0; i < count; i++)
 	{
+		data->SetCount(this->m_PrimaryBrush, data->GetCount() - 1);
+
 		for(ABlockEntity *next : ABlockEntity::SpawnBlockEntity((ABlock*)data->GetClassType()->GetDefaultObject(), Super::GetWorld(), nullptr, true))
 		{
 			next->SetBlockOwner(this);
@@ -535,9 +539,13 @@ void APlayerCharacter::DropBlock(UBlockData* data, int count)
 			FVector rotation = Super::GetActorRotation().Vector();
 			((UPrimitiveComponent*)next->GetRootComponent())->AddImpulse(rotation
 				* FMath::FRandRange(DROP_STRENGTH_MIN, DROP_STRENGTH_MAX));
+
+			if (gamemode != nullptr)
+			{
+				gamemode->OnBlockDrop(next, this, data->GetCount());
+			}
 		}
 	}
-	data->SetCount(this->m_PrimaryBrush, data->GetCount() - count);
 }
 
 void APlayerCharacter::MeleeAttack() 

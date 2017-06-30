@@ -90,7 +90,7 @@ bool ABlockSpawnManager::SpawnBlock(TSubclassOf<ABlock> type)
 		// Adjust spawn Z
 		out.Z += BRUSH_SPAWN_Z_OFFSET;
 		// If the position gotten is valid, return whether or not the game spawned it
-		return Super::GetWorld()->SpawnActor<ABlock>(type, out, FRotator(0.0f)) != nullptr;
+		return ABlock::SpawnBlock(Super::GetWorld(), type, 0, this, out) != nullptr;
 	}
 	return false;
 }

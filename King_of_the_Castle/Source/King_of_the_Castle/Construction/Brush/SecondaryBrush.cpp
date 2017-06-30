@@ -158,7 +158,7 @@ void USecondaryBrush::UpdateCrafting(ABlock *block, UPrimaryBrush *primary, UBlo
 			int team = block->GetTeam();
 
 			block->DestroyBlock();
-			ABlock *combined = ABlock::SpawnBlock(Super::GetWorld(), this->m_ActiveRecipe->m_ResultClassType, team, location, rotation);
+			ABlock *combined = ABlock::SpawnBlock(Super::GetWorld(), this->m_ActiveRecipe->m_ResultClassType, team, Super::GetOwner(), location, rotation);
 			if (combined != nullptr)
 			{
 				//combined->SetRecipe(this->m_ActiveRecipe);

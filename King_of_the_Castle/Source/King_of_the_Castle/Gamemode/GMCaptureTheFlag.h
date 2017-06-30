@@ -6,21 +6,37 @@
 #include "GMCaptureTheFlag.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class KING_OF_THE_CASTLE_API AGMCaptureTheFlag : public ABaseGameMode
 {
 	GENERATED_BODY()
-	
+
 public:
 	AGMCaptureTheFlag();
 
-	FORCEINLINE class APlayerCharacter* GetFlagHolder() const { return this->m_FlagHolder; }
+	virtual void OnBlockPlace(class ABlock *block, AActor *source) override;
 
-	FORCEINLINE void SetFlagHolder(class APlayerCharacter *character) { this->m_FlagHolder = character; }
+	virtual void OnBlockDestroy(class ABlock *block, AActor *source) override;
+
+	virtual void OnBlockPickup(class ABlockEntity *block, class APlayerCharacter *player, const int& newCount) override;
+
+	virtual void OnBlockDrop(class ABlockEntity *block, class APlayerCharacter *player, const int& newCount) override;
+
+	FORCEINLINE class APlayerCharacter* GetFlagHolder(const int& team) const
+	{
+		if(team == 1)
+		{
+			return this->m_FlagHolderTeam1;
+		}
+		if(team == 2)
+		{
+			return this->m_FlagHolderTeam2;
+		}
+		return nullptr;
+	}
 
 private:
-	class APlayerCharacter *m_FlagHolder;
-	
+	class APlayerCharacter *m_FlagHolderTeam1, *m_FlagHolderTeam2;
 };

@@ -33,7 +33,7 @@ public:
 
 	// Spawn a block of the given type (must derive from ABlock) at the given cell.
 	// Returns the actor that was spawned, or nullptr if the cell is not valid. (See IsCellValid())
-	class ABlock* SpawnBlockAt(const FIntVector& cell, TSubclassOf<class ABlock> blockClass) const;
+	class ABlock* SpawnBlockAt(const FIntVector& cell, TSubclassOf<class ABlock> blockClass, AActor *source = nullptr) const;
 
 	// Get the individual grid cell size
 	FORCEINLINE const FVector& GetCellSize() const { return this->m_CellSize; }

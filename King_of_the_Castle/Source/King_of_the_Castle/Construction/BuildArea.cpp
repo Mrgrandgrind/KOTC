@@ -51,7 +51,7 @@ void ABuildArea::BeginPlay()
 	{
 		if (bounds.IsInside(itr->GetActorLocation()))
 		{
-			gamemode->OnBlockPlace(*itr, itr->GetTeam(), itr->GetPointValue());
+			gamemode->OnBlockPlace(*itr, this);
 		}
 	}
 }
@@ -145,14 +145,14 @@ bool ABuildArea::GetGridLocation(const FIntVector& cell, FVector& out) const
 	return true;
 }
 
-ABlock* ABuildArea::SpawnBlockAt(const FIntVector& cell, TSubclassOf<ABlock> blockClass) const
+ABlock* ABuildArea::SpawnBlockAt(const FIntVector& cell, TSubclassOf<ABlock> blockClass, AActor *source) const
 {
 	FVector location;
 	if (!this->GetGridLocation(cell, location))
 	{
 		return nullptr;
 	}
-	return ABlock::SpawnBlock(Super::GetWorld(), blockClass, this->m_Team, location);
+	return ABlock::SpawnBlock(Super::GetWorld(), blockClass, this->m_Team, source, location);
 }
 
 void ABuildArea::OnBeginOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor,

@@ -4,7 +4,9 @@
 
 #include "BlockData.h"
 #include "BlockEntity.h"
+
 #include "Brush/PrimaryBrush.h"
+#include "Gamemode/BaseGameMode.h"
 
 #include "Runtime/Engine/Public/EngineUtils.h"
 
@@ -70,6 +72,12 @@ void ABlockEntity::Pickup(APlayerCharacter* character)
 	if (data != nullptr)
 	{
 		data->SetCount(brush, data->GetCount() + 1);
+
+		ABaseGameMode *gamemode = Cast<ABaseGameMode>(Super::GetWorld()->GetAuthGameMode());
+		if(gamemode != nullptr)
+		{
+			gamemode->OnBlockPickup(this, character, data->GetCount());
+		}
 	}
 	// Destroy this dropped block. Only happens if the block is a valid pickup.
 	Super::Destroy();
@@ -179,7 +187,7 @@ TArray<ABlockEntity*> ABlockEntity::SpawnBlockEntity(ABlock *block, UWorld* worl
 	}
 	for (int i = 0; i < recipe.Num(); i++)
 	{
-		ABlockEntity *entity = (ABlockEntity*)ABlock::SpawnBlock(world, ABlockEntity::StaticClass(), block->GetTeam());
+		ABlockEntity *entity = (ABlockEntity*)ABlock::SpawnBlock(world, ABlockEntity::StaticClass(), block->GetTeam(), source);
 		if (entity != nullptr)
 		{
 			entity->SetBlockOwner(source);

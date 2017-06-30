@@ -35,7 +35,6 @@ void AGameHUD::BeginPlay()
 	{
 		this->m_Widget = CreateWidget<UUserWidget>(Super::GetOwningPlayerController(), this->m_WidgetClass);
 		this->m_Widget->AddToPlayerScreen();
-		
 	}
 }
 
@@ -43,7 +42,6 @@ void AGameHUD::DrawHUD()
 {
 	Super::DrawHUD();
 	
-	//UE_LOG(LogClass, Log, TEXT("%f, %f, %d, %d"), Super::, Super::GetOwningPawn()->GetPawnViewLocation().Y, Super::Canvas->SizeX, Super::Canvas->SizeY);
 	FVector4 screen = FVector4(Super::Canvas->OrgX, Super::Canvas->OrgY, Super::Canvas->SizeX, Super::Canvas->SizeY);
 	this->m_BuildWheel->Render(this, screen);
 }

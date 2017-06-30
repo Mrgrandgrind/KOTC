@@ -64,13 +64,21 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Time")
 	void SetGameDuration(const float& duration) { this->m_GameDuration = duration; }
 
-	// This function is called whenever a block is placed. Implementation is for blueprints.
-	UFUNCTION(BlueprintImplementableEvent)
-	void OnBlockPlace(class ABlock *block, const int& team, const int& pointValue);
+	virtual void OnBlockPlace(class ABlock *block, AActor *source) { }
 
-	// This function is called whenever a block is destroyed. Implementation is for blueprints.
-	UFUNCTION(BlueprintImplementableEvent)
-	void OnBlockDestroy(class AActor *source, const int& team, const int& pointValue);
+	virtual void OnBlockDestroy(class ABlock *block, AActor *source) { }
+
+	virtual void OnBlockPickup(class ABlockEntity *block, class APlayerCharacter *player, const int& newCount) { }
+
+	virtual void OnBlockDrop(class ABlockEntity *block, class APlayerCharacter *player, const int& newCount) { }
+
+	//// This function is called whenever a block is placed. Implementation is for blueprints.
+	//UFUNCTION(BlueprintImplementableEvent)
+	//void OnBlockPlace(class ABlock *block, const int& team, const int& pointValue);
+
+	//// This function is called whenever a block is destroyed. Implementation is for blueprints.
+	//UFUNCTION(BlueprintImplementableEvent)
+	//void OnBlockDestroy(class AActor *source, const int& team, const int& pointValue);
 	
 #if WITH_EDITOR
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
@@ -80,12 +88,6 @@ protected:
 	// Time since game started
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Game", meta = (AllowPrivateAccess = "true", DisplayName = "Timer"))
 	float m_Timer;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Game", meta = (AllowPrivateAccess = "true", DisplayName = "Team One Score"))
-	int m_TeamOneScore;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Game", meta = (AllowPrivateAccess = "true", DisplayName = "Team Two Score"))
-	int m_TeamTwoScore;
 
 	// How long a game should last
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Game", meta = (AllowPrivateAccess = "true", DisplayName = "Game Duration"))

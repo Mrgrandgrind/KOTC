@@ -27,7 +27,7 @@ public:
 	virtual void DropBlock(AActor *source, const bool& restrictPickup = true);
 
 	// Destroy this block (remove it form game)
-	virtual void DestroyBlock();
+	virtual void DestroyBlock(AActor *source = nullptr);
 
 	// Set the blocks health
 	virtual void SetHealth(const float& health);
@@ -64,7 +64,7 @@ public:
 	void PostEditChangeProperty(struct FPropertyChangedEvent& event) override;
 #endif
 
-	static ABlock* SpawnBlock(UWorld *world, TSubclassOf<ABlock> type, const int& team,
+	static ABlock* SpawnBlock(UWorld *world, TSubclassOf<ABlock> type, const int& team, AActor *source = nullptr,
 		const FVector& location = FVector(0.0f), const FRotator& rotation = FRotator(0.0f));
 
 protected:

@@ -56,12 +56,13 @@ void ABlock::DropBlock(AActor *source, const bool& restrictPickup)
 }
 
 // Destroy block
-void ABlock::DestroyBlock()
+void ABlock::DestroyBlock(AActor *source)
 {
 	ABaseGameMode *gamemode = Cast<ABaseGameMode>(Super::GetWorld()->GetAuthGameMode());
 	if (gamemode != nullptr)
 	{
-		gamemode->OnBlockDestroy(this, this->m_Team, this->m_PointValue);
+		//gamemode->OnBlockDestroy(this, this->m_Team, this->m_PointValue);
+		gamemode->OnBlockDestroy(this, source);
 	}
 	Super::Destroy();
 }
@@ -79,7 +80,7 @@ UMaterialInstanceDynamic* ABlock::GetDynamicMaterial() const
 }
 
 // Static spawn block method
-ABlock* ABlock::SpawnBlock(UWorld *world, TSubclassOf<ABlock> type, const int& team, const FVector& location, const FRotator& rotation)
+ABlock* ABlock::SpawnBlock(UWorld *world, TSubclassOf<ABlock> type, const int& team, AActor *source, const FVector& location, const FRotator& rotation)
 {
 	if (world == nullptr)
 	{
@@ -93,7 +94,8 @@ ABlock* ABlock::SpawnBlock(UWorld *world, TSubclassOf<ABlock> type, const int& t
 		ABaseGameMode *gamemode = Cast<ABaseGameMode>(world->GetAuthGameMode());
 		if (gamemode != nullptr)
 		{
-			gamemode->OnBlockPlace(block, team, block->GetPointValue());
+			//gamemode->OnBlockPlace(block, team, block->GetPointValue());
+			gamemode->OnBlockPlace(block, source);
 		}
 
 		//FVector origin, extent;
