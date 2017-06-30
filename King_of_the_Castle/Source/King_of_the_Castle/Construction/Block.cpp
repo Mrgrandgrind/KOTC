@@ -94,7 +94,6 @@ ABlock* ABlock::SpawnBlock(UWorld *world, TSubclassOf<ABlock> type, const int& t
 		ABaseGameMode *gamemode = Cast<ABaseGameMode>(world->GetAuthGameMode());
 		if (gamemode != nullptr)
 		{
-			//gamemode->OnBlockPlace(block, team, block->GetPointValue());
 			gamemode->OnBlockPlace(block, source);
 		}
 

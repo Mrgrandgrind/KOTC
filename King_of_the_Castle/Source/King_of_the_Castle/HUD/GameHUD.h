@@ -23,6 +23,8 @@ public:
 
 	FORCEINLINE UBuildWheel* GetBuildWheel() const { return this->m_BuildWheel; }
 
+	FORCEINLINE void SetCrosshairVisible(const bool& visible) { this->m_bCrosshairVisible = visible; }
+
 protected:
 	UPROPERTY()
 	UBuildWheel *m_BuildWheel;
@@ -36,4 +38,6 @@ private:
 
 	UPROPERTY()
 	class UUserWidget *m_WidgetHUD;
+
+	bool m_bCrosshairVisible;
 };

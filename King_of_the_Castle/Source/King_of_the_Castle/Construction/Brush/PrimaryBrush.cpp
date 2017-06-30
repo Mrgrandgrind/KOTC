@@ -5,6 +5,7 @@
 #include "../BlockData.h"
 #include "../BuildArea.h"
 #include "../BlockEntity.h"
+#include "DrawDebugHelpers.h"
 
 #define DEFAULT_BLOCK_COUNT 0
 #define DEFAULT_MAX_BLOCK_COUNT 10
@@ -343,11 +344,19 @@ void UPrimaryBrush::UpdateRegular(ABuildArea* area, const FHitResult& trace, boo
 				ABlock *block = Cast<ABlock>(belowResult.GetActor());
 				if (block != nullptr)
 				{
-					below = block;
+					// Check to see if the block below is visible to the player
+					Super::GetWorld()->LineTraceSingleByChannel(belowResult, trace.TraceStart, belowResult.ImpactPoint,
+						ECollisionChannel::ECC_WorldDynamic, FCollisionQueryParams::DefaultQueryParam);
+					//DrawDebugLine(Super::GetWorld(), belowResult.TraceStart, belowResult.TraceEnd, FColor::Orange, false, -1.0f, 0.0f, 2.0f);
 
-					show = true;
-					this->m_bValid = true;
-					Super::m_ActiveCell = cell;
+					if(belowResult.IsValidBlockingHit() && belowResult.GetActor() == block)
+					{
+						below = block;
+
+						show = true;
+						this->m_bValid = true;
+						Super::m_ActiveCell = cell;
+					}
 				}
 				else if (below != nullptr)
 				{

@@ -10,6 +10,7 @@
 #include "../../Character/PlayerCharacter.h"
 
 #include "Runtime/Engine/Classes/Engine/TextRenderActor.h"
+#include "Construction/Blocks/FlagBlock.h"
 
 #define COMBINE_DEAD_TIME 0.4f // How many seconds before the combining begins
 
@@ -87,7 +88,8 @@ ABlock* USecondaryBrush::Action(ABuildArea* area, AActor* source)
 		return nullptr;
 	}
 	ABlock *block = Cast<ABlock>(Super::m_LastTrace.GetActor());
-	if (block == nullptr || !block->IsDestructable())
+	if (block == nullptr || !block->IsDestructable() 
+		|| (block->IsA(AFlagBlock::StaticClass()) && block->GetTeam() == area->GetTeam()))
 	{
 		return nullptr;
 	}

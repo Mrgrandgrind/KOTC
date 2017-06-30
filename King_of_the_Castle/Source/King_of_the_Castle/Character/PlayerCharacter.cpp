@@ -260,6 +260,11 @@ void APlayerCharacter::SetBuildModeEnabled(const bool& enable)
 		this->m_PrimaryBrush->SetBrushVisible(enable);
 		this->m_SecondaryBrush->SetBrushVisible(enable);
 	}
+	AGameHUD *hud = Cast<AGameHUD>(((APlayerController*)Super::GetController())->GetHUD());
+	if(hud != nullptr)
+	{
+		hud->SetCrosshairVisible(enable);
+	}
 }
 
 void APlayerCharacter::SetTeam(const int& team)

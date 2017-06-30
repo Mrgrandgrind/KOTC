@@ -8,11 +8,14 @@
 #include "Runtime/UMG/Public/UMG.h"
 #include "Runtime/UMG/Public/Blueprint/UserWidget.h"
 
+#define CROSSHAIR_SIZE 0.012f // Multiplier of min(width, height)
+#define CROSSHAIR_COLOR FLinearColor(0.25f, 0.75f, 0.75f, 0.35f)
+
 #define WIDGET_HUD_LOCATION TEXT("/Game/Blueprints/BP_HUD")
 
 #define FONT_LOCATION TEXT("Font'/Engine/EngineFonts/RobotoDistanceField.RobotoDistanceField'")
 
-AGameHUD::AGameHUD() : m_WidgetHUD(nullptr)
+AGameHUD::AGameHUD() : m_WidgetHUD(nullptr), m_bCrosshairVisible(false)
 {
 	static ConstructorHelpers::FClassFinder<UUserWidget> WidgetHUD(WIDGET_HUD_LOCATION);
 	if (WidgetHUD.Succeeded())
@@ -46,4 +49,11 @@ void AGameHUD::DrawHUD()
 	
 	FVector4 screen = FVector4(Super::Canvas->OrgX, Super::Canvas->OrgY, Super::Canvas->SizeX, Super::Canvas->SizeY);
 	this->m_BuildWheel->Render(this, screen);
+
+	if(this->m_bCrosshairVisible)
+	{
+		const float& size = FMath::RoundToFloat(FMath::Min(screen.Z, screen.W) * CROSSHAIR_SIZE);
+		Super::DrawRect(CROSSHAIR_COLOR, screen.X + screen.Z / 2.0f - size / 2.0f,
+			screen.Y + screen.W / 2.0f - size / 2.0f, size, size);
+	}
 }
