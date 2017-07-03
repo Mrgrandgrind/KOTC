@@ -158,15 +158,25 @@ void APlayerCharacter::Tick(float delta)
 						ChargePunchAttack();
 					}
 	}
+	else if (m_DodgeStart) {
+		m_DodgeTo = this->GetActorLocation() + ((this->GetActorForwardVector()*m_DodgeDist)*m_DodgeDir.X) + ((this->GetActorRightVector()*m_DodgeDist)*m_DodgeDir.Y);
+		m_Dodging = true;
+		m_DodgeStart = false;
+		m_DodgeDir.X = 0;
+		m_DodgeDir.Y = 0;
+	}
 	else if (m_Dodging) {
 		if (this->GetActorLocation() != m_DodgeTo) {
-			if (!this->SetActorLocation(FMath::VInterpTo(this->GetActorLocation(), m_DodgeTo, delta, m_DodgeSpeed), true)) {
+			FVector loc = this->GetActorLocation();
+			if (!this->SetActorLocation(FMath::VInterpTo(loc, m_DodgeTo, delta, m_DodgeSpeed), true)) {
 				m_Dodging = false;
 			}
 		}
 		else {
 			m_Dodging = false;
 		}
+		m_DodgeDir.X = 0;
+		m_DodgeDir.Y = 0;
 	}
 	if (m_Rushing == true) {
 		if (Stamina <= 0) {
@@ -174,6 +184,7 @@ void APlayerCharacter::Tick(float delta)
 			GetCharacterMovement()->MaxWalkSpeed = m_RunSpeed;
 		}
 	}
+
 	if (Super::GetController() != nullptr)
 	{
 		// Update building wheel
@@ -394,7 +405,9 @@ void APlayerCharacter::MoveForward(float value)
 			if (m_DodgeTrigger == true) {
 				if (m_Dodging != true) {
 					if (value > 0.5 || value < -0.5) {
-						Dodge(value, 0);
+						//Dodge(value, 0);
+						m_DodgeDir.X = value;
+						m_DodgeStart = true;
 					}
 				}
 			}
@@ -456,7 +469,9 @@ void APlayerCharacter::MoveRight(float value)
 			if (m_DodgeTrigger == true) {
 				if (m_Dodging != true) {
 					if (value > 0.5 || value < -0.5) {
-						Dodge(0, value);
+						//Dodge(0, value);
+						m_DodgeDir.Y = value;
+						m_DodgeStart = true;
 					}
 				}
 			}

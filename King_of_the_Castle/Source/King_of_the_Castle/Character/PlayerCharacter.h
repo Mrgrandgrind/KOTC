@@ -271,11 +271,17 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dodge", meta = (AllowPrivateAccess = "true", DisplayName = "Dodge Status"))
 	bool m_Dodging;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dodge", meta = (AllowPrivateAccess = "true", DisplayName = "Dodge Start Flag"))
+	bool m_DodgeStart;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dodge", meta = (AllowPrivateAccess = "true", DisplayName = "Dodge Distance"))
 	float m_DodgeDist;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dodge", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Punch Target"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dodge", meta = (AllowPrivateAccess = "true", DisplayName = "Dodge Target"))
 	FVector m_DodgeTo;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dodge", meta = (AllowPrivateAccess = "true", DisplayName = "Dodge Direction"))
+	FVector2D m_DodgeDir;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dodge", meta = (AllowPrivateAccess = "true", DisplayName = "Dodge Speed"))
 	float m_DodgeSpeed;
