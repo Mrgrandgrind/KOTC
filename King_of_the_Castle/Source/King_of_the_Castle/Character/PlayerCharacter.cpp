@@ -402,85 +402,23 @@ void APlayerCharacter::MoveForward(float value)
 	if (!IsStunned) {
 		if (Super::Controller != nullptr && value != 0.0f)
 		{
+			m_DodgeDir.X = value;
 			if (m_DodgeTrigger == true) {
 				if (m_Dodging != true) {
 					if (value > 0.5 || value < -0.5) {
 						//Dodge(value, 0);
-						m_DodgeDir.X = value;
+						
 						m_DodgeStart = true;
 					}
 				}
 			}
 			// find out which way is forward and add the movement
 			else {
-				const FRotator yaw(0.0f, Super::Controller->GetControlRotation().Yaw, 0.0f);
-				Super::AddMovementInput(FRotationMatrix(yaw).GetUnitAxis(EAxis::X), value);
-				if (m_Rushing == true) {
-					Stamina -= m_RushCost;
-					TArray<AActor*> EnemyList;
-					MeleeCapsule->GetOverlappingActors(EnemyList, TSubclassOf<APlayerCharacter>());	
-					
-					//for every enemy that's within the capsule, check and apply collision
-					for (auto Enemies : EnemyList)
-					{
-						if (Enemies != this)
-						{
-							if (Enemies->IsA(APlayerCharacter::StaticClass()))
-							{
-								auto Enemy = (APlayerCharacter*)Enemies;
-								if (MeleeCapsule->IsOverlappingComponent(Enemy->GetCapsuleComponent()))
-								{
-									if (Enemy->Health > 0)
-									{
-										auto loc1 = Enemies->GetActorLocation();
-										auto loc2 = this->GetActorLocation();
-										FVector LaunchDir = (loc1 - loc2);
-										FVector Launch = (LaunchDir.GetSafeNormal() + FVector(0, 0, 0.2f))*m_RushKnockback;
-										Enemy->LaunchCharacter(Launch, 0, 0);
-									}
-								}
-							}
-						}
-					}
-				}
-
-			}
-		
-
-		}
-	}
-}
-
-void APlayerCharacter::MoveRight(float value)
-{
-	//if (Super::Controller != nullptr && value != 0.0f && !this->m_bBlockMovement)
-	//{
-	//	// find out which way is right and add the movement
-	//	const FRotator yaw(0.0f, Super::Controller->GetControlRotation().Yaw, 0.0f);
-	//	AddMovementInput(FRotationMatrix(yaw).GetUnitAxis(EAxis::Y), value);
-	//}
-	if(this->m_bBlockMovement)
-	{
-		return;
-	}
-	if (!IsStunned) {
-		if (Super::Controller != nullptr && value != 0.0f)
-		{
-			if (m_DodgeTrigger == true) {
-				if (m_Dodging != true) {
-					if (value > 0.5 || value < -0.5) {
-						//Dodge(0, value);
-						m_DodgeDir.Y = value;
-						m_DodgeStart = true;
-					}
-				}
-			}
-			else {
-				// find out which way is right and add the movement
-				const FRotator yaw(0.0f, Super::Controller->GetControlRotation().Yaw, 0.0f);
-				AddMovementInput(FRotationMatrix(yaw).GetUnitAxis(EAxis::Y), value);
-				if (m_Rushing == true) {
-					Stamina -= m_RushCost;
+				if (!m_ChargeMove) {
+					const FRotator yaw(0.0f, Super::Controller->GetControlRotation().Yaw, 0.0f);
+					Super::AddMovementInput(FRotationMatrix(yaw).GetUnitAxis(EAxis::X), value);
+					if (m_Rushing == true) {
+						Stamina -= m_RushCost;
 						TArray<AActor*> EnemyList;
 						MeleeCapsule->GetOverlappingActors(EnemyList, TSubclassOf<APlayerCharacter>());
 
@@ -506,8 +444,75 @@ void APlayerCharacter::MoveRight(float value)
 								}
 							}
 						}
+					}
+
 				}
-					
+			}
+
+		}
+	}
+}
+
+void APlayerCharacter::MoveRight(float value)
+{
+	//if (Super::Controller != nullptr && value != 0.0f && !this->m_bBlockMovement)
+	//{
+	//	// find out which way is right and add the movement
+	//	const FRotator yaw(0.0f, Super::Controller->GetControlRotation().Yaw, 0.0f);
+	//	AddMovementInput(FRotationMatrix(yaw).GetUnitAxis(EAxis::Y), value);
+	//}
+	if(this->m_bBlockMovement)
+	{
+		return;
+	}
+	if (!IsStunned) {
+		if (Super::Controller != nullptr && value != 0.0f)
+		{
+			m_DodgeDir.Y = value;
+			if (m_DodgeTrigger == true) {
+				if (m_Dodging != true) {
+					if (value > 0.5 || value < -0.5) {
+						//Dodge(0, value);
+						
+						m_DodgeStart = true;
+					}
+				}
+			}
+			else {
+				// find out which way is right and add the movement
+				if (!m_ChargeMove) {
+					const FRotator yaw(0.0f, Super::Controller->GetControlRotation().Yaw, 0.0f);
+					AddMovementInput(FRotationMatrix(yaw).GetUnitAxis(EAxis::Y), value);
+					if (m_Rushing == true) {
+						Stamina -= m_RushCost;
+						TArray<AActor*> EnemyList;
+						MeleeCapsule->GetOverlappingActors(EnemyList, TSubclassOf<APlayerCharacter>());
+
+						//for every enemy that's within the capsule, check and apply collision
+						for (auto Enemies : EnemyList)
+						{
+							if (Enemies != this)
+							{
+								if (Enemies->IsA(APlayerCharacter::StaticClass()))
+								{
+									auto Enemy = (APlayerCharacter*)Enemies;
+									if (MeleeCapsule->IsOverlappingComponent(Enemy->GetCapsuleComponent()))
+									{
+										if (Enemy->Health > 0)
+										{
+											auto loc1 = Enemies->GetActorLocation();
+											auto loc2 = this->GetActorLocation();
+											FVector LaunchDir = (loc1 - loc2);
+											FVector Launch = (LaunchDir.GetSafeNormal() + FVector(0, 0, 0.2f))*m_RushKnockback;
+											Enemy->LaunchCharacter(Launch, 0, 0);
+										}
+									}
+								}
+							}
+						}
+					}
+
+				}
 			}
 		}
 	}
