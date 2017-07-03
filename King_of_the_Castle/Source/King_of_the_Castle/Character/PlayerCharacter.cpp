@@ -213,22 +213,6 @@ void APlayerCharacter::Tick(float delta)
 
 		// Update modify brush
 		this->m_SecondaryBrush->Update(this, this->m_BuildArea, this->m_TraceResult);
-
-#if WITH_EDITOR
-		// If we want to draw the line trace (for debugging purposes)
-		if (this->m_bDebugDrawTrace)
-		{
-			if (this->m_TraceResult.GetComponent() == nullptr)
-			{
-				DrawDebugLine(Super::GetWorld(), start, end, FColor::Red, false, -1.0f, 0.0f, 2.0f);
-			}
-			else
-			{
-				DrawDebugLine(Super::GetWorld(), start, this->m_TraceResult.ImpactPoint, FColor::Green, false, -1.0f, 0.0f, 2.0f);
-				DrawDebugLine(Super::GetWorld(), this->m_TraceResult.ImpactPoint, end, FColor::Red, false, -1.0f, 0.0f, 2.0f);
-			}
-		}
-#endif
 	}
 }
 

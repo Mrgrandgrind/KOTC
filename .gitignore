@@ -15,5 +15,6 @@ King_of_the_Castle/*.suo
 King_of_the_Castle/*.xcodeproj
 King_of_the_Castle/*.xcworkspace
 King_of_the_Castle/Content/Maps/*_BuiltData.uasset
+King_of_the_Castle/Content/Maps/*/*_BuiltData.uasset
 King_of_the_Castle/Plugins/Wwise/Binaries
 King_of_the_Castle/Plugins/Wwise/Intermediate

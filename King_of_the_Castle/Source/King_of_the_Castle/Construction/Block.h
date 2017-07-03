@@ -20,8 +20,7 @@ public:
 
 	virtual void BeginPlay() override;
 
-	// Whether or not this block can be destroyed
-	virtual bool IsDestructable() { return true; }
+	virtual void Tick(float delta) override;
 
 	// Create a block entity for this block and then call DestroyBlock on ourself
 	virtual void DropBlock(AActor *source, const bool& restrictPickup = true);
@@ -32,12 +31,18 @@ public:
 	// Set the blocks health
 	virtual void SetHealth(const float& health);
 
+	// Whether or not this block can be destroyed
+	virtual bool IsDestructable() const { return true; }
+
 	// The id of this block
 	virtual FName GetNameId() { return FName("Undefined"); }
 
 	// Get the material of this block. If the material is not dynamic, make it.
 	virtual UMaterialInstanceDynamic* GetDynamicMaterial() const;
 
+	// Lock the x and y coordinate. 
+	FORCEINLINE void SetXYLock(const bool& lock) { this->m_bLockXY = lock; if(lock) this->m_LockXYPos.Set(VECTOR3_TO_VECTOR2(Super::GetActorLocation())); }
+	
 	FORCEINLINE const float& GetHealth() const { return this->m_Health; }
 
 	FORCEINLINE const float& GetMaxHealth() const { return this->m_MaxHealth; }
@@ -89,6 +94,10 @@ protected:
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Team", meta = (AllowPrivateAccess = "true", DisplayName = "Team"))
 	int m_Team;
+
+	bool m_bLockXY;
+
+	FVector2D m_LockXYPos;
 
 	// Blocks used to make this block
 	TArray<ABlock*> m_Recipe;

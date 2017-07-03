@@ -21,7 +21,7 @@ public:
 	virtual void Tick(float delta) override;
 	
 	// Entity blocks cannot be destroyed
-	virtual bool IsDestructable() override { return false; }
+	virtual bool IsDestructable() const override { return false; }
 
 	virtual FName GetNameId() override { return FName("BlockEntity"); }
 

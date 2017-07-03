@@ -298,6 +298,20 @@ void UPrimaryBrush::UpdateChain(ABuildArea* area, const FHitResult& trace, bool&
 
 void UPrimaryBrush::UpdateRegular(ABuildArea* area, const FHitResult& trace, bool& show)
 {
+#if WITH_EDITOR
+	if (this->m_bDebugRenderTrace)
+	{
+		if (trace.GetComponent() == nullptr)
+		{
+			DrawDebugLine(Super::GetWorld(), trace.TraceStart, trace.TraceEnd, FColor::Red, false, -1.0f, 0.0f, 2.0f);
+		}
+		else
+		{
+			DrawDebugLine(Super::GetWorld(), trace.TraceStart, trace.ImpactPoint, FColor::Green, false, -1.0f, 0.0f, 2.0f);
+			DrawDebugLine(Super::GetWorld(), trace.ImpactPoint, trace.TraceEnd, FColor::Red, false, -1.0f, 0.0f, 2.0f);
+		}
+	}
+#endif
 	// If we are aiming at something
 	if (trace.GetComponent() != nullptr)
 	{
@@ -312,6 +326,12 @@ void UPrimaryBrush::UpdateRegular(ABuildArea* area, const FHitResult& trace, boo
 			FVector point = trace.ImpactPoint + trace.ImpactNormal * area->GetCellSize() / 2.0f;
 			Super::GetWorld()->LineTraceSingleByChannel(belowResult, point, point - FVector(0.0f, 0.0f, area->GetCellSize().Z),
 				ECollisionChannel::ECC_WorldDynamic, FCollisionQueryParams::DefaultQueryParam);
+#if WITH_EDITOR
+			if (this->m_bDebugRenderTrace)
+			{
+				DrawDebugLine(Super::GetWorld(), belowResult.TraceStart, belowResult.TraceEnd, FColor::Magenta, false, -1.0f, 0.0f, 2.0f);
+			}
+#endif
 
 			if (Cast<ABlock>(belowResult.GetActor()) == nullptr)
 			{
@@ -327,11 +347,14 @@ void UPrimaryBrush::UpdateRegular(ABuildArea* area, const FHitResult& trace, boo
 		FVector point = trace.TraceStart, diff = (trace.IsValidBlockingHit()
 			? trace.ImpactPoint : trace.TraceEnd) - trace.TraceStart;
 		float distance = diff.Size();
-		diff = diff.GetSafeNormal() * area->GetCellSize() * 0.25f;
+		diff = diff.GetSafeNormal() * area->GetCellSize() * 0.5f;
 
 		AActor *below = nullptr;
-		while (distance > 0)
+		while (FMath::FloorToFloat(distance) > 0.0f)
 		{
+			point += diff;
+			distance -= diff.Size();
+
 			FIntVector cell;
 			if (area->GetGridCell(point, cell))
 			{
@@ -339,17 +362,41 @@ void UPrimaryBrush::UpdateRegular(ABuildArea* area, const FHitResult& trace, boo
 				FHitResult belowResult;
 				Super::GetWorld()->LineTraceSingleByChannel(belowResult, point, point - FVector(0.0f, 0.0f, area->GetCellSize().Z),
 					ECollisionChannel::ECC_WorldDynamic, FCollisionQueryParams::DefaultQueryParam);
-
+#if WITH_EDITOR
+				if(this->m_bDebugRenderTrace)
+				{
+					if(belowResult.IsValidBlockingHit())
+					{
+						DrawDebugLine(Super::GetWorld(), belowResult.TraceStart, belowResult.ImpactPoint, FColor::Cyan, false, -1.0f, 0.0f, 2.0f);
+					}
+					else
+					{
+						DrawDebugLine(Super::GetWorld(), belowResult.TraceStart, belowResult.TraceEnd, FColor::Blue, false, -1.0f, 0.0f, 2.0f);
+					}
+				}
+#endif
 				// Check to see if there's a block below
 				ABlock *block = Cast<ABlock>(belowResult.GetActor());
 				if (block != nullptr)
 				{
-					// Check to see if the block below is visible to the player
-					Super::GetWorld()->LineTraceSingleByChannel(belowResult, trace.TraceStart, belowResult.ImpactPoint,
-						ECollisionChannel::ECC_WorldDynamic, FCollisionQueryParams::DefaultQueryParam);
-					//DrawDebugLine(Super::GetWorld(), belowResult.TraceStart, belowResult.TraceEnd, FColor::Orange, false, -1.0f, 0.0f, 2.0f);
 
-					if(belowResult.IsValidBlockingHit() && belowResult.GetActor() == block)
+					// Check to see if the block below is visible to the player
+					Super::GetWorld()->LineTraceSingleByChannel(belowResult, trace.TraceStart, belowResult.ImpactPoint - belowResult.ImpactNormal,
+						ECollisionChannel::ECC_WorldDynamic, FCollisionQueryParams::DefaultQueryParam);
+#if WITH_EDITOR
+					if (this->m_bDebugRenderTrace)
+					{
+						if (belowResult.GetActor() == block)
+						{
+							DrawDebugLine(Super::GetWorld(), belowResult.TraceStart, belowResult.ImpactPoint, FColor::Orange, false, -1.0f, 0.0f, 2.0f);
+						}
+						else
+						{
+							DrawDebugLine(Super::GetWorld(), belowResult.TraceStart, belowResult.TraceEnd, FColor::Magenta, false, -1.0f, 0.0f, 2.0f);
+						}
+					}
+#endif
+					if(belowResult.GetActor() == block)
 					{
 						below = block;
 
@@ -363,8 +410,6 @@ void UPrimaryBrush::UpdateRegular(ABuildArea* area, const FHitResult& trace, boo
 					break;
 				}
 			}
-			point += diff;
-			distance -= diff.Size();
 		}
 	}
 	// If the brush is valid, move it to the expected location

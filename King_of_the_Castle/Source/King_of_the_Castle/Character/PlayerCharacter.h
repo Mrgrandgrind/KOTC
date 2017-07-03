@@ -348,10 +348,4 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation Flags")
 	bool AnimIdle;
-	
-// DEBUG VARIABLES //
-	// Draw the line trace for block placement
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Debug", meta = (AllowPrivateAccess = "true", DisplayName = "Draw trace"))
-	bool m_bDebugDrawTrace;
-/////////////////////
 };

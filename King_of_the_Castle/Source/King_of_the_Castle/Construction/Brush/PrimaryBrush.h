@@ -51,4 +51,7 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Type", meta = (AllowPrivateAccess = "true", DisplayName = "Data Classes"))
 	TArray<TSubclassOf<UBlockData>> m_BlockDataClasses;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Debug", meta = (AllowPrivateAccess = "true", DisplayName = "Render Trace"))
+	bool m_bDebugRenderTrace;
 };

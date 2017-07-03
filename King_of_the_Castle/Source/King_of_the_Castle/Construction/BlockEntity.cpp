@@ -190,6 +190,7 @@ TArray<ABlockEntity*> ABlockEntity::SpawnBlockEntity(ABlock *block, UWorld* worl
 		ABlockEntity *entity = (ABlockEntity*)ABlock::SpawnBlock(world, ABlockEntity::StaticClass(), block->GetTeam(), source);
 		if (entity != nullptr)
 		{
+			entity->SetXYLock(false);
 			entity->SetBlockOwner(source);
 			entity->SetTo(recipe[i]);
 			entity->SetRestrictedPickup(restrictPickup);

@@ -25,6 +25,8 @@
 
 ////
 #define VECTOR_SPLIT(vector) vector.X, vector.Y, vector.Z
+#define VECTOR3_TO_VECTOR2(vector) vector.X, vector.Y
+
 #define UE_LOG_RAND() UE_LOG(LogClass, Log, TEXT("%d"), FMath::Rand())
 #define UE_LOG_INT(value) UE_LOG(LogClass, Log, TEXT("%d"), value)
 #define UE_LOG_FLOAT(value) UE_LOG(LogClass, Log, TEXT("%f"), value)
