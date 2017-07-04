@@ -18,14 +18,13 @@
 #include "Runtime/Engine/Classes/Engine/LocalPlayer.h"
 
 #define TRACE_SOCKET TEXT("Head") // The socket (of the player) which the trace originates from
-#define REACH_DISTANCE (150.0f * KOTC_CONSTRUCTION_REACH_DISTANCE) // The reach distance of the trace (roughly 4 blocks)
 
 #define DROP_STRENGTH_MAX 750.0f
 #define DROP_STRENGTH_MIN 900.0f
 #define DROP_ROTATION_OFFSET 100.0f //degrees
 
 // Sets default values
-APlayerCharacter::APlayerCharacter() : m_Team(-1), m_PressTimer(0.0f), m_bPressed(false)
+APlayerCharacter::APlayerCharacter() : m_Team(-1), m_PressTimer(0.0f), m_bPressed(false), m_BuildReach(DEFAULT_REACH_DISTANCE)
 {
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	Super::PrimaryActorTick.bCanEverTick = true;
@@ -209,12 +208,9 @@ void APlayerCharacter::Tick(float delta)
 		FVector cameraToPlayer = Super::GetMesh()->GetSocketLocation(TRACE_SOCKET) - cameraLoc;
 
 		FVector start = cameraLoc + forward * FVector::DotProduct(cameraToPlayer, forward);
-		FVector end = start + forward * (/*cameraToPlayer.Size() + */REACH_DISTANCE);
-#if KOTC_CONSTRUCTION_INFINITE_REACH
-		end += forward * 100000000000.0f; //extend the reach to a massive distance (not actually infinite)
-#endif
+		FVector end = start + forward * (/*cameraToPlayer.Size() + */this->m_BuildReach);
 
-										  // Perform the trace from the player in the direction of the camera
+		// Perform the trace from the player in the direction of the camera
 		FCollisionQueryParams params;
 		params.AddIgnoredActor(this);
 		Super::GetWorld()->LineTraceSingleByChannel(this->m_TraceResult, start, end, ECollisionChannel::ECC_WorldDynamic, params);

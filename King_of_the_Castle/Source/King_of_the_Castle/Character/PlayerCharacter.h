@@ -5,6 +5,8 @@
 #include "GameFramework/Character.h"
 #include "PlayerCharacter.generated.h"
 
+#define DEFAULT_REACH_DISTANCE (KOTC_CONSTRUCTION_REACH_MULTIPLIER * KOTC_CONSTRUCTION_REACH_DISTANCE) // The reach distance of the trace (roughly 4 blocks)
+
 UCLASS()
 class KING_OF_THE_CASTLE_API APlayerCharacter : public ACharacter
 {
@@ -141,6 +143,8 @@ public:
 	FORCEINLINE void SetBuildArea(class ABuildArea *area) { this->m_BuildArea = area; }
 
 	FORCEINLINE const bool& IsPlayerStunned() const { return this->IsStunned; }
+
+	FORCEINLINE void SetBuildReach(const float& reach) { this->m_BuildReach = reach; }
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
@@ -322,6 +326,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Build", meta = (AllowPrivateAccess = "true", DisplayName = "Build Enabled"))
 	bool m_bBuildingEnabled;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Build", meta = (AllowPrivateAccess = "true", DisplayName = "Build Reach"))
+	float m_BuildReach;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Build", meta = (AllowPrivateAccess = "true", DisplayName = "Build Area"))
 	class ABuildArea *m_BuildArea;
