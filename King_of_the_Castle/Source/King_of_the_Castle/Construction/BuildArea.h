@@ -88,9 +88,6 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Grid", meta = (AllowPrivateAccess = "true", DisplayName = "[Debug] Constrain Placed Blocks"))
 	bool m_DebugConstrain;
 
-	UPROPERTY(EditAnywhere, Category = "Grid", meta = (AllowPrivateAccess = "true", DisplayName = "[Debug] Lock XY of Placed Blocks"))
-	bool m_DebugLockXY;
-
 	UPROPERTY(EditAnywhere, Category = "Grid", meta = (AllowPrivateAccess = "true", DisplayName = "[Debug] Set Placed Blocks Team"))
 	int m_DebugTeam;
 	/////////////////////

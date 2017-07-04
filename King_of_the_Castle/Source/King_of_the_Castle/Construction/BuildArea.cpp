@@ -222,34 +222,17 @@ void ABuildArea::PostEditChangeProperty(FPropertyChangedEvent& event)
 				FBodyInstance *body = ((ABlock*)*itr)->GetMesh()->GetBodyInstance();
 				if (body != nullptr)
 				{
-					body->SetDOFLock(EDOFMode::Default);
 					body->bLockXRotation = true;
 					body->bLockYRotation = true;
 					body->bLockZRotation = true;
 					body->bLockXTranslation = true;
 					body->bLockYTranslation = true;
+					body->SetDOFLock(EDOFMode::SixDOF);
 				}
 			}
 			++itr;
 		}
 		this->m_DebugConstrain = false;
-	}
-	if (name == GET_MEMBER_NAME_CHECKED(ABuildArea, m_DebugLockXY))
-	{
-		FActorIterator itr(Super::GetWorld());
-		while (itr)
-		{
-			FVector origin, extent;
-			itr->GetActorBounds(false, origin, extent);
-
-			FIntVector cell;
-			if (itr->IsA(ABlock::StaticClass()) && this->GetGridCell(origin + extent / 2.0f, cell))
-			{
-				((ABlock*)*itr)->SetXYLock(true);
-			}
-			++itr;
-		}
-		this->m_DebugLockXY = false;
 	}
 	if (name == GET_MEMBER_NAME_CHECKED(ABuildArea, m_DebugTeam))
 	{

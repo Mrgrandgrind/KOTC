@@ -28,8 +28,6 @@ ABlock::ABlock() : m_PointValue(1), m_Health(BLOCK_DEFAULT_HEALTH), m_MaxHealth(
 	this->m_BlockMaxHealthColor = BLOCK_DEFAULT_MAX_HEALTH_COLOR;
 	Super::SetActorScale3D(FVector(BLOCK_DEFAULT_SCALE));
 
-	Super::PrimaryActorTick.bCanEverTick = true;
-
 	//this->GetMesh()->GetBodyInstance()->AngularDamping = 100000000.0f;
 	//
 	//this->GetMesh()->GetBodyInstance()->SetMaxAngularVelocity(0.0f, false);
@@ -46,31 +44,13 @@ void ABlock::BeginPlay()
 	FBodyInstance *body = this->GetMesh()->GetBodyInstance();
 	if (body != nullptr)
 	{
-		body->SetDOFLock(EDOFMode::SixDOF);
 		body->bLockXRotation = true;
 		body->bLockYRotation = true;
 		body->bLockZRotation = true;
 		body->bLockXTranslation = true;
 		body->bLockYTranslation = true;
 		body->bLockZTranslation = false;
-	}
-}
-
-void ABlock::Tick(float delta)
-{
-	Super::Tick(delta);
-
-	if(this->m_bLockXY)
-	{
-		const FVector& loc = Super::GetActorLocation();
-		if(!FMath::IsNearlyEqual(this->m_LockXYPos.X, loc.X) || !FMath::IsNearlyEqual(this->m_LockXYPos.Y, loc.Y))
-		{
-			Super::SetActorLocation(FVector(this->m_LockXYPos.X, this->m_LockXYPos.Y, loc.Z));
-		}
-		if(!Super::GetActorRotation().IsNearlyZero())
-		{
-			Super::SetActorRotation(FRotator(0.0f));
-		}
+		body->SetDOFLock(EDOFMode::SixDOF);
 	}
 }
 
@@ -116,7 +96,6 @@ ABlock* ABlock::SpawnBlock(UWorld *world, TSubclassOf<ABlock> type, const int& t
 	ABlock *block = world->SpawnActor<ABlock>(type, location, rotation);
 	if (block != nullptr)
 	{
-		block->SetXYLock(true);
 		block->SetTeam(team);
 
 		ABaseGameMode *gamemode = Cast<ABaseGameMode>(world->GetAuthGameMode());

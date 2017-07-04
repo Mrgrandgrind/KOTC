@@ -20,8 +20,6 @@ public:
 
 	virtual void BeginPlay() override;
 
-	virtual void Tick(float delta) override;
-
 	// Create a block entity for this block and then call DestroyBlock on ourself
 	virtual void DropBlock(AActor *source, const bool& restrictPickup = true);
 
@@ -39,9 +37,6 @@ public:
 
 	// Get the material of this block. If the material is not dynamic, make it.
 	virtual UMaterialInstanceDynamic* GetDynamicMaterial() const;
-
-	// Lock the x and y coordinate. 
-	FORCEINLINE void SetXYLock(const bool& lock) { this->m_bLockXY = lock; if(lock) this->m_LockXYPos.Set(VECTOR3_TO_VECTOR2(Super::GetActorLocation())); }
 	
 	FORCEINLINE const float& GetHealth() const { return this->m_Health; }
 
