@@ -71,14 +71,6 @@ public:
 	virtual void OnBlockPickup(class ABlockEntity *block, class APlayerCharacter *player, const int& newCount) { }
 
 	virtual void OnBlockDrop(class ABlockEntity *block, class APlayerCharacter *player, const int& newCount) { }
-
-	//// This function is called whenever a block is placed. Implementation is for blueprints.
-	//UFUNCTION(BlueprintImplementableEvent)
-	//void OnBlockPlace(class ABlock *block, const int& team, const int& pointValue);
-
-	//// This function is called whenever a block is destroyed. Implementation is for blueprints.
-	//UFUNCTION(BlueprintImplementableEvent)
-	//void OnBlockDestroy(class AActor *source, const int& team, const int& pointValue);
 	
 #if WITH_EDITOR
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;

@@ -14,11 +14,11 @@
 #define KOTC_CONSTRUCTION_CHAIN_AXIS_LOCK true	// Whether or not to lock the axis when chaining blocks
 
 #define KOTC_CONSTRUCTION_REACH_DISTANCE 4		// Number of blocks the player can reach using the brush
+#define KOTC_CONSTRUCTION_REACH_MULTIPLIER 150.0f //Multiplier for distance. 150 is the size of a basic block.
 //////////////////
 
 // Cheats //
 //////////// All cheats should be disabled before commit //
-#define KOTC_CONSTRUCTION_INFINITE_REACH false	// Whether or not the brush reach of the player should be unrestricted
 #define KOTC_CONSTRUCTION_INFINITE_BLOCKS false	// Whether or not the player should have infinite blocks
 #define KOTC_CONSTRUCTION_QUICK_CRAFT false		// Makes all crafting times equal to 1/4 of a second
 ////////////

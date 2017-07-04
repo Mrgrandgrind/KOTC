@@ -14,6 +14,15 @@ class KING_OF_THE_CASTLE_API ADefaultPlayerController : public APlayerController
 	GENERATED_BODY()
 	
 public:
-	virtual void BeginPlay() override;	
-	
+	UFUNCTION(Exec)
+	void KOTC_SetTeam(const int& team);
+
+	UFUNCTION(Exec)
+	void KOTC_SetBlockReach(const float& reach);
+
+	UFUNCTION(Exec)
+	void KOTC_SetBlockCount(const int& count);
+
+private:
+	class APlayerCharacter* GetCharacter();
 };

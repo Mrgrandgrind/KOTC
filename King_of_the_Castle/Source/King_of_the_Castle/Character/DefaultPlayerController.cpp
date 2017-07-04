@@ -3,9 +3,45 @@
 #include "King_of_the_Castle.h"
 #include "DefaultPlayerController.h"
 
-#include "HUD/GameHUD.h"
+#include "Construction/BlockData.h"
+#include "Character/PlayerCharacter.h"
+#include "Construction/Brush/PrimaryBrush.h"
 
-void ADefaultPlayerController::BeginPlay()
+APlayerCharacter* ADefaultPlayerController::GetCharacter()
 {
-	Super::BeginPlay();
+	return Cast<APlayerCharacter>(Super::GetPawn());
+}
+
+void ADefaultPlayerController::KOTC_SetTeam(const int& team)
+{
+	APlayerCharacter *character = this->GetCharacter();
+	if (character != nullptr)
+	{
+		character->SetTeam(team);
+	}
+}
+
+void ADefaultPlayerController::KOTC_SetBlockReach(const float& reach)
+{
+	APlayerCharacter *character = this->GetCharacter();
+	if (character != nullptr)
+	{
+		character->SetBuildReach(reach <= 0 ? DEFAULT_REACH_DISTANCE 
+			: (reach * KOTC_CONSTRUCTION_REACH_MULTIPLIER));
+	}
+}
+
+void ADefaultPlayerController::KOTC_SetBlockCount(const int& count)
+{
+	APlayerCharacter *character = this->GetCharacter();
+	if (character == nullptr)
+	{
+		return;
+	}
+	UPrimaryBrush *brush = character->GetPrimaryBrush();
+	UBlockData *data = brush->GetBlockData(brush->GetSelectedIndex());
+	if (data != nullptr)
+	{
+		data->SetCount(brush, count);
+	}
 }
