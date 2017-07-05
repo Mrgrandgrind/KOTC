@@ -201,7 +201,7 @@ void ABuildArea::PostEditChangeProperty(FPropertyChangedEvent& event)
 			{
 				FVector out;
 				this->GetGridLocation(cell, out);
-				itr->SetActorRotation(FRotator(0.0f));
+				itr->SetActorRotation(FRotator::ZeroRotator);
 				itr->SetActorLocation(out);
 			}
 			++itr;

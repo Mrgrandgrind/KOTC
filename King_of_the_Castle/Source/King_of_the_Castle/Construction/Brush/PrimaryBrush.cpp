@@ -2,9 +2,9 @@
 #include "PrimaryBrush.h"
 
 #include "../Block.h"
+#include "../Prefab.h"
 #include "../BlockData.h"
 #include "../BuildArea.h"
-#include "../BlockEntity.h"
 #include "DrawDebugHelpers.h"
 
 #define DEFAULT_BLOCK_COUNT 0
@@ -18,7 +18,7 @@
 #define DATA_FLAG_LOCATION TEXT("/Game/Blueprints/Construction/BrushData/BP_FlagBlock_Data")
 #define DATA_BASIC_LOCATION TEXT("/Game/Blueprints/Construction/BrushData/BP_BasicBlock_Data")
 
-UPrimaryBrush::UPrimaryBrush() : m_bValid(false), m_Child(nullptr), m_SelectedTypeIndex(0)
+UPrimaryBrush::UPrimaryBrush() : m_bValid(false), m_SelectedTypeIndex(0)
 {
 	//Set default create brush blocks. Can be modified in blueprints.
 	static ConstructorHelpers::FClassFinder<UBlockData> DataBasic(DATA_BASIC_LOCATION);
@@ -112,42 +112,65 @@ void UPrimaryBrush::SetSelectedIndex(int index)
 
 void UPrimaryBrush::UpdateBlockChild()
 {
-	if (this->m_Child != nullptr)
+	for(AActor *actor : this->m_ChildBlocks)
 	{
-		this->m_Child->Destroy();
-		this->m_Child = nullptr;
+		actor->Destroy();
 	}
-	UBlockData *data = this->m_BlockData[this->m_SelectedTypeIndex];
-	if (data == nullptr || Super::GetWorld() == nullptr)
+	this->m_ChildBlocks.Empty();
+
+	auto addChild = [this](UBlockData *data, FVector offset = FVector::ZeroVector)
 	{
-		return;
+		if(data == nullptr || Super::GetWorld() == nullptr)
+		{
+			return;
+		}
+		ABlock *block = Super::GetWorld()->SpawnActor<ABlock>(data->GetClassType());
+		if (block != nullptr)
+		{
+			UStaticMeshComponent *mesh = block->GetMesh();
+			mesh->SetSimulatePhysics(false);
+			mesh->bGenerateOverlapEvents = false;
+			mesh->SetWorldScale3D(mesh->GetComponentScale() * 0.975f); //magic number. used to make the block fit inside the brush.
+			mesh->bOnlyOwnerSee = true;
+
+			if (data->GetGhostMaterial() != nullptr)
+			{
+				mesh->SetMaterial(0, data->GetGhostMaterial());
+			}
+			if (Super::m_Team != nullptr)
+			{
+				block->SetTeam(*Super::m_Team);
+			}
+			mesh->SetCollisionProfileName(TEXT("NoCollision"));
+			mesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+			block->SetOwner(Super::GetAttachmentRootActor());
+			block->SetActorHiddenInGame(!Super::IsBrushVisible());
+			block->SetActorRelativeLocation(FVector(0.0f, -Super::Bounds.BoxExtent.Y, 0.0f) + offset);
+			block->AttachToComponent(this, FAttachmentTransformRules::KeepRelativeTransform);
+
+			this->m_ChildBlocks.Add(block);
+		}
+	};
+
+	if(this->m_Prefab != nullptr)
+	{
+		APrefab *prefab = Super::GetWorld()->SpawnActor<APrefab>(this->m_Prefab);
+		if(prefab == nullptr)
+		{
+			return;
+		}
+		prefab->SetActorHiddenInGame(true);
+
+		for(const FPrefabBlock& pb : prefab->GetBlocks())
+		{
+			addChild(this->GetBlockData(pb.id), FVector(pb.offset) * Super::Bounds.BoxExtent * 2.0f);
+		}
+		prefab->Destroy();
 	}
-	ABlock *block = Super::GetWorld()->SpawnActor<ABlock>(data->GetClassType());
-	if (block != nullptr)
+	else
 	{
-		UStaticMeshComponent *mesh = block->GetMesh();
-		mesh->SetSimulatePhysics(false);
-		mesh->bGenerateOverlapEvents = false;
-		mesh->SetWorldScale3D(mesh->GetComponentScale() * 0.975f); //magic number. used to make the block fit inside the brush.
-		mesh->bOnlyOwnerSee = true;
-
-		if (data->GetGhostMaterial() != nullptr)
-		{
-			mesh->SetMaterial(0, data->GetGhostMaterial());
-		}
-		if (Super::m_Team != nullptr)
-		{
-			block->SetTeam(*Super::m_Team);
-		}
-		mesh->SetCollisionProfileName(TEXT("NoCollision"));
-		mesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-
-		block->SetOwner(Super::GetAttachmentRootActor());
-		block->SetActorHiddenInGame(!Super::IsBrushVisible());
-		block->SetActorRelativeLocation(FVector(0.0f, -Super::Bounds.BoxExtent.Y, 0.0f));
-		block->AttachToComponent(this, FAttachmentTransformRules::KeepRelativeTransform);
-
-		this->m_Child = block;
+		addChild(this->m_BlockData[this->m_SelectedTypeIndex]);
 	}
 }
 
@@ -160,11 +183,6 @@ ABlock* UPrimaryBrush::Action(ABuildArea* area, AActor* source)
 	if (!Super::m_bChainMode && Super::m_Chained.Num() > 0)
 	{
 		return nullptr;
-	}
-	UBlockData *data = this->GetBlockData(this->m_SelectedTypeIndex);
-	if (data == nullptr || data->GetCount() <= 0)
-	{
-		return nullptr; //none of this block remaining to place
 	}
 	// If chaining, ensure there's a blocking object below where we're trying to place
 	if (Super::m_bChainMode)
@@ -180,18 +198,50 @@ ABlock* UPrimaryBrush::Action(ABuildArea* area, AActor* source)
 			return nullptr;
 		}
 	}
-	// If everything is fine and we should try to spawn
-	ABlock *actor = area->SpawnBlockAt(Super::m_ActiveCell, data->GetClassType(), Super::GetOwner());
-	if (actor != nullptr)
+	TArray<ABlock*> placed;
+	for(ABlock *block : this->m_ChildBlocks)
 	{
-		// Spawn the block in the air slightly so it drops
-		FVector position = actor->GetActorLocation();
-		position.Z += BRUSH_SPAWN_Z_OFFSET;
-		actor->SetActorLocation(position);
+		UBlockData *data = this->GetBlockData(block->GetNameId());
+		if (data == nullptr || data->GetCount() <= 0)
+		{
+			continue;
+		}
+		FIntVector cell;
+		area->GetGridCell(block->GetActorLocation(), cell);
 
-		data->SetCount(this, data->GetCount() - 1);
+		ABlock *actor = area->SpawnBlockAt(cell, data->GetClassType(), Super::GetOwner());
+		if (actor != nullptr)
+		{
+			// Spawn the block in the air slightly so it drops
+			FVector position = actor->GetActorLocation();
+			position.Z += BRUSH_SPAWN_Z_OFFSET;
+			actor->SetActorLocation(position);
+
+			data->SetCount(this, data->GetCount() - 1);
+
+			placed.Add(actor);
+		}
 	}
-	return actor;
+	//TODO
+	return placed.Num() > 0 ? placed[0] : nullptr;
+
+	//UBlockData *data = this->GetBlockData(this->m_SelectedTypeIndex);
+	//if (data == nullptr || data->GetCount() <= 0)
+	//{
+	//	return nullptr; //none of this block remaining to place
+	//}
+	//// If everything is fine and we should try to spawn
+	//ABlock *actor = area->SpawnBlockAt(Super::m_ActiveCell, data->GetClassType(), Super::GetOwner());
+	//if (actor != nullptr)
+	//{
+	//	// Spawn the block in the air slightly so it drops
+	//	FVector position = actor->GetActorLocation();
+	//	position.Z += BRUSH_SPAWN_Z_OFFSET;
+	//	actor->SetActorLocation(position);
+
+	//	data->SetCount(this, data->GetCount() - 1);
+	//}
+	//return actor;
 }
 
 void UPrimaryBrush::UpdateChain(ABuildArea* area, const FHitResult& trace, bool& show)
@@ -445,9 +495,9 @@ void UPrimaryBrush::Update(APlayerCharacter *character, ABuildArea* area, const 
 	Super::SetBrushVisible(show && !overlapped);
 
 	// TODO visibility hack. do it properly
-	if (this->m_Child != nullptr)
+	for(AActor *child : this->m_ChildBlocks)
 	{
-		this->m_Child->SetActorHiddenInGame(!Super::IsBrushVisible());
+		child->SetActorHiddenInGame(!Super::IsBrushVisible());
 	}
 
 	Super::Update(character, area, trace);
