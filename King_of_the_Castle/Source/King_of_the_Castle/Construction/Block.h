@@ -3,7 +3,7 @@
 #include "GameFramework/Actor.h"
 #include "Block.generated.h"
 
-#define BLOCK_DEFAULT_MASS 5000000.0f //kg
+#define BLOCK_DEFAULT_MASS 500.0f //kg
 #define BLOCK_DEFAULT_HEALTH 100.0f
 #define BLOCK_DEFAULT_SCALE 1.0f //74.660522f
 #define BRUSH_SPAWN_Z_OFFSET 16.0f // How far up from desired location to spawn a block when placed (so it falls into place)

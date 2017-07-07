@@ -38,6 +38,12 @@ void ABlockEntity::BeginPlay()
 	Super::BeginPlay();
 
 	Super::m_Mesh->SetMassOverrideInKg(NAME_None, 1.0f);
+
+	FBodyInstance *body = this->GetMesh()->GetBodyInstance();
+	if (body != nullptr)
+	{
+		body->SetDOFLock(EDOFMode::None);
+	}
 }
 
 void ABlockEntity::SetTo(ABlock *block)

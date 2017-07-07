@@ -6,11 +6,12 @@
 #include "Engine/Canvas.h"
 #include "GameFramework/HUD.h"
 
-#include "../Gamemode/BaseGameMode.h"
-#include "../Character/PlayerCharacter.h"
-#include "../Construction/BlockData.h"
-#include "../Construction/Brush/PrimaryBrush.h"
-#include "../Construction/Blocks/BasicBlock.h"
+#include "Gamemode/BaseGameMode.h"
+#include "Character/PlayerCharacter.h"
+#include "Construction/Prefab.h"
+#include "Construction/BlockData.h"
+#include "Construction/Brush/PrimaryBrush.h"
+#include "Construction/Blocks/BasicBlock.h"
 
 #define RADIUS_PERC 0.8f
 
@@ -47,11 +48,25 @@
 #define NAME_THETA_BEGIN TEXT("Theta Begin")
 #define NAME_THETA_END TEXT("Theta End")
 
+#define PREFAB_3x1x3 TEXT("'/Game/Blueprints/Construction/Prefabs/BP_Wall3x1x3_Prefab'")
+#define PREFAB_3x1x1 TEXT("'/Game/Blueprints/Construction/Prefabs/BP_Wall3x1x1_Prefab'")
+
 #define SELECT_MATERIAL TEXT("Material'/Game/Materials/HUD/M_BuildWheelSelection.M_BuildWheelSelection'")
 #define BUILD_WHEEL_MATERIAL TEXT("Material'/Game/Materials/HUD/M_BuildWheel.M_BuildWheel'")
 
 UBuildWheel::UBuildWheel() : m_bIsVisible(false)
 {
+	static ConstructorHelpers::FClassFinder<APrefab> Prefab3x1x3(PREFAB_3x1x3);
+	if (Prefab3x1x3.Succeeded())
+	{
+		this->m_Prefab3x1x3 = Prefab3x1x3.Class;
+	}
+	static ConstructorHelpers::FClassFinder<APrefab> Prefab3x1x1(PREFAB_3x1x1);
+	if (Prefab3x1x1.Succeeded())
+	{
+		this->m_Prefab3x1x1 = Prefab3x1x1.Class;
+	}
+
 	static ConstructorHelpers::FObjectFinder<UMaterialInterface> WheelMaterial(BUILD_WHEEL_MATERIAL);
 	if (WheelMaterial.Succeeded())
 	{
@@ -187,19 +202,22 @@ WheelMenu UBuildWheel::CreateWheelMenu()
 
 		root.AddSegment({ TEXT("Power-up"), [this](APlayerCharacter *character)
 		{
-			WheelMenu powerMenu(TEXT("etc"));
+			WheelMenu powerMenu(TEXT("xyz"));
 			{
-				powerMenu.AddSegment({ TEXT("1"), [this](APlayerCharacter *character)
+				powerMenu.AddSegment({ TEXT("1x1x1"), [this](APlayerCharacter *character)
 				{
-					return true;
+					character->GetPrimaryBrush()->SetPrefab(nullptr);
+					return false;
 				} });
-				powerMenu.AddSegment({ TEXT("2"), [this](APlayerCharacter *character)
+				powerMenu.AddSegment({ TEXT("3x1x3"), [this](APlayerCharacter *character)
 				{
-					return true;
+					character->GetPrimaryBrush()->SetPrefab(this->m_Prefab3x1x3);
+					return false;
 				} });
-				powerMenu.AddSegment({ TEXT("3"), [this](APlayerCharacter *character)
+				powerMenu.AddSegment({ TEXT("3x1x1"), [this](APlayerCharacter *character)
 				{
-					return true;
+					character->GetPrimaryBrush()->SetPrefab(this->m_Prefab3x1x1);
+					return false;
 				} });
 				powerMenu.AddSegment({ TEXT("4"), [this](APlayerCharacter *character)
 				{

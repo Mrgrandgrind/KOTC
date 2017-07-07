@@ -30,6 +30,8 @@ public:
 
 	FORCEINLINE UBlockData* GetBlockData(const FName id) { return this->GetBlockData(this->GetIndexOf(id)); }
 
+	FORCEINLINE void SetPrefab(TSubclassOf<class APrefab> prefab) { this->m_Prefab = prefab; this->UpdateBlockChild(); }
+
 protected:
 	void UpdateBlockChild();
 
@@ -41,7 +43,10 @@ private:
 	bool m_bValid;
 
 	UPROPERTY()
-	AActor *m_Child;
+	TArray<ABlock*> m_ChildBlocks;
+
+	UPROPERTY()
+	TSubclassOf<class APrefab> m_Prefab;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Type", meta = (AllowPrivateAccess = "true", DisplayName = "Selected Index"))
 	int m_SelectedTypeIndex;
