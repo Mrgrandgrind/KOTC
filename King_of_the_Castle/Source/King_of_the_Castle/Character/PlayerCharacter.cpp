@@ -128,7 +128,7 @@ void APlayerCharacter::Tick(float delta)
 			Stamina = MaxStamina;
 		}
 		else {
-			Stamina += m_StamRegen;
+			Stamina += m_StamRegen *  GetWorld()->GetDeltaSeconds();
 		}
 	}
 	if (this->m_bPressed)
