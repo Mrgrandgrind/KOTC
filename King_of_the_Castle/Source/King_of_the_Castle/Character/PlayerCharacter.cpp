@@ -3,13 +3,14 @@
 #include "King_of_the_Castle.h"
 #include "PlayerCharacter.h"
 
-#include "../HUD/GameHUD.h"
-#include "../Construction/Block.h"
-#include "../Construction/BlockData.h"
-#include "../Construction/BuildArea.h"
-#include "../Construction/Brush/PrimaryBrush.h"
-#include "../Construction/Brush/SecondaryBrush.h"
-#include "../Gamemode/BaseGameMode.h"
+#include "HUD/GameHUD.h"
+#include "Construction/Block.h"
+#include "Construction/BlockData.h"
+#include "Construction/BuildArea.h"
+#include "Construction/Blocks/FlagBlock.h"
+#include "Construction/Brush/PrimaryBrush.h"
+#include "Construction/Brush/SecondaryBrush.h"
+#include "Gamemode/BaseGameMode.h"
 
 #include "DrawDebugHelpers.h"
 #include "Runtime/Engine/Classes/Engine/Engine.h"
@@ -22,8 +23,12 @@
 #define ATTACK_COLLISION_DELAY 0.4f
 #define ATTACK_POST_DELAY 0.2f
 
+#define LAST_ATTACKER_TIMER 0.1f
+
+#define DAMAGE_TIMER 2.0f // How long the player has to be out of combat for before health starts to regen again
+
 // Sets default values
-APlayerCharacter::APlayerCharacter() : m_bPlacePressed(false), m_PlacePressCounter(0.0f), 
+APlayerCharacter::APlayerCharacter() : m_bPlacePressed(false), m_PlacePressCounter(0.0f),
 m_AttackStage(EAttackStage::READY), m_Team(-1), m_BuildReach(DEFAULT_REACH_DISTANCE)
 {
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -82,6 +87,10 @@ void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// Start with full health and stamina
+	this->m_Health = this->m_MaxHealth;
+	this->m_Stamina = this->m_MaxStamina;
+
 	// Update team collision (required for doors to function)
 	this->SetTeam(this->m_Team);
 
@@ -112,6 +121,23 @@ void APlayerCharacter::BeginPlay()
 void APlayerCharacter::Tick(float delta)
 {
 	Super::Tick(delta);
+
+	// Damage timer. Stops the player regenerating health until out of combat for DAMAGE_TIMER seconds.
+	if(this->m_DamageTimer < DAMAGE_TIMER)
+	{
+		this->m_DamageTimer += delta;
+	}
+
+	// Regenerate health
+	if(this->m_Health < this->m_MaxHealth && this->m_DamageTimer >= DAMAGE_TIMER)
+	{
+		this->SetHealth(this->m_Health + this->m_HealthRegenSpeed * delta);
+	}
+	// Regenerate stamina
+	if (this->m_Stamina < this->m_MaxStamina)
+	{
+		this->SetStamina(this->m_Stamina + this->m_StaminaRegenSpeed * delta);
+	}
 
 	if (Super::GetController() != nullptr)
 	{
@@ -231,6 +257,30 @@ void APlayerCharacter::Attack()
 	}), ATTACK_PRE_DELAY, false);
 }
 
+void APlayerCharacter::Stun()
+{
+	// Don't stun if already stunned
+	if (this->m_bIsStunned)
+	{
+		return;
+	}
+	this->m_bIsStunned = true;
+
+	// Automatically drop the flag block (if carrying) when stunned
+	UBlockData *data = this->m_PrimaryBrush->GetBlockData(this->m_PrimaryBrush->GetIndexOf(ID_FLAG_BLOCK));
+	if (data != nullptr && data->GetCount() > 0)
+	{
+		this->m_PrimaryBrush->DropBlocks(data, data->GetCount());
+	}
+
+	FTimerHandle handle;
+	Super::GetWorldTimerManager().SetTimer(handle, FTimerDelegate::CreateLambda([this]()
+	{
+		this->m_bIsStunned = false;
+		this->m_Health = this->m_MaxHealth;
+	}), this->m_StunDelay, false);
+}
+
 void APlayerCharacter::OnMeleeEndCollision(UPrimitiveComponent* overlappedComponent, AActor* otherActor, UPrimitiveComponent* otherComp, int32 otherBodyIndex)
 {
 	// Ignore collisions if we are not currently attacking
@@ -245,18 +295,44 @@ void APlayerCharacter::OnMeleeEndCollision(UPrimitiveComponent* overlappedCompon
 	}
 	if (otherActor->IsA(APlayerCharacter::StaticClass()))
 	{
-		otherActor->TakeDamage(this->m_MeleePlayerDamage, event, Super::GetController(), this);
+		APlayerCharacter *player = Cast<APlayerCharacter>(otherActor);
+
+		// Do not hurt this player if they have immunity
+		if(player->m_LastAttacker == this)
+		{
+			return;
+		}
+		// Apply damage to player if they haven't recently been hit
+		player->TakeDamage(this->m_MeleePlayerDamage, event, Super::GetController(), this);
 
 		// Apply knockback force
-		FVector direction = (otherActor->GetActorLocation() - Super::GetActorLocation()).GetSafeNormal();
-		Cast<APlayerCharacter>(otherActor)->LaunchCharacter((direction + this->m_MeleeKnockbackDirOffset) 
+		FVector direction = (player->GetActorLocation() - Super::GetActorLocation()).GetSafeNormal();
+		player->LaunchCharacter((direction + this->m_MeleeKnockbackDirOffset)
 			* this->m_MeleeKnockbackForce, false, false);
+
+		// Stop the player from being damaged multiple times by the same collision by granting temporary immunity
+		player->m_LastAttacker = this;
+		player->m_DamageTimer = 0.0f; // Reset damage timer so they don't regenerate health for a few seconds
+
+		FTimerHandle handle;
+		Super::GetWorldTimerManager().SetTimer(handle, FTimerDelegate::CreateLambda([this, player]()
+		{
+			player->m_LastAttacker = nullptr;
+		}), LAST_ATTACKER_TIMER, false);
 	}
 }
 
-float APlayerCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent,
-	class AController * EventInstigator, AActor * DamageCauser)
+float APlayerCharacter::TakeDamage(float damageAmount, FDamageEvent const& damageEvent,
+	AController *eventInstigator, AActor *damageCauser)
 {
+	if (!this->m_bIsStunned)
+	{
+		this->m_Health = FMath::Max(this->m_Health - damageAmount, 0.0f);
+		if (this->m_Health <= 0.0f)
+		{
+			this->Stun();
+		}
+	}
 	//if (!IsStunned)
 	//{
 	//	//apply damage, stun if 0 health, set timer to end stun
@@ -274,7 +350,7 @@ float APlayerCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const
 	//		GetWorldTimerManager().SetTimer(ThisHandle, this, &APlayerCharacter::EndStun, StunDuration);
 	//	}
 	//}
-	return DamageAmount;
+	return damageAmount;
 }
 
 // Called to bind functionality to input
@@ -350,7 +426,11 @@ void APlayerCharacter::LookUpAtRate(float rate)
 
 void APlayerCharacter::MoveForward(float value)
 {
-	if (Super::Controller != nullptr && value != 0.0f && !this->m_bBlockMovement)
+	if(this->m_bBlockMovement || this->m_bIsStunned)
+	{
+		return;
+	}
+	if (Super::Controller != nullptr && value != 0.0f)
 	{
 		// find out which way is forward and add the movement
 		const FRotator yaw(0.0f, Super::Controller->GetControlRotation().Yaw, 0.0f);
@@ -360,7 +440,11 @@ void APlayerCharacter::MoveForward(float value)
 
 void APlayerCharacter::MoveRight(float value)
 {
-	if (Super::Controller != nullptr && value != 0.0f && !this->m_bBlockMovement)
+	if(this->m_bBlockMovement || this->m_bIsStunned)
+	{
+		return;
+	}
+	if (Super::Controller != nullptr && value != 0.0f)
 	{
 		// find out which way is right and add the movement
 		const FRotator yaw(0.0f, Super::Controller->GetControlRotation().Yaw, 0.0f);

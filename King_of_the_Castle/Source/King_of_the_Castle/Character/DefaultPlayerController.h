@@ -15,6 +15,9 @@ class KING_OF_THE_CASTLE_API ADefaultPlayerController : public APlayerController
 	
 public:
 	UFUNCTION(Exec)
+	void KOTC_Stun();
+
+	UFUNCTION(Exec)
 	void KOTC_SetTeam(const int& team);
 
 	UFUNCTION(Exec)

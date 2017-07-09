@@ -52,6 +52,9 @@ public:
 	// Perform an attack
 	void Attack();
 
+	// Stun the player
+	void Stun();
+
 	// When the melee capsule hits something
 	UFUNCTION()
 	void OnMeleeEndCollision(UPrimitiveComponent *overlappedComponent, AActor *otherActor,
@@ -71,13 +74,25 @@ public:
 
 	//damage handling
 	UFUNCTION(BlueprintCallable, Category = "Combat")
-	float TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent,
-		class AController * EventInstigator, AActor * DamageCauser) override;
+	float TakeDamage(float damageAmount, struct FDamageEvent const& damageEvent,
+		class AController *eventInstigator, AActor *damageCauser) override;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 		
 	class UBuildWheel* GetBuildWheel() const;
+
+	UFUNCTION(BlueprintPure, Category = "Combat")
+	const float& GetHealth() const { return this->m_Health; }
+
+	UFUNCTION(BlueprintPure, Category = "Combat")
+	const float& GetMaxHealth() const { return this->m_MaxHealth; }
+
+	UFUNCTION(BlueprintPure, Category = "Combat")
+	const float& GetStamina() const { return this->m_Stamina; }
+
+	UFUNCTION(BlueprintPure, Category = "Combat")
+	const float& GetMaxStamina() const { return this->m_MaxStamina; }
 
 	UFUNCTION(BlueprintPure, Category = "Combat")
 	const bool& IsStunned() const { return this->m_bIsStunned; }
@@ -87,6 +102,10 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "Combat")
 	const EAttackStage& GetAttackStage() const { return this->m_AttackStage; }
+
+	FORCEINLINE void SetHealth(const float& health) { this->m_Health = FMath::Min(health, this->m_MaxHealth); }
+
+	FORCEINLINE void SetStamina(const float& stamina) { this->m_Stamina = FMath::Min(stamina, this->m_MaxStamina); }
 
 	FORCEINLINE const int& GetTeam() const { return this->m_Team; }
 
@@ -160,6 +179,33 @@ private:
 
 	// Attack stage
 	EAttackStage m_AttackStage;
+
+	// Time since last attack by player. Health will not regenerate for a specified amount of time.
+	float m_DamageTimer;
+
+	// Last attacker. Only set briefly after an attack. The set player cannot hurt this player whilst set.
+	APlayerCharacter *m_LastAttacker;
+
+	// Current players health
+	float m_Health;
+
+	// Current players stamina
+	float m_Stamina;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true", DisplayName = "Max Health"))
+	float m_MaxHealth;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true", DisplayName = "Max Stamina"))
+	float m_MaxStamina;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true", DisplayName = "Health Regen Speed"))
+	float m_HealthRegenSpeed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true", DisplayName = "Stamina Regen Speed"))
+	float m_StaminaRegenSpeed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true", DisplayName = "Stun Delay (seconds)"))
+	float m_StunDelay;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true", DisplayName = "Melee Block Damage"))
 	float m_MeleeBlockDamage;

@@ -12,6 +12,15 @@ APlayerCharacter* ADefaultPlayerController::GetCharacter() const
 	return Cast<APlayerCharacter>(Super::GetPawn());
 }
 
+void ADefaultPlayerController::KOTC_Stun()
+{
+	APlayerCharacter *character = this->GetCharacter();
+	if (character != nullptr)
+	{
+		character->Stun();
+	}
+}
+
 void ADefaultPlayerController::KOTC_SetTeam(const int& team)
 {
 	APlayerCharacter *character = this->GetCharacter();
