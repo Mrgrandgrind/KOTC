@@ -132,6 +132,10 @@ void ABlock::SetHealth(const float& health)
 
 float ABlock::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
+	if(!this->IsDestructable())
+	{
+		return 0.0f;
+	}
 	float actual = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 	this->SetHealth(this->GetHealth() - actual);
 	if (this->m_Health <= 0.0f) // if dead

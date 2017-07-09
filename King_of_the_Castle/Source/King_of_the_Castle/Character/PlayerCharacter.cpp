@@ -7,8 +7,6 @@
 #include "../Construction/Block.h"
 #include "../Construction/BlockData.h"
 #include "../Construction/BuildArea.h"
-#include "../Construction/BlockEntity.h"
-#include "../Construction/Blocks/FlagBlock.h"
 #include "../Construction/Brush/PrimaryBrush.h"
 #include "../Construction/Brush/SecondaryBrush.h"
 #include "../Gamemode/BaseGameMode.h"
@@ -17,14 +15,16 @@
 #include "Runtime/Engine/Classes/Engine/Engine.h"
 #include "Runtime/Engine/Classes/Engine/LocalPlayer.h"
 
-#define TRACE_SOCKET TEXT("Head") // The socket (of the player) which the trace originates from
+#define BUILD_TRACE_SOCKET TEXT("bind_head01") // The socket (of the player) which the trace originates from
+#define BUILD_TRACE_SOCKET TEXT("bind_r_lowerarm01") // The socket (of the player) where the melee collision box will be bound
 
-#define DROP_STRENGTH_MAX 750.0f
-#define DROP_STRENGTH_MIN 900.0f
-#define DROP_ROTATION_OFFSET 100.0f //degrees
+#define ATTACK_PRE_DELAY 0.4f 
+#define ATTACK_COLLISION_DELAY 0.4f
+#define ATTACK_POST_DELAY 0.2f
 
 // Sets default values
-APlayerCharacter::APlayerCharacter() : m_Team(-1), m_PressTimer(0.0f), m_bPressed(false), m_BuildReach(DEFAULT_REACH_DISTANCE)
+APlayerCharacter::APlayerCharacter() : m_bPlacePressed(false), m_PlacePressCounter(0.0f), 
+m_AttackStage(EAttackStage::READY), m_Team(-1), m_BuildReach(DEFAULT_REACH_DISTANCE)
 {
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	Super::PrimaryActorTick.bCanEverTick = true;
@@ -45,19 +45,14 @@ APlayerCharacter::APlayerCharacter() : m_Team(-1), m_PressTimer(0.0f), m_bPresse
 
 	// Create a camera boom (pulls in towards the player if there is a collision)
 	this->m_CameraBoom = UObject::CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
+	this->m_CameraBoom->TargetArmLength = 300.0f;
+	this->m_CameraBoom->bUsePawnControlRotation = true;
 	this->m_CameraBoom->SetupAttachment(Super::RootComponent);
-	this->m_CameraBoom->TargetArmLength = 300.0f; 	
-	this->m_CameraBoom->bUsePawnControlRotation = true; 
 
 	// Create a follow camera
-	this->m_Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
-	this->m_Camera->SetupAttachment(this->m_CameraBoom, USpringArmComponent::SocketName);
+	this->m_Camera = UObject::CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	this->m_Camera->bUsePawnControlRotation = false;
-
-	// Create the melee capsule
-	this->MeleeCapsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("MeleeComponent"));
-	this->MeleeCapsule->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	this->MeleeCapsule->SetupAttachment(RootComponent);
+	this->m_Camera->SetupAttachment(this->m_CameraBoom, USpringArmComponent::SocketName);
 
 	// Create the primary brush
 	this->m_PrimaryBrush = UObject::CreateDefaultSubobject<UPrimaryBrush>(TEXT("PrimaryBrush"));
@@ -67,8 +62,19 @@ APlayerCharacter::APlayerCharacter() : m_Team(-1), m_PressTimer(0.0f), m_bPresse
 	// Create the secondary brush
 	this->m_SecondaryBrush = UObject::CreateDefaultSubobject<USecondaryBrush>(TEXT("SecondaryBrush"));
 	this->m_SecondaryBrush->SetTeam(&this->m_Team);
-	this->m_SecondaryBrush->SetCraftTimer(&this->m_PressTimer);
+	this->m_SecondaryBrush->SetCraftTimer(&this->m_PlacePressCounter);
 	this->m_SecondaryBrush->SetupAttachment(Super::RootComponent);
+
+	// Create melee collision capsule
+	this->m_MeleeCapsule = UObject::CreateDefaultSubobject<UCapsuleComponent>(TEXT("MeleeCapsule"));
+	this->m_MeleeCapsule->bGenerateOverlapEvents = true;
+	this->m_MeleeCapsule->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	this->m_MeleeCapsule->SetupAttachment(Super::GetMesh(), BUILD_TRACE_SOCKET);
+
+	// Delegate the melee capsule collisions
+	TScriptDelegate<FWeakObjectPtr> delegate;
+	delegate.BindUFunction(this, FName("OnMeleeEndCollision"));
+	this->m_MeleeCapsule->OnComponentEndOverlap.Add(delegate);
 }
 
 // Called when the game starts or when spawned
@@ -79,15 +85,15 @@ void APlayerCharacter::BeginPlay()
 	// Update team collision (required for doors to function)
 	this->SetTeam(this->m_Team);
 
-	m_RunSpeed = GetCharacterMovement()->MaxWalkSpeed;
+	//m_RunSpeed = GetCharacterMovement()->MaxWalkSpeed;
 
 	// For some strange reason the primary brush gets unset by unreal. This will ensure that it is set. (Otherwise the game will crash)
-	if(this->m_PrimaryBrush == nullptr)
+	if (this->m_PrimaryBrush == nullptr)
 	{
 		this->m_PrimaryBrush = Super::FindComponentByClass<UPrimaryBrush>();
 		check(this->m_PrimaryBrush);
 	}
-	if(this->m_SecondaryBrush == nullptr)
+	if (this->m_SecondaryBrush == nullptr)
 	{
 		this->m_SecondaryBrush = Super::FindComponentByClass<USecondaryBrush>();
 		check(this->m_SecondaryBrush);
@@ -100,89 +106,12 @@ void APlayerCharacter::BeginPlay()
 	//{
 	//	door->JoinCount(construction);
 	//}
-
-	//if (Super::GetWorld() == nullptr)
-	//{
-	//	return;
-	//}
-	//// Set skin according to player index
-	//ABaseGameMode *gamemode = Cast<ABaseGameMode>(Super::GetWorld()->GetAuthGameMode());
-	//if (gamemode != nullptr)
-	//{
-	//	const TArray<UMaterialInterface*> *materials = gamemode->GetSkins(this->GetDefaultClass());
-	//	if (materials != nullptr)
-	//	{
-	//		int index = this->GetPlayerIndex() % materials->Num();
-	//		Super::GetMesh()->SetMaterial(0, (*materials)[index]);
-	//	}
-	//}
 }
 
 // Called every frame
 void APlayerCharacter::Tick(float delta)
 {
 	Super::Tick(delta);
-
-	if (Stamina < MaxStamina) {
-		if ((Stamina += m_StamRegen) > MaxStamina) {
-			Stamina = MaxStamina;
-		}
-		else {
-			Stamina += m_StamRegen *  GetWorld()->GetDeltaSeconds();
-		}
-	}
-	if (this->m_bPressed)
-	{
-		this->m_PressTimer += delta;
-	}
-	if (m_ChargeActive) {
-		m_ChargeTimer += delta;
-		if (m_ChargeTimer >= 1) {
-			if (m_ChargeLevel != 3) {
-				m_ChargeLevel++;
-				m_ChargeTimer = 0;
-			}
-		}
-	}
-	if (m_ChargeMove) {
-					if (this->GetActorLocation() != m_ChargeMoveTo) {
-						if (!this->SetActorLocation(FMath::VInterpTo(this->GetActorLocation(), m_ChargeMoveTo, delta, m_ChargeSpeed), true)) {
-							ChargePunchAttack();
-						}
-
-						/*const FRotator yaw(0.0f, Super::Controller->GetControlRotation().Yaw, 0.0f);
-						Super::AddMovementInput(FRotationMatrix(yaw).GetUnitAxis(EAxis::X), m_ChargeMove);*/
-					}
-					else {
-						ChargePunchAttack();
-					}
-	}
-	else if (m_DodgeStart) {
-		m_DodgeTo = this->GetActorLocation() + ((this->GetActorForwardVector()*m_DodgeDist)*m_DodgeDir.X) + ((this->GetActorRightVector()*m_DodgeDist)*m_DodgeDir.Y);
-		m_Dodging = true;
-		m_DodgeStart = false;
-		m_DodgeDir.X = 0;
-		m_DodgeDir.Y = 0;
-	}
-	else if (m_Dodging) {
-		if (this->GetActorLocation() != m_DodgeTo) {
-			FVector loc = this->GetActorLocation();
-			if (!this->SetActorLocation(FMath::VInterpTo(loc, m_DodgeTo, delta, m_DodgeSpeed), true)) {
-				m_Dodging = false;
-			}
-		}
-		else {
-			m_Dodging = false;
-		}
-		m_DodgeDir.X = 0;
-		m_DodgeDir.Y = 0;
-	}
-	if (m_Rushing == true) {
-		if (Stamina <= 0) {
-			m_Rushing = false;
-			GetCharacterMovement()->MaxWalkSpeed = m_RunSpeed;
-		}
-	}
 
 	if (Super::GetController() != nullptr)
 	{
@@ -192,7 +121,7 @@ void APlayerCharacter::Tick(float delta)
 		{
 			float x = Super::InputComponent->GetAxisValue(TEXT("LeftThumbX")),
 				y = Super::InputComponent->GetAxisValue(TEXT("LeftThumbY"));
-			if(x == 0.0f && y == 0.0f)
+			if (x == 0.0f && y == 0.0f)
 			{
 				hud->GetBuildWheel()->SetSelected(-1);
 			}
@@ -205,7 +134,7 @@ void APlayerCharacter::Tick(float delta)
 	if (this->m_BuildArea != nullptr && this->m_bBuildingEnabled && this->m_BuildArea->GetTeam() == this->m_Team)
 	{
 		FVector cameraLoc = this->m_Camera->GetComponentLocation(), forward = this->m_Camera->GetForwardVector();
-		FVector cameraToPlayer = Super::GetMesh()->GetSocketLocation(TRACE_SOCKET) - cameraLoc;
+		FVector cameraToPlayer = Super::GetMesh()->GetSocketLocation(BUILD_TRACE_SOCKET) - cameraLoc;
 
 		FVector start = cameraLoc + forward * FVector::DotProduct(cameraToPlayer, forward);
 		FVector end = start + forward * (/*cameraToPlayer.Size() + */this->m_BuildReach);
@@ -225,7 +154,7 @@ void APlayerCharacter::Tick(float delta)
 
 UBuildWheel* APlayerCharacter::GetBuildWheel() const
 {
-	if(Super::GetController() == nullptr)
+	if (Super::GetController() == nullptr)
 	{
 		return nullptr;
 	}
@@ -252,7 +181,7 @@ void APlayerCharacter::SetBuildModeEnabled(const bool& enable)
 		this->m_SecondaryBrush->SetBrushVisible(enable);
 	}
 	AGameHUD *hud = Cast<AGameHUD>(((APlayerController*)Super::GetController())->GetHUD());
-	if(hud != nullptr)
+	if (hud != nullptr)
 	{
 		hud->SetCrosshairVisible(enable);
 	}
@@ -261,9 +190,9 @@ void APlayerCharacter::SetBuildModeEnabled(const bool& enable)
 void APlayerCharacter::SetTeam(const int& team)
 {
 	this->m_Team = team;
-	
+
 	UBuildWheel *wheel = this->GetBuildWheel();
-	if(wheel != nullptr)
+	if (wheel != nullptr)
 	{
 		wheel->SetTeam(team);
 	}
@@ -271,29 +200,194 @@ void APlayerCharacter::SetTeam(const int& team)
 		? TEXT("PawnTeam1") : team >= 2 ? TEXT("PawnTeam2") : TEXT("Pawn"));
 }
 
-void APlayerCharacter::Jump()
+void APlayerCharacter::DropBlock()
 {
-	if(this->m_bBlockMovement)
+	if (this->m_bBuildingEnabled)
+	{
+		this->m_PrimaryBrush->DropBlocks(this->m_PrimaryBrush->GetBlockData(this->m_PrimaryBrush->GetSelectedIndex()), 1);
+	}
+}
+
+void APlayerCharacter::Attack()
+{
+	if (this->m_bIsStunned || this->m_AttackStage != EAttackStage::READY)
 	{
 		return;
 	}
-	Super::Jump();
+	this->m_AttackStage = EAttackStage::PRE_COLLISION;
+
+	FTimerHandle handle;
+	Super::GetWorldTimerManager().SetTimer(handle, FTimerDelegate::CreateLambda([this, &handle]()
+	{
+		this->m_AttackStage = EAttackStage::COLLISION;
+		Super::GetWorldTimerManager().SetTimer(handle, FTimerDelegate::CreateLambda([this, &handle]()
+		{
+			this->m_AttackStage = EAttackStage::POST_DELAY;
+			Super::GetWorldTimerManager().SetTimer(handle, FTimerDelegate::CreateLambda([this]()
+			{
+				this->m_AttackStage = EAttackStage::READY;
+			}), ATTACK_POST_DELAY, false);
+		}), ATTACK_COLLISION_DELAY, false);
+	}), ATTACK_PRE_DELAY, false);
+}
+
+void APlayerCharacter::OnMeleeEndCollision(UPrimitiveComponent* overlappedComponent, AActor* otherActor, UPrimitiveComponent* otherComp, int32 otherBodyIndex)
+{
+	// Ignore collisions if we are not currently attacking
+	if (this->m_AttackStage != EAttackStage::COLLISION || otherActor == nullptr || otherActor == this)
+	{
+		return;
+	}
+	FDamageEvent event;
+	if (otherActor->IsA(ABlock::StaticClass()))
+	{
+		otherActor->TakeDamage(this->m_MeleeBlockDamage, event, Super::GetController(), this);
+	}
+	if (otherActor->IsA(APlayerCharacter::StaticClass()))
+	{
+		otherActor->TakeDamage(this->m_MeleePlayerDamage, event, Super::GetController(), this);
+
+		// Apply knockback force
+		FVector direction = (otherActor->GetActorLocation() - Super::GetActorLocation()).GetSafeNormal();
+		Cast<APlayerCharacter>(otherActor)->LaunchCharacter((direction + this->m_MeleeKnockbackDirOffset) 
+			* this->m_MeleeKnockbackForce, false, false);
+	}
+}
+
+float APlayerCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent,
+	class AController * EventInstigator, AActor * DamageCauser)
+{
+	//if (!IsStunned)
+	//{
+	//	//apply damage, stun if 0 health, set timer to end stun
+	//	Health -= DamageAmount;
+	//	FTimerHandle ThisHandle;
+	//	if (Health <= 0)
+	//	{
+	//		UBlockData *data = this->m_PrimaryBrush->GetBlockData(this->m_PrimaryBrush->GetIndexOf(ID_FLAG_BLOCK));
+	//		if (data != nullptr && data->GetCount() > 0)
+	//		{
+	//			this->DropBlock(data, data->GetCount());
+	//		}
+
+	//		IsStunned = true;
+	//		GetWorldTimerManager().SetTimer(ThisHandle, this, &APlayerCharacter::EndStun, StunDuration);
+	//	}
+	//}
+	return DamageAmount;
+}
+
+// Called to bind functionality to input
+void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *input)
+{
+	Super::SetupPlayerInputComponent(input);
+
+	input->BindAxis("LeftThumbX");
+	input->BindAxis("LeftThumbY");
+
+	input->BindAxis("MoveRight", this, &APlayerCharacter::MoveRight);
+	input->BindAxis("MoveForward", this, &APlayerCharacter::MoveForward);
+
+	input->BindAxis("Turn", this, &APawn::AddControllerYawInput);
+	input->BindAxis("TurnRate", this, &APlayerCharacter::TurnAtRate);
+	input->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
+	input->BindAxis("LookUpRate", this, &APlayerCharacter::LookUpAtRate);
+
+	input->BindAxis("Turn", this, &APawn::AddControllerYawInput);
+	input->BindAxis("TurnRate", this, &APlayerCharacter::TurnAtRate);
+	input->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
+	input->BindAxis("LookUpRate", this, &APlayerCharacter::LookUpAtRate);
+
+	input->BindAction("Jump", IE_Pressed, this, &APlayerCharacter::Jump);
+	input->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
+
+	input->BindAction("Attack", IE_Pressed, this, &APlayerCharacter::Attack);
+
+	input->BindAction("Place Block", IE_Pressed, this, &APlayerCharacter::InputBlockPlaceDownEvent);
+	input->BindAction("Place Block", IE_Released, this, &APlayerCharacter::InputBlockPlaceUpEvent);
+	input->BindAction("Destroy Block", IE_Pressed, this, &APlayerCharacter::InputBlockDestroyDownEvent);
+	input->BindAction("Destroy Block", IE_Released, this, &APlayerCharacter::InputBlockDestroyUpEvent);
+
+	input->BindAction("Build Wheel", IE_Pressed, this, &APlayerCharacter::InputShowBuildWheel);
+	input->BindAction("Build Wheel", IE_Released, this, &APlayerCharacter::InputHideBuildWheel);
+	input->BindAction("Build Wheel Back", IE_Pressed, this, &APlayerCharacter::InputBuildWheelBack);
+	input->BindAction("Build Wheel Select", IE_Pressed, this, &APlayerCharacter::InputBuildWheelSelect);
+
+	input->BindAction("Brush up", IE_Pressed, this, &APlayerCharacter::InputBlockTypeUpEvent);
+	input->BindAction("Brush down", IE_Pressed, this, &APlayerCharacter::InputBlockTypeDownEvent);
+	input->BindAction("Building toggle", IE_Pressed, this, &APlayerCharacter::ToggleBuildMode);
+
+	// For testing. TODO Ask if this should be a feature in the game
+	input->BindAction("Drop Block", IE_Pressed, this, &APlayerCharacter::DropBlock);
+
+	//input->BindAction("Dodge", IE_Pressed, this, &APlayerCharacter::ToggleDodge);
+	//input->BindAction("Dodge", IE_Released, this, &APlayerCharacter::ToggleDodge);
+
+	//input->BindAction("Rush", IE_Pressed, this, &APlayerCharacter::ToggleRush);
+	//input->BindAction("Rush", IE_Released, this, &APlayerCharacter::ToggleRush);
+
+	//input->BindAction("Charge Punch", IE_Pressed, this, &APlayerCharacter::PunchChargeUp);
+	//input->BindAction("Charge Punch", IE_Released, this, &APlayerCharacter::ChargePunchMove);
+}
+
+void APlayerCharacter::Jump()
+{
+	if (!this->m_bBlockMovement)
+	{
+		Super::Jump();
+	}
+}
+
+void APlayerCharacter::TurnAtRate(float rate)
+{
+	Super::AddControllerYawInput(rate * this->m_BaseTurnRate * Super::GetWorld()->GetDeltaSeconds());
+}
+
+void APlayerCharacter::LookUpAtRate(float rate)
+{
+	Super::AddControllerPitchInput(rate * this->m_BaseLookUpRate * Super::GetWorld()->GetDeltaSeconds());
+}
+
+void APlayerCharacter::MoveForward(float value)
+{
+	if (Super::Controller != nullptr && value != 0.0f && !this->m_bBlockMovement)
+	{
+		// find out which way is forward and add the movement
+		const FRotator yaw(0.0f, Super::Controller->GetControlRotation().Yaw, 0.0f);
+		Super::AddMovementInput(FRotationMatrix(yaw).GetUnitAxis(EAxis::X), value);
+	}
+}
+
+void APlayerCharacter::MoveRight(float value)
+{
+	if (Super::Controller != nullptr && value != 0.0f && !this->m_bBlockMovement)
+	{
+		// find out which way is right and add the movement
+		const FRotator yaw(0.0f, Super::Controller->GetControlRotation().Yaw, 0.0f);
+		Super::AddMovementInput(FRotationMatrix(yaw).GetUnitAxis(EAxis::Y), value);
+	}
 }
 
 void APlayerCharacter::InputBlockTypeUpEvent()
 {
-	this->m_PrimaryBrush->SetSelectedIndex(this->m_PrimaryBrush->GetSelectedIndex() - 1);
+	if (this->m_bBuildingEnabled)
+	{
+		this->m_PrimaryBrush->SetSelectedIndex(this->m_PrimaryBrush->GetSelectedIndex() - 1);
+	}
 }
 
 void APlayerCharacter::InputBlockTypeDownEvent()
 {
-	this->m_PrimaryBrush->SetSelectedIndex(this->m_PrimaryBrush->GetSelectedIndex() + 1);
+	if (this->m_bBuildingEnabled)
+	{
+		this->m_PrimaryBrush->SetSelectedIndex(this->m_PrimaryBrush->GetSelectedIndex() + 1);
+	}
 }
 
-void APlayerCharacter::InputMouseLeftDownEvent()
+void APlayerCharacter::InputBlockPlaceDownEvent()
 {
-	this->m_bPressed = true;
-	this->m_PressTimer = 0.0f;
+	this->m_bPlacePressed = true;
+	this->m_PlacePressCounter = 0.0f;
 
 	if (this->m_PrimaryBrush->IsBrushVisible())
 	{
@@ -301,10 +395,10 @@ void APlayerCharacter::InputMouseLeftDownEvent()
 	}
 }
 
-void APlayerCharacter::InputMouseLeftUpEvent()
+void APlayerCharacter::InputBlockPlaceUpEvent()
 {
-	this->m_bPressed = false;
-	this->m_PressTimer = 0.0f;
+	this->m_bPlacePressed = false;
+	this->m_PlacePressCounter = 0.0f;
 
 	if (this->m_BuildArea != nullptr && this->m_bBuildingEnabled && this->m_BuildArea->GetTeam() == this->m_Team)
 	{
@@ -318,7 +412,7 @@ void APlayerCharacter::InputMouseLeftUpEvent()
 	this->m_PrimaryBrush->SetChainMode(false);
 }
 
-void APlayerCharacter::InputMouseRightDownEvent()
+void APlayerCharacter::InputBlockDestroyDownEvent()
 {
 	if (this->m_SecondaryBrush->IsBrushVisible())
 	{
@@ -326,7 +420,7 @@ void APlayerCharacter::InputMouseRightDownEvent()
 	}
 }
 
-void APlayerCharacter::InputMouseRightUpEvent()
+void APlayerCharacter::InputBlockDestroyUpEvent()
 {
 	if (this->m_BuildArea != nullptr && this->m_bBuildingEnabled && this->m_BuildArea->GetTeam() == this->m_Team)
 	{
@@ -338,7 +432,7 @@ void APlayerCharacter::InputMouseRightUpEvent()
 void APlayerCharacter::InputShowBuildWheel()
 {
 	UBuildWheel *wheel = this->GetBuildWheel();
-	if(wheel != nullptr)
+	if (wheel != nullptr)
 	{
 		wheel->SetVisible(true);
 	}
@@ -373,455 +467,6 @@ void APlayerCharacter::InputBuildWheelSelect()
 	}
 }
 
-void APlayerCharacter::TurnAtRate(float rate)
-{
-	Super::AddControllerYawInput(rate * this->m_BaseTurnRate * Super::GetWorld()->GetDeltaSeconds());
-}
-
-void APlayerCharacter::LookUpAtRate(float rate)
-{
-	Super::AddControllerPitchInput(rate * this->m_BaseLookUpRate * Super::GetWorld()->GetDeltaSeconds());
-}
-
-void APlayerCharacter::MoveForward(float value)
-{
-	//if (Super::Controller != nullptr && value != 0.0f && !this->m_bBlockMovement)
-	//{
-	//	// find out which way is forward and add the movement
-	//	const FRotator yaw(0.0f, Super::Controller->GetControlRotation().Yaw, 0.0f);
-	//	Super::AddMovementInput(FRotationMatrix(yaw).GetUnitAxis(EAxis::X), value);
-	//}
-	if(this->m_bBlockMovement)
-	{
-		return;
-	}
-	if (!IsStunned) {
-		if (Super::Controller != nullptr && value != 0.0f)
-		{
-			m_DodgeDir.X = value;
-			if (m_DodgeTrigger == true) {
-				if (m_Dodging != true) {
-					if (value > 0.5 || value < -0.5) {
-						//Dodge(value, 0);
-						
-						m_DodgeStart = true;
-					}
-				}
-			}
-			// find out which way is forward and add the movement
-			else {
-				if (!m_ChargeMove) {
-					const FRotator yaw(0.0f, Super::Controller->GetControlRotation().Yaw, 0.0f);
-					Super::AddMovementInput(FRotationMatrix(yaw).GetUnitAxis(EAxis::X), value);
-					if (m_Rushing == true) {
-						Stamina -= m_RushCost;
-						TArray<AActor*> EnemyList;
-						MeleeCapsule->GetOverlappingActors(EnemyList, TSubclassOf<APlayerCharacter>());
-
-						//for every enemy that's within the capsule, check and apply collision
-						for (auto Enemies : EnemyList)
-						{
-							if (Enemies != this)
-							{
-								if (Enemies->IsA(APlayerCharacter::StaticClass()))
-								{
-									auto Enemy = (APlayerCharacter*)Enemies;
-									if (MeleeCapsule->IsOverlappingComponent(Enemy->GetCapsuleComponent()))
-									{
-										if (Enemy->Health > 0)
-										{
-											auto loc1 = Enemies->GetActorLocation();
-											auto loc2 = this->GetActorLocation();
-											FVector LaunchDir = (loc1 - loc2);
-											FVector Launch = (LaunchDir.GetSafeNormal() + FVector(0, 0, 0.2f))*m_RushKnockback;
-											Enemy->LaunchCharacter(Launch, 0, 0);
-										}
-									}
-								}
-							}
-						}
-					}
-
-				}
-			}
-
-		}
-	}
-}
-
-void APlayerCharacter::MoveRight(float value)
-{
-	//if (Super::Controller != nullptr && value != 0.0f && !this->m_bBlockMovement)
-	//{
-	//	// find out which way is right and add the movement
-	//	const FRotator yaw(0.0f, Super::Controller->GetControlRotation().Yaw, 0.0f);
-	//	AddMovementInput(FRotationMatrix(yaw).GetUnitAxis(EAxis::Y), value);
-	//}
-	if(this->m_bBlockMovement)
-	{
-		return;
-	}
-	if (!IsStunned) {
-		if (Super::Controller != nullptr && value != 0.0f)
-		{
-			m_DodgeDir.Y = value;
-			if (m_DodgeTrigger == true) {
-				if (m_Dodging != true) {
-					if (value > 0.5 || value < -0.5) {
-						//Dodge(0, value);
-						
-						m_DodgeStart = true;
-					}
-				}
-			}
-			else {
-				// find out which way is right and add the movement
-				if (!m_ChargeMove) {
-					const FRotator yaw(0.0f, Super::Controller->GetControlRotation().Yaw, 0.0f);
-					AddMovementInput(FRotationMatrix(yaw).GetUnitAxis(EAxis::Y), value);
-					if (m_Rushing == true) {
-						Stamina -= m_RushCost;
-						TArray<AActor*> EnemyList;
-						MeleeCapsule->GetOverlappingActors(EnemyList, TSubclassOf<APlayerCharacter>());
-
-						//for every enemy that's within the capsule, check and apply collision
-						for (auto Enemies : EnemyList)
-						{
-							if (Enemies != this)
-							{
-								if (Enemies->IsA(APlayerCharacter::StaticClass()))
-								{
-									auto Enemy = (APlayerCharacter*)Enemies;
-									if (MeleeCapsule->IsOverlappingComponent(Enemy->GetCapsuleComponent()))
-									{
-										if (Enemy->Health > 0)
-										{
-											auto loc1 = Enemies->GetActorLocation();
-											auto loc2 = this->GetActorLocation();
-											FVector LaunchDir = (loc1 - loc2);
-											FVector Launch = (LaunchDir.GetSafeNormal() + FVector(0, 0, 0.2f))*m_RushKnockback;
-											Enemy->LaunchCharacter(Launch, 0, 0);
-										}
-									}
-								}
-							}
-						}
-					}
-
-				}
-			}
-		}
-	}
-}
-
-void APlayerCharacter::DropBlock()
-{
-	this->DropBlock(this->m_PrimaryBrush->GetBlockData(this->m_PrimaryBrush->GetSelectedIndex()), 1);
-}
-
-void APlayerCharacter::DropBlock(UBlockData* data, int count)
-{
-	if(data == nullptr || count <= 0)
-	{
-		return;
-	}
-	count = FMath::Min(count, data->GetCount());
-
-	ABaseGameMode *gamemode = Cast<ABaseGameMode>(Super::GetWorld()->GetAuthGameMode());
-	// Drop count amount of blocks (limited to count of data - will not drop a block if it doesn't have it)
-	for(int i = 0; i < count; i++)
-	{
-		data->SetCount(this->m_PrimaryBrush, data->GetCount() - 1);
-
-		for(ABlockEntity *next : ABlockEntity::SpawnBlockEntity((ABlock*)data->GetClassType()->GetDefaultObject(), Super::GetWorld(), nullptr, true))
-		{
-			next->SetBlockOwner(this);
-			next->SetIgnoreOwner(true);
-
-			next->SetActorLocation(Super::GetActorLocation());
-			next->SetActorRotation(Super::GetActorRotation());
-			
-			FVector rotation = Super::GetActorRotation().Vector();
-			((UPrimitiveComponent*)next->GetRootComponent())->AddImpulse(rotation
-				* FMath::FRandRange(DROP_STRENGTH_MIN, DROP_STRENGTH_MAX));
-
-			if (gamemode != nullptr)
-			{
-				gamemode->OnBlockDrop(next, this, data->GetCount());
-			}
-		}
-	}
-}
-
-void APlayerCharacter::MeleeAttack() 
-{
-	if (!IsAttacking) 
-	{
-		if (!IsStunned) 
-		{
-			AnimWeakPunch = true;
-			IsAttacking = true;
-			FDamageEvent ThisDamage;
-			TArray<AActor*> EnemyList;
-			MeleeCapsule->GetOverlappingActors(EnemyList, TSubclassOf<APlayerCharacter>());
-			//for every enemy that's within the capsule, check and apply collision
-			for (auto Enemies : EnemyList) 
-			{
-				if (Enemies != this) 
-				{
-					if (Enemies->IsA(APlayerCharacter::StaticClass()))
-					{
-						auto Enemy = (APlayerCharacter*)Enemies;
-						if (MeleeCapsule->IsOverlappingComponent(Enemy->GetCapsuleComponent())) 
-						{
-							if (Enemy->Health > 0) 
-							{
-								Enemy->TakeDamage(MeleeAttackDamage, ThisDamage, this->GetController(), this);
-								auto loc1 = Enemies->GetActorLocation();
-								auto loc2 = this->GetActorLocation();
-								FVector LaunchDir = (loc1 - loc2);
-								FVector Launch = (LaunchDir.GetSafeNormal() + FVector(0, 0, 0.2f))*PlayerKnockback;
-								Enemy->LaunchCharacter(Launch, 0, 0);
-							}
-						}
-					}
-					else if (Enemies->IsA(ABlock::StaticClass()) && ((ABlock*)Enemies)->IsDestructable())
-					{
-						Enemies->TakeDamage(this->MeleeAttackDamage * 3.0f, ThisDamage, this->GetController(), this);
-					}
-				}
-			}
-			IsAttacking = false;
-		}
-	}
-}
-
-void APlayerCharacter::PunchChargeUp() {
-	if (!m_ChargePunch) {
-		if (!IsStunned) {
-			m_ChargeActive = true;
-			m_ChargePunch = true;
-		}
-	}
-}
-
-void APlayerCharacter::ChargePunchMove() {
-m_ChargeActive = false;
-float movedist;
-	if (m_ChargeLevel >= 1) {
-		if (m_ChargeLevel < 2) {
-			movedist = m_ChargeL1Dist;
-		}
-		else if (m_ChargeLevel < 3) {
-			movedist = m_ChargeL2Dist;
-		}
-		else {
-			movedist = m_ChargeL3Dist;
-		}
-	}
-	else {
-		movedist = 0;
-	}
-	if (movedist != 0) {
-		m_ChargeMoveTo = this->GetActorLocation() + (this->GetActorForwardVector()*movedist);
-		m_ChargeMove = true;
-	}
-	else {
-		ChargePunchAttack();
-	}
-}
-
-void APlayerCharacter::ChargePunchAttack() {
-	m_ChargeMove = false;
-	float damage;
-	bool stun;
-	float knockback;
-	if (m_ChargeLevel >= 1) {
-		if (m_ChargeLevel < 2) {
-			damage = m_ChargeL1Damage;
-			knockback = 0;
-			stun = false;
-		}
-		else if (m_ChargeLevel < 3) {
-			damage = m_ChargeL2Damage;
-			knockback = m_ChargeL2Knockback;
-			stun = false;
-		}
-		else {
-			damage = m_ChargeL3Damage;
-			knockback = m_ChargeL3Knockback;
-			stun = true;
-		}
-	}
-	else {
-		damage = 0;
-	}
-	m_ChargeLevel = 0;
-	m_ChargeTimer = 0;
-	if (damage != 0) {
-		if (!IsAttacking)
-		{
-			if (!IsStunned)
-			{
-				IsAttacking = true;
-				const FRotator yaw(0.0f, GetActorRotation().Yaw, 0.0f);
-				FDamageEvent ThisDamage;
-				TArray<AActor*> EnemyList;
-				MeleeCapsule->GetOverlappingActors(EnemyList, TSubclassOf<APlayerCharacter>());
-				//for every enemy that's within the capsule, check and apply collision
-				for (auto Enemies : EnemyList)
-				{
-					if (Enemies != this)
-					{
-						if (Enemies->IsA(APlayerCharacter::StaticClass()))
-						{
-							auto Enemy = (APlayerCharacter*)Enemies;
-							if (MeleeCapsule->IsOverlappingComponent(Enemy->GetCapsuleComponent()))
-							{
-								if (Enemy->Health > 0)
-								{
-									
-									Enemy->TakeDamage(damage, ThisDamage, this->GetController(), this);
-									auto loc1 = Enemies->GetActorLocation();
-									auto loc2 = this->GetActorLocation();
-									FVector LaunchDir = (loc1 - loc2);
-									FVector Launch = (LaunchDir.GetSafeNormal() + FVector(0, 0, 0.2f))*knockback;
-									Enemy->LaunchCharacter(Launch, 0, 0);
-									if (stun == true) {
-										Enemy->Stun(m_ChargeStun);
-									}
-								}
-							}
-						}
-						else if (Enemies->IsA(ABlock::StaticClass()) && ((ABlock*)Enemies)->IsDestructable())
-						{
-							Enemies->TakeDamage(this->MeleeAttackDamage * 3.0f, ThisDamage, this->GetController(), this);
-						}
-					}
-				}
-				IsAttacking = false;
-				m_ChargePunch = false;
-			}
-		}
-	}
-}
-float APlayerCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const & DamageEvent,
-		class AController * EventInstigator, AActor * DamageCauser) {
-	if (!IsStunned) 
-	{
-		//apply damage, stun if 0 health, set timer to end stun
-		Health -= DamageAmount;
-		FTimerHandle ThisHandle;
-		if (Health <= 0) 
-		{
-			UBlockData *data = this->m_PrimaryBrush->GetBlockData(this->m_PrimaryBrush->GetIndexOf(ID_FLAG_BLOCK));
-			if(data != nullptr && data->GetCount() > 0)
-			{
-				this->DropBlock(data, data->GetCount());
-			}
-
-			IsStunned = true;
-			GetWorldTimerManager().SetTimer(ThisHandle, this, &APlayerCharacter::EndStun, StunDuration);
-		}
-	}
-	return DamageAmount;
-}
-
-void APlayerCharacter::Stun(float StunLength) 
-{
-	FTimerHandle ThisHandle;
-	IsStunned = true;
-	GetWorldTimerManager().SetTimer(ThisHandle, this, &APlayerCharacter::EndStun, StunLength);
-}
-
-void APlayerCharacter::EndStun() 
-{
-	IsStunned = false;
-	Health = MaxHealth;
-}
-
-void APlayerCharacter::ToggleDodge() {
-	if (m_DodgeTrigger != true) {
-		m_DodgeTrigger = true;
-	}
-	else {
-		m_DodgeTrigger = false;
-	}
-}
-
-void APlayerCharacter::ToggleRush() {
-	if (Stamina > 0) {
-		if (m_Rushing != true) {
-			m_Rushing = true;
-			GetCharacterMovement()->MaxWalkSpeed = m_RushSpeed;
-		}
-		else {
-			m_Rushing = false;
-			GetCharacterMovement()->MaxWalkSpeed = m_RunSpeed;
-		}
-	}
-	else {
-		m_Rushing = false;
-		GetCharacterMovement()->MaxWalkSpeed = m_RunSpeed;
-	}
-}
-
-void APlayerCharacter::Dodge(float x, float y) 
-{
-	m_DodgeTo = this->GetActorLocation() + ((this->GetActorForwardVector()*m_DodgeDist)*x) +((this->GetActorRightVector()*m_DodgeDist)*y);
-	m_Dodging = true;
-}
-
-// Called to bind functionality to input
-void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *input)
-{
-	Super::SetupPlayerInputComponent(input);
-
-	input->BindAxis("LeftThumbX");
-	input->BindAxis("LeftThumbY");
-
-	input->BindAction("Drop Block", IE_Pressed, this, &APlayerCharacter::DropBlock);
-
-	input->BindAxis("MoveForward", this, &APlayerCharacter::MoveForward);
-	input->BindAxis("MoveRight", this, &APlayerCharacter::MoveRight);
-
-	input->BindAction("Jump", IE_Pressed, this, &APlayerCharacter::Jump);
-	input->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
-
-	input->BindAction("Dodge", IE_Pressed, this, &APlayerCharacter::ToggleDodge);
-	input->BindAction("Dodge", IE_Released, this, &APlayerCharacter::ToggleDodge);
-
-	input->BindAction("Rush", IE_Pressed, this, &APlayerCharacter::ToggleRush);
-	input->BindAction("Rush", IE_Released, this, &APlayerCharacter::ToggleRush);
-
-	input->BindAxis("Turn", this, &APawn::AddControllerYawInput);
-	input->BindAxis("TurnRate", this, &APlayerCharacter::TurnAtRate);
-	input->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
-	input->BindAxis("LookUpRate", this, &APlayerCharacter::LookUpAtRate);
-	
-	input->BindAction("Charge Punch", IE_Pressed, this, &APlayerCharacter::PunchChargeUp);
-	input->BindAction("Charge Punch", IE_Released, this, &APlayerCharacter::ChargePunchMove);
-
-	input->BindAxis("Turn", this, &APawn::AddControllerYawInput);
-	input->BindAxis("TurnRate", this, &APlayerCharacter::TurnAtRate);
-	input->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
-	input->BindAxis("LookUpRate", this, &APlayerCharacter::LookUpAtRate);
-
-	input->BindAction("Place", IE_Pressed, this, &APlayerCharacter::InputMouseLeftDownEvent);
-	input->BindAction("Place", IE_Released, this, &APlayerCharacter::InputMouseLeftUpEvent);
-	input->BindAction("Destroy", IE_Pressed, this, &APlayerCharacter::InputMouseRightDownEvent);
-	input->BindAction("Destroy", IE_Released, this, &APlayerCharacter::InputMouseRightUpEvent);
-
-	input->BindAction("Build Wheel", IE_Pressed, this, &APlayerCharacter::InputShowBuildWheel);
-	input->BindAction("Build Wheel", IE_Released, this, &APlayerCharacter::InputHideBuildWheel);
-	input->BindAction("Build Wheel Back", IE_Pressed, this, &APlayerCharacter::InputBuildWheelBack);
-	input->BindAction("Build Wheel Select", IE_Pressed, this, &APlayerCharacter::InputBuildWheelSelect);
-
-	input->BindAction("Brush up", IE_Pressed, this, &APlayerCharacter::InputBlockTypeUpEvent);
-	input->BindAction("Brush down", IE_Pressed, this, &APlayerCharacter::InputBlockTypeDownEvent);
-	input->BindAction("Building toggle", IE_Pressed, this, &APlayerCharacter::ToggleBuildMode);
-}
-
 #if WITH_EDITOR
 void APlayerCharacter::PostEditChangeProperty(FPropertyChangedEvent& event)
 {
@@ -835,3 +480,461 @@ void APlayerCharacter::PostEditChangeProperty(FPropertyChangedEvent& event)
 	}
 }
 #endif
+
+
+
+
+
+
+//if (Stamina < MaxStamina)
+//{
+//	if ((Stamina += m_StamRegen) > MaxStamina)
+//	{
+//		Stamina = MaxStamina;
+//	}
+//	else
+//	{
+//		Stamina += m_StamRegen *  GetWorld()->GetDeltaSeconds();
+//	}
+//}
+//if (this->m_bPressed)
+//{
+//	this->m_PressTimer += delta;
+//}
+//if (m_ChargeActive)
+//{
+//	m_ChargeTimer += delta;
+//	if (m_ChargeTimer >= 1)
+//	{
+//		if (m_ChargeLevel != 3)
+//		{
+//			m_ChargeLevel++;
+//			m_ChargeTimer = 0;
+//		}
+//	}
+//}
+//if (m_ChargeMove)
+//{
+//	if (this->GetActorLocation() != m_ChargeMoveTo)
+//	{
+//		if (!this->SetActorLocation(FMath::VInterpTo(this->GetActorLocation(), m_ChargeMoveTo, delta, m_ChargeSpeed), true))
+//		{
+//			ChargePunchAttack();
+//		}
+
+//		/*const FRotator yaw(0.0f, Super::Controller->GetControlRotation().Yaw, 0.0f);
+//		Super::AddMovementInput(FRotationMatrix(yaw).GetUnitAxis(EAxis::X), m_ChargeMove);*/
+//	}
+//	else
+//	{
+//		ChargePunchAttack();
+//	}
+//}
+//else if (m_DodgeStart)
+//{
+//	m_DodgeTo = this->GetActorLocation() + ((this->GetActorForwardVector()*m_DodgeDist)*m_DodgeDir.X) + ((this->GetActorRightVector()*m_DodgeDist)*m_DodgeDir.Y);
+//	m_Dodging = true;
+//	m_DodgeStart = false;
+//	m_DodgeDir.X = 0;
+//	m_DodgeDir.Y = 0;
+//}
+//else if (m_Dodging)
+//{
+//	if (this->GetActorLocation() != m_DodgeTo)
+//	{
+//		FVector loc = this->GetActorLocation();
+//		if (!this->SetActorLocation(FMath::VInterpTo(loc, m_DodgeTo, delta, m_DodgeSpeed), true))
+//		{
+//			m_Dodging = false;
+//		}
+//	}
+//	else
+//	{
+//		m_Dodging = false;
+//	}
+//	m_DodgeDir.X = 0;
+//	m_DodgeDir.Y = 0;
+//}
+//if (m_Rushing == true)
+//{
+//	if (Stamina <= 0)
+//	{
+//		m_Rushing = false;
+//		GetCharacterMovement()->MaxWalkSpeed = m_RunSpeed;
+//	}
+//}
+
+
+
+
+
+
+
+//if (this->m_bBlockMovement)
+//{
+//	return;
+//}
+//if (!IsStunned)
+//{
+//	if (Super::Controller != nullptr && value != 0.0f)
+//	{
+//		m_DodgeDir.X = value;
+//		if (m_DodgeTrigger == true)
+//		{
+//			if (m_Dodging != true)
+//			{
+//				if (value > 0.5 || value < -0.5)
+//				{
+//					//Dodge(value, 0);
+
+//					m_DodgeStart = true;
+//				}
+//			}
+//		}
+//		// find out which way is forward and add the movement
+//		else
+//		{
+//			if (!m_ChargeMove)
+//			{
+//				const FRotator yaw(0.0f, Super::Controller->GetControlRotation().Yaw, 0.0f);
+//				Super::AddMovementInput(FRotationMatrix(yaw).GetUnitAxis(EAxis::X), value);
+//				if (m_Rushing == true)
+//				{
+//					Stamina -= m_RushCost;
+//					TArray<AActor*> EnemyList;
+//					MeleeCapsule->GetOverlappingActors(EnemyList, TSubclassOf<APlayerCharacter>());
+
+//					//for every enemy that's within the capsule, check and apply collision
+//					for (auto Enemies : EnemyList)
+//					{
+//						if (Enemies != this)
+//						{
+//							if (Enemies->IsA(APlayerCharacter::StaticClass()))
+//							{
+//								auto Enemy = (APlayerCharacter*)Enemies;
+//								if (MeleeCapsule->IsOverlappingComponent(Enemy->GetCapsuleComponent()))
+//								{
+//									if (Enemy->Health > 0)
+//									{
+//										auto loc1 = Enemies->GetActorLocation();
+//										auto loc2 = this->GetActorLocation();
+//										FVector LaunchDir = (loc1 - loc2);
+//										FVector Launch = (LaunchDir.GetSafeNormal() + FVector(0, 0, 0.2f))*m_RushKnockback;
+//										Enemy->LaunchCharacter(Launch, 0, 0);
+//									}
+//								}
+//							}
+//						}
+//					}
+//				}
+
+//			}
+//		}
+
+//	}
+//}
+
+
+
+
+
+
+
+//if (this->m_bBlockMovement)
+//{
+//	return;
+//}
+//if (!IsStunned)
+//{
+//	if (Super::Controller != nullptr && value != 0.0f)
+//	{
+//		m_DodgeDir.Y = value;
+//		if (m_DodgeTrigger == true)
+//		{
+//			if (m_Dodging != true)
+//			{
+//				if (value > 0.5 || value < -0.5)
+//				{
+//					//Dodge(0, value);
+
+//					m_DodgeStart = true;
+//				}
+//			}
+//		}
+//		else
+//		{
+//			// find out which way is right and add the movement
+//			if (!m_ChargeMove)
+//			{
+//				const FRotator yaw(0.0f, Super::Controller->GetControlRotation().Yaw, 0.0f);
+//				AddMovementInput(FRotationMatrix(yaw).GetUnitAxis(EAxis::Y), value);
+//				if (m_Rushing == true)
+//				{
+//					Stamina -= m_RushCost;
+//					TArray<AActor*> EnemyList;
+//					MeleeCapsule->GetOverlappingActors(EnemyList, TSubclassOf<APlayerCharacter>());
+
+//					//for every enemy that's within the capsule, check and apply collision
+//					for (auto Enemies : EnemyList)
+//					{
+//						if (Enemies != this)
+//						{
+//							if (Enemies->IsA(APlayerCharacter::StaticClass()))
+//							{
+//								auto Enemy = (APlayerCharacter*)Enemies;
+//								if (MeleeCapsule->IsOverlappingComponent(Enemy->GetCapsuleComponent()))
+//								{
+//									if (Enemy->Health > 0)
+//									{
+//										auto loc1 = Enemies->GetActorLocation();
+//										auto loc2 = this->GetActorLocation();
+//										FVector LaunchDir = (loc1 - loc2);
+//										FVector Launch = (LaunchDir.GetSafeNormal() + FVector(0, 0, 0.2f))*m_RushKnockback;
+//										Enemy->LaunchCharacter(Launch, 0, 0);
+//									}
+//								}
+//							}
+//						}
+//					}
+//				}
+
+//			}
+//		}
+//	}
+//}
+
+
+
+
+
+
+
+
+
+
+
+
+//void APlayerCharacter::Stun(float StunLength)
+//{
+//FTimerHandle ThisHandle;
+//IsStunned = true;
+//GetWorldTimerManager().SetTimer(ThisHandle, this, &APlayerCharacter::EndStun, StunLength);
+//}
+
+//void APlayerCharacter::EndStun()
+//{
+//IsStunned = false;
+//Health = MaxHealth;
+//}
+
+//void APlayerCharacter::ToggleDodge()
+//{
+//if (m_DodgeTrigger != true)
+//{
+//	m_DodgeTrigger = true;
+//}
+//else
+//{
+//	m_DodgeTrigger = false;
+//}
+//}
+
+//void APlayerCharacter::ToggleRush()
+//{
+//if (Stamina > 0)
+//{
+//	if (m_Rushing != true)
+//	{
+//		m_Rushing = true;
+//		GetCharacterMovement()->MaxWalkSpeed = m_RushSpeed;
+//	}
+//	else
+//	{
+//		m_Rushing = false;
+//		GetCharacterMovement()->MaxWalkSpeed = m_RunSpeed;
+//	}
+//}
+//else
+//{
+//	m_Rushing = false;
+//	GetCharacterMovement()->MaxWalkSpeed = m_RunSpeed;
+//}
+//}
+
+//void APlayerCharacter::Dodge(float x, float y)
+//{
+//m_DodgeTo = this->GetActorLocation() + ((this->GetActorForwardVector()*m_DodgeDist)*x) + ((this->GetActorRightVector()*m_DodgeDist)*y);
+//m_Dodging = true;
+//}
+
+//void APlayerCharacter::MeleeAttack()
+//{
+//	if (!IsAttacking)
+//	{
+//		if (!IsStunned)
+//		{
+////			AnimWeakPunch = true;
+//			IsAttacking = true;
+//			FDamageEvent ThisDamage;
+//			TArray<AActor*> EnemyList;
+//			MeleeCapsule->GetOverlappingActors(EnemyList, TSubclassOf<APlayerCharacter>());
+//			//for every enemy that's within the capsule, check and apply collision
+//			for (auto Enemies : EnemyList)
+//			{
+//				if (Enemies != this)
+//				{
+//					if (Enemies->IsA(APlayerCharacter::StaticClass()))
+//					{
+//						auto Enemy = (APlayerCharacter*)Enemies;
+//						if (MeleeCapsule->IsOverlappingComponent(Enemy->GetCapsuleComponent()))
+//						{
+//							if (Enemy->Health > 0)
+//							{
+//								Enemy->TakeDamage(MeleeAttackDamage, ThisDamage, this->GetController(), this);
+//								auto loc1 = Enemies->GetActorLocation();
+//								auto loc2 = this->GetActorLocation();
+//								FVector LaunchDir = (loc1 - loc2);
+//								FVector Launch = (LaunchDir.GetSafeNormal() + FVector(0, 0, 0.2f))*PlayerKnockback;
+//								Enemy->LaunchCharacter(Launch, 0, 0);
+//							}
+//						}
+//					}
+//					else if (Enemies->IsA(ABlock::StaticClass()) && ((ABlock*)Enemies)->IsDestructable())
+//					{
+//						Enemies->TakeDamage(this->MeleeAttackDamage * 3.0f, ThisDamage, this->GetController(), this);
+//					}
+//				}
+//			}
+//			IsAttacking = false;
+//		}
+//	}
+//}
+
+//void APlayerCharacter::PunchChargeUp()
+//{
+//if (!m_ChargePunch)
+//{
+//	if (!IsStunned)
+//	{
+//		m_ChargeActive = true;
+//		m_ChargePunch = true;
+//	}
+//}
+//}
+
+//void APlayerCharacter::ChargePunchMove()
+//{
+//m_ChargeActive = false;
+//float movedist;
+//if (m_ChargeLevel >= 1)
+//{
+//	if (m_ChargeLevel < 2)
+//	{
+//		movedist = m_ChargeL1Dist;
+//	}
+//	else if (m_ChargeLevel < 3)
+//	{
+//		movedist = m_ChargeL2Dist;
+//	}
+//	else
+//	{
+//		movedist = m_ChargeL3Dist;
+//	}
+//}
+//else
+//{
+//	movedist = 0;
+//}
+//if (movedist != 0)
+//{
+//	m_ChargeMoveTo = this->GetActorLocation() + (this->GetActorForwardVector()*movedist);
+//	m_ChargeMove = true;
+//}
+//else
+//{
+//	ChargePunchAttack();
+//}
+//}
+
+//void APlayerCharacter::ChargePunchAttack()
+//{
+//m_ChargeMove = false;
+//float damage;
+//bool stun;
+//float knockback;
+//if (m_ChargeLevel >= 1)
+//{
+//	if (m_ChargeLevel < 2)
+//	{
+//		damage = m_ChargeL1Damage;
+//		knockback = 0;
+//		stun = false;
+//	}
+//	else if (m_ChargeLevel < 3)
+//	{
+//		damage = m_ChargeL2Damage;
+//		knockback = m_ChargeL2Knockback;
+//		stun = false;
+//	}
+//	else
+//	{
+//		damage = m_ChargeL3Damage;
+//		knockback = m_ChargeL3Knockback;
+//		stun = true;
+//	}
+//}
+//else
+//{
+//	damage = 0;
+//}
+//m_ChargeLevel = 0;
+//m_ChargeTimer = 0;
+//if (damage != 0)
+//{
+//	if (!IsAttacking)
+//	{
+//		if (!IsStunned)
+//		{
+//			IsAttacking = true;
+//			const FRotator yaw(0.0f, GetActorRotation().Yaw, 0.0f);
+//			FDamageEvent ThisDamage;
+//			TArray<AActor*> EnemyList;
+//			MeleeCapsule->GetOverlappingActors(EnemyList, TSubclassOf<APlayerCharacter>());
+//			//for every enemy that's within the capsule, check and apply collision
+//			for (auto Enemies : EnemyList)
+//			{
+//				if (Enemies != this)
+//				{
+//					if (Enemies->IsA(APlayerCharacter::StaticClass()))
+//					{
+//						auto Enemy = (APlayerCharacter*)Enemies;
+//						if (MeleeCapsule->IsOverlappingComponent(Enemy->GetCapsuleComponent()))
+//						{
+//							if (Enemy->Health > 0)
+//							{
+
+//								Enemy->TakeDamage(damage, ThisDamage, this->GetController(), this);
+//								auto loc1 = Enemies->GetActorLocation();
+//								auto loc2 = this->GetActorLocation();
+//								FVector LaunchDir = (loc1 - loc2);
+//								FVector Launch = (LaunchDir.GetSafeNormal() + FVector(0, 0, 0.2f))*knockback;
+//								Enemy->LaunchCharacter(Launch, 0, 0);
+//								if (stun == true)
+//								{
+//									Enemy->Stun(m_ChargeStun);
+//								}
+//							}
+//						}
+//					}
+//					else if (Enemies->IsA(ABlock::StaticClass()) && ((ABlock*)Enemies)->IsDestructable())
+//					{
+//						Enemies->TakeDamage(this->MeleeAttackDamage * 3.0f, ThisDamage, this->GetController(), this);
+//					}
+//				}
+//			}
+//			IsAttacking = false;
+//			m_ChargePunch = false;
+//		}
+//	}
+//}
+//}

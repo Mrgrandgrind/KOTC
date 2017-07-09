@@ -1,11 +1,19 @@
 #include "King_of_the_Castle.h"
 #include "PrimaryBrush.h"
 
-#include "../Block.h"
-#include "../Prefab.h"
-#include "../BlockData.h"
-#include "../BuildArea.h"
+#include "Gamemode/BaseGameMode.h"
+#include "Character/PlayerCharacter.h"
+#include "Construction/Block.h"
+#include "Construction/Prefab.h"
+#include "Construction/BlockData.h"
+#include "Construction/BuildArea.h"
+#include "Construction/BlockEntity.h"
+
 #include "DrawDebugHelpers.h"
+
+#define DROP_STRENGTH_MAX 750.0f
+#define DROP_STRENGTH_MIN 900.0f
+#define DROP_ROTATION_OFFSET 100.0f //degrees
 
 #define DEFAULT_BLOCK_COUNT 0
 #define DEFAULT_MAX_BLOCK_COUNT 10
@@ -108,6 +116,41 @@ void UPrimaryBrush::SetSelectedIndex(int index)
 
 	this->UpdateBlockChild();
 	Super::UpdateCountText(this->GetBlockData(index));
+}
+
+void UPrimaryBrush::DropBlocks(UBlockData* data, int count)
+{
+	AActor *parent = Super::GetOwner();
+	if (data == nullptr || count <= 0 || parent == nullptr)
+	{
+		return;
+	}
+	count = FMath::Min(count, data->GetCount());
+
+	ABaseGameMode *gamemode = Cast<ABaseGameMode>(parent->GetWorld()->GetAuthGameMode());
+	// Drop count amount of blocks (limited to count of data - will not drop a block if it doesn't have it)
+	for (int i = 0; i < count; i++)
+	{
+		data->SetCount(this, data->GetCount() - 1);
+
+		for (ABlockEntity *next : ABlockEntity::SpawnBlockEntity((ABlock*)data->GetClassType()->GetDefaultObject(), parent->GetWorld(), nullptr, true))
+		{
+			next->SetBlockOwner(parent);
+			next->SetIgnoreOwner(true);
+
+			next->SetActorLocation(parent->GetActorLocation());
+			next->SetActorRotation(parent->GetActorRotation());
+
+			FVector rotation = parent->GetActorRotation().Vector();
+			((UPrimitiveComponent*)next->GetRootComponent())->AddImpulse(rotation
+				* FMath::FRandRange(DROP_STRENGTH_MIN, DROP_STRENGTH_MAX));
+
+			if (gamemode != nullptr)
+			{
+				gamemode->OnBlockDrop(next, Cast<APlayerCharacter>(parent), data->GetCount());
+			}
+		}
+	}
 }
 
 void UPrimaryBrush::UpdateBlockChild()

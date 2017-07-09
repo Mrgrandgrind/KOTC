@@ -3,7 +3,6 @@
 #include "Construction/Brush/BlockBrush.h"
 #include "PrimaryBrush.generated.h"
 
-
 UCLASS()
 class KING_OF_THE_CASTLE_API UPrimaryBrush : public UBlockBrush
 {
@@ -13,6 +12,9 @@ public:
 	UPrimaryBrush();
 
 	virtual void BeginPlay() override;
+
+	// Drop x amount of blocks from primary brush
+	virtual void DropBlocks(class UBlockData *data, int count);
 
 	virtual class ABlock* Action(class ABuildArea *area, AActor *source) override;
 

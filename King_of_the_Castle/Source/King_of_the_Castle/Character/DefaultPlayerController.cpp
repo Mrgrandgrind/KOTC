@@ -7,7 +7,7 @@
 #include "Character/PlayerCharacter.h"
 #include "Construction/Brush/PrimaryBrush.h"
 
-APlayerCharacter* ADefaultPlayerController::GetCharacter()
+APlayerCharacter* ADefaultPlayerController::GetCharacter() const
 {
 	return Cast<APlayerCharacter>(Super::GetPawn());
 }

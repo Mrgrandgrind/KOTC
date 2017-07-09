@@ -24,5 +24,5 @@ public:
 	void KOTC_SetBlockCount(const int& count);
 
 private:
-	class APlayerCharacter* GetCharacter();
+	class APlayerCharacter* GetCharacter() const;
 };

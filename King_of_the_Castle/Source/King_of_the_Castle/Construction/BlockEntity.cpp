@@ -57,7 +57,7 @@ void ABlockEntity::SetTo(ABlock *block)
 
 bool ABlockEntity::CanBePickedUp(APlayerCharacter *character) const
 {
-	if(character->IsPlayerStunned() || (this->m_bIgnoreOwner && this->m_Owner == character))
+	if(character->IsStunned() || (this->m_bIgnoreOwner && this->m_Owner == character))
 	{
 		return false;
 	}
