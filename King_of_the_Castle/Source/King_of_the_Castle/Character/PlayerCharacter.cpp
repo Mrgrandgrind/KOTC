@@ -77,9 +77,15 @@ m_AttackStage(EAttackStage::READY), m_Team(-1), m_BuildReach(DEFAULT_REACH_DISTA
 	this->m_MeleeCapsule->SetupAttachment(Super::GetMesh(), BUILD_TRACE_SOCKET);
 
 	// Delegate the melee capsule collisions
-	TScriptDelegate<FWeakObjectPtr> delegate;
-	delegate.BindUFunction(this, FName("OnMeleeEndCollision"));
-	this->m_MeleeCapsule->OnComponentEndOverlap.Add(delegate);
+	TScriptDelegate<FWeakObjectPtr> delegateMelee;
+	delegateMelee.BindUFunction(this, FName("OnMeleeEndCollision"));
+	this->m_MeleeCapsule->OnComponentEndOverlap.Add(delegateMelee);
+
+	// Enable hit events on the capsule
+	TScriptDelegate<FWeakObjectPtr> delegateCap;
+	delegateCap.BindUFunction(this, FName("OnPlayerCollisionHit"));
+	Super::GetCapsuleComponent()->SetNotifyRigidBodyCollision(true);
+	Super::GetCapsuleComponent()->OnComponentHit.Add(delegateCap);
 }
 
 // Called when the game starts or when spawned
@@ -90,12 +96,11 @@ void APlayerCharacter::BeginPlay()
 	// Start with full health and stamina
 	this->m_Health = this->m_MaxHealth;
 	this->m_Stamina = this->m_MaxStamina;
+	this->UpdateMovementSpeed();
 
 	// Update team collision (required for doors to function)
 	this->SetTeam(this->m_Team);
-
-	//m_RunSpeed = GetCharacterMovement()->MaxWalkSpeed;
-
+	
 	// For some strange reason the primary brush gets unset by unreal. This will ensure that it is set. (Otherwise the game will crash)
 	if (this->m_PrimaryBrush == nullptr)
 	{
@@ -128,20 +133,39 @@ void APlayerCharacter::Tick(float delta)
 		this->m_DamageTimer += delta;
 	}
 
-	// Regenerate health
+	// Regenerate health and stamina
 	if(this->m_Health < this->m_MaxHealth && this->m_DamageTimer >= DAMAGE_TIMER)
 	{
 		this->SetHealth(this->m_Health + this->m_HealthRegenSpeed * delta);
 	}
-	// Regenerate stamina
-	if (this->m_Stamina < this->m_MaxStamina)
+	if (this->m_Stamina < this->m_MaxStamina && !this->m_bRushing && !this->m_bSprinting)
 	{
 		this->SetStamina(this->m_Stamina + this->m_StaminaRegenSpeed * delta);
 	}
 
+	// Subtract cost of stamina if rushing or sprinting
+	if(this->m_bRushing)
+	{
+		this->UpdateMovementSpeed();
+
+		this->SetStamina(this->m_Stamina - this->m_RushStaminaCost * delta);
+		if(this->m_Stamina == 0.0f)
+		{
+			this->InputRushDisable();
+		}
+	}
+	else if(this->m_bSprinting)
+	{
+		this->SetStamina(this->m_Stamina - this->m_SprintStaminaCost * delta);
+		if (this->m_Stamina == 0.0f)
+		{
+			this->InputSprintDisable();
+		}
+	}
+
+	// Update building wheel
 	if (Super::GetController() != nullptr)
 	{
-		// Update building wheel
 		AGameHUD *hud = Cast<AGameHUD>(((APlayerController*)Super::GetController())->GetHUD());
 		if (hud != nullptr && hud->GetBuildWheel()->IsVisible())
 		{
@@ -157,6 +181,8 @@ void APlayerCharacter::Tick(float delta)
 			}
 		}
 	}
+	
+	// Updating building mechanics
 	if (this->m_BuildArea != nullptr && this->m_bBuildingEnabled && this->m_BuildArea->GetTeam() == this->m_Team)
 	{
 		FVector cameraLoc = this->m_Camera->GetComponentLocation(), forward = this->m_Camera->GetForwardVector();
@@ -224,6 +250,8 @@ void APlayerCharacter::SetTeam(const int& team)
 	}
 	Super::GetCapsuleComponent()->SetCollisionProfileName(team <= 1
 		? TEXT("PawnTeam1") : team >= 2 ? TEXT("PawnTeam2") : TEXT("Pawn"));
+
+	this->SetBuildModeEnabled(false);
 }
 
 void APlayerCharacter::DropBlock()
@@ -232,6 +260,26 @@ void APlayerCharacter::DropBlock()
 	{
 		this->m_PrimaryBrush->DropBlocks(this->m_PrimaryBrush->GetBlockData(this->m_PrimaryBrush->GetSelectedIndex()), 1);
 	}
+}
+
+void APlayerCharacter::UpdateMovementSpeed() const
+{
+	float speed;
+	if(this->m_bRushing)
+	{
+		// Rush speed is an acceleration process
+		speed = FMath::Min(Super::GetCharacterMovement()->MaxWalkSpeed 
+			+ this->m_RushAcceleration * Super::GetWorld()->GetDeltaSeconds(), this->m_RushSpeed);
+	}
+	else if(this->m_bSprinting)
+	{
+		speed = this->m_SprintSpeed;
+	}
+	else
+	{
+		speed = this->m_WalkSpeed;
+	}
+	Super::GetCharacterMovement()->MaxWalkSpeed = speed;
 }
 
 void APlayerCharacter::Attack()
@@ -257,7 +305,7 @@ void APlayerCharacter::Attack()
 	}), ATTACK_PRE_DELAY, false);
 }
 
-void APlayerCharacter::Stun()
+void APlayerCharacter::Stun(const float& duration, const bool& regen)
 {
 	// Don't stun if already stunned
 	if (this->m_bIsStunned)
@@ -274,14 +322,47 @@ void APlayerCharacter::Stun()
 	}
 
 	FTimerHandle handle;
-	Super::GetWorldTimerManager().SetTimer(handle, FTimerDelegate::CreateLambda([this]()
+	Super::GetWorldTimerManager().SetTimer(handle, FTimerDelegate::CreateLambda([this, regen]()
 	{
 		this->m_bIsStunned = false;
-		this->m_Health = this->m_MaxHealth;
-	}), this->m_StunDelay, false);
+		if(regen)
+		{
+			this->m_Health = this->m_MaxHealth;
+		}
+	}), duration <= 0.0f ? this->m_StunDelay : duration, false);
 }
 
-void APlayerCharacter::OnMeleeEndCollision(UPrimitiveComponent* overlappedComponent, AActor* otherActor, UPrimitiveComponent* otherComp, int32 otherBodyIndex)
+void APlayerCharacter::OnPlayerCollisionHit(UPrimitiveComponent* hitComponent, AActor* otherActor,
+	UPrimitiveComponent* otherComp, FVector normalImpulse, const FHitResult& hit)
+{
+	if(!this->m_bRushing)
+	{
+		return;
+	}
+	// Check to see if we hit another player that's not on the same team
+	APlayerCharacter *player = Cast<APlayerCharacter>(otherActor);
+	if(player != nullptr && player->GetTeam() != this->GetTeam())
+	{
+		// Get rush power percentage
+		float power = this->m_RushSpeed == 0.0f ? 0.0f : (Super::GetCharacterMovement()->MaxWalkSpeed / this->m_RushSpeed);
+
+		// Knockback the enemy player
+		FVector direction = (player->GetActorLocation() - Super::GetActorLocation()).GetSafeNormal() + this->m_MeleeKnockbackDirOffset;
+		player->LaunchCharacter(direction * this->m_RushKnockbackForce * power, false, false);
+
+		// Knockback this player in the opposite direction
+		Super::LaunchCharacter(-direction * this->m_RushKnockbackForce * power, true, true);
+
+		// Temporarily stun the opponent
+		player->Stun(this->m_RushHitStunDuration * power, false);
+
+		// Disable rush
+		this->InputRushDisable();
+	}
+}
+
+void APlayerCharacter::OnMeleeEndCollision(UPrimitiveComponent* overlappedComponent,
+	AActor* otherActor, UPrimitiveComponent* otherComp, int32 otherBodyIndex)
 {
 	// Ignore collisions if we are not currently attacking
 	if (this->m_AttackStage != EAttackStage::COLLISION || otherActor == nullptr || otherActor == this)
@@ -297,8 +378,8 @@ void APlayerCharacter::OnMeleeEndCollision(UPrimitiveComponent* overlappedCompon
 	{
 		APlayerCharacter *player = Cast<APlayerCharacter>(otherActor);
 
-		// Do not hurt this player if they have immunity
-		if(player->m_LastAttacker == this)
+		// Do not hurt this player if they have immunity or are on the same team
+		if(player->m_LastAttacker == this || player->GetTeam() == this->GetTeam())
 		{
 			return;
 		}
@@ -327,29 +408,12 @@ float APlayerCharacter::TakeDamage(float damageAmount, FDamageEvent const& damag
 {
 	if (!this->m_bIsStunned)
 	{
-		this->m_Health = FMath::Max(this->m_Health - damageAmount, 0.0f);
+		this->SetHealth(this->m_Health - damageAmount);
 		if (this->m_Health <= 0.0f)
 		{
 			this->Stun();
 		}
 	}
-	//if (!IsStunned)
-	//{
-	//	//apply damage, stun if 0 health, set timer to end stun
-	//	Health -= DamageAmount;
-	//	FTimerHandle ThisHandle;
-	//	if (Health <= 0)
-	//	{
-	//		UBlockData *data = this->m_PrimaryBrush->GetBlockData(this->m_PrimaryBrush->GetIndexOf(ID_FLAG_BLOCK));
-	//		if (data != nullptr && data->GetCount() > 0)
-	//		{
-	//			this->DropBlock(data, data->GetCount());
-	//		}
-
-	//		IsStunned = true;
-	//		GetWorldTimerManager().SetTimer(ThisHandle, this, &APlayerCharacter::EndStun, StunDuration);
-	//	}
-	//}
 	return damageAmount;
 }
 
@@ -377,6 +441,12 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *input)
 	input->BindAction("Jump", IE_Pressed, this, &APlayerCharacter::Jump);
 	input->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
+	input->BindAction("Rush", IE_Pressed, this, &APlayerCharacter::InputRushEnable);
+	input->BindAction("Rush", IE_Released, this, &APlayerCharacter::InputRushDisable);
+
+	input->BindAction("Sprint", IE_Pressed, this, &APlayerCharacter::InputSprintEnable);
+	input->BindAction("Sprint", IE_Released, this, &APlayerCharacter::InputSprintDisable);
+
 	input->BindAction("Attack", IE_Pressed, this, &APlayerCharacter::Attack);
 
 	input->BindAction("Place Block", IE_Pressed, this, &APlayerCharacter::InputBlockPlaceDownEvent);
@@ -393,14 +463,10 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *input)
 	input->BindAction("Brush down", IE_Pressed, this, &APlayerCharacter::InputBlockTypeDownEvent);
 	input->BindAction("Building toggle", IE_Pressed, this, &APlayerCharacter::ToggleBuildMode);
 
-	// For testing. TODO Ask if this should be a feature in the game
 	input->BindAction("Drop Block", IE_Pressed, this, &APlayerCharacter::DropBlock);
 
 	//input->BindAction("Dodge", IE_Pressed, this, &APlayerCharacter::ToggleDodge);
 	//input->BindAction("Dodge", IE_Released, this, &APlayerCharacter::ToggleDodge);
-
-	//input->BindAction("Rush", IE_Pressed, this, &APlayerCharacter::ToggleRush);
-	//input->BindAction("Rush", IE_Released, this, &APlayerCharacter::ToggleRush);
 
 	//input->BindAction("Charge Punch", IE_Pressed, this, &APlayerCharacter::PunchChargeUp);
 	//input->BindAction("Charge Punch", IE_Released, this, &APlayerCharacter::ChargePunchMove);
@@ -416,6 +482,11 @@ void APlayerCharacter::Jump()
 
 void APlayerCharacter::TurnAtRate(float rate)
 {
+	// If rush is active multiply the turn amount by a specified multiplier
+	if(this->m_bRushing)
+	{
+		rate *= this->m_RushTurnMultiplier;
+	}
 	Super::AddControllerYawInput(rate * this->m_BaseTurnRate * Super::GetWorld()->GetDeltaSeconds());
 }
 
@@ -432,7 +503,7 @@ void APlayerCharacter::MoveForward(float value)
 	}
 	if (Super::Controller != nullptr && value != 0.0f)
 	{
-		// find out which way is forward and add the movement
+		// Find out which way is forward and add the movement
 		const FRotator yaw(0.0f, Super::Controller->GetControlRotation().Yaw, 0.0f);
 		Super::AddMovementInput(FRotationMatrix(yaw).GetUnitAxis(EAxis::X), value);
 	}
@@ -446,7 +517,13 @@ void APlayerCharacter::MoveRight(float value)
 	}
 	if (Super::Controller != nullptr && value != 0.0f)
 	{
-		// find out which way is right and add the movement
+		// If rush is active multiply the turn amount by a specified multiplier
+		if(this->m_bRushing)
+		{
+			value *= this->m_RushTurnMultiplier;
+		}
+
+		// Find out which way is right and add the movement
 		const FRotator yaw(0.0f, Super::Controller->GetControlRotation().Yaw, 0.0f);
 		Super::AddMovementInput(FRotationMatrix(yaw).GetUnitAxis(EAxis::Y), value);
 	}
@@ -794,23 +871,6 @@ void APlayerCharacter::PostEditChangeProperty(FPropertyChangedEvent& event)
 
 
 
-
-
-
-
-//void APlayerCharacter::Stun(float StunLength)
-//{
-//FTimerHandle ThisHandle;
-//IsStunned = true;
-//GetWorldTimerManager().SetTimer(ThisHandle, this, &APlayerCharacter::EndStun, StunLength);
-//}
-
-//void APlayerCharacter::EndStun()
-//{
-//IsStunned = false;
-//Health = MaxHealth;
-//}
-
 //void APlayerCharacter::ToggleDodge()
 //{
 //if (m_DodgeTrigger != true)
@@ -851,48 +911,6 @@ void APlayerCharacter::PostEditChangeProperty(FPropertyChangedEvent& event)
 //m_Dodging = true;
 //}
 
-//void APlayerCharacter::MeleeAttack()
-//{
-//	if (!IsAttacking)
-//	{
-//		if (!IsStunned)
-//		{
-////			AnimWeakPunch = true;
-//			IsAttacking = true;
-//			FDamageEvent ThisDamage;
-//			TArray<AActor*> EnemyList;
-//			MeleeCapsule->GetOverlappingActors(EnemyList, TSubclassOf<APlayerCharacter>());
-//			//for every enemy that's within the capsule, check and apply collision
-//			for (auto Enemies : EnemyList)
-//			{
-//				if (Enemies != this)
-//				{
-//					if (Enemies->IsA(APlayerCharacter::StaticClass()))
-//					{
-//						auto Enemy = (APlayerCharacter*)Enemies;
-//						if (MeleeCapsule->IsOverlappingComponent(Enemy->GetCapsuleComponent()))
-//						{
-//							if (Enemy->Health > 0)
-//							{
-//								Enemy->TakeDamage(MeleeAttackDamage, ThisDamage, this->GetController(), this);
-//								auto loc1 = Enemies->GetActorLocation();
-//								auto loc2 = this->GetActorLocation();
-//								FVector LaunchDir = (loc1 - loc2);
-//								FVector Launch = (LaunchDir.GetSafeNormal() + FVector(0, 0, 0.2f))*PlayerKnockback;
-//								Enemy->LaunchCharacter(Launch, 0, 0);
-//							}
-//						}
-//					}
-//					else if (Enemies->IsA(ABlock::StaticClass()) && ((ABlock*)Enemies)->IsDestructable())
-//					{
-//						Enemies->TakeDamage(this->MeleeAttackDamage * 3.0f, ThisDamage, this->GetController(), this);
-//					}
-//				}
-//			}
-//			IsAttacking = false;
-//		}
-//	}
-//}
 
 //void APlayerCharacter::PunchChargeUp()
 //{

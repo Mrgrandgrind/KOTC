@@ -135,7 +135,8 @@ void ABlockEntity::Tick(float delta)
 	{
 		APlayerCharacter *character = Cast<APlayerCharacter>(*itr);
 		// Check to see if the character is this blocks owner. Or if this block has no owner.
-		if (character != nullptr && (this->m_Owner == nullptr || character == this->m_Owner))
+		if (character != nullptr && (this->m_Owner == nullptr || (this->m_bIgnoreOwner
+			? character != this->m_Owner : character == this->m_Owner)))
 		{
 			if (!this->CanBePickedUp(character))
 			{

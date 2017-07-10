@@ -52,8 +52,13 @@ public:
 	// Perform an attack
 	void Attack();
 
-	// Stun the player
-	void Stun();
+	// Stun the player. You can set the duration (-1 = default) and whether or not to regenerate health to full after stun.
+	void Stun(const float& duration = -1, const bool& regen = true);
+
+	// When the players collision hits something
+	UFUNCTION()
+	void OnPlayerCollisionHit(UPrimitiveComponent *hitComponent, AActor *otherActor,
+		UPrimitiveComponent *otherComp, FVector normalImpulse, const FHitResult& hit);
 
 	// When the melee capsule hits something
 	UFUNCTION()
@@ -103,9 +108,9 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Combat")
 	const EAttackStage& GetAttackStage() const { return this->m_AttackStage; }
 
-	FORCEINLINE void SetHealth(const float& health) { this->m_Health = FMath::Min(health, this->m_MaxHealth); }
+	FORCEINLINE void SetHealth(const float& health) { this->m_Health = FMath::Max(FMath::Min(health, this->m_MaxHealth), 0.0f); }
 
-	FORCEINLINE void SetStamina(const float& stamina) { this->m_Stamina = FMath::Min(stamina, this->m_MaxStamina); }
+	FORCEINLINE void SetStamina(const float& stamina) { this->m_Stamina = FMath::Max(FMath::Min(stamina, this->m_MaxStamina), 0.0f); }
 
 	FORCEINLINE const int& GetTeam() const { return this->m_Team; }
 
@@ -126,6 +131,8 @@ public:
 protected:
 	UFUNCTION()
 	void ToggleBuildMode() { if(!this->m_bBlockMovement) this->SetBuildModeEnabled(!this->m_bBuildingEnabled); }
+
+	void UpdateMovementSpeed() const;
 
 	// Called whenever the player moved up a block type with their brush
 	UFUNCTION(BlueprintCallable, Category = "Event")
@@ -161,6 +168,20 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Event")
 	void InputBuildWheelSelect();
 
+	// Input: Sprint
+	UFUNCTION(BlueprintCallable, Category = "Event")
+	void InputSprintEnable() { this->m_bSprinting = true; this->UpdateMovementSpeed(); }
+
+	UFUNCTION(BlueprintCallable, Category = "Event")
+	void InputSprintDisable() { this->m_bSprinting = false; this->UpdateMovementSpeed(); }
+
+	// Input: Rush
+	UFUNCTION(BlueprintCallable, Category = "Event")
+	void InputRushEnable() { this->m_bRushing = true; this->UpdateMovementSpeed(); }
+
+	UFUNCTION(BlueprintCallable, Category = "Event")
+	void InputRushDisable() { this->m_bRushing = false; this->UpdateMovementSpeed(); }
+
 private:
 	// Result of last trace. The trace happens every tick when building mode is enabled.
 	FHitResult m_TraceResult;
@@ -177,6 +198,9 @@ private:
 	// Whether or not the player is stunned
 	bool m_bIsStunned;
 
+	// Whether or not the player is sprinting or rushing
+	bool m_bSprinting, m_bRushing;
+
 	// Attack stage
 	EAttackStage m_AttackStage;
 
@@ -192,17 +216,47 @@ private:
 	// Current players stamina
 	float m_Stamina;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true", DisplayName = "Max Health"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Max Health"))
 	float m_MaxHealth;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true", DisplayName = "Max Stamina"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Max Stamina"))
 	float m_MaxStamina;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true", DisplayName = "Health Regen Speed"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Health Regen Speed"))
 	float m_HealthRegenSpeed;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true", DisplayName = "Stamina Regen Speed"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Stamina Regen Speed"))
 	float m_StaminaRegenSpeed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Walk Speed"))
+	float m_WalkSpeed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Rush Speed"))
+	float m_RushSpeed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Sprint Speed"))
+	float m_SprintSpeed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Rush Turn Multiplier"))
+	float m_RushTurnMultiplier;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Rush Knockback Force"))
+	float m_RushKnockbackForce;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Rush Knockback Offset"))
+	FVector m_RushKnockbackOffset;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Rush Hit Stun Duration"))
+	float m_RushHitStunDuration;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Rush Acceleration"))
+	float m_RushAcceleration;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Rush Stamina Cost"))
+	float m_RushStaminaCost;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Sprint Stamina Cost"))
+	float m_SprintStaminaCost;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true", DisplayName = "Stun Delay (seconds)"))
 	float m_StunDelay;
@@ -263,28 +317,6 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Build", meta = (AllowPrivateAccess = "true", DisplayName = "Secondary Brush"))
 	class USecondaryBrush *m_SecondaryBrush;
 
-//public:
-//	//Animation flags
-//	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation Flags")
-//	bool AnimWalk;
-//
-//	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation Flags")
-//	bool AnimSprint;
-//
-//	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation Flags")
-//	bool AnimJump;
-//
-//	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation Flags")
-//	bool AnimKnockback;
-//
-//	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation Flags")
-//	bool AnimWeakPunch;
-//
-//	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation Flags")
-//	bool AnimStrongPunch;
-//
-//	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation Flags")
-//	bool AnimIdle;
 
 ////functon called to end stun
 //UFUNCTION(BlueprintCallable, Category = "Combat")
