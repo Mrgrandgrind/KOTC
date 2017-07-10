@@ -21,6 +21,12 @@ public:
 	void KOTC_SetTeam(const int& team);
 
 	UFUNCTION(Exec)
+	void KOTC_SetHealth(const float& health);
+
+	UFUNCTION(Exec)
+	void KOTC_SetStamina(const float& stamina);
+
+	UFUNCTION(Exec)
 	void KOTC_SetBlockReach(const float& reach);
 
 	UFUNCTION(Exec)

@@ -49,6 +49,9 @@ public:
 	// Modify camera pitch (up and down)
 	void LookUpAtRate(float rate);
 
+	// Perform a dodge
+	void Dodge();
+
 	// Perform an attack
 	void Attack();
 
@@ -207,6 +210,9 @@ private:
 	// Time since last attack by player. Health will not regenerate for a specified amount of time.
 	float m_DamageTimer;
 
+	// Time since pressed dodge button. This is so we can check for double tap.
+	float m_DodgePressTimer;
+
 	// Last attacker. Only set briefly after an attack. The set player cannot hurt this player whilst set.
 	APlayerCharacter *m_LastAttacker;
 
@@ -252,6 +258,12 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Rush Acceleration"))
 	float m_RushAcceleration;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Dodge Force"))
+	float m_DodgeForce;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Dodge Stamina Cost"))
+	float m_DodgeStaminaCost;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Rush Stamina Cost"))
 	float m_RushStaminaCost;
 
@@ -267,11 +279,11 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true", DisplayName = "Melee Player Damage"))
 	float m_MeleePlayerDamage;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true", DisplayName = "Knockback Force"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true", DisplayName = "Melee Knockback Force"))
 	float m_MeleeKnockbackForce;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true", DisplayName = "Knockback Direction Offset"))
-	FVector m_MeleeKnockbackDirOffset;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true", DisplayName = "Melee Knockback Offset"))
+	FVector m_MeleeKnockbackOffset;
 
 	// Current player team. Set using #SetTeam
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Team", meta = (AllowPrivateAccess = "true", DisplayName = "Team"))

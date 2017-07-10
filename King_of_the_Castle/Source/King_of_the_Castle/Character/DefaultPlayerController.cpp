@@ -30,6 +30,24 @@ void ADefaultPlayerController::KOTC_SetTeam(const int& team)
 	}
 }
 
+void ADefaultPlayerController::KOTC_SetHealth(const float& health)
+{
+	APlayerCharacter *character = this->GetCharacter();
+	if (character != nullptr)
+	{
+		character->SetHealth(health);
+	}
+}
+
+void ADefaultPlayerController::KOTC_SetStamina(const float& stamina)
+{
+	APlayerCharacter *character = this->GetCharacter();
+	if (character != nullptr)
+	{
+		character->SetStamina(stamina);
+	}
+}
+
 void ADefaultPlayerController::KOTC_SetBlockReach(const float& reach)
 {
 	APlayerCharacter *character = this->GetCharacter();
