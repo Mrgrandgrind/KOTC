@@ -109,6 +109,12 @@ public:
 	bool IsAttacking() const { return int(this->m_AttackStage) > 0 && this->m_AttackStage != EAttackStage::POST_DELAY;  }
 
 	UFUNCTION(BlueprintPure, Category = "Combat")
+	const bool& IsCharging() const { return this->m_bCharging; }
+
+	UFUNCTION(BlueprintPure, Category = "Combat")
+	const float& GetChargeCounter() const { return this->m_ChargeCounter; }
+
+	UFUNCTION(BlueprintPure, Category = "Combat")
 	const EAttackStage& GetAttackStage() const { return this->m_AttackStage; }
 
 	FORCEINLINE void SetHealth(const float& health) { this->m_Health = FMath::Max(FMath::Min(health, this->m_MaxHealth), 0.0f); }
@@ -185,6 +191,13 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Event")
 	void InputRushDisable() { this->m_bRushing = false; this->UpdateMovementSpeed(); }
 
+	// Input: Charge. Disabling the charge releases the 'stored charged energy'.
+	UFUNCTION(BlueprintCallable, Category = "Event")
+	void InputChargeEnable() { this->m_bCharging = true; this->m_ChargeCounter = 0.0f; }
+
+	UFUNCTION(BlueprintCallable, Category = "Event")
+	void InputChargeDisable();
+
 private:
 	// Result of last trace. The trace happens every tick when building mode is enabled.
 	FHitResult m_TraceResult;
@@ -202,16 +215,13 @@ private:
 	bool m_bIsStunned;
 
 	// Whether or not the player is sprinting or rushing
-	bool m_bSprinting, m_bRushing;
+	bool m_bSprinting, m_bRushing, m_bCharging;
 
 	// Attack stage
 	EAttackStage m_AttackStage;
 
-	// Time since last attack by player. Health will not regenerate for a specified amount of time.
-	float m_DamageTimer;
-
-	// Time since pressed dodge button. This is so we can check for double tap.
-	float m_DodgePressTimer;
+	// Timers and counters
+	float m_DamageTimer, m_DodgePressTimer, m_DodgeCooldownCounter, m_ChargeCounter;
 
 	// Last attacker. Only set briefly after an attack. The set player cannot hurt this player whilst set.
 	APlayerCharacter *m_LastAttacker;
@@ -261,6 +271,9 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Dodge Force"))
 	float m_DodgeForce;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Dodge Cooldown Time"))
+	float m_DodgeCooldownTime;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Dodge Stamina Cost"))
 	float m_DodgeStaminaCost;
 
@@ -279,11 +292,35 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true", DisplayName = "Melee Player Damage"))
 	float m_MeleePlayerDamage;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Melee Stamina Cost"))
+	float m_MeleeStaminaCost;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true", DisplayName = "Melee Knockback Force"))
 	float m_MeleeKnockbackForce;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true", DisplayName = "Melee Knockback Offset"))
 	FVector m_MeleeKnockbackOffset;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Duration"))
+	float m_ChargeDuration;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Stun Duration"))
+	float m_ChargeStunDuration;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Damage"))
+	float m_ChargeDamage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Stamina Cost"))
+	float m_ChargeStaminaCost;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Slide Force"))
+	float m_ChargeSlideForce;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Knockback Force"))
+	float m_ChargeKnockbackForce;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Knockback Offset"))
+	FVector m_ChargeKnockbackOffset;
 
 	// Current player team. Set using #SetTeam
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Team", meta = (AllowPrivateAccess = "true", DisplayName = "Team"))

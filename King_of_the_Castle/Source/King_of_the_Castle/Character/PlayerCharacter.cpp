@@ -23,6 +23,8 @@
 #define ATTACK_COLLISION_DELAY 0.4f
 #define ATTACK_POST_DELAY 0.2f
 
+#define CHARGE_ATTACK_ANIMATION_DURATION 2.0f
+
 #define LAST_ATTACKER_TIMER 0.1f
 
 #define DAMAGE_TIMER 2.0f // How long the player has to be out of combat for before health starts to regen again
@@ -132,6 +134,16 @@ void APlayerCharacter::Tick(float delta)
 	if (this->m_DodgePressTimer < DODGE_DOUBLE_TAP_TIME)
 	{
 		this->m_DodgePressTimer += delta;
+	}
+	if (this->m_DodgeCooldownCounter <= this->m_DodgeCooldownTime)
+	{
+		this->m_DodgeCooldownCounter += delta;
+	}
+
+	// Charger counter. To check how long the player has been charging their attack for.
+	if (this->m_bCharging)
+	{
+		this->m_ChargeCounter = FMath::Min(this->m_ChargeCounter + delta, this->m_ChargeDuration);
 	}
 
 	// Damage timer. Stops the player regenerating health until out of combat for DAMAGE_TIMER seconds.
@@ -321,11 +333,17 @@ void APlayerCharacter::Dodge()
 
 	// Take stamina
 	this->SetStamina(this->m_Stamina - this->m_DodgeStaminaCost);
+
+	this->m_DodgeCooldownCounter = 0.0f;
 }
 
 void APlayerCharacter::Attack()
 {
 	if (this->m_bIsStunned || this->m_AttackStage != EAttackStage::READY)
+	{
+		return;
+	}
+	if (this->m_Stamina < this->m_MeleeStaminaCost)
 	{
 		return;
 	}
@@ -373,35 +391,68 @@ void APlayerCharacter::Stun(const float& duration, const bool& regen)
 	}), duration <= 0.0f ? this->m_StunDelay : duration, false);
 }
 
+void APlayerCharacter::InputChargeDisable()
+{
+	Super::GetCharacterMovement()->GroundFriction = 0.0f;
+
+	FVector forward = this->m_Camera->GetForwardVector();
+	forward.Z = 0.0f;
+	forward.Normalize();
+
+	float power = this->m_ChargeDuration == 0.0f ? 1.0f : this->m_ChargeCounter / this->m_ChargeDuration;
+	Super::LaunchCharacter(forward * this->m_ChargeSlideForce * power, true, true);
+
+	this->Attack();
+
+	FTimerHandle handle;
+	Super::GetWorldTimerManager().SetTimer(handle, FTimerDelegate::CreateLambda([this]()
+	{
+		this->m_bCharging = false;
+		Super::GetCharacterMovement()->GroundFriction = 8.0f;
+	}), CHARGE_ATTACK_ANIMATION_DURATION, false);
+}
+
 void APlayerCharacter::OnPlayerCollisionHit(UPrimitiveComponent* hitComponent, AActor* otherActor,
 	UPrimitiveComponent* otherComp, FVector normalImpulse, const FHitResult& hit)
 {
-	if (!this->m_bRushing)
-	{
-		return;
-	}
 	// Check to see if we hit another player that's not on the same team
 	APlayerCharacter *player = Cast<APlayerCharacter>(otherActor);
 	if (player != nullptr && player->GetTeam() != this->GetTeam())
 	{
-		// Get rush power percentage
-		float power = this->m_RushSpeed == 0.0f ? 0.0f : (Super::GetCharacterMovement()->MaxWalkSpeed / this->m_RushSpeed);
+		FVector direction = (player->GetActorLocation() - Super::GetActorLocation()).GetSafeNormal();
+		if (this->m_bCharging)
+		{
+			// Get charge power percentage
+			float power = this->m_ChargeDuration == 0.0f ? 1.0f : this->m_ChargeCounter / this->m_ChargeDuration;
 
-		// Knockback the enemy player
-		FVector direction = (player->GetActorLocation() - Super::GetActorLocation()).GetSafeNormal() + this->m_MeleeKnockbackOffset;
-		player->LaunchCharacter(direction * this->m_RushKnockbackForce * power, false, false);
+			// Knockback this player in the opposite direction
+			direction += this->m_ChargeKnockbackOffset;
+			player->LaunchCharacter(direction * this->m_ChargeKnockbackForce * power, true, true);
 
-		// Knockback this player in the opposite direction
-		Super::LaunchCharacter(-direction * this->m_RushKnockbackForce * power, true, true);
+			// Temporarily stun the opponent
+			player->Stun(this->m_ChargeStunDuration * power, false);
+		}
+		else if (this->m_bRushing)
+		{
+			// Get rush power percentage
+			float power = this->m_RushSpeed == 0.0f ? 0.0f : (Super::GetCharacterMovement()->MaxWalkSpeed / this->m_RushSpeed);
 
-		// Temporarily stun the opponent
-		player->Stun(this->m_RushHitStunDuration * power, false);
+			// Knockback the enemy player
+			direction += this->m_MeleeKnockbackOffset;
+			player->LaunchCharacter(direction * this->m_RushKnockbackForce * power, true, true);
 
-		// Drain all stamina
-		this->SetStamina(0.0f);
+			// Knockback this player in the opposite direction
+			Super::LaunchCharacter(-direction * this->m_RushKnockbackForce * power, true, true);
 
-		// Disable rush
-		this->InputRushDisable();
+			// Temporarily stun the opponent
+			player->Stun(this->m_RushHitStunDuration * power, false);
+
+			// Drain all stamina
+			this->SetStamina(0.0f);
+
+			// Disable rush
+			this->InputRushDisable();
+		}
 	}
 }
 
@@ -494,6 +545,9 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *input)
 	//input->BindAction("Dodge", IE_Pressed, this, &APlayerCharacter::Dodge);
 	input->BindAction("Attack", IE_Pressed, this, &APlayerCharacter::Attack);
 
+	input->BindAction("Charge Attack", IE_Pressed, this, &APlayerCharacter::InputChargeEnable);
+	input->BindAction("Charge Attack", IE_Released, this, &APlayerCharacter::InputChargeDisable);
+
 	input->BindAction("Place Block", IE_Pressed, this, &APlayerCharacter::InputBlockPlaceDownEvent);
 	input->BindAction("Place Block", IE_Released, this, &APlayerCharacter::InputBlockPlaceUpEvent);
 	input->BindAction("Destroy Block", IE_Pressed, this, &APlayerCharacter::InputBlockDestroyDownEvent);
@@ -509,25 +563,26 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *input)
 	input->BindAction("Building toggle", IE_Pressed, this, &APlayerCharacter::ToggleBuildMode);
 
 	input->BindAction("Drop Block", IE_Pressed, this, &APlayerCharacter::DropBlock);
-
-	//input->BindAction("Charge Punch", IE_Pressed, this, &APlayerCharacter::PunchChargeUp);
-	//input->BindAction("Charge Punch", IE_Released, this, &APlayerCharacter::ChargePunchMove);
 }
 
 void APlayerCharacter::Jump()
 {
 	if (!this->m_bBlockMovement)
 	{
-		if (this->m_DodgePressTimer < DODGE_DOUBLE_TAP_TIME)
+		Super::Jump();
+
+		if (this->m_DodgePressTimer < DODGE_DOUBLE_TAP_TIME 
+			&& this->m_DodgeCooldownCounter >= this->m_DodgeCooldownTime)
 		{
 			this->Dodge();
+			Super::StopJumping();
+
 			this->m_DodgePressTimer = DODGE_DOUBLE_TAP_TIME;
 		}
 		else
 		{
 			this->m_DodgePressTimer = 0.0f;
 		}
-		Super::Jump();
 	}
 }
 
