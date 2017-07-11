@@ -2,8 +2,9 @@
 
 #include "King_of_the_Castle.h"
 
-#include "Gamemode/BaseGameMode.h"
 #include "BlockEntity.h"
+#include "BlockStructureManager.h"
+#include "Gamemode/BaseGameMode.h"
 
 #include "Block.h"
 
@@ -12,7 +13,8 @@
 #define BLOCK_DEFAULT_MIN_HEALTH_COLOR FLinearColor(0.9f, 0.1f, 0.1f, 1.0f)
 
 // Sets default values
-ABlock::ABlock() : m_PointValue(1), m_Health(BLOCK_DEFAULT_HEALTH), m_MaxHealth(BLOCK_DEFAULT_HEALTH), m_Team(-1)
+ABlock::ABlock() : m_PointValue(1), m_Health(BLOCK_DEFAULT_HEALTH), 
+m_MaxHealth(BLOCK_DEFAULT_HEALTH), m_Team(-1), m_Structure(nullptr)
 {
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> Mesh(BLOCK_DEFAULT_MESH_LOCATION);
 
@@ -67,7 +69,6 @@ void ABlock::DestroyBlock(AActor *source)
 	ABaseGameMode *gamemode = Cast<ABaseGameMode>(Super::GetWorld()->GetAuthGameMode());
 	if (gamemode != nullptr)
 	{
-		//gamemode->OnBlockDestroy(this, this->m_Team, this->m_PointValue);
 		gamemode->OnBlockDestroy(this, source);
 	}
 	Super::Destroy();
@@ -103,10 +104,6 @@ ABlock* ABlock::SpawnBlock(UWorld *world, TSubclassOf<ABlock> type, const int& t
 		{
 			gamemode->OnBlockPlace(block, source);
 		}
-
-		//FVector origin, extent;
-		//block->GetActorBounds(false, origin, extent);
-		//UE_LOG_VECTOR(extent);
 	}
 	return block;
 }

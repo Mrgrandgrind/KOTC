@@ -23,6 +23,8 @@ class KING_OF_THE_CASTLE_API ABaseGameMode : public AGameMode
 public:
 	ABaseGameMode();
 
+	virtual void BeginPlay() override;
+
 	virtual void Tick(float delta) override;
 
 	// Force an event to happen. There is no count down if you manually trigger it.
@@ -64,13 +66,15 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Time")
 	void SetGameDuration(const float& duration) { this->m_GameDuration = duration; }
 
-	virtual void OnBlockPlace(class ABlock *block, AActor *source) { }
+	virtual void OnBlockPlace(class ABlock *block, AActor *source);
 
-	virtual void OnBlockDestroy(class ABlock *block, AActor *source) { }
+	virtual void OnBlockDestroy(class ABlock *block, AActor *source);
 
 	virtual void OnBlockPickup(class ABlockEntity *block, class APlayerCharacter *player, const int& newCount) { }
 
 	virtual void OnBlockDrop(class ABlockEntity *block, class APlayerCharacter *player, const int& newCount) { }
+
+	//FORCEINLINE class ABlockStructureManager* GetStructureManager() const { return this->m_BlockStructureManager; }
 	
 #if WITH_EDITOR
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
@@ -84,6 +88,9 @@ protected:
 	// How long a game should last
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Game", meta = (AllowPrivateAccess = "true", DisplayName = "Game Duration"))
 	float m_GameDuration;
+
+	// Structure manager reference
+	class ABlockStructureManager *m_BlockStructureManager;
 
 	// Timer used for several things; duration event has been active, duration since last trigger roll, duration since successful roll
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Event", meta = (AllowPrivateAccess = "true", DisplayName = "Event Timer"))

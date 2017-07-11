@@ -12,12 +12,12 @@ APlayerCharacter* ADefaultPlayerController::GetCharacter() const
 	return Cast<APlayerCharacter>(Super::GetPawn());
 }
 
-void ADefaultPlayerController::KOTC_Stun()
+void ADefaultPlayerController::KOTC_Stun(const float& duration)
 {
 	APlayerCharacter *character = this->GetCharacter();
 	if (character != nullptr)
 	{
-		character->Stun();
+		character->Stun(duration, false);
 	}
 }
 
@@ -70,5 +70,14 @@ void ADefaultPlayerController::KOTC_SetBlockCount(const int& count)
 	if (data != nullptr)
 	{
 		data->SetCount(brush, count);
+	}
+}
+
+void ADefaultPlayerController::KOTC_DebugDrawTrace(const bool& enable)
+{
+	APlayerCharacter *character = this->GetCharacter();
+	if (character != nullptr)
+	{
+		character->GetPrimaryBrush()->m_bDebugRenderTrace = enable;
 	}
 }

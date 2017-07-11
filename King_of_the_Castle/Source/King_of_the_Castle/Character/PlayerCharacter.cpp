@@ -17,7 +17,7 @@
 #include "Runtime/Engine/Classes/Engine/LocalPlayer.h"
 
 #define BUILD_TRACE_SOCKET TEXT("bind_head01") // The socket (of the player) which the trace originates from
-#define BUILD_TRACE_SOCKET TEXT("bind_r_lowerarm01") // The socket (of the player) where the melee collision box will be bound
+#define MELEE_TRACE_SOCKET TEXT("bind_r_lowerarm01") // The socket (of the player) where the melee collision box will be bound
 
 #define ATTACK_PRE_DELAY 0.4f 
 #define ATTACK_COLLISION_DELAY 0.4f
@@ -77,7 +77,7 @@ m_DodgePressTimer(DODGE_DOUBLE_TAP_TIME), m_Team(-1), m_BuildReach(DEFAULT_REACH
 	this->m_MeleeCapsule = UObject::CreateDefaultSubobject<UCapsuleComponent>(TEXT("MeleeCapsule"));
 	this->m_MeleeCapsule->bGenerateOverlapEvents = true;
 	this->m_MeleeCapsule->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	this->m_MeleeCapsule->SetupAttachment(Super::GetMesh(), BUILD_TRACE_SOCKET);
+	this->m_MeleeCapsule->SetupAttachment(Super::GetMesh(), MELEE_TRACE_SOCKET);
 
 	// Delegate the melee capsule collisions
 	TScriptDelegate<FWeakObjectPtr> delegateMelee;

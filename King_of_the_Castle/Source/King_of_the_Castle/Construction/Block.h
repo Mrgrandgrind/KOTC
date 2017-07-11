@@ -1,6 +1,8 @@
 #pragma once
 
 #include "GameFramework/Actor.h"
+#include "Construction/BlockStructureManager.h"
+
 #include "Block.generated.h"
 
 #define BLOCK_DEFAULT_MASS 500.0f //kg
@@ -14,7 +16,7 @@ UCLASS()
 class KING_OF_THE_CASTLE_API ABlock : public AActor
 {
 	GENERATED_BODY()
-	
+
 public:
 	ABlock();
 
@@ -56,6 +58,12 @@ public:
 
 	FORCEINLINE TArray<ABlock*>& GetRecipe() { return this->m_Recipe; }
 
+	FORCEINLINE FBlockStructure* GetStructure() const { return this->m_Structure; }
+
+	FORCEINLINE FStructureMeta& GetStructureMeta() { return this->m_StructureMeta; }
+
+	FORCEINLINE void SetStructure(FBlockStructure *structure) { this->m_Structure = structure; }
+
 	UFUNCTION()
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent,
 		class AController* EventInstigator, class AActor* DamageCauser) override;
@@ -96,6 +104,11 @@ private:
 
 	// Blocks used to make this block
 	TArray<ABlock*> m_Recipe;
+
+	// Structure Data
+	FBlockStructure *m_Structure;
+
+	FStructureMeta m_StructureMeta;
 
 	/////////////////////
 	// Manually break a block using the editor

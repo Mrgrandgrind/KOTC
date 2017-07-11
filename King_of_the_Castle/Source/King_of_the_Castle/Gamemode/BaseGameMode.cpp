@@ -1,10 +1,14 @@
 #include "King_of_the_Castle.h"
 #include "BaseGameMode.h"
 
-#include "../HUD/GameHUD.h"
-#include "../Event/LowGravityEvent.h"
-#include "../Event/FloorIsLavaEvent.h"
-#include "../Character/DefaultPlayerController.h"
+#include "HUD/GameHUD.h"
+#include "Event/LowGravityEvent.h"
+#include "Event/FloorIsLavaEvent.h"
+#include "Character/DefaultPlayerController.h"
+#include "Construction/Block.h"
+#include "Construction/BlockStructureManager.h"
+
+#include "Runtime/Engine/Public/EngineUtils.h"
 
 #define DEFAULT_GAME_DURATION 10.0f * 60.0f //seconds
 
@@ -33,6 +37,33 @@ ABaseGameMode::ABaseGameMode() : m_Timer(0.0f), m_GameDuration(DEFAULT_GAME_DURA
 #endif
 }
 
+void ABaseGameMode::BeginPlay()
+{
+	Super::BeginPlay();
+
+	// Find the block structure manager
+	TArray<AActor*> out;
+	UGameplayStatics::GetAllActorsOfClass(Super::GetWorld(), ABlockStructureManager::StaticClass(), out);
+	checkf(out.Num() <= 1, TEXT("There should not be more than 1 BlockStructureManager actor"));
+
+	if (out.Num() > 0)
+	{
+		this->m_BlockStructureManager = Cast<ABlockStructureManager>(out[0]);
+	}
+#if WITH_EDITOR
+	else
+	{
+		UE_LOG(LogClass, Error, TEXT("No ABlockStructureManager placed in map!"));
+	}
+#endif
+
+	// Create structures. This is essential to do.
+	if (this->m_BlockStructureManager != nullptr)
+	{
+		this->m_BlockStructureManager->ProcessPreplaced();
+	}
+}
+
 FString ABaseGameMode::GetEventText() const
 {
 	if (this->IsEventTriggered())
@@ -51,6 +82,22 @@ FString ABaseGameMode::GetEventText() const
 		return FString::Printf(TEXT("%s %d"), name, FMath::RoundToInt(5.0f - this->GetEventTime()));
 	}
 	return TEXT("");
+}
+
+void ABaseGameMode::OnBlockPlace(ABlock *block, AActor *source)
+{
+	if (this->m_BlockStructureManager != nullptr)
+	{
+		block->SetStructure(this->m_BlockStructureManager->ProcessCreate(block));
+	}
+}
+
+void ABaseGameMode::OnBlockDestroy(ABlock *block, AActor *source)
+{
+	if (this->m_BlockStructureManager != nullptr)
+	{
+		this->m_BlockStructureManager->ProcessDestroy(block);
+	}
 }
 
 void ABaseGameMode::Tick(float delta)

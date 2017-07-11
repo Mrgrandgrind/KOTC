@@ -15,7 +15,7 @@ class KING_OF_THE_CASTLE_API ADefaultPlayerController : public APlayerController
 	
 public:
 	UFUNCTION(Exec)
-	void KOTC_Stun();
+	void KOTC_Stun(const float& duration);
 
 	UFUNCTION(Exec)
 	void KOTC_SetTeam(const int& team);
@@ -31,6 +31,9 @@ public:
 
 	UFUNCTION(Exec)
 	void KOTC_SetBlockCount(const int& count);
+
+	UFUNCTION(Exec)
+	void KOTC_DebugDrawTrace(const bool& enable);
 
 private:
 	class APlayerCharacter* GetCharacter() const;

@@ -28,7 +28,6 @@
 #define BLOCK_DOOR_COLOR FColor(122, 228, 231)
 #define BLOCK_GOLD_COLOR FColor(173, 122, 73)
 
-#define BRUSH_SPAWN_Z_OFFSET 16.0f // How far up from desired location to spawn a block when placed (so it falls into place)
 #define BRUSH_CREATE_TOP_PERCENTAGE 0.25f // The top of the block is defined by this percentage. (i.e. we pretend the top 25% of the block surface is the top)
 
 UBlockBrush::UBlockBrush() : m_Team(nullptr), m_TextActor(nullptr), m_Material(nullptr)
