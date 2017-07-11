@@ -27,6 +27,7 @@ ABlockEntity::ABlockEntity() : m_bIgnoreOwner(false), m_bRestrictedPickup(true)
 	sde.BindUFunction(this, "EndOverlap");
 	Super::m_Mesh->OnComponentEndOverlap.Add(sde);
 
+	Super::m_Mesh->SetSimulatePhysics(true);
 	Super::m_Mesh->SetCollisionProfileName(FName("BlockEntity"));
 
 	Super::m_PointValue = 0;

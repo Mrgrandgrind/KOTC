@@ -17,7 +17,7 @@ ABlock::ABlock() : m_PointValue(1), m_Health(BLOCK_DEFAULT_HEALTH), m_MaxHealth(
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> Mesh(BLOCK_DEFAULT_MESH_LOCATION);
 
 	this->m_Mesh = UObject::CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BlockMeshComponent"));
-	this->m_Mesh->SetSimulatePhysics(true);
+	this->m_Mesh->SetSimulatePhysics(false);
 	if (Mesh.Succeeded())
 	{
 		this->m_Mesh->SetStaticMesh(Mesh.Object);
