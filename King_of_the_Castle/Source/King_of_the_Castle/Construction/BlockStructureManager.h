@@ -49,7 +49,7 @@ public:
 
 	virtual void Tick(float delta) override;
 
-	bool IsOnGround(class ABlock *block);
+	bool IsSupport(class ABlock *block);
 
 	void ProcessDestroy(class ABlock *block);
 

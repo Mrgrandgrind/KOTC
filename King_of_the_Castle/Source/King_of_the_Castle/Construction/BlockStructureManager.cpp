@@ -8,6 +8,7 @@
 
 #include "DrawDebugHelpers.h"
 #include "Runtime/Engine/Classes/Engine/StaticMeshActor.h"
+#include "Runtime/Engine/Classes/Components/ModelComponent.h"
 
 #define OFFSET_OFFSET 6.0f // How far to go out of bounds of block when finding surrounding
 #define DEBUG_DURATION 2.5f
@@ -57,15 +58,33 @@ void ABlockStructureManager::Tick(float delta)
 	}
 }
 
-bool ABlockStructureManager::IsOnGround(class ABlock *block)
+bool ABlockStructureManager::IsSupport(class ABlock *block)
 {
 	FVector location = block->GetActorLocation(), origin, extent;
 	block->GetActorBounds(true, origin, extent);
 
+	// Check for ground first
 	FHitResult result;
 	Super::GetWorld()->LineTraceSingleByChannel(result, location, location
 		+ FVector(0.0f, 0.0f, -extent.Z - OFFSET_OFFSET), ECollisionChannel::ECC_WorldDynamic);
-	return result.IsValidBlockingHit() && Cast<AStaticMeshActor>(result.GetActor()) != nullptr;
+
+	if (result.IsValidBlockingHit() && Cast<AStaticMeshActor>(result.GetActor()) != nullptr)
+	{
+		return true;
+	}
+	// If there's no ground, check the sides
+	for (const FVector& offset : {
+		FVector(extent.X + OFFSET_OFFSET, 0.0f, 0.0f), FVector(-extent.X - OFFSET_OFFSET, 0.0f, 0.0f),
+		FVector(0.0f, extent.Y + OFFSET_OFFSET, 0.0f), FVector(0.0f, -extent.Y - OFFSET_OFFSET, 0.0f) })
+	{
+		Super::GetWorld()->LineTraceSingleByChannel(result, location, location + offset, ECollisionChannel::ECC_WorldDynamic);
+
+		if (result.IsValidBlockingHit() && Cast<UModelComponent>(result.GetComponent()) != nullptr)
+		{
+			return true;
+		}
+	}
+	return false;
 }
 
 void ABlockStructureManager::CheckStructureSupport(FBlockStructure& structure)
@@ -147,7 +166,7 @@ void ABlockStructureManager::AddNeighbours(ABlock *block, const int& structureIn
 	{
 		structure.blocks.Add(block);
 		block->GetStructureMeta().index = structureIndex;
-		block->GetStructureMeta().isSupport = this->IsOnGround(block);
+		block->GetStructureMeta().isSupport = this->IsSupport(block);
 	}
 	for (ABlock *next : this->GetNeighbours(block))
 	{
@@ -227,7 +246,7 @@ void ABlockStructureManager::ProcessCreate(ABlock *block)
 	}
 
 	// Start by determining if this block is on the ground and can be used as a support
-	block->GetStructureMeta().isSupport = this->IsOnGround(block);
+	block->GetStructureMeta().isSupport = this->IsSupport(block);
 
 	TArray<ABlock*> surrounding = this->GetNeighbours(block);
 	if (surrounding.Num() == 0)
@@ -463,7 +482,8 @@ void ABlockStructureManager::DrawDebugBlock(ABlock* block, const FColor& color) 
 	block->GetActorBounds(true, origin, extent);
 	extent *= 1.02f;
 
-	FColor newColor = FColor(color.R, color.G, color.B, 10);
+	FColor newColor = block->GetStructureMeta().isSupport ? 
+		FColor(200, 0, 200, 20) : FColor(color.R, color.G, color.B, 10);
 	DrawDebugSolidBox(block->GetWorld(), loc, extent, newColor, true, DEBUG_DURATION);
 }
 #endif
