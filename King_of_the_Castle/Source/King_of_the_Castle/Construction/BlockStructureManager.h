@@ -28,15 +28,22 @@ public:
 	// Sets default values for this actor's properties
 	ABlockStructureManager();
 
+	virtual void BeginPlay() override;
+
 	void ProcessDestroy(class ABlock *block);
 
 	void ProcessCreate(class ABlock *block);
 
-	void ProcessPreplaced();
-
 	FORCEINLINE const TArray<FBlockStructure>& GetStructures() const { return this->m_Structures; }
 
 	FORCEINLINE FBlockStructure& GetStructure(const int& index) { return this->m_Structures[index]; }
+
+	FORCEINLINE int AddStructure(FBlockStructure&& structure) 
+	{
+		FBlockStructure newStructure;
+		newStructure.blocks.Append(structure.blocks);
+		return this->AddStructure(newStructure);
+	}
 
 	FORCEINLINE int AddStructure(FBlockStructure& structure)
 	{
@@ -50,10 +57,14 @@ public:
 	}
 
 protected:
-#if WITH_EDITOR
-	void DrawDebugStructure(FStructureMeta *meta, FColor color) const;
+	void ProcessPreplaced();
 
-	void DrawDebugBlock(class ABlock *block, FColor color) const;
+#if WITH_EDITOR
+	void DrawDebugStructure(FStructureMeta *meta, const FColor& color) const;
+
+	void DrawDebugStructure(const FBlockStructure& structure, const FColor& color) const;
+
+	void DrawDebugBlock(class ABlock *block, const FColor& color) const;
 #endif
 
 	void AddNeighbours(class ABlock *block, const int& structureIndex, TArray<AActor*>& outArray);

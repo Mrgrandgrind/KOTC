@@ -50,17 +50,9 @@ void ABaseGameMode::BeginPlay()
 	{
 		this->m_BlockStructureManager = Cast<ABlockStructureManager>(out[0]);
 	}
-#if WITH_EDITOR
 	else
 	{
 		UE_LOG(LogClass, Error, TEXT("No ABlockStructureManager placed in map!"));
-	}
-#endif
-
-	// Create structures. This is essential to do.
-	if (this->m_BlockStructureManager != nullptr)
-	{
-		this->m_BlockStructureManager->ProcessPreplaced();
 	}
 }
 

@@ -17,21 +17,32 @@ ABlockStructureManager::ABlockStructureManager()
 	Super::RootComponent = UObject::CreateDefaultSubobject<USceneComponent>(TEXT("BlockStructureManager"));
 }
 
-#if WITH_EDITOR
-void ABlockStructureManager::DrawDebugStructure(FStructureMeta* meta, FColor color) const
+void ABlockStructureManager::BeginPlay()
 {
-	if(!this->m_bDebugRenderStructure)
+	Super::BeginPlay();
+
+	this->ProcessPreplaced();
+}
+
+#if WITH_EDITOR
+void ABlockStructureManager::DrawDebugStructure(FStructureMeta* meta, const FColor& color) const
+{
+	this->DrawDebugStructure(this->m_Structures[meta->index], color);
+}
+
+void ABlockStructureManager::DrawDebugStructure(const FBlockStructure& structure, const FColor& color) const
+{
+	if (!this->m_bDebugRenderStructure)
 	{
 		return;
 	}
-	const FBlockStructure& structure = this->m_Structures[meta->index];
-	for(int i = 0; i < structure.blocks.Num(); i++)
+	for (int i = 0; i < structure.blocks.Num(); i++)
 	{
 		this->DrawDebugBlock(structure.blocks[i], color);
 	}
 }
 
-void ABlockStructureManager::DrawDebugBlock(ABlock* block, FColor color) const
+void ABlockStructureManager::DrawDebugBlock(ABlock* block, const FColor& color) const
 {
 	if (!this->m_bDebugRenderStructure)
 	{
@@ -110,31 +121,10 @@ void ABlockStructureManager::MergeIntoA(FStructureMeta *metaA, FStructureMeta *m
 	structureB->blocks.Empty();
 }
 
-void ABlockStructureManager::ProcessDestroy(ABlock *block)
-{
-	// We need to remove the block from the structure
-	FStructureMeta& meta = block->GetStructureMeta();
-	if (meta.index == -1)
-	{
-		return;
-	}
-	FBlockStructure& structure = this->GetStructure(meta.index);
-	structure.blocks.Remove(block);
-
-	// If structure is dead, let it be overwritten
-	if(structure.blocks.Num() == 0)
-	{
-		this->m_StructureFreeIndex.Add(meta.index);
-	}
-	meta.index = -1;
-
-	// We now need to confirm that we didn't just split the structure into two structures..
-}
-
 void ABlockStructureManager::ProcessCreate(ABlock *block)
 {
-	// Block entities are not a part of a structure and can be ignored
-	if (block->IsA(ABlockEntity::StaticClass()))
+	// Block entities and blocks already with a structure can be ignored
+	if (block->IsA(ABlockEntity::StaticClass()) || block->GetStructureMeta().index != -1)
 	{
 		return;
 	}
@@ -147,8 +137,7 @@ void ABlockStructureManager::ProcessCreate(ABlock *block)
 		FBlockStructure structure;
 		structure.blocks.Add(block);
 
-		this->AddStructure(structure);
-		block->GetStructureMeta().index = this->m_Structures.Num() - 1;
+		block->GetStructureMeta().index = this->AddStructure(structure);
 		return;
 	}
 
@@ -217,8 +206,11 @@ void ABlockStructureManager::AddNeighbours(ABlock *block, const int& structureIn
 	}
 	FBlockStructure& structure = this->GetStructure(structureIndex);
 	outArray.Remove(block);
-	structure.blocks.Add(block);
-	block->GetStructureMeta().index = structureIndex;
+	if (!structure.blocks.Contains(block))
+	{
+		structure.blocks.Add(block);
+		block->GetStructureMeta().index = structureIndex;
+	}
 	for (ABlock *next : this->GetNeighbours(block))
 	{
 		if(!outArray.Contains(next))
@@ -237,11 +229,140 @@ void ABlockStructureManager::ProcessPreplaced()
 
 	while (out.Num() > 0)
 	{
-		FBlockStructure structure;
-		int index = this->AddStructure(structure);
+		int index = this->AddStructure(FBlockStructure());
 
 		// Call a recursive method that will add all neighbours to the structure recursively until there are none left.
 		this->AddNeighbours(Cast<ABlock>(out[0]), index, out);
 	}
 	// When we get out of the while loop, every block on the map should be assigned a structure
+}
+
+void ABlockStructureManager::ProcessDestroy(ABlock *block)
+{
+	// We need to remove the block from the structure
+	FStructureMeta& meta = block->GetStructureMeta();
+	if (meta.index == -1)
+	{
+		return;
+	}
+	FBlockStructure& structure = this->GetStructure(meta.index);
+	structure.blocks.Remove(block);
+
+	// If structure is dead, let it be overwritten
+	if (structure.blocks.Num() == 0)
+	{
+		this->m_StructureFreeIndex.Add(meta.index);
+	}
+	else
+	{
+		// We are now going to (A*) pathfind from neighbour to neighbour to ensure
+		// that the structure is still whole after removing this block
+		struct Node
+		{
+			Node(ABlock *block) : block(block) { }
+
+			float h;
+			ABlock *block;
+
+			Node& CalculateHeuristics(ABlock *end)
+			{
+				this->h = (end->GetActorLocation() - this->block->GetActorLocation()).Size();
+				return *this;
+			}
+		};
+		auto ArrayContains = [](TArray<int>& indices, TArray<Node>& nodes, ABlock *block) 
+		{
+			for (int i = 0; i < indices.Num(); i++)
+			{
+				if (nodes[indices[i]].block == block)
+				{
+					return true;
+				}
+			}
+			return false;
+		};
+
+		TArray<ABlock*> neighbours = this->GetNeighbours(block);
+		for (int i = 1; i < neighbours.Num(); i++)
+		{
+			ABlock *start = neighbours[i - 1], *end = neighbours[i];
+			TArray<Node> nodes; // To avoid memory access issues we need somewhere to place our nodes
+			TArray<int> open, closed; //indices into nodes
+			nodes.Add(Node(start).CalculateHeuristics(end));
+			open.Add(nodes.Num() - 1);
+
+			Node *path = nullptr;
+			while (open.Num() > 0)
+			{
+				// Get lowest heuristics value
+				int openIndex = -1, nodeIndex = -1;
+				Node *next = nullptr;
+				for (int j = 0; j < open.Num(); j++)
+				{
+					if(next == nullptr || nodes[open[j]].h < next->h)
+					{
+						next = &nodes[nodeIndex = open[openIndex = j]];
+					}
+				}
+				check(next != nullptr);
+				// Check to see if we're done
+				if (next->block == end)
+				{
+					path = &nodes[nodeIndex];
+					break;
+				}
+				closed.Add(nodeIndex);
+				open.RemoveAt(openIndex);
+
+				TArray<ABlock*> nextNeighbours = this->GetNeighbours(next->block);
+				for (int j = 0; j < nextNeighbours.Num(); j++) // for some reason for-each gets compile error
+				{
+					ABlock *nextNeighbour = nextNeighbours[j];
+					if (nextNeighbour == block || ArrayContains(closed, nodes, nextNeighbour))
+					{
+						continue;
+					}
+					if (!ArrayContains(open, nodes, nextNeighbour))
+					{
+						Node node = Node(nextNeighbour).CalculateHeuristics(end);
+						nodes.Add(node);
+						open.Add(nodes.Num() - 1);
+					}
+				}
+			}
+			if (path != nullptr)
+			{
+				UE_LOG_TEXT("Structure: No structure change detected")
+				// If there's a path, all is good and the structure is still connected.
+				// We don't have to do anything more.
+				continue;
+			}
+			else
+			{
+				UE_LOG_TEXT("Structure: Structure split detected. Unmerging.")
+				// If there's no path it means our structure has been split.
+				// Luckily we can use the pathfinding data to know how to split the structure.
+				// The closed list contains all blocks in one part of the structure.
+				int index = this->AddStructure(FBlockStructure());
+
+				for (int j = 0; j < closed.Num(); j++)
+				{
+					Node& next = nodes[closed[j]];
+					if (next.block == block)
+					{
+						continue;
+					}
+					structure.blocks.Remove(next.block);
+					this->m_Structures[index].blocks.Add(next.block);
+					next.block->GetStructureMeta().index = index;
+				}
+#if WITH_EDITOR
+				DrawDebugStructure(structure, FColor::Cyan);
+				DrawDebugStructure(this->m_Structures[index], FColor::Blue);
+#endif
+			}
+		}
+	}
+	// Reset index for no particular reason
+	meta.index = -1;
 }
