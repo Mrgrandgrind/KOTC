@@ -228,19 +228,19 @@ ABlock* UPrimaryBrush::Action(ABuildArea* area, AActor* source)
 		return nullptr;
 	}
 	// If chaining, ensure there's a blocking object below where we're trying to place
-	if (Super::m_bChainMode)
-	{
-		FVector location;
-		area->GetGridLocation(Super::m_ActiveCell, location);
+	//if (Super::m_bChainMode&&false)
+	//{
+	//	FVector location;
+	//	area->GetGridLocation(Super::m_ActiveCell, location);
 
-		FHitResult result;
-		Super::GetWorld()->LineTraceSingleByChannel(result, location, location - FVector(0.0f, 0.0f, area->GetCellSize().Z),
-			ECollisionChannel::ECC_WorldDynamic, FCollisionQueryParams::DefaultQueryParam);
-		if (!result.IsValidBlockingHit())
-		{
-			return nullptr;
-		}
-	}
+	//	FHitResult result;
+	//	Super::GetWorld()->LineTraceSingleByChannel(result, location, location - FVector(0.0f, 0.0f, area->GetCellSize().Z),
+	//		ECollisionChannel::ECC_WorldDynamic, FCollisionQueryParams::DefaultQueryParam);
+	//	if (!result.IsValidBlockingHit())
+	//	{
+	//		return nullptr;
+	//	}
+	//}
 	TArray<ABlock*> placed;
 	for(ABlock *block : this->m_ChildBlocks)
 	{
@@ -439,6 +439,7 @@ void UPrimaryBrush::UpdateRegular(ABuildArea* area, const FHitResult& trace, boo
 		// Trace the ray to determine if there are any blocks below the grid elements we are looking above
 		FVector point = trace.TraceStart, diff = (trace.IsValidBlockingHit()
 			? trace.ImpactPoint : trace.TraceEnd) - trace.TraceStart;
+		FVector normal = (trace.TraceEnd - trace.TraceStart).GetSafeNormal();
 		float distance = diff.Size();
 		diff = diff.GetSafeNormal() * area->GetCellSize() * 0.5f;
 
@@ -451,45 +452,67 @@ void UPrimaryBrush::UpdateRegular(ABuildArea* area, const FHitResult& trace, boo
 			FIntVector cell;
 			if (area->GetGridCell(point, cell))
 			{
-				// Cast a small ray down from the current cell to check if there's something below
-				FHitResult belowResult;
-				Super::GetWorld()->LineTraceSingleByChannel(belowResult, point, point - FVector(0.0f, 0.0f, area->GetCellSize().Z),
-					ECollisionChannel::ECC_WorldDynamic, FCollisionQueryParams::DefaultQueryParam);
-#if WITH_EDITOR
-				if(this->m_bDebugRenderTrace)
+				FHitResult result;
+				// If we're looking downwards cast the sideways way else cast the downwards one
+				if (normal.Z <= -0.75f)
 				{
-					if(belowResult.IsValidBlockingHit())
-					{
-						DrawDebugLine(Super::GetWorld(), belowResult.TraceStart, belowResult.ImpactPoint, FColor::Cyan, false, -1.0f, 0.0f, 2.0f);
-					}
-					else
-					{
-						DrawDebugLine(Super::GetWorld(), belowResult.TraceStart, belowResult.TraceEnd, FColor::Blue, false, -1.0f, 0.0f, 2.0f);
-					}
-				}
-#endif
-				// Check to see if there's a block below
-				ABlock *block = Cast<ABlock>(belowResult.GetActor());
-				if (block != nullptr)
-				{
-
-					// Check to see if the block below is visible to the player
-					Super::GetWorld()->LineTraceSingleByChannel(belowResult, trace.TraceStart, belowResult.ImpactPoint - belowResult.ImpactNormal,
+					FVector sideDir = FVector(normal.X, normal.Y, 0.0f).GetSafeNormal();
+					Super::GetWorld()->LineTraceSingleByChannel(result, point, point - sideDir * area->GetCellSize().Z,
 						ECollisionChannel::ECC_WorldDynamic, FCollisionQueryParams::DefaultQueryParam);
 #if WITH_EDITOR
 					if (this->m_bDebugRenderTrace)
 					{
-						if (belowResult.GetActor() == block)
+						if (result.IsValidBlockingHit())
 						{
-							DrawDebugLine(Super::GetWorld(), belowResult.TraceStart, belowResult.ImpactPoint, FColor::Orange, false, -1.0f, 0.0f, 2.0f);
+							DrawDebugLine(Super::GetWorld(), result.TraceStart, result.ImpactPoint, FColor::Cyan, false, -1.0f, 0.0f, 2.0f);
 						}
 						else
 						{
-							DrawDebugLine(Super::GetWorld(), belowResult.TraceStart, belowResult.TraceEnd, FColor::Magenta, false, -1.0f, 0.0f, 2.0f);
+							DrawDebugLine(Super::GetWorld(), result.TraceStart, result.TraceEnd, FColor::Blue, false, -1.0f, 0.0f, 2.0f);
 						}
 					}
 #endif
-					if(belowResult.GetActor() == block)
+				}
+				else
+				{
+					// Cast a small ray down from the current cell to check if there's something below
+					Super::GetWorld()->LineTraceSingleByChannel(result, point, point - FVector(0.0f, 0.0f, area->GetCellSize().Z),
+						ECollisionChannel::ECC_WorldDynamic, FCollisionQueryParams::DefaultQueryParam);
+#if WITH_EDITOR
+					if (this->m_bDebugRenderTrace)
+					{
+						if (result.IsValidBlockingHit())
+						{
+							DrawDebugLine(Super::GetWorld(), result.TraceStart, result.ImpactPoint, FColor::Cyan, false, -1.0f, 0.0f, 2.0f);
+						}
+						else
+						{
+							DrawDebugLine(Super::GetWorld(), result.TraceStart, result.TraceEnd, FColor::Blue, false, -1.0f, 0.0f, 2.0f);
+						}
+					}
+#endif
+				}
+				// Check to see if there's a block below
+				ABlock *block = Cast<ABlock>(result.GetActor());
+				if (block != nullptr)
+				{
+					// Check to see if the block below is visible to the player
+					Super::GetWorld()->LineTraceSingleByChannel(result, trace.TraceStart, result.ImpactPoint - result.ImpactNormal,
+						ECollisionChannel::ECC_WorldDynamic, FCollisionQueryParams::DefaultQueryParam);
+#if WITH_EDITOR
+					if (this->m_bDebugRenderTrace)
+					{
+						if (result.GetActor() == block)
+						{
+							DrawDebugLine(Super::GetWorld(), result.TraceStart, result.ImpactPoint, FColor::Orange, false, -1.0f, 0.0f, 2.0f);
+						}
+						else
+						{
+							DrawDebugLine(Super::GetWorld(), result.TraceStart, result.TraceEnd, FColor::Magenta, false, -1.0f, 0.0f, 2.0f);
+						}
+					}
+#endif
+					if(result.GetActor() == block)
 					{
 						below = block;
 
