@@ -114,8 +114,16 @@ void UPrimaryBrush::SetSelectedIndex(int index)
 	}
 	this->m_SelectedTypeIndex = index;
 
-	this->UpdateBlockChild();
+	this->UpdateBlockChildActor();
 	Super::UpdateCountText(this->GetBlockData(index));
+}
+
+float UPrimaryBrush::GetBrushRotation() const
+{
+	FRotator rotation = (Super::GetComponentLocation() 
+		- Super::GetOwner()->GetActorLocation()).Rotation();
+	rotation.Yaw = FMath::GridSnap(rotation.Yaw, 90.0f);
+	return rotation.Yaw + 90.0f;
 }
 
 void UPrimaryBrush::DropBlocks(UBlockData* data, int count)
@@ -153,7 +161,23 @@ void UPrimaryBrush::DropBlocks(UBlockData* data, int count)
 	}
 }
 
-void UPrimaryBrush::UpdateBlockChild()
+void UPrimaryBrush::UpdateBlockChildRotation(const float& previousRotation, const float& newRotation)
+{
+	if (FMath::IsNearlyEqual(previousRotation, newRotation))
+	{
+		return;
+	}
+	float delta = newRotation - previousRotation;
+	for (AActor *actor : this->m_ChildBlocks)
+	{
+		FVector origin = Super::GetComponentLocation() + FVector(0.0f, -Super::Bounds.BoxExtent.Y, 0.0f);
+		FVector location = actor->GetActorLocation() - origin;
+		location = FRotator(0.0f, delta, 0.0f).RotateVector(location) + origin;
+		actor->SetActorLocation(location);
+	}
+}
+
+void UPrimaryBrush::UpdateBlockChildActor()
 {
 	for(AActor *actor : this->m_ChildBlocks)
 	{
@@ -215,6 +239,7 @@ void UPrimaryBrush::UpdateBlockChild()
 	{
 		addChild(this->m_BlockData[this->m_SelectedTypeIndex]);
 	}
+	this->UpdateBlockChildRotation(0.0f, this->m_Rotation);
 }
 
 ABlock* UPrimaryBrush::Action(ABuildArea* area, AActor* source)
@@ -249,6 +274,18 @@ ABlock* UPrimaryBrush::Action(ABuildArea* area, AActor* source)
 		{
 			continue;
 		}
+
+		// Check to see if we are overlapping with another block.
+		// GetOverlappingActors does not work because of collision setup. We will use line trace.
+		FHitResult result;
+		FVector end = block->GetActorLocation(), start = end + FVector(0.0f, 0.0f, Super::Bounds.BoxExtent.Z + 4.0f);
+		Super::GetWorld()->LineTraceSingleByChannel(result, start, end, ECollisionChannel::ECC_WorldDynamic);
+
+		if (result.IsValidBlockingHit() && result.GetActor() != nullptr)
+		{
+			continue;
+		}
+
 		FIntVector cell;
 		area->GetGridCell(block->GetActorLocation(), cell);
 
@@ -541,6 +578,13 @@ void UPrimaryBrush::Update(APlayerCharacter *character, ABuildArea* area, const 
 
 	bool show = false;
 	this->m_bValid = false;
+
+	float rotation = this->GetBrushRotation();
+	if (this->m_Rotation != rotation)
+	{
+		this->UpdateBlockChildRotation(this->m_Rotation, rotation);
+		this->m_Rotation = rotation;
+	}
 
 #if KOTC_CONSTRUCTION_CHAIN_ENABLED
 	if (Super::m_bChainMode)

@@ -96,7 +96,7 @@ private:
 
 	WheelSelectData m_SelectData;
 
-	TSubclassOf<class APrefab> m_Prefab3x1x3, m_Prefab3x1x1;
+	TArray<TSubclassOf<class APrefab>> m_Prefabs;
 
 	UPROPERTY()
 	UMaterialInterface *m_WheelMaterial;

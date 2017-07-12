@@ -48,23 +48,41 @@
 #define NAME_THETA_BEGIN TEXT("Theta Begin")
 #define NAME_THETA_END TEXT("Theta End")
 
-#define PREFAB_3x1x3 TEXT("'/Game/Blueprints/Construction/Prefabs/BP_Wall3x1x3_Prefab'")
-#define PREFAB_3x1x1 TEXT("'/Game/Blueprints/Construction/Prefabs/BP_Wall3x1x1_Prefab'")
+#define PREFAB1 TEXT("'/Game/Blueprints/Construction/Prefabs/BP_Prefab1'")
+#define PREFAB2 TEXT("'/Game/Blueprints/Construction/Prefabs/BP_Prefab2'")
+#define PREFAB3 TEXT("'/Game/Blueprints/Construction/Prefabs/BP_Prefab3'")
+#define PREFAB4 TEXT("'/Game/Blueprints/Construction/Prefabs/BP_Prefab4'")
+#define PREFAB5 TEXT("'/Game/Blueprints/Construction/Prefabs/BP_Prefab5'")
 
 #define SELECT_MATERIAL TEXT("Material'/Game/Materials/HUD/M_BuildWheelSelection.M_BuildWheelSelection'")
 #define BUILD_WHEEL_MATERIAL TEXT("Material'/Game/Materials/HUD/M_BuildWheel.M_BuildWheel'")
 
 UBuildWheel::UBuildWheel() : m_bIsVisible(false)
 {
-	static ConstructorHelpers::FClassFinder<APrefab> Prefab3x1x3(PREFAB_3x1x3);
-	if (Prefab3x1x3.Succeeded())
+	static ConstructorHelpers::FClassFinder<APrefab> Prefab1(PREFAB1);
+	if (Prefab1.Succeeded())
 	{
-		this->m_Prefab3x1x3 = Prefab3x1x3.Class;
+		this->m_Prefabs.Add(Prefab1.Class);
 	}
-	static ConstructorHelpers::FClassFinder<APrefab> Prefab3x1x1(PREFAB_3x1x1);
-	if (Prefab3x1x1.Succeeded())
+	static ConstructorHelpers::FClassFinder<APrefab> Prefab2(PREFAB2);
+	if (Prefab2.Succeeded())
 	{
-		this->m_Prefab3x1x1 = Prefab3x1x1.Class;
+		this->m_Prefabs.Add(Prefab2.Class);
+	}
+	static ConstructorHelpers::FClassFinder<APrefab> Prefab3(PREFAB3);
+	if (Prefab3.Succeeded())
+	{
+		this->m_Prefabs.Add(Prefab3.Class);
+	}
+	static ConstructorHelpers::FClassFinder<APrefab> Prefab4(PREFAB4);
+	if (Prefab4.Succeeded())
+	{
+		this->m_Prefabs.Add(Prefab4.Class);
+	}
+	static ConstructorHelpers::FClassFinder<APrefab> Prefab5(PREFAB5);
+	if (Prefab5.Succeeded())
+	{
+		this->m_Prefabs.Add(Prefab5.Class);
 	}
 
 	static ConstructorHelpers::FObjectFinder<UMaterialInterface> WheelMaterial(BUILD_WHEEL_MATERIAL);
@@ -202,34 +220,37 @@ WheelMenu UBuildWheel::CreateWheelMenu()
 
 		root.AddSegment({ TEXT("Power-up"), [this](APlayerCharacter *character)
 		{
-			WheelMenu powerMenu(TEXT("xyz"));
+			WheelMenu powerMenu(TEXT("prefab"));
 			{
-				powerMenu.AddSegment({ TEXT("1x1x1"), [this](APlayerCharacter *character)
+				powerMenu.AddSegment({ TEXT("none"), [this](APlayerCharacter *character)
 				{
 					character->GetPrimaryBrush()->SetPrefab(nullptr);
 					return false;
 				} });
-				powerMenu.AddSegment({ TEXT("3x1x3"), [this](APlayerCharacter *character)
+				powerMenu.AddSegment({ TEXT("prefab1"), [this](APlayerCharacter *character)
 				{
-					character->GetPrimaryBrush()->SetPrefab(this->m_Prefab3x1x3);
+					character->GetPrimaryBrush()->SetPrefab(this->m_Prefabs[0]);
 					return false;
 				} });
-				powerMenu.AddSegment({ TEXT("3x1x1"), [this](APlayerCharacter *character)
+				powerMenu.AddSegment({ TEXT("prefab2"), [this](APlayerCharacter *character)
 				{
-					character->GetPrimaryBrush()->SetPrefab(this->m_Prefab3x1x1);
+					character->GetPrimaryBrush()->SetPrefab(this->m_Prefabs[1]);
 					return false;
 				} });
-				powerMenu.AddSegment({ TEXT("4"), [this](APlayerCharacter *character)
+				powerMenu.AddSegment({ TEXT("prefab3"), [this](APlayerCharacter *character)
 				{
-					return true;
+					character->GetPrimaryBrush()->SetPrefab(this->m_Prefabs[2]);
+					return false;
 				} });
-				powerMenu.AddSegment({ TEXT("5"), [this](APlayerCharacter *character)
+				powerMenu.AddSegment({ TEXT("prefab4"), [this](APlayerCharacter *character)
 				{
-					return true;
+					character->GetPrimaryBrush()->SetPrefab(this->m_Prefabs[3]);
+					return false;
 				} });
-				powerMenu.AddSegment({ TEXT("6"), [this](APlayerCharacter *character)
+				powerMenu.AddSegment({ TEXT("prefab5"), [this](APlayerCharacter *character)
 				{
-					return true;
+					character->GetPrimaryBrush()->SetPrefab(this->m_Prefabs[4]);
+					return false;
 				} });
 			}
 			return this->OpenMenu(powerMenu);

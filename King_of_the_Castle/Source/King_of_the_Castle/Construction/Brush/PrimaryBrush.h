@@ -32,10 +32,14 @@ public:
 
 	FORCEINLINE UBlockData* GetBlockData(const FName id) { return this->GetBlockData(this->GetIndexOf(id)); }
 
-	FORCEINLINE void SetPrefab(TSubclassOf<class APrefab> prefab) { this->m_Prefab = prefab; this->UpdateBlockChild(); }
+	FORCEINLINE void SetPrefab(TSubclassOf<class APrefab> prefab) { this->m_Prefab = prefab; this->UpdateBlockChildActor(); }
 
 protected:
-	void UpdateBlockChild();
+	float GetBrushRotation() const;
+
+	void UpdateBlockChildRotation(const float& previousRotation, const float& newRotation);
+
+	void UpdateBlockChildActor();
 
 	void UpdateChain(class ABuildArea *area, const FHitResult& trace, bool& show);
 
@@ -43,6 +47,8 @@ protected:
 
 private:
 	bool m_bValid;
+
+	float m_Rotation;
 
 	UPROPERTY()
 	TArray<ABlock*> m_ChildBlocks;
