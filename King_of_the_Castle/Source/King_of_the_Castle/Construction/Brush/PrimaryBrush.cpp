@@ -252,7 +252,7 @@ ABlock* UPrimaryBrush::Action(ABuildArea* area, AActor* source)
 		FIntVector cell;
 		area->GetGridCell(block->GetActorLocation(), cell);
 
-		ABlock *actor = area->SpawnBlockAt(cell, data->GetClassType(), Super::GetOwner());
+		ABlock *actor = area->SpawnBlockAt(cell, data->GetClassType(), Cast<APlayerCharacter>(Super::GetOwner()));
 		if (actor != nullptr)
 		{
 			// Spawn the block in the air slightly so it drops

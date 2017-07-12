@@ -93,6 +93,10 @@ ABlock* USecondaryBrush::Action(ABuildArea* area, AActor* source)
 	{
 		return nullptr;
 	}
+	if (block->GetTeam() != *Super::m_Team)
+	{
+		return nullptr;
+	}
 	// If we get here, the destroy is valid and we will turn the block into a dropped one
 	block->DropBlock(source, false);
 	return block;

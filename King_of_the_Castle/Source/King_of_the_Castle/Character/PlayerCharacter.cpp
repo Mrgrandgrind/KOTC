@@ -202,7 +202,7 @@ void APlayerCharacter::Tick(float delta)
 	}
 
 	// Updating building mechanics
-	if (this->m_BuildArea != nullptr && this->m_bBuildingEnabled && this->m_BuildArea->GetTeam() == this->m_Team)
+	if (this->m_BuildArea != nullptr && this->m_bBuildingEnabled && this->m_BuildArea->CanTeamBuild(this->m_Team))
 	{
 		FVector cameraLoc = this->m_Camera->GetComponentLocation(), forward = this->m_Camera->GetForwardVector();
 		FVector cameraToPlayer = Super::GetMesh()->GetSocketLocation(BUILD_TRACE_SOCKET) - cameraLoc;
@@ -667,7 +667,7 @@ void APlayerCharacter::InputBlockPlaceUpEvent()
 	this->m_bPlacePressed = false;
 	this->m_PlacePressCounter = 0.0f;
 
-	if (this->m_BuildArea != nullptr && this->m_bBuildingEnabled && this->m_BuildArea->GetTeam() == this->m_Team)
+	if (this->m_BuildArea != nullptr && this->m_bBuildingEnabled && this->m_BuildArea->CanTeamBuild(this->m_Team))
 	{
 		// Check to see if the player was combining a block and then stopped
 		if (!this->m_SecondaryBrush->IsCombining())
@@ -689,7 +689,7 @@ void APlayerCharacter::InputBlockDestroyDownEvent()
 
 void APlayerCharacter::InputBlockDestroyUpEvent()
 {
-	if (this->m_BuildArea != nullptr && this->m_bBuildingEnabled && this->m_BuildArea->GetTeam() == this->m_Team)
+	if (this->m_BuildArea != nullptr && this->m_bBuildingEnabled && this->m_BuildArea->CanTeamBuild(this->m_Team))
 	{
 		this->m_SecondaryBrush->Action(this->m_BuildArea, this);
 	}

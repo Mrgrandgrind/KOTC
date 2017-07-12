@@ -33,7 +33,7 @@ public:
 
 	// Spawn a block of the given type (must derive from ABlock) at the given cell.
 	// Returns the actor that was spawned, or nullptr if the cell is not valid. (See IsCellValid())
-	class ABlock* SpawnBlockAt(const FIntVector& cell, TSubclassOf<class ABlock> blockClass, AActor *source = nullptr) const;
+	class ABlock* SpawnBlockAt(const FIntVector& cell, TSubclassOf<class ABlock> blockClass, class APlayerCharacter *source = nullptr) const;
 
 	// Get the individual grid cell size
 	FORCEINLINE const FVector& GetCellSize() const { return this->m_CellSize; }
@@ -46,6 +46,8 @@ public:
 
 	// Set the team that this build area is supposed to be for
 	FORCEINLINE void SetTeam(const int& team) { this->m_Team = team; }
+
+	FORCEINLINE bool CanTeamBuild(const int& team) { return this->m_bIgnoreTeam || this->m_Team == team; }
 
 	UFUNCTION()
 	void OnBeginOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor,
@@ -63,6 +65,10 @@ private:
 	// The team that this build area is for
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Team", meta = (AllowPrivateAccess = "true", DisplayName = "Team"))
 	int m_Team;
+
+	// Ignore the team and allow anyone to build here
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Team", meta = (AllowPrivateAccess = "true", DisplayName = "Ignore Team"))
+	bool m_bIgnoreTeam;
 
 	// The size of an individual cell on the grid
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grid", meta = (AllowPrivateAccess = "true", DisplayName = "Cell Size"))

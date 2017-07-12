@@ -145,21 +145,21 @@ bool ABuildArea::GetGridLocation(const FIntVector& cell, FVector& out) const
 	return true;
 }
 
-ABlock* ABuildArea::SpawnBlockAt(const FIntVector& cell, TSubclassOf<ABlock> blockClass, AActor *source) const
+ABlock* ABuildArea::SpawnBlockAt(const FIntVector& cell, TSubclassOf<ABlock> blockClass, APlayerCharacter *source) const
 {
 	FVector location;
 	if (!this->GetGridLocation(cell, location))
 	{
 		return nullptr;
 	}
-	return ABlock::SpawnBlock(Super::GetWorld(), blockClass, this->m_Team, source, location);
+	return ABlock::SpawnBlock(Super::GetWorld(), blockClass, source->GetTeam(), source, location);
 }
 
 void ABuildArea::OnBeginOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor,
 	UPrimitiveComponent *OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	APlayerCharacter *character = Cast<APlayerCharacter>(OtherActor);
-	if (character != nullptr && character->GetTeam() == this->m_Team)
+	if (character != nullptr && (this->m_bIgnoreTeam || character->GetTeam() == this->m_Team))
 	{
 		character->SetBuildArea(this);
 	}
