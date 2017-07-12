@@ -16,6 +16,8 @@
 #define PHYSICS_DELAY 0.25f
 #define PHYSICS_DROP_OFFSET 80.0f
 
+#define ENTITY_DELAY_DIST_MULTIPLIER 0.0009f
+
 // Sets default values
 ABlockStructureManager::ABlockStructureManager()
 {
@@ -42,18 +44,38 @@ void ABlockStructureManager::Tick(float delta)
 	for (int i = this->m_PhysicsBlocks.Num() - 1; i >= 0; i--)
 	{
 		FPhysicsBlock& physics = this->m_PhysicsBlocks[i];
-		if (physics.block->GetVelocity().IsNearlyZero())
+		switch (this->m_DropMode)
 		{
-			physics.counter += delta;
-			if (physics.counter >= PHYSICS_DELAY)
-			{
-				physics.block->GetMesh()->SetSimulatePhysics(false);
-				this->m_PhysicsBlocks.RemoveAt(i);
+			//case EDropMode::Regular: {
+			//	if (physics.block->GetVelocity().IsNearlyZero())
+			//	{
+			//		physics.counter += delta;
+			//		if (physics.counter >= PHYSICS_DELAY)
+			//		{
+			//			physics.block->GetMesh()->SetSimulatePhysics(false);
+			//			this->m_PhysicsBlocks.RemoveAt(i);
+			//		}
+			//	}
+			//	else
+			//	{
+			//		physics.counter = 0.0f;
+			//	}
+			//	break;
+			//}
+			case EDropMode::EntityDelay: {
+				physics.counter -= delta;
+				if (physics.counter <= 0.0f)
+				{
+					this->ProcessDestroy(physics.block);
+					this->DropBlock(physics.block);
+					this->m_PhysicsBlocks.RemoveAt(i);
+					//this->m_Structures[physics.block->GetStructureMeta().index].blocks.Remove(physics.block);
+				}
+				break;
 			}
-		}
-		else
-		{
-			physics.counter = 0.0f;
+			// We should never hit this case but if we do 
+			// we will just discard the data so we can stop trying to process it
+			default: this->m_PhysicsBlocks.RemoveAt(i);
 		}
 	}
 }
@@ -87,6 +109,21 @@ bool ABlockStructureManager::IsSupport(class ABlock *block)
 	return false;
 }
 
+void ABlockStructureManager::DropBlock(ABlock *block)
+{
+	for (ABlockEntity *entity : block->DropBlock(nullptr, true))
+	{
+		if (entity == nullptr)
+		{
+			continue;
+		}
+		FVector rand = (FVector(FMath::FRand(), FMath::FRand(),
+			FMath::FRand()) - FVector(0.5f)) * PHYSICS_DROP_OFFSET;
+		rand.Z = -FMath::Abs(rand.Z);
+		((UPrimitiveComponent*)entity->GetRootComponent())->AddImpulse(rand, NAME_None, true);
+	}
+}
+
 void ABlockStructureManager::CheckStructureSupport(FBlockStructure& structure)
 {
 	// Floating mode does not require support
@@ -105,29 +142,29 @@ void ABlockStructureManager::CheckStructureSupport(FBlockStructure& structure)
 		// If there is no longer any support blocks in the structure then we need to enable gravity
 		for (int i = structure.blocks.Num() - 1; i >= 0; i--)
 		{
+			ABlock *block = structure.blocks[i];
+			if (block->GetStructureMeta().isDestroyed)
+			{
+				continue;
+			}
 			switch (this->m_DropMode)
 			{
 				//case EDropMode::Regular:
 				//	block->GetMesh()->SetSimulatePhysics(true);
 				//	this->m_PhysicsBlocks.Add({ block });
 				//	break;
-				case EDropMode::EntityInsta:
-					ABlock *block = structure.blocks[i];
+				case EDropMode::EntityInsta: {
 					block->GetStructureMeta().index = -1;
 					structure.blocks.RemoveAt(i);
-
-					for(ABlockEntity *entity : block->DropBlock(nullptr, true))
-					{
-						if (entity == nullptr)
-						{
-							continue;
-						}
-						FVector rand = (FVector(FMath::FRand(), FMath::FRand(),
-							FMath::FRand()) - FVector(0.5f)) * PHYSICS_DROP_OFFSET;
-						rand.Z = -FMath::Abs(rand.Z);
-						((UPrimitiveComponent*)entity->GetRootComponent())->AddImpulse(rand, NAME_None, true);
-					}					
+					this->DropBlock(block);
 					break;
+				}
+				case EDropMode::EntityDelay: {
+					float distance = FVector::Dist(block->GetActorLocation(), structure.lastSupport);
+					block->GetStructureMeta().isDestroyed = true;
+					this->m_PhysicsBlocks.Add({ block, distance * ENTITY_DELAY_DIST_MULTIPLIER });
+					break;
+				}
 			}
 		}
 	}
@@ -328,6 +365,11 @@ void ABlockStructureManager::ProcessDestroy(ABlock *block)
 	FBlockStructure& structure = this->GetStructure(meta.index);
 	structure.blocks.Remove(block);
 
+	if (meta.isSupport)
+	{
+		structure.lastSupport = block->GetActorLocation();
+	}
+
 	// If structure is dead, let it be overwritten
 	if (structure.blocks.Num() == 0)
 	{
@@ -441,6 +483,7 @@ void ABlockStructureManager::ProcessDestroy(ABlock *block)
 					this->m_Structures[index].blocks.Add(next.block);
 					next.block->GetStructureMeta().index = index;
 				}
+				structure.lastSupport = this->m_Structures[index].lastSupport = block->GetActorLocation();
 				this->CheckStructureSupport(structure);
 				this->CheckStructureSupport(this->m_Structures[index]);
 #if WITH_EDITOR

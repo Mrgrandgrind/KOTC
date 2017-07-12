@@ -9,10 +9,10 @@ UENUM()
 enum class EDropMode : uint8
 {
 	Floating,
-	EntityInsta
+	EntityInsta,
+	EntityDelay
 
-	//Regular,
-	//EntityDelay
+	//Regular
 };
 
 struct FPhysicsBlock
@@ -25,6 +25,7 @@ struct FStructureMeta
 {
 	int index = -1;
 	bool isSupport;
+	bool isDestroyed;
 };
 
 USTRUCT()
@@ -32,6 +33,11 @@ struct FBlockStructure
 {
 	GENERATED_BODY()
 
+	// The location of the last support to be destroyed.
+	// Also set when a block causes one structures to split into two or more.
+	FVector lastSupport;
+
+	// An array containing all the blocks in the structure
 	UPROPERTY()
 	TArray<class ABlock*> blocks;
 };
@@ -78,6 +84,8 @@ public:
 	}
 
 protected:
+	void DropBlock(class ABlock *block);
+
 	void CheckStructureSupport(FBlockStructure& structure);
 
 	void ProcessPreplaced();
