@@ -8,7 +8,8 @@
 
 #include "DrawDebugHelpers.h"
 
-#define OFFSET_OFFSET 5.0f // How far to go out of bounds of block when finding surrounding
+#define OFFSET_OFFSET 6.0f // How far to go out of bounds of block when finding surrounding
+#define DEBUG_DURATION 2.5f
 
 // Sets default values
 ABlockStructureManager::ABlockStructureManager()
@@ -16,11 +17,34 @@ ABlockStructureManager::ABlockStructureManager()
 	Super::RootComponent = UObject::CreateDefaultSubobject<USceneComponent>(TEXT("BlockStructureManager"));
 }
 
-// Called when the game starts or when spawned
-void ABlockStructureManager::BeginPlay()
+#if WITH_EDITOR
+void ABlockStructureManager::DrawDebugStructure(FStructureMeta* meta, FColor color) const
 {
-	Super::BeginPlay();
+	if(!this->m_bDebugRenderStructure)
+	{
+		return;
+	}
+	const FBlockStructure& structure = this->m_Structures[meta->index];
+	for(int i = 0; i < structure.blocks.Num(); i++)
+	{
+		this->DrawDebugBlock(structure.blocks[i], color);
+	}
 }
+
+void ABlockStructureManager::DrawDebugBlock(ABlock* block, FColor color) const
+{
+	if (!this->m_bDebugRenderStructure)
+	{
+		return;
+	}
+	FVector origin, extent, loc = block->GetActorLocation();
+	block->GetActorBounds(true, origin, extent);
+	extent *= 1.02f;
+	
+	FColor newColor = FColor(color.R, color.G, color.B, 10);
+	DrawDebugSolidBox(block->GetWorld(), loc, extent, newColor, true, DEBUG_DURATION);
+}
+#endif
 
 TArray<ABlock*> ABlockStructureManager::GetNeighbours(ABlock *block) const
 {
@@ -45,7 +69,12 @@ TArray<ABlock*> ABlockStructureManager::GetNeighbours(ABlock *block) const
 		// Line trace to find surrounding
 		Super::GetWorld()->LineTraceSingleByChannel(result, location,
 			location + offset, ECollisionChannel::ECC_WorldDynamic, params);
-		DrawDebugLine(Super::GetWorld(), location, location + offset, FColor::Silver, false, 6.0f, 0, 4.0f);
+#if WITH_EDITOR
+		if(this->m_bDebugRenderStructure)
+		{
+			DrawDebugLine(Super::GetWorld(), location, location + offset, FColor::Silver, false, DEBUG_DURATION, 0, 4.0f);
+		}
+#endif
 		if (!result.IsValidBlockingHit())
 		{
 			continue;
@@ -60,120 +89,143 @@ TArray<ABlock*> ABlockStructureManager::GetNeighbours(ABlock *block) const
 	return surrounding;
 }
 
-FBlockStructure* ABlockStructureManager::MergeStructures(FBlockStructure *structureA, FBlockStructure *structureB)
+void ABlockStructureManager::MergeIntoA(FStructureMeta *metaA, FStructureMeta *metaB)
 {
-	check(structureA != structureB);
+	check(metaA != metaB);
+	check(metaA != nullptr && metaB != nullptr);
+
+	FBlockStructure *structureA = &this->GetStructure(metaA->index), *structureB = &this->GetStructure(metaB->index);
+
+	// We will be deleting metaB so lets just pre-emptively let the manager know we are no longer using its index
+	this->m_StructureFreeIndex.Add(metaB->index);
 
 	// Move all structureB blocks into structureA and update their reference
 	for (ABlock *block : structureB->blocks)
 	{
 		structureA->blocks.Add(block);
-		block->SetStructure(structureA);
+		block->GetStructureMeta().index = metaA->index;
 	}
 
 	// Delete structureB
 	structureB->blocks.Empty();
-	for (int i = 0; i < this->m_Structures.Num(); i++)
-	{
-		if (&this->m_Structures[i] == structureB)
-		{
-			this->m_Structures.RemoveAt(i);
-			break;
-		}
-	}
-	return structureA;
 }
 
 void ABlockStructureManager::ProcessDestroy(ABlock *block)
 {
 	// We need to remove the block from the structure
-	FBlockStructure *structure = block->GetStructure();
-	if (structure == nullptr)
+	FStructureMeta& meta = block->GetStructureMeta();
+	if (meta.index == -1)
 	{
 		return;
 	}
-	structure->blocks.Remove(block);
+	FBlockStructure& structure = this->GetStructure(meta.index);
+	structure.blocks.Remove(block);
+
+	// If structure is dead, let it be overwritten
+	if(structure.blocks.Num() == 0)
+	{
+		this->m_StructureFreeIndex.Add(meta.index);
+	}
+	meta.index = -1;
 
 	// We now need to confirm that we didn't just split the structure into two structures..
 }
 
-FBlockStructure* ABlockStructureManager::ProcessCreate(ABlock *block)
+void ABlockStructureManager::ProcessCreate(ABlock *block)
 {
 	// Block entities are not a part of a structure and can be ignored
-	if (block->IsA(ABlockEntity::StaticClass()) || block->GetStructure() != nullptr)
+	if (block->IsA(ABlockEntity::StaticClass()))
 	{
-		return nullptr;
+		return;
 	}
 
 	TArray<ABlock*> surrounding = this->GetNeighbours(block);
 	if (surrounding.Num() == 0)
 	{
-		UE_LOG_TEXT("Structure: New");
+		//UE_LOG_TEXT("Structure: New");
 		// If there are no surrounding blocks, we can simply create a new structure
 		FBlockStructure structure;
 		structure.blocks.Add(block);
 
-		this->m_Structures.Add(structure);
-		return &this->m_Structures[this->m_Structures.Num() - 1];
+		this->AddStructure(structure);
+		block->GetStructureMeta().index = this->m_Structures.Num() - 1;
+		return;
 	}
 
 	// There are multiple surrounding blocks. Let's get all their structures to see whats up.
-	TArray<FBlockStructure*> structures;
+	TArray<FStructureMeta*> metas;
 	for (ABlock *neighbour : surrounding)
 	{
-		FBlockStructure *structure = neighbour->GetStructure();
-		if (structure == nullptr)
+		FStructureMeta *meta = &neighbour->GetStructureMeta();
+		if (meta == nullptr || meta->index == -1)
 		{
 			// We shouldn't get any nullptr structures
 			UE_LOG(LogClass, Error, TEXT("[WARNING] We found a block with no structure! BlockName: %s"), *block->GetName());
 			continue;
 		}
-		if (!structures.Contains(structure))
+		if (!metas.ContainsByPredicate([meta](FStructureMeta *element) { return element->index == meta->index; }))
 		{
-			structures.Add(structure);
+			metas.Add(meta);
 		}
 	}
 
-	if (structures.Num() == 0)
+	if (metas.Num() == 0)
 	{
 		// Our surrounding neighbours had no structures in them. 
 		// This will happen for pre-placed blocks if they are not created by the gamemode using #ProcessPreplaced()
-		UE_LOG_TEXT("Structure: Doesn't exist");
-		return nullptr;
+		UE_LOG(LogClass, Error, TEXT("Structure: Doesn't exist"));
+#if WITH_EDITOR
+		this->DrawDebugBlock(block, FColor::Red);
+#endif
 	}
-	else if (structures.Num() == 1)
+	else if (metas.Num() == 1)
 	{
-		UE_LOG_TEXT("Structure: One surrounding. Adding to existing.");
+		//UE_LOG_TEXT("Structure: One surrounding. Adding to existing.");
 		// If we only have one structure surrounding then we can add our block to said structure.
-		structures[0]->blocks.Add(block);
-		return structures[0];
+		this->GetStructure(metas[0]->index).blocks.Add(block);
+		block->GetStructureMeta().index = metas[0]->index;
+#if WITH_EDITOR
+		this->DrawDebugStructure(metas[0], FColor::White);
+#endif
 	}
 	else
 	{
-		UE_LOG_TEXT("Structure: Multiple structures. Merging.");
+		//UE_LOG_TEXT("Structure: Multiple structures. Merging.");
 		// We are next to multiple structures. We are going to have to merge them into one.
-		FBlockStructure *structure = structures[0]; // The chosen structure. We will merge the remaining into here.
-		for (int i = 1; i < structures.Num(); i++)
+		FStructureMeta *meta = metas[0]; // The chosen structure. We will merge the remaining into here.
+#if WITH_EDITOR
+		this->DrawDebugStructure(meta, FColor::Blue);
+		this->DrawDebugBlock(block, FColor::Green);
+#endif
+		for (int i = 1; i < metas.Num(); i++)
 		{
-			this->MergeStructures(structure, structures[i]);
+#if WITH_EDITOR
+			this->DrawDebugStructure(metas[i], FColor::Cyan);
+#endif
+			this->MergeIntoA(meta, metas[i]);
 		}
-		return structure;
+		this->GetStructure(meta->index).blocks.Add(block);
+		block->GetStructureMeta().index = meta->index;
 	}
-	return nullptr; // Can't get here
 }
 
-void ABlockStructureManager::AddNeighbours(ABlock *block, FBlockStructure *structure, TArray<AActor*>& outArray)
+void ABlockStructureManager::AddNeighbours(ABlock *block, const int& structureIndex, TArray<AActor*>& outArray)
 {
-	if (block == nullptr || !outArray.Contains(block))
+	if (block == nullptr)
 	{
 		return;
 	}
+	FBlockStructure& structure = this->GetStructure(structureIndex);
 	outArray.Remove(block);
-	structure->blocks.Add(block);
-	block->SetStructure(structure);
+	structure.blocks.Add(block);
+	block->GetStructureMeta().index = structureIndex;
 	for (ABlock *next : this->GetNeighbours(block))
 	{
-		this->AddNeighbours(next, structure, outArray);
+		if(!outArray.Contains(next))
+		{
+			continue;
+		}
+		this->AddNeighbours(next, structureIndex, outArray);
 	}
 }
 
@@ -185,11 +237,11 @@ void ABlockStructureManager::ProcessPreplaced()
 
 	while (out.Num() > 0)
 	{
-		this->m_Structures.Add(FBlockStructure());
+		FBlockStructure structure;
+		int index = this->AddStructure(structure);
 
 		// Call a recursive method that will add all neighbours to the structure recursively until there are none left.
-		FBlockStructure *structure = &this->m_Structures[this->m_Structures.Num() - 1];
-		this->AddNeighbours(Cast<ABlock>(out[0]), structure, out);
+		this->AddNeighbours(Cast<ABlock>(out[0]), index, out);
 	}
 	// When we get out of the while loop, every block on the map should be assigned a structure
 }

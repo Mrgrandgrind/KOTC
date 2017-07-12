@@ -74,7 +74,7 @@ public:
 
 	virtual void OnBlockDrop(class ABlockEntity *block, class APlayerCharacter *player, const int& newCount) { }
 
-	//FORCEINLINE class ABlockStructureManager* GetStructureManager() const { return this->m_BlockStructureManager; }
+	FORCEINLINE class ABlockStructureManager* GetStructureManager() const { return this->m_BlockStructureManager; }
 	
 #if WITH_EDITOR
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;

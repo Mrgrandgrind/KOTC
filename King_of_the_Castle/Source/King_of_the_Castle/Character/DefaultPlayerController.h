@@ -35,6 +35,9 @@ public:
 	UFUNCTION(Exec)
 	void KOTC_DebugDrawTrace(const bool& enable);
 
+	UFUNCTION(Exec)
+	void KOTC_DebugDrawStructures(const bool& enable);
+
 private:
 	class APlayerCharacter* GetCharacter() const;
 };

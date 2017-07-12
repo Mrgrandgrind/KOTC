@@ -14,7 +14,7 @@
 
 // Sets default values
 ABlock::ABlock() : m_PointValue(1), m_Health(BLOCK_DEFAULT_HEALTH), 
-m_MaxHealth(BLOCK_DEFAULT_HEALTH), m_Team(-1), m_Structure(nullptr)
+m_MaxHealth(BLOCK_DEFAULT_HEALTH), m_Team(-1)
 {
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> Mesh(BLOCK_DEFAULT_MESH_LOCATION);
 

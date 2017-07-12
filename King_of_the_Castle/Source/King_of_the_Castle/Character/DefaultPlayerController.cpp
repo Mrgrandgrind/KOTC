@@ -3,9 +3,11 @@
 #include "King_of_the_Castle.h"
 #include "DefaultPlayerController.h"
 
+#include "Gamemode/BaseGameMode.h"
 #include "Construction/BlockData.h"
 #include "Character/PlayerCharacter.h"
 #include "Construction/Brush/PrimaryBrush.h"
+#include "Construction/BlockStructureManager.h"
 
 APlayerCharacter* ADefaultPlayerController::GetCharacter() const
 {
@@ -79,5 +81,14 @@ void ADefaultPlayerController::KOTC_DebugDrawTrace(const bool& enable)
 	if (character != nullptr)
 	{
 		character->GetPrimaryBrush()->m_bDebugRenderTrace = enable;
+	}
+}
+
+void ADefaultPlayerController::KOTC_DebugDrawStructures(const bool& enable)
+{
+	ABaseGameMode *gamemode = Cast<ABaseGameMode>(Super::GetWorld()->GetAuthGameMode());
+	if(gamemode != nullptr)
+	{
+		gamemode->GetStructureManager()->m_bDebugRenderStructure = enable;
 	}
 }

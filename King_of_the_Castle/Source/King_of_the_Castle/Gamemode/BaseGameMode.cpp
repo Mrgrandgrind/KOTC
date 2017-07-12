@@ -88,7 +88,7 @@ void ABaseGameMode::OnBlockPlace(ABlock *block, AActor *source)
 {
 	if (this->m_BlockStructureManager != nullptr)
 	{
-		block->SetStructure(this->m_BlockStructureManager->ProcessCreate(block));
+		this->m_BlockStructureManager->ProcessCreate(block);
 	}
 }
 
