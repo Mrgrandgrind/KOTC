@@ -23,7 +23,7 @@ public:
 	virtual void BeginPlay() override;
 
 	// Create a block entity for this block and then call DestroyBlock on ourself
-	virtual void DropBlock(AActor *source, const bool& restrictPickup = true);
+	virtual TArray<class ABlockEntity*> DropBlock(AActor *source, const bool& restrictPickup = true);
 
 	// Destroy this block (remove it form game)
 	virtual void DestroyBlock(AActor *source = nullptr);

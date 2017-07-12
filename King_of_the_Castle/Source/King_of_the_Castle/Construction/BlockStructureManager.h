@@ -5,9 +5,26 @@
 #include "GameFramework/Actor.h"
 #include "BlockStructureManager.generated.h"
 
+UENUM()
+enum class EDropMode : uint8
+{
+	Floating,
+	EntityInsta
+
+	//Regular,
+	//EntityDelay
+};
+
+struct FPhysicsBlock
+{
+	class ABlock *block;
+	float counter;
+};
+
 struct FStructureMeta
 {
 	int index = -1;
+	bool isSupport;
 };
 
 USTRUCT()
@@ -29,6 +46,10 @@ public:
 	ABlockStructureManager();
 
 	virtual void BeginPlay() override;
+
+	virtual void Tick(float delta) override;
+
+	bool IsOnGround(class ABlock *block);
 
 	void ProcessDestroy(class ABlock *block);
 
@@ -57,6 +78,8 @@ public:
 	}
 
 protected:
+	void CheckStructureSupport(FBlockStructure& structure);
+
 	void ProcessPreplaced();
 
 #if WITH_EDITOR
@@ -77,8 +100,13 @@ protected:
 private:
 	TArray<int> m_StructureFreeIndex;
 
+	TArray<FPhysicsBlock> m_PhysicsBlocks;
+
 	UPROPERTY()
 	TArray<FBlockStructure> m_Structures;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings", meta = (AllowPrivateAccess = "true", DisplayName = "Drop Mode"))
+	EDropMode m_DropMode;
 
 public:
 	bool m_bDebugRenderStructure;

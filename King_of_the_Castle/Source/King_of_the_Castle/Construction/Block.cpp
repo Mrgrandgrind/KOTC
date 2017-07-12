@@ -57,10 +57,11 @@ void ABlock::BeginPlay()
 }
 
 // Drop block
-void ABlock::DropBlock(AActor *source, const bool& restrictPickup)
+TArray<ABlockEntity*> ABlock::DropBlock(AActor *source, const bool& restrictPickup)
 {
-	ABlockEntity::SpawnBlockEntity(this, source, restrictPickup);
+	TArray<ABlockEntity*> entites = ABlockEntity::SpawnBlockEntity(this, source, restrictPickup);
 	this->DestroyBlock();
+	return entites;
 }
 
 // Destroy block

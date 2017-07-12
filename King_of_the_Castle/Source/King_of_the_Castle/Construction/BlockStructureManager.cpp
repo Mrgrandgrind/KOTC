@@ -7,14 +7,20 @@
 #include "Construction/BlockEntity.h"
 
 #include "DrawDebugHelpers.h"
+#include "Runtime/Engine/Classes/Engine/StaticMeshActor.h"
 
 #define OFFSET_OFFSET 6.0f // How far to go out of bounds of block when finding surrounding
 #define DEBUG_DURATION 2.5f
+
+#define PHYSICS_DELAY 0.25f
+#define PHYSICS_DROP_OFFSET 80.0f
 
 // Sets default values
 ABlockStructureManager::ABlockStructureManager()
 {
 	Super::RootComponent = UObject::CreateDefaultSubobject<USceneComponent>(TEXT("BlockStructureManager"));
+
+	Super::PrimaryActorTick.bCanEverTick = true;
 }
 
 void ABlockStructureManager::BeginPlay()
@@ -24,38 +30,134 @@ void ABlockStructureManager::BeginPlay()
 	this->ProcessPreplaced();
 }
 
-#if WITH_EDITOR
-void ABlockStructureManager::DrawDebugStructure(FStructureMeta* meta, const FColor& color) const
+void ABlockStructureManager::Tick(float delta)
 {
-	this->DrawDebugStructure(this->m_Structures[meta->index], color);
-}
+	Super::Tick(delta);
 
-void ABlockStructureManager::DrawDebugStructure(const FBlockStructure& structure, const FColor& color) const
-{
-	if (!this->m_bDebugRenderStructure)
+	if (this->m_PhysicsBlocks.Num() == 0)
 	{
 		return;
 	}
-	for (int i = 0; i < structure.blocks.Num(); i++)
+	for (int i = this->m_PhysicsBlocks.Num() - 1; i >= 0; i--)
 	{
-		this->DrawDebugBlock(structure.blocks[i], color);
+		FPhysicsBlock& physics = this->m_PhysicsBlocks[i];
+		if (physics.block->GetVelocity().IsNearlyZero())
+		{
+			physics.counter += delta;
+			if (physics.counter >= PHYSICS_DELAY)
+			{
+				physics.block->GetMesh()->SetSimulatePhysics(false);
+				this->m_PhysicsBlocks.RemoveAt(i);
+			}
+		}
+		else
+		{
+			physics.counter = 0.0f;
+		}
 	}
 }
 
-void ABlockStructureManager::DrawDebugBlock(ABlock* block, const FColor& color) const
+bool ABlockStructureManager::IsOnGround(class ABlock *block)
 {
-	if (!this->m_bDebugRenderStructure)
-	{
-		return;
-	}
-	FVector origin, extent, loc = block->GetActorLocation();
+	FVector location = block->GetActorLocation(), origin, extent;
 	block->GetActorBounds(true, origin, extent);
-	extent *= 1.02f;
-	
-	FColor newColor = FColor(color.R, color.G, color.B, 10);
-	DrawDebugSolidBox(block->GetWorld(), loc, extent, newColor, true, DEBUG_DURATION);
+
+	FHitResult result;
+	Super::GetWorld()->LineTraceSingleByChannel(result, location, location
+		+ FVector(0.0f, 0.0f, -extent.Z - OFFSET_OFFSET), ECollisionChannel::ECC_WorldDynamic);
+	return result.IsValidBlockingHit() && Cast<AStaticMeshActor>(result.GetActor()) != nullptr;
 }
-#endif
+
+void ABlockStructureManager::CheckStructureSupport(FBlockStructure& structure)
+{
+	// Floating mode does not require support
+	if (this->m_DropMode == EDropMode::Floating)
+	{
+		return;
+	}
+	bool supported = false;
+	for (int i = 0; i < structure.blocks.Num() && !supported; i++)
+	{
+		supported = structure.blocks[i]->GetStructureMeta().isSupport;
+	}
+	if (!supported)
+	{
+		//UE_LOG_TEXT("Structure: Support was removed");
+		// If there is no longer any support blocks in the structure then we need to enable gravity
+		for (int i = structure.blocks.Num() - 1; i >= 0; i--)
+		{
+			switch (this->m_DropMode)
+			{
+				//case EDropMode::Regular:
+				//	block->GetMesh()->SetSimulatePhysics(true);
+				//	this->m_PhysicsBlocks.Add({ block });
+				//	break;
+				case EDropMode::EntityInsta:
+					ABlock *block = structure.blocks[i];
+					block->GetStructureMeta().index = -1;
+					structure.blocks.RemoveAt(i);
+
+					for(ABlockEntity *entity : block->DropBlock(nullptr, true))
+					{
+						if (entity == nullptr)
+						{
+							continue;
+						}
+						FVector rand = (FVector(FMath::FRand(), FMath::FRand(),
+							FMath::FRand()) - FVector(0.5f)) * PHYSICS_DROP_OFFSET;
+						rand.Z = -FMath::Abs(rand.Z);
+						((UPrimitiveComponent*)entity->GetRootComponent())->AddImpulse(rand, NAME_None, true);
+					}					
+					break;
+			}
+		}
+	}
+}
+
+void ABlockStructureManager::MergeIntoA(FStructureMeta *metaA, FStructureMeta *metaB)
+{
+	check(metaA != metaB);
+	check(metaA != nullptr && metaB != nullptr);
+
+	FBlockStructure *structureA = &this->GetStructure(metaA->index), *structureB = &this->GetStructure(metaB->index);
+
+	// We will be deleting metaB so lets just pre-emptively let the manager know we are no longer using its index
+	this->m_StructureFreeIndex.Add(metaB->index);
+
+	// Move all structureB blocks into structureA and update their reference
+	for (ABlock *block : structureB->blocks)
+	{
+		structureA->blocks.Add(block);
+		block->GetStructureMeta().index = metaA->index;
+	}
+
+	// Delete structureB
+	structureB->blocks.Empty();
+}
+
+void ABlockStructureManager::AddNeighbours(ABlock *block, const int& structureIndex, TArray<AActor*>& outArray)
+{
+	if (block == nullptr)
+	{
+		return;
+	}
+	FBlockStructure& structure = this->GetStructure(structureIndex);
+	outArray.Remove(block);
+	if (!structure.blocks.Contains(block))
+	{
+		structure.blocks.Add(block);
+		block->GetStructureMeta().index = structureIndex;
+		block->GetStructureMeta().isSupport = this->IsOnGround(block);
+	}
+	for (ABlock *next : this->GetNeighbours(block))
+	{
+		if (!outArray.Contains(next))
+		{
+			continue;
+		}
+		this->AddNeighbours(next, structureIndex, outArray);
+	}
+}
 
 TArray<ABlock*> ABlockStructureManager::GetNeighbours(ABlock *block) const
 {
@@ -81,7 +183,7 @@ TArray<ABlock*> ABlockStructureManager::GetNeighbours(ABlock *block) const
 		Super::GetWorld()->LineTraceSingleByChannel(result, location,
 			location + offset, ECollisionChannel::ECC_WorldDynamic, params);
 #if WITH_EDITOR
-		if(this->m_bDebugRenderStructure)
+		if (this->m_bDebugRenderStructure)
 		{
 			DrawDebugLine(Super::GetWorld(), location, location + offset, FColor::Silver, false, DEBUG_DURATION, 0, 4.0f);
 		}
@@ -100,25 +202,20 @@ TArray<ABlock*> ABlockStructureManager::GetNeighbours(ABlock *block) const
 	return surrounding;
 }
 
-void ABlockStructureManager::MergeIntoA(FStructureMeta *metaA, FStructureMeta *metaB)
+void ABlockStructureManager::ProcessPreplaced()
 {
-	check(metaA != metaB);
-	check(metaA != nullptr && metaB != nullptr);
+	// Get all blocks on the map
+	TArray<AActor*> out;
+	UGameplayStatics::GetAllActorsOfClass(Super::GetWorld(), ABlock::StaticClass(), out);
 
-	FBlockStructure *structureA = &this->GetStructure(metaA->index), *structureB = &this->GetStructure(metaB->index);
-
-	// We will be deleting metaB so lets just pre-emptively let the manager know we are no longer using its index
-	this->m_StructureFreeIndex.Add(metaB->index);
-
-	// Move all structureB blocks into structureA and update their reference
-	for (ABlock *block : structureB->blocks)
+	while (out.Num() > 0)
 	{
-		structureA->blocks.Add(block);
-		block->GetStructureMeta().index = metaA->index;
-	}
+		int index = this->AddStructure(FBlockStructure());
 
-	// Delete structureB
-	structureB->blocks.Empty();
+		// Call a recursive method that will add all neighbours to the structure recursively until there are none left.
+		this->AddNeighbours(Cast<ABlock>(out[0]), index, out);
+	}
+	// When we get out of the while loop, every block on the map should be assigned a structure
 }
 
 void ABlockStructureManager::ProcessCreate(ABlock *block)
@@ -128,6 +225,9 @@ void ABlockStructureManager::ProcessCreate(ABlock *block)
 	{
 		return;
 	}
+
+	// Start by determining if this block is on the ground and can be used as a support
+	block->GetStructureMeta().isSupport = this->IsOnGround(block);
 
 	TArray<ABlock*> surrounding = this->GetNeighbours(block);
 	if (surrounding.Num() == 0)
@@ -198,45 +298,6 @@ void ABlockStructureManager::ProcessCreate(ABlock *block)
 	}
 }
 
-void ABlockStructureManager::AddNeighbours(ABlock *block, const int& structureIndex, TArray<AActor*>& outArray)
-{
-	if (block == nullptr)
-	{
-		return;
-	}
-	FBlockStructure& structure = this->GetStructure(structureIndex);
-	outArray.Remove(block);
-	if (!structure.blocks.Contains(block))
-	{
-		structure.blocks.Add(block);
-		block->GetStructureMeta().index = structureIndex;
-	}
-	for (ABlock *next : this->GetNeighbours(block))
-	{
-		if(!outArray.Contains(next))
-		{
-			continue;
-		}
-		this->AddNeighbours(next, structureIndex, outArray);
-	}
-}
-
-void ABlockStructureManager::ProcessPreplaced()
-{
-	// Get all blocks on the map
-	TArray<AActor*> out;
-	UGameplayStatics::GetAllActorsOfClass(Super::GetWorld(), ABlock::StaticClass(), out);
-
-	while (out.Num() > 0)
-	{
-		int index = this->AddStructure(FBlockStructure());
-
-		// Call a recursive method that will add all neighbours to the structure recursively until there are none left.
-		this->AddNeighbours(Cast<ABlock>(out[0]), index, out);
-	}
-	// When we get out of the while loop, every block on the map should be assigned a structure
-}
-
 void ABlockStructureManager::ProcessDestroy(ABlock *block)
 {
 	// We need to remove the block from the structure
@@ -255,7 +316,7 @@ void ABlockStructureManager::ProcessDestroy(ABlock *block)
 	}
 	else
 	{
-		// We are now going to (A*) pathfind from neighbour to neighbour to ensure
+		// We are now going to pathfind (A*) from neighbour to neighbour to ensure
 		// that the structure is still whole after removing this block
 		struct Node
 		{
@@ -270,7 +331,7 @@ void ABlockStructureManager::ProcessDestroy(ABlock *block)
 				return *this;
 			}
 		};
-		auto ArrayContains = [](TArray<int>& indices, TArray<Node>& nodes, ABlock *block) 
+		auto ArrayContains = [](TArray<int>& indices, TArray<Node>& nodes, ABlock *block)
 		{
 			for (int i = 0; i < indices.Num(); i++)
 			{
@@ -283,7 +344,11 @@ void ABlockStructureManager::ProcessDestroy(ABlock *block)
 		};
 
 		TArray<ABlock*> neighbours = this->GetNeighbours(block);
-		for (int i = 1; i < neighbours.Num(); i++)
+		if (neighbours.Num() == 1)
+		{
+			this->CheckStructureSupport(structure);
+		}
+		else for (int i = 1; i < neighbours.Num(); i++)
 		{
 			ABlock *start = neighbours[i - 1], *end = neighbours[i];
 			TArray<Node> nodes; // To avoid memory access issues we need somewhere to place our nodes
@@ -299,7 +364,7 @@ void ABlockStructureManager::ProcessDestroy(ABlock *block)
 				Node *next = nullptr;
 				for (int j = 0; j < open.Num(); j++)
 				{
-					if(next == nullptr || nodes[open[j]].h < next->h)
+					if (next == nullptr || nodes[open[j]].h < next->h)
 					{
 						next = &nodes[nodeIndex = open[openIndex = j]];
 					}
@@ -332,14 +397,15 @@ void ABlockStructureManager::ProcessDestroy(ABlock *block)
 			}
 			if (path != nullptr)
 			{
-				UE_LOG_TEXT("Structure: No structure change detected")
+				//UE_LOG_TEXT("Structure: No structure change detected")
 				// If there's a path, all is good and the structure is still connected.
 				// We don't have to do anything more.
+				this->CheckStructureSupport(structure);
 				continue;
 			}
 			else
 			{
-				UE_LOG_TEXT("Structure: Structure split detected. Unmerging.")
+				//UE_LOG_TEXT("Structure: Structure split detected. Unmerging.")
 				// If there's no path it means our structure has been split.
 				// Luckily we can use the pathfinding data to know how to split the structure.
 				// The closed list contains all blocks in one part of the structure.
@@ -356,6 +422,8 @@ void ABlockStructureManager::ProcessDestroy(ABlock *block)
 					this->m_Structures[index].blocks.Add(next.block);
 					next.block->GetStructureMeta().index = index;
 				}
+				this->CheckStructureSupport(structure);
+				this->CheckStructureSupport(this->m_Structures[index]);
 #if WITH_EDITOR
 				DrawDebugStructure(structure, FColor::Cyan);
 				DrawDebugStructure(this->m_Structures[index], FColor::Blue);
@@ -366,3 +434,36 @@ void ABlockStructureManager::ProcessDestroy(ABlock *block)
 	// Reset index for no particular reason
 	meta.index = -1;
 }
+
+#if WITH_EDITOR
+void ABlockStructureManager::DrawDebugStructure(FStructureMeta* meta, const FColor& color) const
+{
+	this->DrawDebugStructure(this->m_Structures[meta->index], color);
+}
+
+void ABlockStructureManager::DrawDebugStructure(const FBlockStructure& structure, const FColor& color) const
+{
+	if (!this->m_bDebugRenderStructure)
+	{
+		return;
+	}
+	for (int i = 0; i < structure.blocks.Num(); i++)
+	{
+		this->DrawDebugBlock(structure.blocks[i], color);
+	}
+}
+
+void ABlockStructureManager::DrawDebugBlock(ABlock* block, const FColor& color) const
+{
+	if (!this->m_bDebugRenderStructure)
+	{
+		return;
+	}
+	FVector origin, extent, loc = block->GetActorLocation();
+	block->GetActorBounds(true, origin, extent);
+	extent *= 1.02f;
+
+	FColor newColor = FColor(color.R, color.G, color.B, 10);
+	DrawDebugSolidBox(block->GetWorld(), loc, extent, newColor, true, DEBUG_DURATION);
+}
+#endif

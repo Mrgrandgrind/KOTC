@@ -14,11 +14,11 @@ AFlagBlock::AFlagBlock() : m_Hits(0), m_HitsToBreak(DEFAULT_HITS_TO_BREAK), m_Da
 	Super::PrimaryActorTick.bCanEverTick = true;
 }
 
-void AFlagBlock::DropBlock(AActor* source, const bool& restrictPickup)
+TArray<ABlockEntity*> AFlagBlock::DropBlock(AActor* source, const bool& restrictPickup)
 {
 	// Flags must always have restricted pickup. 
 	// The player should never be able to hold more than one at a given time.
-	Super::DropBlock(source, true);
+	return Super::DropBlock(source, true);
 }
 
 void AFlagBlock::Tick(float delta)

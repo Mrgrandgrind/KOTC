@@ -19,7 +19,7 @@ public:
 
 	virtual FName GetNameId() override { return ID_FLAG_BLOCK; }
 
-	virtual void DropBlock(AActor *source, const bool& restrictPickup) override;
+	virtual TArray<class ABlockEntity*> DropBlock(AActor *source, const bool& restrictPickup) override;
 
 	FORCEINLINE void SetHitsToBreak(const int& num) { this->m_HitsToBreak = num; }
 
