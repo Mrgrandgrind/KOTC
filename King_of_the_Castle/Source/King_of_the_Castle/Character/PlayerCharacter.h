@@ -117,6 +117,8 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Combat")
 	const EAttackStage& GetAttackStage() const { return this->m_AttackStage; }
 
+	FORCEINLINE UCameraComponent* GetCamera() const { return this->m_Camera; }
+
 	FORCEINLINE void SetHealth(const float& health) { this->m_Health = FMath::Max(FMath::Min(health, this->m_MaxHealth), 0.0f); }
 
 	FORCEINLINE void SetStamina(const float& stamina) { this->m_Stamina = FMath::Max(FMath::Min(stamina, this->m_MaxStamina), 0.0f); }

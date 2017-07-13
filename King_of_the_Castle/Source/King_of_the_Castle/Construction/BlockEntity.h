@@ -64,6 +64,10 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dropped", meta = (AllowPrivateAccess = "true", DisplayName = "Owner"))
 	AActor *m_Owner;
 
+	FVector m_BaseScale, m_DesiredScale;
+
+	float m_ScaleCounter;
+
 	// Whether or not to ignore the owner for pickup up or only go to the owner
 	bool m_bIgnoreOwner;
 

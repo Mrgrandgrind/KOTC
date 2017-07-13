@@ -35,9 +35,9 @@ public:
 	FORCEINLINE void SetPrefab(TSubclassOf<class APrefab> prefab) { this->m_Prefab = prefab; this->UpdateBlockChildActor(); }
 
 protected:
-	float GetBrushRotation() const;
+	FRotator GetBrushRotation() const;
 
-	void UpdateBlockChildRotation(const float& previousRotation, const float& newRotation);
+	void UpdateBlockChildRotation(const FRotator& previousRotation, const FRotator& newRotation);
 
 	void UpdateBlockChildActor();
 
@@ -48,7 +48,7 @@ protected:
 private:
 	bool m_bValid;
 
-	float m_Rotation;
+	FRotator m_Rotation;
 
 	UPROPERTY()
 	TArray<ABlock*> m_ChildBlocks;

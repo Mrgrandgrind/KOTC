@@ -25,9 +25,9 @@ public:
 
 	FORCEINLINE const TArray<FPrefabBlock>& GetBlocks() { if (this->m_Blocks.Num() == 0) this->PopulateBlocks(); return this->m_Blocks; }
 
-//#if WITH_EDITOR
-//	void PostEditChangeProperty(struct FPropertyChangedEvent& event) override;
-//#endif
+#if WITH_EDITOR
+	void PostEditChangeProperty(struct FPropertyChangedEvent& event) override;
+#endif
 
 	void PopulateBlocks();
 private:
@@ -38,6 +38,6 @@ private:
 	// Blocks contained within this prefab
 	TArray<FPrefabBlock> m_Blocks;
 
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Debug", meta = (AllowPrivateAccess = "true", DisplayName = "Snap Positions (Broke: Doesn't save)"))
-	//bool m_bDebugSnapPositions;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Debug", meta = (AllowPrivateAccess = "true", DisplayName = "Snap Positions (Broke: Doesn't save)"))
+	bool m_bDebugSnapPositions;
 };

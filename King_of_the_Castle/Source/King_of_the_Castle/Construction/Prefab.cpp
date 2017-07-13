@@ -61,39 +61,39 @@ void APrefab::PopulateBlocks()
 	}
 }
 
-//#if WITH_EDITOR
-//void APrefab::PostEditChangeProperty(FPropertyChangedEvent& event)
-//{
-//	Super::PostEditChangeProperty(event);
-//
-//	FName name = event.MemberProperty != nullptr ? event.MemberProperty->GetFName() : NAME_None;
-//
-//	if (name == GET_MEMBER_NAME_CHECKED(APrefab, m_bDebugSnapPositions))
-//	{
-//		if (Super::GetRootComponent() != nullptr)
-//		{
-//			// Root component can be nullptr for some reason (probably default object)
-//			for (USceneComponent *attached : Super::GetRootComponent()->GetAttachChildren())
-//			{
-//				UChildActorComponent *component = Cast<UChildActorComponent>(attached);
-//				if (component == nullptr)
-//				{
-//					continue;
-//				}
-//				if (component->GetChildActorClass()->IsChildOf(ABlock::StaticClass()))
-//				{
-//					const FVector& location = attached->GetRelativeTransform().GetLocation();
-//
-//					FIntVector offset;
-//					offset.X = int(location.X / this->m_GridSize.X);
-//					offset.Y = int(location.Y / this->m_GridSize.Y);
-//					offset.Z = int(location.Z / this->m_GridSize.Z);
-//
-//					attached->SetRelativeLocation(this->GetPerfabLocation(offset) + FVector(0.0f, 0.0f, this->m_GridSize.Z) / 2.0f);
-//				}
-//			}
-//		}
-//		this->m_bDebugSnapPositions = false;
-//	}
-//}
-//#endif
+#if WITH_EDITOR
+void APrefab::PostEditChangeProperty(FPropertyChangedEvent& event)
+{
+	Super::PostEditChangeProperty(event);
+
+	FName name = event.MemberProperty != nullptr ? event.MemberProperty->GetFName() : NAME_None;
+
+	if (name == GET_MEMBER_NAME_CHECKED(APrefab, m_bDebugSnapPositions))
+	{
+		if (Super::GetRootComponent() != nullptr)
+		{
+			// Root component can be nullptr for some reason (probably default object)
+			for (USceneComponent *attached : Super::GetRootComponent()->GetAttachChildren())
+			{
+				UChildActorComponent *component = Cast<UChildActorComponent>(attached);
+				if (component == nullptr)
+				{
+					continue;
+				}
+				if (component->GetChildActorClass()->IsChildOf(ABlock::StaticClass()))
+				{
+					const FVector& location = attached->GetRelativeTransform().GetLocation();
+
+					FIntVector offset;
+					offset.X = int(location.X / this->m_GridSize.X);
+					offset.Y = int(location.Y / this->m_GridSize.Y);
+					offset.Z = int(location.Z / this->m_GridSize.Z);
+
+					attached->SetRelativeLocation(this->GetPerfabLocation(offset) + FVector(0.0f, 0.0f, this->m_GridSize.Z) / 2.0f);
+				}
+			}
+		}
+		this->m_bDebugSnapPositions = false;
+	}
+}
+#endif

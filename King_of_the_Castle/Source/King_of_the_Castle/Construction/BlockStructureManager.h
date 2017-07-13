@@ -11,8 +11,6 @@ enum class EDropMode : uint8
 	Floating,
 	EntityInsta,
 	EntityDelay
-
-	//Regular
 };
 
 struct FPhysicsBlock
@@ -21,11 +19,17 @@ struct FPhysicsBlock
 	float counter;
 };
 
+struct FBlockPath
+{
+	bool valid;
+	TArray<ABlock*> path, searched;
+};
+
 struct FStructureMeta
 {
 	int index = -1;
-	bool isSupport;
-	bool isDestroyed;
+	bool isSupport = false;
+	bool isDestroyed = false;
 };
 
 USTRUCT()
@@ -35,7 +39,8 @@ struct FBlockStructure
 
 	// The location of the last support to be destroyed.
 	// Also set when a block causes one structures to split into two or more.
-	FVector lastSupport;
+	//FVector lastSupport;
+	class ABlock *lastSupport;
 
 	// An array containing all the blocks in the structure
 	UPROPERTY()
@@ -87,6 +92,8 @@ protected:
 	void DropBlock(class ABlock *block);
 
 	void CheckStructureSupport(FBlockStructure& structure);
+
+	FBlockPath GeneratePath(class ABlock *from, class ABlock *to, class ABlock *ignored = nullptr) const;
 
 	void ProcessPreplaced();
 

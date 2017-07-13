@@ -10,7 +10,9 @@
 
 #include "Runtime/Engine/Public/EngineUtils.h"
 
+#define SCALE_DURATION 0.08f
 #define SCALE_MULTIPLIER 0.5f
+
 #define ATTRACTION_FORCE 50.0f
 #define ATTRACTION_DISTANCE 680.0f
 #define ATTRACTION_DISTANCE_SQUARED (ATTRACTION_DISTANCE * ATTRACTION_DISTANCE)
@@ -49,10 +51,12 @@ void ABlockEntity::BeginPlay()
 
 void ABlockEntity::SetTo(ABlock *block)
 {
-	Super::SetActorScale3D(block->GetActorScale3D() * SCALE_MULTIPLIER);
+	//Super::SetActorScale3D(block->GetActorScale3D() * SCALE_MULTIPLIER);
+	Super::SetActorScale3D(this->m_BaseScale = block->GetActorScale3D());
 	Super::m_Mesh->SetStaticMesh(block->GetMesh()->GetStaticMesh());
 	Super::m_Mesh->SetMaterial(0, block->GetMesh()->GetMaterial(0));
 
+	this->m_DesiredScale = this->m_BaseScale * SCALE_MULTIPLIER;
 	this->m_ParentBlockNameId = block->GetNameId();
 }
 
@@ -122,6 +126,14 @@ void ABlockEntity::EndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* 
 void ABlockEntity::Tick(float delta)
 {
 	Super::Tick(delta);
+
+	if (this->m_ScaleCounter < SCALE_DURATION)
+	{
+		this->m_ScaleCounter = FMath::Min(this->m_ScaleCounter + delta, SCALE_DURATION);
+
+		float perc = FMath::Sin(HALF_PI * this->m_ScaleCounter / SCALE_DURATION);
+		Super::SetActorScale3D(this->m_BaseScale + (this->m_DesiredScale - this->m_BaseScale) * perc);
+	}
 
 	// If this block has an owner, increase the timer. If timer is up, remove the owner
 	if (this->m_Owner != nullptr && (this->m_Timer += delta) >= OWNERSHIP_DURATION)

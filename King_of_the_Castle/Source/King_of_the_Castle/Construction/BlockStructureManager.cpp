@@ -16,7 +16,9 @@
 #define PHYSICS_DELAY 0.25f
 #define PHYSICS_DROP_OFFSET 80.0f
 
-#define ENTITY_DELAY_DIST_MULTIPLIER 0.0009f
+//#define ENTITY_DELAY_DIST_MULTIPLIER 0.0009f
+#define ENTITY_DELAY_TIME_PER_NEXT 0.12f
+#define ENTITY_DELAY_TIME_OFFSET (ENTITY_DELAY_TIME_PER_NEXT * 0.75f)
 
 // Sets default values
 ABlockStructureManager::ABlockStructureManager()
@@ -66,10 +68,11 @@ void ABlockStructureManager::Tick(float delta)
 				physics.counter -= delta;
 				if (physics.counter <= 0.0f)
 				{
-					this->ProcessDestroy(physics.block);
+					this->m_Structures[physics.block->GetStructureMeta().index].blocks.Remove(physics.block);
+					physics.block->GetStructureMeta().index = -1;
+
 					this->DropBlock(physics.block);
 					this->m_PhysicsBlocks.RemoveAt(i);
-					//this->m_Structures[physics.block->GetStructureMeta().index].blocks.Remove(physics.block);
 				}
 				break;
 			}
@@ -160,9 +163,16 @@ void ABlockStructureManager::CheckStructureSupport(FBlockStructure& structure)
 					break;
 				}
 				case EDropMode::EntityDelay: {
-					float distance = FVector::Dist(block->GetActorLocation(), structure.lastSupport);
+					//float distance = FVector::Dist(block->GetActorLocation(), structure.lastSupport);
+					//this->m_PhysicsBlocks.Add({ block, distance * ENTITY_DELAY_DIST_MULTIPLIER });
+
+					float distance = this->GeneratePath(block, structure.lastSupport)
+						.searched.Num() * ENTITY_DELAY_TIME_PER_NEXT;
+					//distance += ENTITY_DELAY_TIME_OFFSET * FMath::FRand() - ENTITY_DELAY_TIME_OFFSET / 2.0f;
+					this->m_PhysicsBlocks.Add({ block, distance });
+
+					// Must be set after generating the path
 					block->GetStructureMeta().isDestroyed = true;
-					this->m_PhysicsBlocks.Add({ block, distance * ENTITY_DELAY_DIST_MULTIPLIER });
 					break;
 				}
 			}
@@ -258,6 +268,106 @@ TArray<ABlock*> ABlockStructureManager::GetNeighbours(ABlock *block) const
 	return surrounding;
 }
 
+FBlockPath ABlockStructureManager::GeneratePath(ABlock *from, ABlock *to, ABlock *ignored) const
+{
+	struct Node
+	{
+		Node(ABlock *block) : block(block), parentIdx(-1) { }
+
+		float h;
+		ABlock *block;
+		int parentIdx; //node index
+
+		Node& CalculateHeuristics(ABlock *end)
+		{
+			this->h = (end->GetActorLocation() - this->block->GetActorLocation()).Size();
+			return *this;
+		}
+	};
+	auto ArrayContains = [](TArray<int>& indices, TArray<Node>& nodes, ABlock *block)
+	{
+		for (int i = 0; i < indices.Num(); i++)
+		{
+			if (nodes[indices[i]].block == block)
+			{
+				return true;
+			}
+		}
+		return false;
+	};
+
+	TArray<Node> nodes; // To avoid memory access issues we need somewhere to place our nodes
+	TArray<int> open, closed; //indices into nodes
+	nodes.Add(Node(from).CalculateHeuristics(to));
+	open.Add(nodes.Num() - 1);
+
+	Node *endNode = nullptr;
+	while (open.Num() > 0)
+	{
+		// Get lowest heuristics value
+		int openIndex = -1, nodeIndex = -1;
+		Node *next = nullptr;
+		for (int j = 0; j < open.Num(); j++)
+		{
+			if (next == nullptr || nodes[open[j]].h < next->h)
+			{
+				next = &nodes[nodeIndex = open[openIndex = j]];
+			}
+		}
+		check(next != nullptr);
+		// Check to see if we're done
+		if (next->block == to)
+		{
+			endNode = &nodes[nodeIndex];
+			break;
+		}
+		closed.Add(nodeIndex);
+		open.RemoveAt(openIndex);
+
+		TArray<ABlock*> nextNeighbours = this->GetNeighbours(next->block);
+		for (int j = 0; j < nextNeighbours.Num(); j++) // for some reason for-each gets compile error
+		{
+			ABlock *nextNeighbour = nextNeighbours[j];
+			if (nextNeighbour == ignored || ArrayContains(closed, nodes, nextNeighbour))
+			{
+				continue;
+			}
+			if (!ArrayContains(open, nodes, nextNeighbour))
+			{
+				Node node = Node(nextNeighbour).CalculateHeuristics(to);
+				node.parentIdx = nodeIndex;
+				nodes.Add(node);
+				open.Add(nodes.Num() - 1);
+			}
+		}
+	}
+	FBlockPath path;
+	for (const int& idx : closed)
+	{
+		path.searched.Add(nodes[idx].block);
+	}
+	if (endNode == nullptr)
+	{
+		path.valid = false;
+	}
+	else
+	{
+		path.valid = true;
+		do
+		{
+			path.path.Add(endNode->block);
+
+			const int& idx = endNode->parentIdx;
+			if (idx == -1)
+			{
+				break;
+			}
+			endNode = &nodes[idx];
+		} while (true);
+	}
+	return path;
+}
+
 void ABlockStructureManager::ProcessPreplaced()
 {
 	// Get all blocks on the map
@@ -281,6 +391,7 @@ void ABlockStructureManager::ProcessCreate(ABlock *block)
 	{
 		return;
 	}
+	check(!block->GetStructureMeta().isDestroyed);
 
 	// Start by determining if this block is on the ground and can be used as a support
 	block->GetStructureMeta().isSupport = this->IsSupport(block);
@@ -306,6 +417,11 @@ void ABlockStructureManager::ProcessCreate(ABlock *block)
 		{
 			// We shouldn't get any nullptr structures
 			UE_LOG(LogClass, Error, TEXT("[WARNING] We found a block with no structure! BlockName: %s"), *block->GetName());
+			continue;
+		}
+		if (meta->isDestroyed)
+		{
+			// Don't interact with blocks flagged to be removed
 			continue;
 		}
 		if (!metas.ContainsByPredicate([meta](FStructureMeta *element) { return element->index == meta->index; }))
@@ -358,7 +474,7 @@ void ABlockStructureManager::ProcessDestroy(ABlock *block)
 {
 	// We need to remove the block from the structure
 	FStructureMeta& meta = block->GetStructureMeta();
-	if (meta.index == -1)
+	if (meta.index == -1 || meta.isDestroyed)
 	{
 		return;
 	}
@@ -367,7 +483,7 @@ void ABlockStructureManager::ProcessDestroy(ABlock *block)
 
 	if (meta.isSupport)
 	{
-		structure.lastSupport = block->GetActorLocation();
+		structure.lastSupport = block;
 	}
 
 	// If structure is dead, let it be overwritten
@@ -379,31 +495,6 @@ void ABlockStructureManager::ProcessDestroy(ABlock *block)
 	{
 		// We are now going to pathfind (A*) from neighbour to neighbour to ensure
 		// that the structure is still whole after removing this block
-		struct Node
-		{
-			Node(ABlock *block) : block(block) { }
-
-			float h;
-			ABlock *block;
-
-			Node& CalculateHeuristics(ABlock *end)
-			{
-				this->h = (end->GetActorLocation() - this->block->GetActorLocation()).Size();
-				return *this;
-			}
-		};
-		auto ArrayContains = [](TArray<int>& indices, TArray<Node>& nodes, ABlock *block)
-		{
-			for (int i = 0; i < indices.Num(); i++)
-			{
-				if (nodes[indices[i]].block == block)
-				{
-					return true;
-				}
-			}
-			return false;
-		};
-
 		TArray<ABlock*> neighbours = this->GetNeighbours(block);
 		if (neighbours.Num() == 1)
 		{
@@ -411,52 +502,8 @@ void ABlockStructureManager::ProcessDestroy(ABlock *block)
 		}
 		else for (int i = 1; i < neighbours.Num(); i++)
 		{
-			ABlock *start = neighbours[i - 1], *end = neighbours[i];
-			TArray<Node> nodes; // To avoid memory access issues we need somewhere to place our nodes
-			TArray<int> open, closed; //indices into nodes
-			nodes.Add(Node(start).CalculateHeuristics(end));
-			open.Add(nodes.Num() - 1);
-
-			Node *path = nullptr;
-			while (open.Num() > 0)
-			{
-				// Get lowest heuristics value
-				int openIndex = -1, nodeIndex = -1;
-				Node *next = nullptr;
-				for (int j = 0; j < open.Num(); j++)
-				{
-					if (next == nullptr || nodes[open[j]].h < next->h)
-					{
-						next = &nodes[nodeIndex = open[openIndex = j]];
-					}
-				}
-				check(next != nullptr);
-				// Check to see if we're done
-				if (next->block == end)
-				{
-					path = &nodes[nodeIndex];
-					break;
-				}
-				closed.Add(nodeIndex);
-				open.RemoveAt(openIndex);
-
-				TArray<ABlock*> nextNeighbours = this->GetNeighbours(next->block);
-				for (int j = 0; j < nextNeighbours.Num(); j++) // for some reason for-each gets compile error
-				{
-					ABlock *nextNeighbour = nextNeighbours[j];
-					if (nextNeighbour == block || ArrayContains(closed, nodes, nextNeighbour))
-					{
-						continue;
-					}
-					if (!ArrayContains(open, nodes, nextNeighbour))
-					{
-						Node node = Node(nextNeighbour).CalculateHeuristics(end);
-						nodes.Add(node);
-						open.Add(nodes.Num() - 1);
-					}
-				}
-			}
-			if (path != nullptr)
+			FBlockPath path = this->GeneratePath(neighbours[i - 1], neighbours[i], block);
+			if (path.valid)
 			{
 				//UE_LOG_TEXT("Structure: No structure change detected")
 				// If there's a path, all is good and the structure is still connected.
@@ -472,18 +519,18 @@ void ABlockStructureManager::ProcessDestroy(ABlock *block)
 				// The closed list contains all blocks in one part of the structure.
 				int index = this->AddStructure(FBlockStructure());
 
-				for (int j = 0; j < closed.Num(); j++)
+				for (int j = 0; j < path.searched.Num(); j++)
 				{
-					Node& next = nodes[closed[j]];
-					if (next.block == block)
+					ABlock *next = path.searched[j];
+					if (next == block)
 					{
 						continue;
 					}
-					structure.blocks.Remove(next.block);
-					this->m_Structures[index].blocks.Add(next.block);
-					next.block->GetStructureMeta().index = index;
+					structure.blocks.Remove(next);
+					this->m_Structures[index].blocks.Add(next);
+					next->GetStructureMeta().index = index;
 				}
-				structure.lastSupport = this->m_Structures[index].lastSupport = block->GetActorLocation();
+				structure.lastSupport = this->m_Structures[index].lastSupport = block;
 				this->CheckStructureSupport(structure);
 				this->CheckStructureSupport(this->m_Structures[index]);
 #if WITH_EDITOR

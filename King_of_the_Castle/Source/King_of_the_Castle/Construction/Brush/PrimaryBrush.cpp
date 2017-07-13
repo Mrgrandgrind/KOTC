@@ -118,14 +118,6 @@ void UPrimaryBrush::SetSelectedIndex(int index)
 	Super::UpdateCountText(this->GetBlockData(index));
 }
 
-float UPrimaryBrush::GetBrushRotation() const
-{
-	FRotator rotation = (Super::GetComponentLocation() 
-		- Super::GetOwner()->GetActorLocation()).Rotation();
-	rotation.Yaw = FMath::GridSnap(rotation.Yaw, 90.0f);
-	return rotation.Yaw + 90.0f;
-}
-
 void UPrimaryBrush::DropBlocks(UBlockData* data, int count)
 {
 	AActor *parent = Super::GetOwner();
@@ -161,19 +153,33 @@ void UPrimaryBrush::DropBlocks(UBlockData* data, int count)
 	}
 }
 
-void UPrimaryBrush::UpdateBlockChildRotation(const float& previousRotation, const float& newRotation)
+FRotator UPrimaryBrush::GetBrushRotation() const
 {
-	if (FMath::IsNearlyEqual(previousRotation, newRotation))
+	APlayerCharacter *character = Cast<APlayerCharacter>(Super::GetOwner());
+	FRotator rotation = (Super::GetComponentLocation()
+		- character->GetCamera()->GetComponentLocation()).Rotation();
+	rotation.Pitch = FMath::GridSnap(rotation.Pitch, 90.0f);
+	rotation.Yaw = FMath::GridSnap(rotation.Yaw, 90.0f) + 90.0f;
+	rotation.Roll = 0.0f;// FMath::GridSnap(rotation.Roll, 90.0f);
+	UE_LOG(LogClass, Log, TEXT("%f, %f, %f"), rotation.Pitch, rotation.Yaw, rotation.Roll);
+	return rotation;
+}
+
+void UPrimaryBrush::UpdateBlockChildRotation(const FRotator& previousRotation, const FRotator& newRotation)
+{
+	if (previousRotation == newRotation)
 	{
 		return;
 	}
-	float delta = newRotation - previousRotation;
+	FRotator delta = newRotation - previousRotation;
 	for (AActor *actor : this->m_ChildBlocks)
 	{
 		FVector origin = Super::GetComponentLocation() + FVector(0.0f, -Super::Bounds.BoxExtent.Y, 0.0f);
 		FVector location = actor->GetActorLocation() - origin;
-		location = FRotator(0.0f, delta, 0.0f).RotateVector(location) + origin;
-		actor->SetActorLocation(location);
+		location = FRotator(0.0f, delta.Yaw, 0.0f).RotateVector(location);
+		//location = FRotator(0.0, 0.0f, delta.Pitch).RotateVector(location);
+		//location = FRotator(0.0f, 0.0f, delta.Roll).RotateVector(location);
+		actor->SetActorLocation(location + origin);
 	}
 }
 
@@ -239,7 +245,7 @@ void UPrimaryBrush::UpdateBlockChildActor()
 	{
 		addChild(this->m_BlockData[this->m_SelectedTypeIndex]);
 	}
-	this->UpdateBlockChildRotation(0.0f, this->m_Rotation);
+	this->UpdateBlockChildRotation(FRotator(0.0f), this->m_Rotation);
 }
 
 ABlock* UPrimaryBrush::Action(ABuildArea* area, AActor* source)
@@ -266,14 +272,33 @@ ABlock* UPrimaryBrush::Action(ABuildArea* area, AActor* source)
 	//		return nullptr;
 	//	}
 	//}
+
+	// Verify the player has enough blocks to place
+	TMap<FName, int> requirements;
+	for (ABlock *block : this->m_ChildBlocks)
+	{
+		if (requirements.Contains(block->GetNameId()))
+		{
+			requirements[block->GetNameId()]++;
+		}
+		else
+		{
+			requirements.Add(block->GetNameId(), 1);
+		}
+	}
+	for (auto entry : requirements)
+	{
+		UBlockData *data = this->GetBlockData(entry.Key);
+		if (data == nullptr || data->GetCount() < entry.Value)
+		{
+			return nullptr;
+		}
+	}
+
 	TArray<ABlock*> placed;
 	for(ABlock *block : this->m_ChildBlocks)
 	{
 		UBlockData *data = this->GetBlockData(block->GetNameId());
-		if (data == nullptr || data->GetCount() <= 0)
-		{
-			continue;
-		}
 
 		// Check to see if we are overlapping with another block.
 		// GetOverlappingActors does not work because of collision setup. We will use line trace.
@@ -571,7 +596,8 @@ void UPrimaryBrush::UpdateRegular(ABuildArea* area, const FHitResult& trace, boo
 		Super::SetPositionToCell(area, Super::m_ActiveCell);
 	}
 }
-
+int cc = 0;
+float vv = 0.0f;
 void UPrimaryBrush::Update(APlayerCharacter *character, ABuildArea* area, const FHitResult& trace)
 {
 	checkf(area != nullptr, TEXT("[CreateBrush] Must provide area"));
@@ -579,7 +605,13 @@ void UPrimaryBrush::Update(APlayerCharacter *character, ABuildArea* area, const 
 	bool show = false;
 	this->m_bValid = false;
 
-	float rotation = this->GetBrushRotation();
+	FRotator rotation = this->GetBrushRotation();
+	if (cc++ > 36)
+	{
+		cc = 0;
+		vv = -90;
+	}
+	//rotation.Pitch = vv;
 	if (this->m_Rotation != rotation)
 	{
 		this->UpdateBlockChildRotation(this->m_Rotation, rotation);
