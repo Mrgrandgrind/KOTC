@@ -17,6 +17,8 @@ public:
 
 	virtual void Tick(float delta) override;
 
+	bool GetSpawnPoint(const int& team, FVector& outLocation, FRotator& outRotation) const;
+
 	void GetSpawnPoints(TArray<class ASpawnPoint*>& team1, TArray<class ASpawnPoint*>& team2) const;
 
 	void SpawnPlayers();

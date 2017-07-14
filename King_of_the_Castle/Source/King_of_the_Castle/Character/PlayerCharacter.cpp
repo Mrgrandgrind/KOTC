@@ -375,7 +375,7 @@ void APlayerCharacter::Attack()
 	}), ATTACK_PRE_DELAY, false);
 }
 
-void APlayerCharacter::Stun(const float& duration, const bool& regen)
+void APlayerCharacter::Stun(const float& duration, const bool& regen, const bool& respawn)
 {
 	// Don't stun if already stunned
 	if (this->m_bIsStunned)
@@ -392,12 +392,24 @@ void APlayerCharacter::Stun(const float& duration, const bool& regen)
 	}
 
 	FTimerHandle handle;
-	Super::GetWorldTimerManager().SetTimer(handle, FTimerDelegate::CreateLambda([this, regen]()
+	Super::GetWorldTimerManager().SetTimer(handle, FTimerDelegate::CreateLambda([this, regen, respawn]()
 	{
 		this->m_bIsStunned = false;
 		if (regen)
 		{
 			this->m_Health = this->m_MaxHealth;
+		}
+		if (respawn)
+		{
+			FVector location;
+			FRotator rotation;
+
+			ABaseGameMode *gamemode = Cast<ABaseGameMode>(Super::GetWorld()->GetAuthGameMode());
+			if (gamemode != nullptr && gamemode->GetSpawnPoint(this->GetTeam(), location, rotation))
+			{
+				Super::SetActorLocation(location);
+				Super::SetActorRotation(rotation);
+			}
 		}
 	}), duration <= 0.0f ? this->m_StunDelay : duration, false);
 }
@@ -441,7 +453,7 @@ void APlayerCharacter::OnPlayerCollisionHit(UPrimitiveComponent* hitComponent, A
 			player->LaunchCharacter(direction * this->m_ChargeKnockbackForce * power, true, true);
 
 			// Temporarily stun the opponent
-			player->Stun(this->m_ChargeStunDuration * power, false);
+			player->Stun(this->m_ChargeStunDuration * power);
 		}
 		else if (this->m_bRushing)
 		{
@@ -456,7 +468,7 @@ void APlayerCharacter::OnPlayerCollisionHit(UPrimitiveComponent* hitComponent, A
 			Super::LaunchCharacter(-direction * this->m_RushKnockbackForce * power, true, true);
 
 			// Temporarily stun the opponent
-			player->Stun(this->m_RushHitStunDuration * power, false);
+			player->Stun(this->m_RushHitStunDuration * power);
 
 			// Drain all stamina
 			this->SetStamina(0.0f);

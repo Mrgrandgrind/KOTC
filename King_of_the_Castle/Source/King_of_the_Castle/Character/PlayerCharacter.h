@@ -56,7 +56,7 @@ public:
 	void Attack();
 
 	// Stun the player. You can set the duration (-1 = default) and whether or not to regenerate health to full after stun.
-	void Stun(const float& duration = -1, const bool& regen = true);
+	void Stun(const float& duration = -1, const bool& regen = false, const bool& respawn = false);
 
 	// When the players collision hits something
 	UFUNCTION()

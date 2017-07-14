@@ -14,12 +14,21 @@ APlayerCharacter* ADefaultPlayerController::GetCharacter() const
 	return Cast<APlayerCharacter>(Super::GetPawn());
 }
 
+void ADefaultPlayerController::KOTC_Respawn()
+{
+	APlayerCharacter *character = this->GetCharacter();
+	if (character != nullptr)
+	{
+		character->Stun(0.01f, false, true);
+	}
+}
+
 void ADefaultPlayerController::KOTC_Stun(const float& duration)
 {
 	APlayerCharacter *character = this->GetCharacter();
 	if (character != nullptr)
 	{
-		character->Stun(duration, false);
+		character->Stun(duration);
 	}
 }
 

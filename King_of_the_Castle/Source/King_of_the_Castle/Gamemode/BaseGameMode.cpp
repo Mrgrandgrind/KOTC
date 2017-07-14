@@ -85,6 +85,29 @@ void ABaseGameMode::Tick(float delta)
 	this->m_FPS = 1.0f / delta;
 }
 
+bool ABaseGameMode::GetSpawnPoint(const int& team, FVector& outLocation, FRotator& outRotation) const
+{
+	TArray<ASpawnPoint*> team1, team2;
+	this->GetSpawnPoints(team1, team2);
+	
+	ASpawnPoint *point = nullptr;
+	if (team <= 1 && team1.Num() > 0)
+	{
+		point = team1[FMath::RandRange(0, team1.Num() - 1)];
+	}
+	else if (team >= 2 && team2.Num() > 0)
+	{
+		point = team2[FMath::RandRange(0, team2.Num() - 1)];
+	}
+	if (point != nullptr)
+	{
+		outLocation = point->GetActorLocation();
+		outRotation = point->GetActorRotation();
+		return true;
+	}
+	return false;
+}
+
 void ABaseGameMode::GetSpawnPoints(TArray<class ASpawnPoint*>& team1, TArray<class ASpawnPoint*>& team2) const
 {
 	// Get spawn points

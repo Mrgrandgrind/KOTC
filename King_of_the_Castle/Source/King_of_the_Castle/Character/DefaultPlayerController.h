@@ -15,6 +15,9 @@ class KING_OF_THE_CASTLE_API ADefaultPlayerController : public APlayerController
 	
 public:
 	UFUNCTION(Exec)
+	void KOTC_Respawn();
+
+	UFUNCTION(Exec)
 	void KOTC_Stun(const float& duration);
 
 	UFUNCTION(Exec)
