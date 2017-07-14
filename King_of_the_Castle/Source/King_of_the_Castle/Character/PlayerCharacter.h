@@ -127,7 +127,9 @@ public:
 
 	FORCEINLINE const bool& IsBuildModeEnabled() const { return this->m_bBuildingEnabled; }
 
-	FORCEINLINE void SetBuildArea(class ABuildArea *area) { this->m_BuildArea = area; }
+	FORCEINLINE void AddBuildArea(class ABuildArea *area) { this->m_BuildAreas.Add(area); }
+
+	FORCEINLINE void RemoveBuildArea(class ABuildArea *area) { this->m_BuildAreas.Remove(area); }
 
 	FORCEINLINE void SetBuildReach(const float& reach) { this->m_BuildReach = reach; }
 
@@ -140,6 +142,11 @@ public:
 #endif
 
 protected:
+	FORCEINLINE class ABuildArea* GetActiveBuildArea() const 
+	{ 
+		return this->m_BuildAreas.Num() == 0 ? nullptr : this->m_BuildAreas.Last();
+	}
+
 	UFUNCTION()
 	void ToggleBuildMode() { if(!this->m_bBlockMovement) this->SetBuildModeEnabled(!this->m_bBuildingEnabled); }
 
@@ -206,18 +213,13 @@ private:
 
 	// Whether or not the build place input has been activated
 	bool m_bPlacePressed;
-
-	// Time since build place input has been activated
 	float m_PlacePressCounter;
 
 	// Stop the player from moving
 	bool m_bBlockMovement;
 
-	// Whether or not the player is stunned
-	bool m_bIsStunned;
-
-	// Whether or not the player is sprinting or rushing
-	bool m_bSprinting, m_bRushing, m_bCharging;
+	// State booleans
+	bool m_bIsStunned, m_bSprinting, m_bRushing, m_bCharging;
 
 	// Attack stage
 	EAttackStage m_AttackStage;
@@ -228,11 +230,11 @@ private:
 	// Last attacker. Only set briefly after an attack. The set player cannot hurt this player whilst set.
 	APlayerCharacter *m_LastAttacker;
 
-	// Current players health
-	float m_Health;
+	// Current players health and stamina
+	float m_Health, m_Stamina;
 
-	// Current players stamina
-	float m_Stamina;
+	UPROPERTY()
+	TArray<class ABuildArea*> m_BuildAreas;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Max Health"))
 	float m_MaxHealth;
@@ -355,10 +357,6 @@ private:
 	// Melee collision component attached to characters hand
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true", DisplayName = "Melee Capsule"))
 	UCapsuleComponent *m_MeleeCapsule;
-
-	// Active build area where the player is standing
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Build", meta = (AllowPrivateAccess = "true", DisplayName = "Build Area"))
-	class ABuildArea *m_BuildArea;
 
 	// This players primary (create) brush
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Build", meta = (AllowPrivateAccess = "true", DisplayName = "Primary Brush"))

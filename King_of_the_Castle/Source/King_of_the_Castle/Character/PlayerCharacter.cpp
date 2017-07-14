@@ -202,7 +202,8 @@ void APlayerCharacter::Tick(float delta)
 	}
 
 	// Updating building mechanics
-	if (this->m_BuildArea != nullptr && this->m_bBuildingEnabled && this->m_BuildArea->CanTeamBuild(this->m_Team))
+	ABuildArea *area = this->GetActiveBuildArea();
+	if (area != nullptr && this->m_bBuildingEnabled && area->CanTeamBuild(this->m_Team))
 	{
 		FVector cameraLoc = this->m_Camera->GetComponentLocation(), forward = this->m_Camera->GetForwardVector();
 		FVector cameraToPlayer = Super::GetMesh()->GetSocketLocation(BUILD_TRACE_SOCKET) - cameraLoc;
@@ -216,10 +217,10 @@ void APlayerCharacter::Tick(float delta)
 		Super::GetWorld()->LineTraceSingleByChannel(this->m_TraceResult, start, end, ECollisionChannel::ECC_WorldDynamic, params);
 
 		// Update create brush
-		this->m_PrimaryBrush->Update(this, this->m_BuildArea, this->m_TraceResult);
+		this->m_PrimaryBrush->Update(this, area, this->m_TraceResult);
 
 		// Update modify brush
-		this->m_SecondaryBrush->Update(this, this->m_BuildArea, this->m_TraceResult);
+		this->m_SecondaryBrush->Update(this, area, this->m_TraceResult);
 	}
 }
 
@@ -667,12 +668,13 @@ void APlayerCharacter::InputBlockPlaceUpEvent()
 	this->m_bPlacePressed = false;
 	this->m_PlacePressCounter = 0.0f;
 
-	if (this->m_BuildArea != nullptr && this->m_bBuildingEnabled && this->m_BuildArea->CanTeamBuild(this->m_Team))
+	ABuildArea *area = this->GetActiveBuildArea();
+	if (area != nullptr && this->m_bBuildingEnabled && area->CanTeamBuild(this->m_Team))
 	{
 		// Check to see if the player was combining a block and then stopped
 		if (!this->m_SecondaryBrush->IsCombining())
 		{
-			this->m_PrimaryBrush->Action(this->m_BuildArea, this);
+			this->m_PrimaryBrush->Action(area, this);
 		}
 		this->m_SecondaryBrush->ReleaseCombineLock();
 	}
@@ -689,9 +691,10 @@ void APlayerCharacter::InputBlockDestroyDownEvent()
 
 void APlayerCharacter::InputBlockDestroyUpEvent()
 {
-	if (this->m_BuildArea != nullptr && this->m_bBuildingEnabled && this->m_BuildArea->CanTeamBuild(this->m_Team))
+	ABuildArea *area = this->GetActiveBuildArea();
+	if (area != nullptr && this->m_bBuildingEnabled && area->CanTeamBuild(this->m_Team))
 	{
-		this->m_SecondaryBrush->Action(this->m_BuildArea, this);
+		this->m_SecondaryBrush->Action(area, this);
 	}
 	this->m_SecondaryBrush->SetChainMode(false);
 }

@@ -10,7 +10,7 @@
 
 #include "Runtime/Engine/Public/EngineUtils.h"
 
-#define SCALE_DURATION 0.1f
+#define SCALE_DURATION 0.132f
 #define SCALE_MULTIPLIER 0.5f
 
 #define ATTRACTION_FORCE 50.0f

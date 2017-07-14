@@ -20,9 +20,13 @@ ABuildArea::ABuildArea() : m_Team(-1), m_CellSize(1.0f)
 	this->m_Area->SetCollisionProfileName(TEXT("OverlapAll"));
 	this->m_Area->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 
-	TScriptDelegate<FWeakObjectPtr> delegate;
-	delegate.BindUFunction(this, FName("OnBeginOverlap"));
-	this->m_Area->OnComponentBeginOverlap.Add(delegate);
+	TScriptDelegate<FWeakObjectPtr> delegateBegin;
+	delegateBegin.BindUFunction(this, FName("OnBeginOverlap"));
+	this->m_Area->OnComponentBeginOverlap.Add(delegateBegin);
+
+	TScriptDelegate<FWeakObjectPtr> delegateEnd;
+	delegateEnd.BindUFunction(this, FName("OnEndOverlap"));
+	this->m_Area->OnComponentEndOverlap.Add(delegateEnd);
 
 	Super::RootComponent = this->m_Area;
 }
@@ -161,7 +165,17 @@ void ABuildArea::OnBeginOverlap(UPrimitiveComponent *OverlappedComponent, AActor
 	APlayerCharacter *character = Cast<APlayerCharacter>(OtherActor);
 	if (character != nullptr && (this->m_bIgnoreTeam || character->GetTeam() == this->m_Team))
 	{
-		character->SetBuildArea(this);
+		character->AddBuildArea(this);
+	}
+}
+
+void ABuildArea::OnEndOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor,
+	UPrimitiveComponent *OtherComp, int32 OtherBodyIndex)
+{
+	APlayerCharacter *character = Cast<APlayerCharacter>(OtherActor);
+	if (character != nullptr && (this->m_bIgnoreTeam || character->GetTeam() == this->m_Team))
+	{
+		character->RemoveBuildArea(this);
 	}
 }
 
