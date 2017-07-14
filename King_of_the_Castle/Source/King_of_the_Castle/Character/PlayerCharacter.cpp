@@ -316,11 +316,12 @@ void APlayerCharacter::Dodge()
 	float x = Super::InputComponent->GetAxisValue(TEXT("LeftThumbX")),
 		y = Super::InputComponent->GetAxisValue(TEXT("LeftThumbY"));
 
-	// If there's no direction, go forward
+	// If there's no direction do nothing
 	if(x == 0.0f && y == 0.0f)
 	{
-		y = 1.0f;
+		return;
 	}
+	Super::GetCharacterMovement()->GroundFriction = 0.0f;
 
 	// The way the player is facing
 	FVector forward = this->m_Camera->GetForwardVector();
@@ -336,6 +337,13 @@ void APlayerCharacter::Dodge()
 	this->SetStamina(this->m_Stamina - this->m_DodgeStaminaCost);
 
 	this->m_DodgeCooldownCounter = 0.0f;
+
+	FTimerHandle handle;
+	Super::GetWorldTimerManager().SetTimer(handle, FTimerDelegate::CreateLambda([this]()
+	{
+		this->m_bCharging = false;
+		Super::GetCharacterMovement()->GroundFriction = 8.0f;
+	}), CHARGE_ATTACK_ANIMATION_DURATION, false);
 }
 
 void APlayerCharacter::Attack()
@@ -545,7 +553,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *input)
 	input->BindAction("Sprint", IE_Pressed, this, &APlayerCharacter::InputSprintEnable);
 	input->BindAction("Sprint", IE_Released, this, &APlayerCharacter::InputSprintDisable);
 
-	//input->BindAction("Dodge", IE_Pressed, this, &APlayerCharacter::Dodge);
+	input->BindAction("Dodge", IE_Pressed, this, &APlayerCharacter::Dodge);
 	input->BindAction("Attack", IE_Pressed, this, &APlayerCharacter::Attack);
 
 	//input->BindAction("Charge Attack", IE_Pressed, this, &APlayerCharacter::InputChargeEnable);
@@ -574,18 +582,18 @@ void APlayerCharacter::Jump()
 	{
 		Super::Jump();
 
-		if (this->m_DodgePressTimer < DODGE_DOUBLE_TAP_TIME 
-			&& this->m_DodgeCooldownCounter >= this->m_DodgeCooldownTime)
-		{
-			this->Dodge();
-			Super::StopJumping();
+		//if (this->m_DodgePressTimer < DODGE_DOUBLE_TAP_TIME 
+		//	&& this->m_DodgeCooldownCounter >= this->m_DodgeCooldownTime)
+		//{
+		//	this->Dodge();
+		//	Super::StopJumping();
 
-			this->m_DodgePressTimer = DODGE_DOUBLE_TAP_TIME;
-		}
-		else
-		{
-			this->m_DodgePressTimer = 0.0f;
-		}
+		//	this->m_DodgePressTimer = DODGE_DOUBLE_TAP_TIME;
+		//}
+		//else
+		//{
+		//	this->m_DodgePressTimer = 0.0f;
+		//}
 	}
 }
 
