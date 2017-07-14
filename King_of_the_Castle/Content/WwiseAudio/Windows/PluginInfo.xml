@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PluginInfo Project="King_of_the_Castle_WwiseProject" Platform="Windows" BasePlatform="Windows">
-	<Plugins/>
+	<Plugins>
+		<Plugin Name="Wwise Peak Limiter" ID="7208963" DLL="AkPeakLimiter"/>
+	</Plugins>
 </PluginInfo>

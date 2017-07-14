@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="11" SoundbankVersion="120">
 	<RootPaths>
-		<ProjectRoot>/Users/pauldb/Library/Application Support/Wwise2016/Bottles/wwise/dosdevices/y:/Tethered/Game Projects/King of the Castle/King-of-the-Castle/King_of_the_Castle/King_of_the_Castle_WwiseProject/</ProjectRoot>
-		<SourceFilesRoot>/Users/pauldb/Library/Application Support/Wwise2016/Bottles/wwise/dosdevices/y:/Tethered/Game Projects/King of the Castle/King-of-the-Castle/King_of_the_Castle/King_of_the_Castle_WwiseProject/.cache/Windows/</SourceFilesRoot>
-		<SoundBanksRoot>/Users/pauldb/Library/Application Support/Wwise2016/Bottles/wwise/dosdevices/z:/Users/pauldb/Tethered/Game Projects/King of the Castle/King-of-the-Castle/King_of_the_Castle/Content/WwiseAudio/Windows/</SoundBanksRoot>
+		<ProjectRoot>C:\Users\1405188\Github\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\</ProjectRoot>
+		<SourceFilesRoot>C:\Users\1405188\Github\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\.cache\Windows\</SourceFilesRoot>
+		<SoundBanksRoot>C:\Users\1405188\Github\KingOfTheCastle\King_of_the_Castle\Content\WwiseAudio\Windows\</SoundBanksRoot>
 		<ExternalSourcesInputFile></ExternalSourcesInputFile>
-		<ExternalSourcesOutputRoot>/Users/pauldb/Library/Application Support/Wwise2016/Bottles/wwise/dosdevices/y:/Tethered/Game Projects/King of the Castle/King-of-the-Castle/King_of_the_Castle/King_of_the_Castle_WwiseProject/GeneratedSoundBanks/Windows/</ExternalSourcesOutputRoot>
+		<ExternalSourcesOutputRoot>C:\Users\1405188\Github\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\GeneratedSoundBanks\Windows\</ExternalSourcesOutputRoot>
 	</RootPaths>
 	<DialogueEvents/>
 	<StreamedFiles/>
@@ -21,7 +21,7 @@
 			<IncludedMemoryFiles>
 				<File Id="565128765" Language="SFX">
 					<ShortName>TestSample.wav</ShortName>
-					<Path>SFX/TestSample_9E69E797.wem</Path>
+					<Path>SFX\TestSample_9E69E797.wem</Path>
 				</File>
 			</IncludedMemoryFiles>
 		</SoundBank>
@@ -29,6 +29,88 @@
 			<ObjectPath>Init</ObjectPath>
 			<ShortName>Init</ShortName>
 			<Path>Init.bnk</Path>
+		</SoundBank>
+		<SoundBank Id="3991942870" Language="SFX">
+			<ObjectPath>\SoundBanks\Default Work Unit\Music</ObjectPath>
+			<ShortName>Music</ShortName>
+			<Path>Music.bnk</Path>
+			<IncludedEvents>
+				<Event Id="3725903807" Name="Music_Start" ObjectPath="\Events\Default Work Unit\Music_Start"/>
+			</IncludedEvents>
+			<IncludedMemoryFiles>
+				<File Id="36742319" Language="SFX">
+					<ShortName>Violas2.wav</ShortName>
+					<Path>SFX\Violas2_4B8CC0C5.wem</Path>
+				</File>
+				<File Id="56994167" Language="SFX">
+					<ShortName>Timpani Roll.wav</ShortName>
+					<Path>SFX\Timpani Roll_4B8CC0C5.wem</Path>
+				</File>
+				<File Id="66149460" Language="SFX">
+					<ShortName>Main2.wav</ShortName>
+					<Path>SFX\Main2_4B8CC0C5.wem</Path>
+				</File>
+				<File Id="66838259" Language="SFX">
+					<ShortName>Strings 3.wav</ShortName>
+					<Path>SFX\Strings 3_4B8CC0C5.wem</Path>
+				</File>
+				<File Id="135077595" Language="SFX">
+					<ShortName>Base 1.wav</ShortName>
+					<Path>SFX\Base 1_4B8CC0C5.wem</Path>
+				</File>
+				<File Id="250705993" Language="SFX">
+					<ShortName>Pluck 1.wav</ShortName>
+					<Path>SFX\Pluck 1_4B8CC0C5.wem</Path>
+				</File>
+				<File Id="270482935" Language="SFX">
+					<ShortName>TransHornsUP 2.5.wav</ShortName>
+					<Path>SFX\TransHornsUP 2.5_4B8CC0C5.wem</Path>
+				</File>
+				<File Id="286038645" Language="SFX">
+					<ShortName>Choir 3.wav</ShortName>
+					<Path>SFX\Choir 3_4B8CC0C5.wem</Path>
+				</File>
+				<File Id="312319090" Language="SFX">
+					<ShortName>Horns 3.wav</ShortName>
+					<Path>SFX\Horns 3_4B8CC0C5.wem</Path>
+				</File>
+				<File Id="376602651" Language="SFX">
+					<ShortName>Strings2.wav</ShortName>
+					<Path>SFX\Strings2_4B8CC0C5.wem</Path>
+				</File>
+				<File Id="401446643" Language="SFX">
+					<ShortName>Base2.wav</ShortName>
+					<Path>SFX\Base2_4B8CC0C5.wem</Path>
+				</File>
+				<File Id="636293168" Language="SFX">
+					<ShortName>TransBassUP 2.5.wav</ShortName>
+					<Path>SFX\TransBassUP 2.5_4B8CC0C5.wem</Path>
+				</File>
+				<File Id="665877746" Language="SFX">
+					<ShortName>Base 2.5.wav</ShortName>
+					<Path>SFX\Base 2.5_4B8CC0C5.wem</Path>
+				</File>
+				<File Id="816727104" Language="SFX">
+					<ShortName>TransDrumsUP 2.5.wav</ShortName>
+					<Path>SFX\TransDrumsUP 2.5_4B8CC0C5.wem</Path>
+				</File>
+				<File Id="938053383" Language="SFX">
+					<ShortName>Main 3.wav</ShortName>
+					<Path>SFX\Main 3_4B8CC0C5.wem</Path>
+				</File>
+				<File Id="939317380" Language="SFX">
+					<ShortName>Base 3.wav</ShortName>
+					<Path>SFX\Base 3_4B8CC0C5.wem</Path>
+				</File>
+				<File Id="995870063" Language="SFX">
+					<ShortName>Main 2.5.wav</ShortName>
+					<Path>SFX\Main 2.5_4B8CC0C5.wem</Path>
+				</File>
+				<File Id="1058253136" Language="SFX">
+					<ShortName>Drums 3.wav</ShortName>
+					<Path>SFX\Drums 3_4B8CC0C5.wem</Path>
+				</File>
+			</IncludedMemoryFiles>
 		</SoundBank>
 	</SoundBanks>
 </SoundBanksInfo>

@@ -3,7 +3,11 @@
 	<GameParameters>
 		<WorkUnit Name="Default Work Unit" ID="{C328BBC2-1A81-47C1-AEF7-2B6135AE3CED}" PersistMode="Standalone">
 			<ChildrenList>
-				<GameParameter Name="Intensity" ID="{9B788ED6-0DF2-426F-B15D-679FC3E1BBD8}"/>
+				<GameParameter Name="Intensity" ID="{9B788ED6-0DF2-426F-B15D-679FC3E1BBD8}">
+					<PropertyList>
+						<Property Name="InitialValue" Type="Real64" Value="0"/>
+					</PropertyList>
+				</GameParameter>
 			</ChildrenList>
 		</WorkUnit>
 	</GameParameters>

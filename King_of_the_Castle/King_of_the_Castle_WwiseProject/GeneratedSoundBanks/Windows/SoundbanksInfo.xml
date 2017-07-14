@@ -35,12 +35,20 @@
 			<ShortName>Music</ShortName>
 			<Path>Music.bnk</Path>
 			<IncludedEvents>
-				<Event Id="4058101365" Name="GameStart" ObjectPath="\Events\Default Work Unit\GameStart"/>
+				<Event Id="3725903807" Name="Music_Start" ObjectPath="\Events\Default Work Unit\Music_Start"/>
 			</IncludedEvents>
 			<IncludedMemoryFiles>
 				<File Id="36742319" Language="SFX">
 					<ShortName>Violas2.wav</ShortName>
 					<Path>SFX\Violas2_4B8CC0C5.wem</Path>
+				</File>
+				<File Id="56994167" Language="SFX">
+					<ShortName>Timpani Roll.wav</ShortName>
+					<Path>SFX\Timpani Roll_4B8CC0C5.wem</Path>
+				</File>
+				<File Id="66149460" Language="SFX">
+					<ShortName>Main2.wav</ShortName>
+					<Path>SFX\Main2_4B8CC0C5.wem</Path>
 				</File>
 				<File Id="66838259" Language="SFX">
 					<ShortName>Strings 3.wav</ShortName>
@@ -65,10 +73,6 @@
 				<File Id="312319090" Language="SFX">
 					<ShortName>Horns 3.wav</ShortName>
 					<Path>SFX\Horns 3_4B8CC0C5.wem</Path>
-				</File>
-				<File Id="349378876" Language="SFX">
-					<ShortName>TransUP 2.5.wav</ShortName>
-					<Path>SFX\TransUP 2.5_4B8CC0C5.wem</Path>
 				</File>
 				<File Id="376602651" Language="SFX">
 					<ShortName>Strings2.wav</ShortName>
@@ -105,10 +109,6 @@
 				<File Id="1058253136" Language="SFX">
 					<ShortName>Drums 3.wav</ShortName>
 					<Path>SFX\Drums 3_4B8CC0C5.wem</Path>
-				</File>
-				<File Id="1058273295" Language="SFX">
-					<ShortName>Main2.wav</ShortName>
-					<Path>SFX\Main2_4B8CC0C5.wem</Path>
 				</File>
 			</IncludedMemoryFiles>
 		</SoundBank>

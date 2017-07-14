@@ -6,7 +6,7 @@
 				<SoundcasterSession Name="New Soundcaster Session" ID="{BD44677E-6D0C-4EA4-85AD-BA7266D17B0F}">
 					<ModuleList>
 						<Module>
-							<ObjectRef Name="GameStart" ID="{88A3FF9B-FCC2-43BD-8FBE-E5EC16111B5F}" WorkUnitID="{8F1EA8B4-C444-40AD-B9D4-72B61B06D617}"/>
+							<ObjectRef Name="Music_Start" ID="{88A3FF9B-FCC2-43BD-8FBE-E5EC16111B5F}" WorkUnitID="{8F1EA8B4-C444-40AD-B9D4-72B61B06D617}"/>
 							<Position X="0" Y="0"/>
 						</Module>
 						<Module>
@@ -17,7 +17,7 @@
 					<RTPCValueList ShowAll="true">
 						<RTPCValue>
 							<GameParameterRef Name="Intensity" ID="{9B788ED6-0DF2-426F-B15D-679FC3E1BBD8}"/>
-							<Value>100</Value>
+							<Value>7.03810741591456E-316</Value>
 						</RTPCValue>
 					</RTPCValueList>
 					<CurrentStateList ShowAll="true">
