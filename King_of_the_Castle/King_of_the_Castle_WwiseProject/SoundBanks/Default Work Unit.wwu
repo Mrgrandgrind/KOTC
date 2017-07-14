@@ -11,6 +11,14 @@
 					<ObjectExclusionList/>
 					<GameSyncExclusionList/>
 				</SoundBank>
+				<SoundBank Name="Music" ID="{2AA6DE14-4AE9-4585-A196-88ECFFAAD3FA}">
+					<ObjectInclusionList>
+						<ObjectRef Name="GameStart" ID="{88A3FF9B-FCC2-43BD-8FBE-E5EC16111B5F}" WorkUnitID="{8F1EA8B4-C444-40AD-B9D4-72B61B06D617}" Filter="7" Origin="Manual"/>
+						<ObjectRef Name="FullMusic" ID="{A88BE20A-491A-47B9-99CA-60549E0845EA}" WorkUnitID="{246E0727-97E6-4A22-B039-2F4E93924145}" Filter="7" Origin="Manual"/>
+					</ObjectInclusionList>
+					<ObjectExclusionList/>
+					<GameSyncExclusionList/>
+				</SoundBank>
 			</ChildrenList>
 		</WorkUnit>
 	</SoundBanks>

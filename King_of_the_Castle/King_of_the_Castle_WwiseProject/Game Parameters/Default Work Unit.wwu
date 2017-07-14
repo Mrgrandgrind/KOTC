@@ -3,7 +3,7 @@
 	<GameParameters>
 		<WorkUnit Name="Default Work Unit" ID="{C328BBC2-1A81-47C1-AEF7-2B6135AE3CED}" PersistMode="Standalone">
 			<ChildrenList>
-				<GameParameter Name="Effect_Mix" ID="{521A3FE0-BCAC-4E48-8FD6-F0515BDAEE5E}"/>
+				<GameParameter Name="Intensity" ID="{9B788ED6-0DF2-426F-B15D-679FC3E1BBD8}"/>
 			</ChildrenList>
 		</WorkUnit>
 	</GameParameters>
