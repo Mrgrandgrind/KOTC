@@ -10,8 +10,10 @@
 
 #include "Runtime/Engine/Public/EngineUtils.h"
 
-#define SCALE_DURATION 0.132f
-#define SCALE_MULTIPLIER 0.5f
+#define SCALE_DURATION 0.132f // used for spawn and despawn
+#define SCALE_MULTIPLIER 0.5f // target scale (multiplier of the block this is an instance of)
+
+#define ENTITY_LIFE_TIME (2.0f * 60.0f) //seconds
 
 #define ATTRACTION_FORCE 50.0f
 #define ATTRACTION_DISTANCE 680.0f
@@ -19,13 +21,13 @@
 
 #define OWNERSHIP_DURATION 3.0f // block is owned by owner for 3 seconds
 
-ABlockEntity::ABlockEntity() : m_bIgnoreOwner(false), m_bRestrictedPickup(true)
+ABlockEntity::ABlockEntity() : m_CreateCounter(0.0f), m_bIgnoreOwner(false), m_bRestrictedPickup(true)
 {
-	FScriptDelegate sdb;
+	TScriptDelegate<FWeakObjectPtr> sdb;
 	sdb.BindUFunction(this, "BeginOverlap");
 	Super::m_Mesh->OnComponentBeginOverlap.Add(sdb);
 
-	FScriptDelegate sde;
+	TScriptDelegate<FWeakObjectPtr> sde;
 	sde.BindUFunction(this, "EndOverlap");
 	Super::m_Mesh->OnComponentEndOverlap.Add(sde);
 
@@ -47,6 +49,12 @@ void ABlockEntity::BeginPlay()
 	{
 		body->SetDOFLock(EDOFMode::None);
 	}
+}
+
+void ABlockEntity::ForceDespawn()
+{
+	// Set the create counter to the value that begins the despawn process
+	this->m_CreateCounter = ENTITY_LIFE_TIME - SCALE_DURATION;
 }
 
 void ABlockEntity::SetTo(ABlock *block)
@@ -127,16 +135,27 @@ void ABlockEntity::Tick(float delta)
 {
 	Super::Tick(delta);
 
-	if (this->m_ScaleCounter < SCALE_DURATION)
-	{
-		this->m_ScaleCounter = FMath::Min(this->m_ScaleCounter + delta, SCALE_DURATION);
+	this->m_CreateCounter += delta;
 
-		float perc = FMath::Sin(HALF_PI * this->m_ScaleCounter / SCALE_DURATION);
+	if (this->m_CreateCounter - delta < SCALE_DURATION)
+	{
+		float perc = FMath::Sin(HALF_PI * FMath::Min(this->m_CreateCounter / SCALE_DURATION, 1.0f));
 		Super::SetActorScale3D(this->m_BaseScale + (this->m_DesiredScale - this->m_BaseScale) * perc);
+	}
+	else if (this->m_CreateCounter - delta > ENTITY_LIFE_TIME - SCALE_DURATION)
+	{
+		float perc = FMath::Sin(HALF_PI * FMath::Min((ENTITY_LIFE_TIME - this->m_CreateCounter) / SCALE_DURATION, 1.0f));
+		Super::SetActorScale3D(this->m_DesiredScale * perc);
+
+		if (this->m_CreateCounter >= ENTITY_LIFE_TIME)
+		{
+			Super::DestroyBlock();
+			return;
+		}
 	}
 
 	// If this block has an owner, increase the timer. If timer is up, remove the owner
-	if (this->m_Owner != nullptr && (this->m_Timer += delta) >= OWNERSHIP_DURATION)
+	if (this->m_Owner != nullptr && this->m_CreateCounter >= OWNERSHIP_DURATION)
 	{
 		this->m_Owner = nullptr;
 		this->m_bRestrictedPickup = true;

@@ -34,9 +34,12 @@ public:
 	// Pickup this block. This block will be destroyed and the players create brush will gain 1 of this block.
 	void Pickup(class APlayerCharacter *character);
 
+	// Force this entity to despawn. This is not an instant process because of the animation.
+	void ForceDespawn();
+
 	FORCEINLINE AActor* GetBlockOwner() const { return this->m_Owner; }
 
-	FORCEINLINE void SetBlockOwner(AActor *actor) { this->m_Owner = actor; this->m_Timer = 0.0f; }
+	FORCEINLINE void SetBlockOwner(AActor *actor) { this->m_Owner = actor; }
 
 	FORCEINLINE void SetRestrictedPickup(const bool& restrict) { this->m_bRestrictedPickup = restrict; }
 
@@ -57,16 +60,13 @@ public:
 
 private:
 	// Time since created
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Timer", meta = (AllowPrivateAccess = "true", DisplayName = "Timer"))
-	float m_Timer;
+	float m_CreateCounter;
 
 	// Who is responsible for this block spawning
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dropped", meta = (AllowPrivateAccess = "true", DisplayName = "Owner"))
+	UPROPERTY()
 	AActor *m_Owner;
 
 	FVector m_BaseScale, m_DesiredScale;
-
-	float m_ScaleCounter;
 
 	// Whether or not to ignore the owner for pickup up or only go to the owner
 	bool m_bIgnoreOwner;

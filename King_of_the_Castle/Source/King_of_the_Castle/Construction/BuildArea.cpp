@@ -20,13 +20,13 @@ ABuildArea::ABuildArea() : m_Team(-1), m_CellSize(1.0f)
 	this->m_Area->SetCollisionProfileName(TEXT("OverlapAll"));
 	this->m_Area->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 
-	TScriptDelegate<FWeakObjectPtr> delegateBegin;
-	delegateBegin.BindUFunction(this, FName("OnBeginOverlap"));
-	this->m_Area->OnComponentBeginOverlap.Add(delegateBegin);
+	TScriptDelegate<FWeakObjectPtr> sdb;
+	sdb.BindUFunction(this, FName("OnBeginOverlap"));
+	this->m_Area->OnComponentBeginOverlap.Add(sdb);
 
-	TScriptDelegate<FWeakObjectPtr> delegateEnd;
-	delegateEnd.BindUFunction(this, FName("OnEndOverlap"));
-	this->m_Area->OnComponentEndOverlap.Add(delegateEnd);
+	TScriptDelegate<FWeakObjectPtr> sde;
+	sde.BindUFunction(this, FName("OnEndOverlap"));
+	this->m_Area->OnComponentEndOverlap.Add(sde);
 
 	Super::RootComponent = this->m_Area;
 }

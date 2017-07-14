@@ -95,7 +95,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Game", meta = (AllowPrivateAccess = "true", DisplayName = "Max Block Entity Count"))
 	int m_MaxBlockEntityCount;
 
-	int m_BlockEntityCount;
+	int m_BlockEntityCount, m_BlockEntityDespawnFlags;
 
 	// Structure manager reference
 	class ABlockStructureManager *m_BlockStructureManager;
