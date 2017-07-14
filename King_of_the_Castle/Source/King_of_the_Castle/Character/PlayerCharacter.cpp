@@ -350,14 +350,16 @@ void APlayerCharacter::Attack()
 	}
 	this->m_AttackStage = EAttackStage::PRE_COLLISION;
 
-	FTimerHandle handle;
-	Super::GetWorldTimerManager().SetTimer(handle, FTimerDelegate::CreateLambda([this, &handle]()
+	FTimerHandle handle1;
+	Super::GetWorldTimerManager().SetTimer(handle1, FTimerDelegate::CreateLambda([this]()
 	{
+		FTimerHandle handle2;
 		this->m_AttackStage = EAttackStage::COLLISION;
-		Super::GetWorldTimerManager().SetTimer(handle, FTimerDelegate::CreateLambda([this, &handle]()
+		Super::GetWorldTimerManager().SetTimer(handle2, FTimerDelegate::CreateLambda([this]()
 		{
+			FTimerHandle handle3;
 			this->m_AttackStage = EAttackStage::POST_DELAY;
-			Super::GetWorldTimerManager().SetTimer(handle, FTimerDelegate::CreateLambda([this]()
+			Super::GetWorldTimerManager().SetTimer(handle3, FTimerDelegate::CreateLambda([this]()
 			{
 				this->m_AttackStage = EAttackStage::READY;
 			}), ATTACK_POST_DELAY, false);
@@ -403,7 +405,7 @@ void APlayerCharacter::InputChargeDisable()
 	float power = this->m_ChargeDuration == 0.0f ? 1.0f : this->m_ChargeCounter / this->m_ChargeDuration;
 	Super::LaunchCharacter(forward * this->m_ChargeSlideForce * power, true, true);
 
-	this->Attack();
+	//this->Attack();
 
 	FTimerHandle handle;
 	Super::GetWorldTimerManager().SetTimer(handle, FTimerDelegate::CreateLambda([this]()
