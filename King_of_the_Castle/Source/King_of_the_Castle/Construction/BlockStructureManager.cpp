@@ -21,7 +21,7 @@
 #define ENTITY_DELAY_TIME_OFFSET (ENTITY_DELAY_TIME_PER_NEXT * 0.75f)
 
 // Sets default values
-ABlockStructureManager::ABlockStructureManager() : m_bSupportWallZ(true), m_bSupportWallXY(true), m_bSupportGround(true)
+ABlockStructureManager::ABlockStructureManager() : m_bSupportWall(true), m_bSupportGround(true)
 {
 	Super::RootComponent = UObject::CreateDefaultSubobject<USceneComponent>(TEXT("BlockStructureManager"));
 
@@ -88,6 +88,12 @@ bool ABlockStructureManager::IsSupport(class ABlock *block) const
 	FVector location = block->GetActorLocation(), origin, extent;
 	block->GetActorBounds(true, origin, extent);
 
+	auto isValid = [](FHitResult& result)->bool
+	{
+		return result.IsValidBlockingHit() && (Cast<AStaticMeshActor>(result.GetActor()) != nullptr
+			|| Cast<UModelComponent>(result.GetComponent()) != nullptr);
+	};
+
 	FHitResult result;
 	// Check for ground first
 	if (this->m_bSupportGround)
@@ -95,33 +101,22 @@ bool ABlockStructureManager::IsSupport(class ABlock *block) const
 		Super::GetWorld()->LineTraceSingleByChannel(result, location, location
 			+ FVector(0.0f, 0.0f, -extent.Z - OFFSET_OFFSET), ECollisionChannel::ECC_WorldDynamic);
 
-		if (result.IsValidBlockingHit() && Cast<AStaticMeshActor>(result.GetActor()) != nullptr)
+		if (isValid(result))
 		{
 			return true;
 		}
 	}
 	// If there's no ground, check the sides
-	if (this->m_bSupportWallZ)
-	{
-		for (const FVector& offset : { FVector(0.0f, 0.0f, extent.Z + OFFSET_OFFSET), FVector(0.0f, 0.0f, -extent.Z - OFFSET_OFFSET) })
-		{
-			Super::GetWorld()->LineTraceSingleByChannel(result, location, location + offset, ECollisionChannel::ECC_WorldDynamic);
-
-			if (result.IsValidBlockingHit() && Cast<UModelComponent>(result.GetComponent()) != nullptr)
-			{
-				return true;
-			}
-		}
-	}
-	if (this->m_bSupportWallXY)
+	if (this->m_bSupportWall)
 	{
 		for (const FVector& offset : {
 			FVector(extent.X + OFFSET_OFFSET, 0.0f, 0.0f), FVector(-extent.X - OFFSET_OFFSET, 0.0f, 0.0f),
-			FVector(0.0f, extent.Y + OFFSET_OFFSET, 0.0f), FVector(0.0f, -extent.Y - OFFSET_OFFSET, 0.0f) })
+			FVector(0.0f, extent.Y + OFFSET_OFFSET, 0.0f), FVector(0.0f, -extent.Y - OFFSET_OFFSET, 0.0f),
+			FVector(0.0f, 0.0f, extent.Z + OFFSET_OFFSET), FVector(0.0f, 0.0f, -extent.Z - OFFSET_OFFSET) })
 		{
 			Super::GetWorld()->LineTraceSingleByChannel(result, location, location + offset, ECollisionChannel::ECC_WorldDynamic);
 
-			if (result.IsValidBlockingHit() && Cast<UModelComponent>(result.GetComponent()) != nullptr)
+			if (isValid(result))
 			{
 				return true;
 			}
