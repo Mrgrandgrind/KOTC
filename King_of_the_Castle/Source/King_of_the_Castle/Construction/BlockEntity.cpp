@@ -10,7 +10,7 @@
 
 #include "Runtime/Engine/Public/EngineUtils.h"
 
-#define SCALE_DURATION 0.132f // used for spawn and despawn
+#define SCALE_DURATION 0.128f // used for spawn and despawn
 #define SCALE_MULTIPLIER 0.5f // target scale (multiplier of the block this is an instance of)
 
 #define ENTITY_LIFE_TIME (2.0f * 60.0f) //seconds

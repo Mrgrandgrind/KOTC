@@ -6,6 +6,7 @@
 #include "Engine/Canvas.h"
 #include "GameFramework/HUD.h"
 
+#include "Event/EventManager.h"
 #include "Gamemode/BaseGameMode.h"
 #include "Character/PlayerCharacter.h"
 #include "Construction/Prefab.h"
@@ -200,9 +201,9 @@ WheelMenu UBuildWheel::CreateWheelMenu()
 					}
 					data->SetCount(character->GetPrimaryBrush(), data->GetCount() - cost);
 					ABaseGameMode *gamemode = Cast<ABaseGameMode>(character->GetWorld()->GetAuthGameMode());
-					if (gamemode != nullptr)
+					if (gamemode != nullptr && gamemode->GetEventManager())
 					{
-						gamemode->TriggerEvent(type);
+						gamemode->GetEventManager()->TriggerEvent(type);
 					}
 					return false;
 				};
