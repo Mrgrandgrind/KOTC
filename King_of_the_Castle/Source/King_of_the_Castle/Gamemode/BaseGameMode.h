@@ -81,6 +81,8 @@ public:
 #endif
 
 protected:
+	void RemoveBlockEntities(const int& count);
+
 	// Time since game started
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Game", meta = (AllowPrivateAccess = "true", DisplayName = "Timer"))
 	float m_Timer;
@@ -88,6 +90,12 @@ protected:
 	// How long a game should last
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Game", meta = (AllowPrivateAccess = "true", DisplayName = "Game Duration"))
 	float m_GameDuration;
+
+	// How many block entities can exist in the game at a given time
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Game", meta = (AllowPrivateAccess = "true", DisplayName = "Max Block Entity Count"))
+	int m_MaxBlockEntityCount;
+
+	int m_BlockEntityCount;
 
 	// Structure manager reference
 	class ABlockStructureManager *m_BlockStructureManager;

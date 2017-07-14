@@ -143,7 +143,7 @@ bool ABlockStructureManager::CheckStructureSupport(FBlockStructure& structure)
 	{
 		//UE_LOG_TEXT("Structure: Support was removed");
 		// Ensure we have a support to go from
-		if(structure.lastSupport == nullptr && structure.blocks.Num() > 0)
+		if (structure.lastSupport == nullptr && structure.blocks.Num() > 0)
 		{
 			structure.lastSupport = structure.blocks[0];
 		}
@@ -279,7 +279,7 @@ FBlockPath ABlockStructureManager::GeneratePath(ABlock *from, ABlock *to, ABlock
 {
 	struct Node
 	{
-		explicit Node(ABlock *block) : h(0.0f), block(block), parentIdx(-1) { }
+		explicit Node(ABlock *block) : h(0.0f), block(block), parentIdx(-1) {}
 
 		float h;
 		ABlock *block;
@@ -383,7 +383,7 @@ void ABlockStructureManager::ProcessPreplaced()
 
 	while (out.Num() > 0)
 	{
-		if(out[0]->GetAttachParentActor() != nullptr)
+		if (out[0]->GetAttachParentActor() != nullptr)
 		{
 			out.RemoveAt(0);
 			continue;
@@ -395,9 +395,9 @@ void ABlockStructureManager::ProcessPreplaced()
 	}
 	// When we get out of the while loop, every block on the map should be assigned a structure.
 	// Now we're going to verify that all structures have support
-	for(FBlockStructure& structure : this->m_Structures)
+	for (FBlockStructure& structure : this->m_Structures)
 	{
-		if(!this->CheckStructureSupport(structure))
+		if (!this->CheckStructureSupport(structure))
 		{
 			UE_LOG(LogClass, Error, TEXT("[Structure] Warning! Preplaced block structure had no support and has been isntantly destroyed"))
 		}
@@ -592,7 +592,7 @@ void ABlockStructureManager::DrawDebugBlock(ABlock* block, const FColor& color) 
 	block->GetActorBounds(true, origin, extent);
 	extent *= 1.02f;
 
-	FColor newColor = block->GetStructureMeta().isSupport ? 
+	FColor newColor = block->GetStructureMeta().isSupport ?
 		FColor(200, 0, 200, 20) : FColor(color.R, color.G, color.B, 10);
 	DrawDebugSolidBox(block->GetWorld(), loc, extent, newColor, true, DEBUG_DURATION);
 }

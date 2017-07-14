@@ -6,14 +6,18 @@
 #include "Event/FloorIsLavaEvent.h"
 #include "Character/DefaultPlayerController.h"
 #include "Construction/Block.h"
+#include "Construction/BlockEntity.h"
 #include "Construction/BlockStructureManager.h"
 
 #include "Runtime/Engine/Public/EngineUtils.h"
 
 #define DEFAULT_GAME_DURATION 10.0f * 60.0f //seconds
 
-ABaseGameMode::ABaseGameMode() : m_Timer(0.0f), m_GameDuration(DEFAULT_GAME_DURATION), 
-m_BlockStructureManager(nullptr), m_Event(nullptr)
+#define MAX_BLOCK_ENTITY_COUNT 80
+#define BLOCK_ENTITY_DESTROY_BLOCK_COUNT 5 // How many block entities to destroy once we hit the limit
+
+ABaseGameMode::ABaseGameMode() : m_Timer(0.0f), m_GameDuration(DEFAULT_GAME_DURATION), m_MaxBlockEntityCount(MAX_BLOCK_ENTITY_COUNT),
+m_BlockEntityCount(0), m_BlockStructureManager(nullptr), m_Event(nullptr)
 {
 	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/Blueprints/Characters/BP_SmashCharacter"));
 	if (PlayerPawnBPClass.Class != nullptr)
@@ -79,6 +83,14 @@ FString ABaseGameMode::GetEventText() const
 
 void ABaseGameMode::OnBlockPlace(ABlock *block, AActor *source)
 {
+	if(block->IsA(ABlockEntity::StaticClass()))
+	{
+		this->m_BlockEntityCount++;
+		if(this->m_BlockEntityCount > this->m_MaxBlockEntityCount)
+		{
+			this->RemoveBlockEntities(BLOCK_ENTITY_DESTROY_BLOCK_COUNT);
+		}
+	}
 	if (this->m_BlockStructureManager != nullptr)
 	{
 		this->m_BlockStructureManager->ProcessCreate(block);
@@ -87,9 +99,24 @@ void ABaseGameMode::OnBlockPlace(ABlock *block, AActor *source)
 
 void ABaseGameMode::OnBlockDestroy(ABlock *block, AActor *source)
 {
+	if (block->IsA(ABlockEntity::StaticClass()))
+	{
+		this->m_BlockEntityCount--;
+	}
 	if (this->m_BlockStructureManager != nullptr)
 	{
 		this->m_BlockStructureManager->ProcessDestroy(block);
+	}
+}
+
+void ABaseGameMode::RemoveBlockEntities(const int& count)
+{
+	TArray<AActor*> out;
+	UGameplayStatics::GetAllActorsOfClass(Super::GetWorld(), ABlockEntity::StaticClass(), out);
+
+	for(int i = FMath::Min(count, out.Num()) - 1; i >= 0; i--)
+	{
+		Cast<ABlockEntity>(out[i])->DestroyBlock(this);
 	}
 }
 
