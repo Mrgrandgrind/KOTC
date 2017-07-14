@@ -123,6 +123,12 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings", meta = (AllowPrivateAccess = "true", DisplayName = "Drop Mode"))
 	EDropMode m_DropMode;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings", meta = (AllowPrivateAccess = "true", DisplayName = "Support: Wall"))
+	bool m_bSupportWall;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Settings", meta = (AllowPrivateAccess = "true", DisplayName = "Support: Ground"))
+	bool m_bSupportGround;
+
 public:
 	bool m_bDebugRenderStructure;
 };

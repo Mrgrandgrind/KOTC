@@ -163,6 +163,7 @@ void ABlockEntity::Tick(float delta)
 
 	// Get the closest player within ATTRACTION_DISTANCE
 	APlayerCharacter *closest = nullptr;
+	float closestDistance = 0.0f;
 	for (TActorIterator<AActor> itr(Super::GetWorld()); itr; ++itr)
 	{
 		APlayerCharacter *character = Cast<APlayerCharacter>(*itr);
@@ -177,12 +178,14 @@ void ABlockEntity::Tick(float delta)
 			// Check to see if the distance to this character is closer than existing
 			float distance = character->GetSquaredDistanceTo(this);
 			if (distance <= ATTRACTION_DISTANCE_SQUARED && (closest == nullptr
-				|| distance < closest->GetSquaredDistanceTo(this)))
+				|| distance < closestDistance))
 			{
 				closest = character;
+				closestDistance = distance;
 			}
 		}
 	}
+
 	// If we found a valid character that we want this dropped block to move towards
 	if (closest != nullptr)
 	{
