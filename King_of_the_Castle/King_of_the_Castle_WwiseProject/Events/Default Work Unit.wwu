@@ -19,7 +19,7 @@
 						<Action Name="Play" ID="{040A3E8B-2D2C-4756-BACD-62D80E0A4703}" ShortID="1053308904" Type="Play" Scope="One" Global="false">
 							<ElementList>
 								<Element ID="{2AF3D33E-F75C-40A2-A127-50F9E22DCF80}" Global="false">
-									<ObjectRef Name="EpicFullLoop" ID="{D8095178-9E75-43FB-B290-87329C49D082}" WorkUnitID="{246E0727-97E6-4A22-B039-2F4E93924145}"/>
+									<ObjectRef Name="Level" ID="{0EB396A7-0F2B-4887-83BA-3EA173BB6D63}" WorkUnitID="{246E0727-97E6-4A22-B039-2F4E93924145}"/>
 								</Element>
 							</ElementList>
 						</Action>

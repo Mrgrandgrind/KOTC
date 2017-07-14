@@ -6,18 +6,22 @@
 				<SoundcasterSession Name="New Soundcaster Session" ID="{BD44677E-6D0C-4EA4-85AD-BA7266D17B0F}">
 					<ModuleList>
 						<Module>
-							<ObjectRef Name="Energy Level" ID="{0EB396A7-0F2B-4887-83BA-3EA173BB6D63}" WorkUnitID="{246E0727-97E6-4A22-B039-2F4E93924145}"/>
+							<ObjectRef Name="GameStart" ID="{88A3FF9B-FCC2-43BD-8FBE-E5EC16111B5F}" WorkUnitID="{8F1EA8B4-C444-40AD-B9D4-72B61B06D617}"/>
 							<Position X="0" Y="0"/>
+						</Module>
+						<Module>
+							<ObjectRef Name="Level" ID="{0EB396A7-0F2B-4887-83BA-3EA173BB6D63}" WorkUnitID="{246E0727-97E6-4A22-B039-2F4E93924145}"/>
+							<Position X="1" Y="0"/>
 						</Module>
 					</ModuleList>
 					<RTPCValueList ShowAll="true">
 						<RTPCValue>
 							<GameParameterRef Name="Intensity" ID="{9B788ED6-0DF2-426F-B15D-679FC3E1BBD8}"/>
-							<Value>0</Value>
+							<Value>100</Value>
 						</RTPCValue>
 					</RTPCValueList>
 					<CurrentStateList ShowAll="true">
-						<CurrentStateRef Name="Level_1" ID="{4BA60DF8-6001-49C4-A920-98ABEBC94510}"/>
+						<CurrentStateRef Name="Level_2_3" ID="{BF055B69-9F76-4A72-8553-4BAE34141572}"/>
 					</CurrentStateList>
 					<CurrentSwitchList ShowAll="true"/>
 				</SoundcasterSession>
