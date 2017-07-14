@@ -545,8 +545,8 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *input)
 	//input->BindAction("Dodge", IE_Pressed, this, &APlayerCharacter::Dodge);
 	input->BindAction("Attack", IE_Pressed, this, &APlayerCharacter::Attack);
 
-	input->BindAction("Charge Attack", IE_Pressed, this, &APlayerCharacter::InputChargeEnable);
-	input->BindAction("Charge Attack", IE_Released, this, &APlayerCharacter::InputChargeDisable);
+	//input->BindAction("Charge Attack", IE_Pressed, this, &APlayerCharacter::InputChargeEnable);
+	//input->BindAction("Charge Attack", IE_Released, this, &APlayerCharacter::InputChargeDisable);
 
 	input->BindAction("Place Block", IE_Pressed, this, &APlayerCharacter::InputBlockPlaceDownEvent);
 	input->BindAction("Place Block", IE_Released, this, &APlayerCharacter::InputBlockPlaceUpEvent);

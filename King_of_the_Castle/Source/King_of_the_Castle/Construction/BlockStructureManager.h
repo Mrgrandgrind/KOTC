@@ -40,7 +40,7 @@ struct FBlockStructure
 	// The location of the last support to be destroyed.
 	// Also set when a block causes one structures to split into two or more.
 	//FVector lastSupport;
-	class ABlock *lastSupport;
+	class ABlock *lastSupport = nullptr;
 
 	// An array containing all the blocks in the structure
 	UPROPERTY()
@@ -60,7 +60,7 @@ public:
 
 	virtual void Tick(float delta) override;
 
-	bool IsSupport(class ABlock *block);
+	bool IsSupport(class ABlock *block) const;
 
 	void ProcessDestroy(class ABlock *block);
 
@@ -91,7 +91,7 @@ public:
 protected:
 	void DropBlock(class ABlock *block);
 
-	void CheckStructureSupport(FBlockStructure& structure);
+	bool CheckStructureSupport(FBlockStructure& structure);
 
 	FBlockPath GeneratePath(class ABlock *from, class ABlock *to, class ABlock *ignored = nullptr) const;
 

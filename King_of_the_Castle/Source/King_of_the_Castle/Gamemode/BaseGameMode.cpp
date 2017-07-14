@@ -12,7 +12,8 @@
 
 #define DEFAULT_GAME_DURATION 10.0f * 60.0f //seconds
 
-ABaseGameMode::ABaseGameMode() : m_Timer(0.0f), m_GameDuration(DEFAULT_GAME_DURATION), m_Event(nullptr)
+ABaseGameMode::ABaseGameMode() : m_Timer(0.0f), m_GameDuration(DEFAULT_GAME_DURATION), 
+m_BlockStructureManager(nullptr), m_Event(nullptr)
 {
 	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/Blueprints/Characters/BP_SmashCharacter"));
 	if (PlayerPawnBPClass.Class != nullptr)
@@ -21,7 +22,7 @@ ABaseGameMode::ABaseGameMode() : m_Timer(0.0f), m_GameDuration(DEFAULT_GAME_DURA
 	}
 	Super::HUDClass = AGameHUD::StaticClass();
 	Super::PlayerControllerClass = ADefaultPlayerController::StaticClass();
-	
+
 	Super::PrimaryActorTick.bCanEverTick = true;
 
 	this->m_GameDuration = DEFAULT_GAME_DURATION;

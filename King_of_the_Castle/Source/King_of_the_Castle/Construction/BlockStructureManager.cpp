@@ -83,7 +83,7 @@ void ABlockStructureManager::Tick(float delta)
 	}
 }
 
-bool ABlockStructureManager::IsSupport(class ABlock *block)
+bool ABlockStructureManager::IsSupport(class ABlock *block) const
 {
 	FVector location = block->GetActorLocation(), origin, extent;
 	block->GetActorBounds(true, origin, extent);
@@ -127,12 +127,12 @@ void ABlockStructureManager::DropBlock(ABlock *block)
 	}
 }
 
-void ABlockStructureManager::CheckStructureSupport(FBlockStructure& structure)
+bool ABlockStructureManager::CheckStructureSupport(FBlockStructure& structure)
 {
 	// Floating mode does not require support
 	if (this->m_DropMode == EDropMode::Floating)
 	{
-		return;
+		return true;
 	}
 	bool supported = false;
 	for (int i = 0; i < structure.blocks.Num() && !supported; i++)
@@ -142,7 +142,12 @@ void ABlockStructureManager::CheckStructureSupport(FBlockStructure& structure)
 	if (!supported)
 	{
 		//UE_LOG_TEXT("Structure: Support was removed");
-		// If there is no longer any support blocks in the structure then we need to enable gravity
+		// Ensure we have a support to go from
+		if(structure.lastSupport == nullptr && structure.blocks.Num() > 0)
+		{
+			structure.lastSupport = structure.blocks[0];
+		}
+		// If there is no longer any support blocks in the structure then we need to drop the blocks using the specified mode
 		for (int i = structure.blocks.Num() - 1; i >= 0; i--)
 		{
 			ABlock *block = structure.blocks[i];
@@ -168,16 +173,18 @@ void ABlockStructureManager::CheckStructureSupport(FBlockStructure& structure)
 
 					float distance = this->GeneratePath(block, structure.lastSupport)
 						.searched.Num() * ENTITY_DELAY_TIME_PER_NEXT;
-					//distance += ENTITY_DELAY_TIME_OFFSET * FMath::FRand() - ENTITY_DELAY_TIME_OFFSET / 2.0f;
+					distance += ENTITY_DELAY_TIME_OFFSET * FMath::FRand() - ENTITY_DELAY_TIME_OFFSET / 2.0f;
 					this->m_PhysicsBlocks.Add({ block, distance });
 
 					// Must be set after generating the path
 					block->GetStructureMeta().isDestroyed = true;
 					break;
 				}
+				default: break; //Unrecognized drop mode
 			}
 		}
 	}
+	return supported;
 }
 
 void ABlockStructureManager::MergeIntoA(FStructureMeta *metaA, FStructureMeta *metaB)
@@ -272,7 +279,7 @@ FBlockPath ABlockStructureManager::GeneratePath(ABlock *from, ABlock *to, ABlock
 {
 	struct Node
 	{
-		Node(ABlock *block) : block(block), parentIdx(-1) { }
+		explicit Node(ABlock *block) : h(0.0f), block(block), parentIdx(-1) { }
 
 		float h;
 		ABlock *block;
@@ -376,12 +383,25 @@ void ABlockStructureManager::ProcessPreplaced()
 
 	while (out.Num() > 0)
 	{
+		if(out[0]->GetAttachParentActor() != nullptr)
+		{
+			out.RemoveAt(0);
+			continue;
+		}
 		int index = this->AddStructure(FBlockStructure());
 
 		// Call a recursive method that will add all neighbours to the structure recursively until there are none left.
 		this->AddNeighbours(Cast<ABlock>(out[0]), index, out);
 	}
-	// When we get out of the while loop, every block on the map should be assigned a structure
+	// When we get out of the while loop, every block on the map should be assigned a structure.
+	// Now we're going to verify that all structures have support
+	for(FBlockStructure& structure : this->m_Structures)
+	{
+		if(!this->CheckStructureSupport(structure))
+		{
+			UE_LOG(LogClass, Error, TEXT("[Structure] Warning! Preplaced block structure had no support and has been isntantly destroyed"))
+		}
+	}
 }
 
 void ABlockStructureManager::ProcessCreate(ABlock *block)

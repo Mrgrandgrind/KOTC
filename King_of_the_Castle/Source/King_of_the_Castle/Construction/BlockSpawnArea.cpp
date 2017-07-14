@@ -97,7 +97,7 @@ bool ABlockSpawnArea::TrySpawn(FVector& out) const
 
 	// If we get here then all position tests passed. We can spawn a block at our random (grounded) position. 
 	// Let the caller know the location and tell them the test was successful.
-	out = FVector(loc.X, loc.Y, arr[0].Z + extent.Z);
+	out = FVector(loc.X, loc.Y, arr[0].Z + extent.Z / 2.0f);
 	return true;
 }
 

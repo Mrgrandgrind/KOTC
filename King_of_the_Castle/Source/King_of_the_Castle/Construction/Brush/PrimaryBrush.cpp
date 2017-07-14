@@ -161,7 +161,7 @@ FRotator UPrimaryBrush::GetBrushRotation() const
 	rotation.Pitch = FMath::GridSnap(rotation.Pitch, 90.0f);
 	rotation.Yaw = FMath::GridSnap(rotation.Yaw, 90.0f) + 90.0f;
 	rotation.Roll = 0.0f;// FMath::GridSnap(rotation.Roll, 90.0f);
-	UE_LOG(LogClass, Log, TEXT("%f, %f, %f"), rotation.Pitch, rotation.Yaw, rotation.Roll);
+	//UE_LOG(LogClass, Log, TEXT("%f, %f, %f"), rotation.Pitch, rotation.Yaw, rotation.Roll);
 	return rotation;
 }
 
@@ -596,8 +596,7 @@ void UPrimaryBrush::UpdateRegular(ABuildArea* area, const FHitResult& trace, boo
 		Super::SetPositionToCell(area, Super::m_ActiveCell);
 	}
 }
-int cc = 0;
-float vv = 0.0f;
+
 void UPrimaryBrush::Update(APlayerCharacter *character, ABuildArea* area, const FHitResult& trace)
 {
 	checkf(area != nullptr, TEXT("[CreateBrush] Must provide area"));
@@ -606,12 +605,6 @@ void UPrimaryBrush::Update(APlayerCharacter *character, ABuildArea* area, const 
 	this->m_bValid = false;
 
 	FRotator rotation = this->GetBrushRotation();
-	if (cc++ > 36)
-	{
-		cc = 0;
-		vv = -90;
-	}
-	//rotation.Pitch = vv;
 	if (this->m_Rotation != rotation)
 	{
 		this->UpdateBlockChildRotation(this->m_Rotation, rotation);
