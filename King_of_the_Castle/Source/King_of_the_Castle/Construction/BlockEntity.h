@@ -39,6 +39,9 @@ public:
 	// Skip the spawn animation
 	void SkipSpawnAnimation();
 
+	// Set duration that this entity will exist
+	void SetLifeTime(const float& time);
+
 	FORCEINLINE AActor* GetBlockOwner() const { return this->m_Owner; }
 
 	FORCEINLINE void SetBlockOwner(AActor *actor) { this->m_Owner = actor; }
@@ -46,8 +49,6 @@ public:
 	FORCEINLINE void SetRestrictedPickup(const bool& restrict) { this->m_bRestrictedPickup = restrict; }
 
 	FORCEINLINE void SetIgnoreOwner(const bool& ignore) { this->m_bIgnoreOwner = ignore; }
-
-	FORCEINLINE void SetLifeTime(const float& time) { this->m_LifeTime = time; }
 
 	FORCEINLINE const FName& GetParentBlockNameId() const { return this->m_ParentBlockNameId; }
 

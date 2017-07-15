@@ -277,10 +277,10 @@ void APlayerCharacter::SetBrushVisible(const bool& visible)
 void APlayerCharacter::SetBuildModeEnabled(const bool& enable)
 {
 	this->m_bBuildingEnabled = enable;
-	//if (!enable)
-	//{
-	//	this->SetBrushVisible(enable);
-	//}
+	if (!enable)
+	{
+		this->SetBrushVisible(enable);
+	}
 	if (Super::GetController() != nullptr)
 	{
 		AGameHUD *hud = Cast<AGameHUD>(((APlayerController*)Super::GetController())->GetHUD());

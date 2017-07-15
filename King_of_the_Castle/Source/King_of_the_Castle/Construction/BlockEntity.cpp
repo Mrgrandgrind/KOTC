@@ -14,6 +14,7 @@
 #define SCALE_MULTIPLIER 0.5f // target scale (multiplier of the block this is an instance of)
 
 #define ENTITY_LIFE_TIME (2.0f * 60.0f) //seconds
+#define ENTITY_LIFE_TIME_OFFSET 0.1f
 
 #define ATTRACTION_FORCE 50.0f
 #define ATTRACTION_DISTANCE 680.0f
@@ -21,7 +22,7 @@
 
 #define OWNERSHIP_DURATION 3.0f // block is owned by owner for 3 seconds
 
-ABlockEntity::ABlockEntity() : m_CreateCounter(0.0f), m_LifeTime(ENTITY_LIFE_TIME), m_bIgnoreOwner(false), m_bRestrictedPickup(true)
+ABlockEntity::ABlockEntity() : m_CreateCounter(0.0f), m_bIgnoreOwner(false), m_bRestrictedPickup(true)
 {
 	TScriptDelegate<FWeakObjectPtr> sdb;
 	sdb.BindUFunction(this, "BeginOverlap");
@@ -30,6 +31,8 @@ ABlockEntity::ABlockEntity() : m_CreateCounter(0.0f), m_LifeTime(ENTITY_LIFE_TIM
 	TScriptDelegate<FWeakObjectPtr> sde;
 	sde.BindUFunction(this, "EndOverlap");
 	Super::m_Mesh->OnComponentEndOverlap.Add(sde);
+
+	this->SetLifeTime(ENTITY_LIFE_TIME);
 
 	Super::m_Mesh->SetSimulatePhysics(true);
 	Super::m_Mesh->SetCollisionProfileName(FName("BlockEntity"));
@@ -49,6 +52,12 @@ void ABlockEntity::BeginPlay()
 	{
 		body->SetDOFLock(EDOFMode::None);
 	}
+}
+
+void ABlockEntity::SetLifeTime(const float& time)
+{ 
+	float offset = time * ENTITY_LIFE_TIME_OFFSET;
+	this->m_LifeTime = time + -offset / 2.0f + offset * FMath::FRand();
 }
 
 void ABlockEntity::ForceDespawn()
