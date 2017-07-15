@@ -5,6 +5,7 @@
 
 #include "Gamemode/BaseGameMode.h"
 #include "Construction/BlockData.h"
+#include "Construction/BlockEntity.h"
 #include "Character/PlayerCharacter.h"
 #include "Construction/Brush/PrimaryBrush.h"
 #include "Construction/BlockStructureManager.h"
@@ -81,6 +82,32 @@ void ADefaultPlayerController::KOTC_SetBlockCount(const int& count)
 	if (data != nullptr)
 	{
 		data->SetCount(brush, count);
+	}
+}
+
+void ADefaultPlayerController::KOTC_DebugBreakBlocks()
+{
+	TArray<AActor*> out;
+	UGameplayStatics::GetAllActorsOfClass(Super::GetWorld(), ABlock::StaticClass(), out);
+
+	for (AActor *next : out)
+	{
+		if (next->IsA(ABlockEntity::StaticClass()))
+		{
+			continue;
+		}
+		Cast<ABlock>(next)->DestroyBlock();
+	}
+}
+
+void ADefaultPlayerController::KOTC_DebugClearEntities()
+{
+	TArray<AActor*> out;
+	UGameplayStatics::GetAllActorsOfClass(Super::GetWorld(), ABlockEntity::StaticClass(), out);
+
+	for (AActor *next : out)
+	{
+		Cast<ABlockEntity>(next)->ForceDespawn();
 	}
 }
 

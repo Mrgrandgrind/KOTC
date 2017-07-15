@@ -21,7 +21,7 @@
 
 #define OWNERSHIP_DURATION 3.0f // block is owned by owner for 3 seconds
 
-ABlockEntity::ABlockEntity() : m_CreateCounter(0.0f), m_bIgnoreOwner(false), m_bRestrictedPickup(true)
+ABlockEntity::ABlockEntity() : m_CreateCounter(0.0f), m_LifeTime(ENTITY_LIFE_TIME), m_bIgnoreOwner(false), m_bRestrictedPickup(true)
 {
 	TScriptDelegate<FWeakObjectPtr> sdb;
 	sdb.BindUFunction(this, "BeginOverlap");
@@ -54,7 +54,16 @@ void ABlockEntity::BeginPlay()
 void ABlockEntity::ForceDespawn()
 {
 	// Set the create counter to the value that begins the despawn process
-	this->m_CreateCounter = ENTITY_LIFE_TIME - SCALE_DURATION;
+	this->m_CreateCounter = this->m_LifeTime - SCALE_DURATION;
+}
+
+void ABlockEntity::SkipSpawnAnimation()
+{
+	if (this->m_CreateCounter < SCALE_DURATION)
+	{
+		this->m_CreateCounter = SCALE_DURATION;
+	}
+	Super::SetActorScale3D(this->m_DesiredScale);
 }
 
 void ABlockEntity::SetTo(ABlock *block)
@@ -142,12 +151,12 @@ void ABlockEntity::Tick(float delta)
 		float perc = FMath::Sin(HALF_PI * FMath::Min(this->m_CreateCounter / SCALE_DURATION, 1.0f));
 		Super::SetActorScale3D(this->m_BaseScale + (this->m_DesiredScale - this->m_BaseScale) * perc);
 	}
-	else if (this->m_CreateCounter - delta > ENTITY_LIFE_TIME - SCALE_DURATION)
+	else if (this->m_CreateCounter - delta > this->m_LifeTime - SCALE_DURATION)
 	{
-		float perc = FMath::Sin(HALF_PI * FMath::Min((ENTITY_LIFE_TIME - this->m_CreateCounter) / SCALE_DURATION, 1.0f));
+		float perc = FMath::Sin(HALF_PI * FMath::Min((this->m_LifeTime - this->m_CreateCounter) / SCALE_DURATION, 1.0f));
 		Super::SetActorScale3D(this->m_DesiredScale * perc);
 
-		if (this->m_CreateCounter >= ENTITY_LIFE_TIME)
+		if (this->m_CreateCounter >= this->m_LifeTime)
 		{
 			Super::DestroyBlock();
 			return;

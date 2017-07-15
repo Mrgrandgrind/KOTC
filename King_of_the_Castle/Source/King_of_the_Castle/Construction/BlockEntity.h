@@ -5,9 +5,8 @@
 #include "Construction/Block.h"
 #include "BlockEntity.generated.h"
 
-/**
- * 
- */
+#define ID_BLOCK_ENTITY FName("BlockEntity")
+
 UCLASS()
 class KING_OF_THE_CASTLE_API ABlockEntity : public ABlock
 {
@@ -23,7 +22,7 @@ public:
 	// Entity blocks cannot be destroyed
 	virtual bool IsDestructable() const override { return false; }
 
-	virtual FName GetNameId() override { return FName("BlockEntity"); }
+	virtual FName GetNameId() override { return ID_BLOCK_ENTITY; }
 
 	// Set this entity as another block
 	void SetTo(ABlock *block);
@@ -37,6 +36,9 @@ public:
 	// Force this entity to despawn. This is not an instant process because of the animation.
 	void ForceDespawn();
 
+	// Skip the spawn animation
+	void SkipSpawnAnimation();
+
 	FORCEINLINE AActor* GetBlockOwner() const { return this->m_Owner; }
 
 	FORCEINLINE void SetBlockOwner(AActor *actor) { this->m_Owner = actor; }
@@ -44,6 +46,8 @@ public:
 	FORCEINLINE void SetRestrictedPickup(const bool& restrict) { this->m_bRestrictedPickup = restrict; }
 
 	FORCEINLINE void SetIgnoreOwner(const bool& ignore) { this->m_bIgnoreOwner = ignore; }
+
+	FORCEINLINE void SetLifeTime(const float& time) { this->m_LifeTime = time; }
 
 	FORCEINLINE const FName& GetParentBlockNameId() const { return this->m_ParentBlockNameId; }
 
@@ -59,8 +63,8 @@ public:
 	static TArray<ABlockEntity*> SpawnBlockEntity(ABlock *block, AActor *source, const bool& restrictPickup = true);
 
 private:
-	// Time since created
-	float m_CreateCounter;
+	// Time since created and time to exist for
+	float m_CreateCounter, m_LifeTime;
 
 	// Who is responsible for this block spawning
 	UPROPERTY()

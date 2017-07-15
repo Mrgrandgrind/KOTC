@@ -36,6 +36,12 @@ public:
 	void KOTC_SetBlockCount(const int& count);
 
 	UFUNCTION(Exec)
+	void KOTC_DebugBreakBlocks();
+
+	UFUNCTION(Exec)
+	void KOTC_DebugClearEntities();
+
+	UFUNCTION(Exec)
 	void KOTC_DebugDrawTrace(const bool& enable);
 
 	UFUNCTION(Exec)

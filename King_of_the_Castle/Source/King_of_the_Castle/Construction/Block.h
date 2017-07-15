@@ -25,7 +25,7 @@ public:
 	// Create a block entity for this block and then call DestroyBlock on ourself
 	virtual TArray<class ABlockEntity*> DropBlock(AActor *source, const bool& restrictPickup = true);
 
-	// Destroy this block (remove it form game)
+	// Destroy this block (remove it from game)
 	virtual void DestroyBlock(AActor *source = nullptr);
 
 	// Set the blocks health
