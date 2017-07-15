@@ -31,6 +31,21 @@ public:
 	// Called every frame
 	virtual void Tick(float delta) override;
 
+	// Return the player index (e.g. 0 for player1, 1 for player2, etc..)
+	int GetPlayerIndex() const;
+
+	// Set the players team
+	void SetTeam(const int& team);
+
+	// Are either of the brushes visible
+	bool IsBrushVisible() const;
+
+	// Set the visibility of both brushes
+	void SetBrushVisible(const bool& visible);
+
+	// Toggle the building mechanics
+	void SetBuildModeEnabled(const bool& enable);
+
 	// Drop the current active block from primary brush
 	virtual void DropBlock();
 
@@ -67,18 +82,6 @@ public:
 	UFUNCTION()
 	void OnMeleeEndCollision(UPrimitiveComponent *overlappedComponent, AActor *otherActor,
 		UPrimitiveComponent *otherComp, int32 otherBodyIndex);
-
-	// Return the player index (e.g. 0 for player1, 1 for player2, etc..)
-	UFUNCTION(BlueprintPure, Category = "Index")
-	int GetPlayerIndex() const;
-
-	// Set the players team
-	UFUNCTION(BlueprintCallable, Category = "Team")
-	void SetTeam(const int& team);
-
-	// Toggle the building mechanics
-	UFUNCTION(BlueprintCallable, Category = "Build")
-	void SetBuildModeEnabled(const bool& enable);
 
 	//damage handling
 	UFUNCTION(BlueprintCallable, Category = "Combat")

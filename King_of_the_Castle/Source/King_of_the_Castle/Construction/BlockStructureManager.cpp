@@ -112,7 +112,7 @@ bool ABlockStructureManager::IsSupport(class ABlock *block) const
 		for (const FVector& offset : {
 			FVector(extent.X + OFFSET_OFFSET, 0.0f, 0.0f), FVector(-extent.X - OFFSET_OFFSET, 0.0f, 0.0f),
 			FVector(0.0f, extent.Y + OFFSET_OFFSET, 0.0f), FVector(0.0f, -extent.Y - OFFSET_OFFSET, 0.0f),
-			FVector(0.0f, 0.0f, extent.Z + OFFSET_OFFSET), FVector(0.0f, 0.0f, -extent.Z - OFFSET_OFFSET) })
+			FVector(0.0f, 0.0f, extent.Z + OFFSET_OFFSET)/*, FVector(0.0f, 0.0f, -extent.Z - OFFSET_OFFSET)*/ })
 		{
 			Super::GetWorld()->LineTraceSingleByChannel(result, location, location + offset, ECollisionChannel::ECC_WorldDynamic);
 
@@ -412,7 +412,7 @@ void ABlockStructureManager::ProcessPreplaced()
 	{
 		if (!this->CheckStructureSupport(structure))
 		{
-			UE_LOG(LogClass, Error, TEXT("[Structure] Warning! Preplaced block structure had no support and has been isntantly destroyed"))
+			UE_LOG(LogClass, Error, TEXT("[Structure] Warning! Preplaced block structure had no support and has been instantly destroyed"))
 		}
 	}
 }

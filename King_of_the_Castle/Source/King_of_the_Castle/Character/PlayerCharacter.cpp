@@ -203,8 +203,24 @@ void APlayerCharacter::Tick(float delta)
 
 	// Updating building mechanics
 	ABuildArea *area = this->GetActiveBuildArea();
-	if (area != nullptr && this->m_bBuildingEnabled && area->CanTeamBuild(this->m_Team))
+	if (area == nullptr)
 	{
+		if (this->IsBrushVisible())
+		{
+			this->SetBrushVisible(false);
+		}
+	}
+	else if (this->m_bBuildingEnabled)
+	{
+		bool canBuild = area->CanTeamBuild(this->m_Team);
+		if (canBuild != this->IsBrushVisible())
+		{
+			this->SetBrushVisible(canBuild);
+		}
+		if (!canBuild)
+		{
+			return;
+		}
 		FVector cameraLoc = this->m_Camera->GetComponentLocation(), forward = this->m_Camera->GetForwardVector();
 		FVector cameraToPlayer = Super::GetMesh()->GetSocketLocation(BUILD_TRACE_SOCKET) - cameraLoc;
 
@@ -244,14 +260,27 @@ int APlayerCharacter::GetPlayerIndex() const
 	return -1;
 }
 
+bool APlayerCharacter::IsBrushVisible() const
+{
+	return this->m_PrimaryBrush->IsBrushVisible() || this->m_SecondaryBrush->IsBrushVisible();
+}
+
+void APlayerCharacter::SetBrushVisible(const bool& visible)
+{
+	if(this->m_PrimaryBrush != nullptr && this->m_SecondaryBrush != nullptr)
+	{
+		this->m_PrimaryBrush->SetBrushVisible(visible);
+		this->m_SecondaryBrush->SetBrushVisible(visible);
+	}
+}
+
 void APlayerCharacter::SetBuildModeEnabled(const bool& enable)
 {
 	this->m_bBuildingEnabled = enable;
-	if (!enable && this->m_PrimaryBrush != nullptr && this->m_SecondaryBrush != nullptr)
-	{
-		this->m_PrimaryBrush->SetBrushVisible(enable);
-		this->m_SecondaryBrush->SetBrushVisible(enable);
-	}
+	//if (!enable)
+	//{
+	//	this->SetBrushVisible(enable);
+	//}
 	if (Super::GetController() != nullptr)
 	{
 		AGameHUD *hud = Cast<AGameHUD>(((APlayerController*)Super::GetController())->GetHUD());
@@ -275,7 +304,7 @@ void APlayerCharacter::SetTeam(const int& team)
 		? TEXT("PawnTeam1") : team >= 2 ? TEXT("PawnTeam2") : TEXT("Pawn"));
 
 	// Disable build mode when changing teams
-	this->SetBuildModeEnabled(false);
+	//this->SetBuildModeEnabled(false);
 }
 
 void APlayerCharacter::DropBlock()

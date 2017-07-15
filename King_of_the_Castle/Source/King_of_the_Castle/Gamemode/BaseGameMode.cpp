@@ -118,11 +118,11 @@ void ABaseGameMode::GetSpawnPoints(TArray<class ASpawnPoint*>& team1, TArray<cla
 	for (int i = 0; i < out.Num(); i++)
 	{
 		ASpawnPoint *next = Cast<ASpawnPoint>(out[i]);
-		if (next->GetTeam() <= 1 || next->IsTeamIgnored())
+		if (next->GetTeam() == 1 || next->IsTeamIgnored())
 		{
 			team1.Add(next);
 		}
-		if (next->GetTeam() >= 2 || next->IsTeamIgnored())
+		if (next->GetTeam() == 2 || next->IsTeamIgnored())
 		{
 			team2.Add(next);
 		}
@@ -156,25 +156,27 @@ void ABaseGameMode::SpawnPlayers()
 	// Spawn players
 	for (int i = 0, t1Idx = 0, t2Idx = 0; i < this->m_PlayerCount; i++)
 	{
-		APlayerCharacter *character = Super::GetWorld()->SpawnActor<APlayerCharacter>(this->m_CharacterClass);
-		character->SetTeam(GetTeam(i));
+		int team = GetTeam(i);
 
 		ASpawnPoint *point = nullptr;
-		if (character->GetTeam() <= 1 && team1.Num() > 0)
+		if (team <= 1 && team1.Num() > 0)
 		{
 			point = team1[t1Idx++ % team1.Num()];
 		}
-		else if (character->GetTeam() >= 2 && team2.Num() > 0)
+		else if (team >= 2 && team2.Num() > 0)
 		{
 			point = team2[t2Idx++ % team2.Num()];
 		}
-		if (point != nullptr)
+		FVector loc = this->m_bUseDefaultStart ? this->m_DefaultStartLocation
+			+ FVector(0.0f, 0.0f, 250.0f) * i : point->GetActorLocation();
+		FRotator rot = this->m_bUseDefaultStart ? this->m_DefaultStartRotation : point->GetActorRotation();
+
+		APlayerCharacter *character = Super::GetWorld()->SpawnActor<APlayerCharacter>(this->m_CharacterClass, loc, rot);
+		if (character == nullptr)
 		{
-			character->SetActorLocation(this->m_bUseDefaultStart ? this->m_DefaultStartLocation
-				+ FVector(0.0f, 0.0f, 250.0f) * i : point->GetActorLocation());
-			character->SetActorRotation(this->m_bUseDefaultStart ? this->m_DefaultStartRotation
-				: point->GetActorRotation());
+			continue;
 		}
+		character->SetTeam(team);
 
 		APlayerController *controller;
 		if (i == 0)
@@ -184,6 +186,10 @@ void ABaseGameMode::SpawnPlayers()
 		else
 		{
 			controller  = UGameplayStatics::CreatePlayer(Super::GetWorld(), -1, true);
+		}
+		if (controller == nullptr)
+		{
+			continue;
 		}
 		controller->Possess(character);
 	}
