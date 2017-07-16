@@ -85,9 +85,13 @@ void ABlockStructureManager::Tick(float delta)
 
 bool ABlockStructureManager::IsSupport(class ABlock *block) const
 {
-	FVector location = block->GetActorLocation(), origin, extent;
+	FVector origin, extent;
 	block->GetActorBounds(true, origin, extent);
+	return this->IsSupport(block->GetActorLocation(), extent);
+}
 
+bool ABlockStructureManager::IsSupport(const FVector& position, const FVector& extent) const
+{
 	auto isValid = [](FHitResult& result)->bool
 	{
 		return result.IsValidBlockingHit() && (Cast<AStaticMeshActor>(result.GetActor()) != nullptr
@@ -98,7 +102,7 @@ bool ABlockStructureManager::IsSupport(class ABlock *block) const
 	// Check for ground first
 	if (this->m_bSupportGround)
 	{
-		Super::GetWorld()->LineTraceSingleByChannel(result, location, location
+		Super::GetWorld()->LineTraceSingleByChannel(result, position, position
 			+ FVector(0.0f, 0.0f, -extent.Z - OFFSET_OFFSET), ECollisionChannel::ECC_WorldDynamic);
 
 		if (isValid(result))
@@ -114,7 +118,7 @@ bool ABlockStructureManager::IsSupport(class ABlock *block) const
 			FVector(0.0f, extent.Y + OFFSET_OFFSET, 0.0f), FVector(0.0f, -extent.Y - OFFSET_OFFSET, 0.0f),
 			FVector(0.0f, 0.0f, extent.Z + OFFSET_OFFSET)/*, FVector(0.0f, 0.0f, -extent.Z - OFFSET_OFFSET)*/ })
 		{
-			Super::GetWorld()->LineTraceSingleByChannel(result, location, location + offset, ECollisionChannel::ECC_WorldDynamic);
+			Super::GetWorld()->LineTraceSingleByChannel(result, position, position + offset, ECollisionChannel::ECC_WorldDynamic);
 
 			if (isValid(result))
 			{

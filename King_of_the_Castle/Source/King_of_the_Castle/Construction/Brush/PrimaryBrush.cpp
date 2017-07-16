@@ -2,14 +2,14 @@
 #include "PrimaryBrush.h"
 
 #include "Gamemode/BaseGameMode.h"
-#include "Character/PlayerCharacter.h"
 #include "Construction/Block.h"
 #include "Construction/Prefab.h"
 #include "Construction/BlockData.h"
 #include "Construction/BuildArea.h"
 #include "Construction/BlockEntity.h"
+#include "Character/PlayerCharacter.h"
 
-#include "DrawDebugHelpers.h"
+#include "Runtime/Engine/Classes/Components/ModelComponent.h"
 
 #define DROP_STRENGTH_MAX 750.0f
 #define DROP_STRENGTH_MIN 900.0f
@@ -19,6 +19,8 @@
 #define DEFAULT_MAX_BLOCK_COUNT 10
 #define BRUSH_CREATE_COLOR FLinearColor(0.0f, 1.0f, 0.0f, 1.0f)
 
+#define BRUSH_PLACE_FLOOR_NORMAL_Z -0.5f
+
 #define BRUSH_TEXT_MATERIAL_LOCATION TEXT("Material'/Game/Materials/M_BillboardFont.M_BillboardFont'")
 
 #define DATA_DOOR_LOCATION TEXT("/Game/Blueprints/Construction/BrushData/BP_DoorBlock_Data")
@@ -26,7 +28,7 @@
 #define DATA_FLAG_LOCATION TEXT("/Game/Blueprints/Construction/BrushData/BP_FlagBlock_Data")
 #define DATA_BASIC_LOCATION TEXT("/Game/Blueprints/Construction/BrushData/BP_BasicBlock_Data")
 
-UPrimaryBrush::UPrimaryBrush() : m_bValid(false), m_SelectedTypeIndex(0)
+UPrimaryBrush::UPrimaryBrush() : m_SelectedTypeIndex(0)
 {
 	//Set default create brush blocks. Can be modified in blueprints.
 	static ConstructorHelpers::FClassFinder<UBlockData> DataBasic(DATA_BASIC_LOCATION);
@@ -114,7 +116,7 @@ void UPrimaryBrush::SetSelectedIndex(int index)
 	}
 	this->m_SelectedTypeIndex = index;
 
-	this->UpdateBlockChildActor();
+	//this->UpdateBlockChildActor();
 	Super::UpdateCountText(this->GetBlockData(index));
 }
 
@@ -160,104 +162,250 @@ FRotator UPrimaryBrush::GetBrushRotation() const
 		- character->GetCamera()->GetComponentLocation()).Rotation();
 	rotation.Pitch = FMath::GridSnap(rotation.Pitch, 90.0f);
 	rotation.Yaw = FMath::GridSnap(rotation.Yaw, 90.0f) + 90.0f;
-	rotation.Roll = 0.0f;// FMath::GridSnap(rotation.Roll, 90.0f);
-	//UE_LOG(LogClass, Log, TEXT("%f, %f, %f"), rotation.Pitch, rotation.Yaw, rotation.Roll);
+	rotation.Roll = 0.0f;
 	return rotation;
 }
 
-void UPrimaryBrush::UpdateBlockChildRotation(const FRotator& previousRotation, const FRotator& newRotation)
+bool UPrimaryBrush::CanPlaceOn(const FHitResult& result) const
 {
-	if (previousRotation == newRotation)
-	{
-		return;
-	}
-	FRotator delta = newRotation - previousRotation;
-	for (AActor *actor : this->m_ChildBlocks)
-	{
-		FVector origin = Super::GetComponentLocation() + FVector(0.0f, -Super::Bounds.BoxExtent.Y, 0.0f);
-		FVector location = actor->GetActorLocation() - origin;
-		location = FRotator(0.0f, delta.Yaw, 0.0f).RotateVector(location);
-		//location = FRotator(0.0, 0.0f, delta.Pitch).RotateVector(location);
-		//location = FRotator(0.0f, 0.0f, delta.Roll).RotateVector(location);
-		actor->SetActorLocation(location + origin);
-	}
+	return result.IsValidBlockingHit()
+		&& Cast<UStaticMeshComponent>(result.GetComponent()) != nullptr
+		|| result.GetComponent()->IsA(UModelComponent::StaticClass());
 }
 
-void UPrimaryBrush::UpdateBlockChildActor()
+TArray<ABlock*> UPrimaryBrush::OnAction(ABuildArea *area, AActor *source)
 {
-	for(AActor *actor : this->m_ChildBlocks)
+	TArray<ABlock*> blocks;
+	if (!Super::IsPositionValid())
 	{
-		actor->Destroy();
+		return blocks;
 	}
-	this->m_ChildBlocks.Empty();
-
-	auto addChild = [this](UBlockData *data, FVector offset = FVector::ZeroVector)
-	{
-		if(data == nullptr || Super::GetWorld() == nullptr)
-		{
-			return;
-		}
-		ABlock *block = Super::GetWorld()->SpawnActor<ABlock>(data->GetClassType());
-		if (block != nullptr)
-		{
-			UStaticMeshComponent *mesh = block->GetMesh();
-			mesh->SetSimulatePhysics(false);
-			mesh->bGenerateOverlapEvents = false;
-			mesh->SetWorldScale3D(mesh->GetComponentScale() * 0.975f); //magic number. used to make the block fit inside the brush.
-			mesh->bOnlyOwnerSee = true;
-
-			if (data->GetGhostMaterial() != nullptr)
-			{
-				mesh->SetMaterial(0, data->GetGhostMaterial());
-			}
-			if (Super::m_Team != nullptr)
-			{
-				block->SetTeam(*Super::m_Team);
-			}
-			mesh->SetCollisionProfileName(TEXT("NoCollision"));
-			mesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-
-			block->SetOwner(Super::GetAttachmentRootActor());
-			block->SetActorHiddenInGame(!Super::IsBrushVisible());
-			block->SetActorRelativeLocation(FVector(0.0f, -Super::Bounds.BoxExtent.Y, 0.0f) + offset);
-			block->AttachToComponent(this, FAttachmentTransformRules::KeepRelativeTransform);
-
-			this->m_ChildBlocks.Add(block);
-		}
-	};
-
-	if(this->m_Prefab != nullptr)
-	{
-		APrefab *prefab = Super::GetWorld()->SpawnActor<APrefab>(this->m_Prefab);
-		if(prefab == nullptr)
-		{
-			return;
-		}
-		prefab->SetActorHiddenInGame(true);
-
-		for(const FPrefabBlock& pb : prefab->GetBlocks())
-		{
-			addChild(this->GetBlockData(pb.id), FVector(pb.offset) * Super::Bounds.BoxExtent * 2.0f);
-		}
-		prefab->Destroy();
-	}
-	else
-	{
-		addChild(this->m_BlockData[this->m_SelectedTypeIndex]);
-	}
-	this->UpdateBlockChildRotation(FRotator(0.0f), this->m_Rotation);
+	return blocks;
 }
 
-ABlock* UPrimaryBrush::Action(ABuildArea* area, AActor* source)
+bool UPrimaryBrush::OnPreCheck(ABuildArea *area, const FHitResult& result, FGridCell& out, bool& show)
 {
-	if (!this->m_bValid)
+	// We will use the precheck to prcoess when we have hit something with our ray
+	if (result.IsValidBlockingHit())
 	{
-		return nullptr; //brush is inactive
+		check(result.GetComponent() != nullptr);
+
+		// If we are looking at a static mesh component or model component
+		if (this->CanPlaceOn(result))
+		{
+			// The position is valid so update the position into our out cell
+			area->GetGridCell(result.ImpactPoint + result.ImpactNormal * area->GetCellSize() / 2.0f, out);
+
+			// Check to see if we new position would spawn a support block,
+			// if it does then we will always show the brush
+			FVector location;
+			area->GetGridLocation(out, location);
+
+			show = Super::IsSupport(location, area->GetCellSize());
+
+			// If we aren't in a support block spawning location but our ray hit a block
+			ABlock *block = Cast<ABlock>(result.GetActor());
+			if (!show && block != nullptr)
+			{
+				// Check to see if there's a block below the cell. If there is, we will still show
+				FHitResult below;
+				Super::GetWorld()->LineTraceSingleByChannel(below, location, location
+					- FVector(0.0f, 0.0f, area->GetCellSize().Z), ECollisionChannel::ECC_WorldDynamic);
+				show = below.IsValidBlockingHit() && Cast<ABlock>(below.GetActor()) != nullptr;
+
+				Super::RenderTrace(below.TraceStart, show ? below.ImpactPoint : below.TraceEnd, show ? FColor::Cyan : FColor::Blue);
+			}
+			return true;
+		}
 	}
-	if (!Super::m_bChainMode && Super::m_Chained.Num() > 0)
+	return false;
+}
+
+bool UPrimaryBrush::OnMainCheck(ABuildArea *area, const FHitResult& result, FGridCell& out, bool& show, const bool& pre)
+{
+	// If we get to here it means that our trace did not hit anything
+	const FVector& start = result.TraceStart, end = result.IsValidBlockingHit() ? result.ImpactPoint : result.TraceEnd;
+	FVector vector = end - start, normal = vector.GetSafeNormal();
+	if (pre && normal.Z > BRUSH_PLACE_FLOOR_NORMAL_Z)
 	{
-		return nullptr;
+		// We only need to run main if pre failed or we are looking downwards
+		return true;
 	}
+	float d = 0.0f, dTotal = vector.Size(), dStep = (area->GetCellSize() * normal).Size() * (1.0f / 1.5f);
+	while (d < dTotal)
+	{
+		FVector point;
+		FHitResult trace;
+
+		// If the player is looking downwards
+		if (normal.Z <= BRUSH_PLACE_FLOOR_NORMAL_Z)
+		{
+			// Trace from start to end
+			point = start + d * normal;
+
+			// Cast a ray towards the player to see if we can place a block on the floor
+			FVector sideDir = FVector(normal.X, normal.Y, 0.0f).GetSafeNormal();
+			Super::GetWorld()->LineTraceSingleByChannel(trace, point, point - sideDir * area->GetCellSize().Z,
+				ECollisionChannel::ECC_WorldDynamic, FCollisionQueryParams::DefaultQueryParam);
+
+			bool hit = trace.IsValidBlockingHit() && this->CanPlaceOn(trace);
+			Super::RenderTrace(trace.TraceStart, hit ? trace.ImpactPoint : trace.TraceEnd, hit ? FColor::Cyan : FColor::Blue);
+		}
+		else
+		{
+			// Trace from end to start
+			point = end - d * normal;
+
+			// Cast a block size trace downward from the original trace
+			Super::GetWorld()->LineTraceSingleByChannel(trace, point, point
+				- FVector(0.0f, 0.0f, area->GetCellSize().Z), ECollisionChannel::ECC_WorldDynamic);
+
+			bool hit = trace.IsValidBlockingHit() && this->CanPlaceOn(trace);
+			Super::RenderTrace(trace.TraceStart, hit ? trace.ImpactPoint : trace.TraceEnd, hit ? FColor::Cyan : FColor::Blue);
+		}
+		// If this point is a valid place for a block to go
+		if (trace.IsValidBlockingHit() && this->CanPlaceOn(trace))
+		{
+			// Do an additional check so that when placing on a ledge, it will choose the closest
+			// instead of the furthest. This simply makes sure that we can see the block we hit.
+			FCollisionQueryParams params;
+			params.AddIgnoredActor(Super::GetOwner()); // Awkward camera angles can cause us to hit the player, so exclude it
+
+			FHitResult traceCheck;
+			Super::GetWorld()->LineTraceSingleByChannel(traceCheck, start,
+				trace.ImpactPoint - trace.ImpactNormal, ECollisionChannel::ECC_WorldDynamic, params);
+
+			// If both or rays hit the same thing then we know this position is actually valid
+			bool valid = (trace.GetActor() != nullptr && traceCheck.GetActor() == trace.GetActor())
+				|| (trace.GetComponent() != nullptr && traceCheck.GetComponent() == trace.GetComponent());
+
+			Super::RenderTrace(traceCheck.TraceStart, valid ? traceCheck.ImpactPoint
+				: traceCheck.TraceEnd, valid ? FColor::Cyan : FColor::Red);
+
+			if (valid)
+			{
+				FVector pointB = trace.ImpactPoint + (trace.TraceEnd - trace.TraceStart)
+					.GetSafeNormal() * area->GetCellSize() / 2.0f;
+				FGridCell tempA, tempB;
+				area->GetGridCell(point, tempA);
+				area->GetGridCell(pointB, tempB);
+
+				Super::RenderPoint(pointB, FColor::Purple);
+
+				if (CELLS_BESIDE(tempA, tempB) || CELLS_EQUAL(tempA, tempB))
+				{
+					out = tempA; // This is necessary so we don't override pre check
+					return show = true;
+				}
+				else
+				{
+					Super::RenderPoint(point, FColor::Red);
+				}
+			}
+			else
+			{
+				Super::RenderPoint(point, FColor::Red);
+			}
+		}
+		d += dStep;
+	}
+	return pre;
+}
+
+//void UPrimaryBrush::UpdateBlockChildRotation(const FRotator& previousRotation, const FRotator& newRotation)
+//{
+//	if (previousRotation == newRotation)
+//	{
+//		return;
+//	}
+//	FRotator delta = newRotation - previousRotation;
+//	for (AActor *actor : this->m_ChildBlocks)
+//	{
+//		FVector origin = Super::GetComponentLocation() + FVector(0.0f, -Super::Bounds.BoxExtent.Y, 0.0f);
+//		FVector location = actor->GetActorLocation() - origin;
+//		location = FRotator(0.0f, delta.Yaw, 0.0f).RotateVector(location);
+//		//location = FRotator(0.0, 0.0f, delta.Pitch).RotateVector(location);
+//		//location = FRotator(0.0f, 0.0f, delta.Roll).RotateVector(location);
+//		actor->SetActorLocation(location + origin);
+//	}
+//}
+//
+//void UPrimaryBrush::UpdateBlockChildActor()
+//{
+//	for(AActor *actor : this->m_ChildBlocks)
+//	{
+//		actor->Destroy();
+//	}
+//	this->m_ChildBlocks.Empty();
+//
+//	auto addChild = [this](UBlockData *data, FVector offset = FVector::ZeroVector)
+//	{
+//		if(data == nullptr || Super::GetWorld() == nullptr)
+//		{
+//			return;
+//		}
+//		ABlock *block = Super::GetWorld()->SpawnActor<ABlock>(data->GetClassType());
+//		if (block != nullptr)
+//		{
+//			UStaticMeshComponent *mesh = block->GetMesh();
+//			mesh->SetSimulatePhysics(false);
+//			mesh->bGenerateOverlapEvents = false;
+//			mesh->SetWorldScale3D(mesh->GetComponentScale() * 0.975f); //magic number. used to make the block fit inside the brush.
+//			mesh->bOnlyOwnerSee = true;
+//
+//			if (data->GetGhostMaterial() != nullptr)
+//			{
+//				mesh->SetMaterial(0, data->GetGhostMaterial());
+//			}
+//			if (Super::m_Team != nullptr)
+//			{
+//				block->SetTeam(*Super::m_Team);
+//			}
+//			mesh->SetCollisionProfileName(TEXT("NoCollision"));
+//			mesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+//
+//			block->SetOwner(Super::GetAttachmentRootActor());
+//			block->SetActorHiddenInGame(!Super::IsBrushVisible());
+//			block->SetActorRelativeLocation(FVector(0.0f, -Super::Bounds.BoxExtent.Y, 0.0f) + offset);
+//			block->AttachToComponent(this, FAttachmentTransformRules::KeepRelativeTransform);
+//
+//			this->m_ChildBlocks.Add(block);
+//		}
+//	};
+//
+//	if(this->m_Prefab != nullptr)
+//	{
+//		APrefab *prefab = Super::GetWorld()->SpawnActor<APrefab>(this->m_Prefab);
+//		if(prefab == nullptr)
+//		{
+//			return;
+//		}
+//		prefab->SetActorHiddenInGame(true);
+//
+//		for(const FPrefabBlock& pb : prefab->GetBlocks())
+//		{
+//			addChild(this->GetBlockData(pb.id), FVector(pb.offset) * Super::Bounds.BoxExtent * 2.0f);
+//		}
+//		prefab->Destroy();
+//	}
+//	else
+//	{
+//		addChild(this->m_BlockData[this->m_SelectedTypeIndex]);
+//	}
+//	this->UpdateBlockChildRotation(FRotator(0.0f), this->m_Rotation);
+//}
+
+//ABlock* UPrimaryBrush::Action(ABuildArea* area, AActor* source)
+//{
+//	return nullptr;
+	//if (!this->m_bValid)
+	//{
+	//	return nullptr; //brush is inactive
+	//}
+	//if (!Super::m_bChainMode && Super::m_Chained.Num() > 0)
+	//{
+	//	return nullptr;
+	//}
 	// If chaining, ensure there's a blocking object below where we're trying to place
 	//if (Super::m_bChainMode&&false)
 	//{
@@ -274,61 +422,61 @@ ABlock* UPrimaryBrush::Action(ABuildArea* area, AActor* source)
 	//}
 
 	// Verify the player has enough blocks to place
-	TMap<FName, int> requirements;
-	for (ABlock *block : this->m_ChildBlocks)
-	{
-		if (requirements.Contains(block->GetNameId()))
-		{
-			requirements[block->GetNameId()]++;
-		}
-		else
-		{
-			requirements.Add(block->GetNameId(), 1);
-		}
-	}
-	for (auto entry : requirements)
-	{
-		UBlockData *data = this->GetBlockData(entry.Key);
-		if (data == nullptr || data->GetCount() < entry.Value)
-		{
-			return nullptr;
-		}
-	}
+	//TMap<FName, int> requirements;
+	//for (ABlock *block : this->m_ChildBlocks)
+	//{
+	//	if (requirements.Contains(block->GetNameId()))
+	//	{
+	//		requirements[block->GetNameId()]++;
+	//	}
+	//	else
+	//	{
+	//		requirements.Add(block->GetNameId(), 1);
+	//	}
+	//}
+	//for (auto entry : requirements)
+	//{
+	//	UBlockData *data = this->GetBlockData(entry.Key);
+	//	if (data == nullptr || data->GetCount() < entry.Value)
+	//	{
+	//		return nullptr;
+	//	}
+	//}
 
-	TArray<ABlock*> placed;
-	for(ABlock *block : this->m_ChildBlocks)
-	{
-		UBlockData *data = this->GetBlockData(block->GetNameId());
+	//TArray<ABlock*> placed;
+	//for(ABlock *block : this->m_ChildBlocks)
+	//{
+	//	UBlockData *data = this->GetBlockData(block->GetNameId());
 
-		// Check to see if we are overlapping with another block.
-		// GetOverlappingActors does not work because of collision setup. We will use line trace.
-		FHitResult result;
-		FVector end = block->GetActorLocation(), start = end + FVector(0.0f, 0.0f, Super::Bounds.BoxExtent.Z + 4.0f);
-		Super::GetWorld()->LineTraceSingleByChannel(result, start, end, ECollisionChannel::ECC_WorldDynamic);
+	//	// Check to see if we are overlapping with another block.
+	//	// GetOverlappingActors does not work because of collision setup. We will use line trace.
+	//	FHitResult result;
+	//	FVector end = block->GetActorLocation(), start = end + FVector(0.0f, 0.0f, Super::Bounds.BoxExtent.Z + 4.0f);
+	//	Super::GetWorld()->LineTraceSingleByChannel(result, start, end, ECollisionChannel::ECC_WorldDynamic);
 
-		if (result.IsValidBlockingHit() && result.GetActor() != nullptr)
-		{
-			continue;
-		}
+	//	if (result.IsValidBlockingHit() && result.GetActor() != nullptr)
+	//	{
+	//		continue;
+	//	}
 
-		FIntVector cell;
-		area->GetGridCell(block->GetActorLocation(), cell);
+	//	FIntVector cell;
+	//	area->GetGridCell(block->GetActorLocation(), cell);
 
-		ABlock *actor = area->SpawnBlockAt(cell, data->GetClassType(), Cast<APlayerCharacter>(Super::GetOwner()));
-		if (actor != nullptr)
-		{
-			// Spawn the block in the air slightly so it drops
-			FVector position = actor->GetActorLocation();
-			position.Z += BRUSH_SPAWN_Z_OFFSET;
-			actor->SetActorLocation(position);
+	//	ABlock *actor = area->SpawnBlockAt(cell, data->GetClassType(), Cast<APlayerCharacter>(Super::GetOwner()));
+	//	if (actor != nullptr)
+	//	{
+	//		// Spawn the block in the air slightly so it drops
+	//		FVector position = actor->GetActorLocation();
+	//		position.Z += BRUSH_SPAWN_Z_OFFSET;
+	//		actor->SetActorLocation(position);
 
-			data->SetCount(this, data->GetCount() - 1);
+	//		data->SetCount(this, data->GetCount() - 1);
 
-			placed.Add(actor);
-		}
-	}
-	//TODO
-	return placed.Num() > 0 ? placed[0] : nullptr;
+	//		placed.Add(actor);
+	//	}
+	//}
+	////TODO
+	//return placed.Num() > 0 ? placed[0] : nullptr;
 
 	//UBlockData *data = this->GetBlockData(this->m_SelectedTypeIndex);
 	//if (data == nullptr || data->GetCount() <= 0)
@@ -347,293 +495,293 @@ ABlock* UPrimaryBrush::Action(ABuildArea* area, AActor* source)
 	//	data->SetCount(this, data->GetCount() - 1);
 	//}
 	//return actor;
-}
+//}
 
-void UPrimaryBrush::UpdateChain(ABuildArea* area, const FHitResult& trace, bool& show)
-{
-	const FIntVector& last = Super::m_Chained.Last();
-	bool place = false;
-
-	FVector end = trace.IsValidBlockingHit() ? trace.ImpactPoint : trace.TraceEnd;
-	FVector vector = trace.TraceStart - end;
-	FVector point = end, diff = area->GetCellSize() * 0.25f * vector.GetSafeNormal();
-
-	// Get rotation of trace
-	FRotator rotation;
-#if KOTC_CONSTRUCTION_CHAIN_AXIS_LOCK
-	if (Super::m_Chained.Num() >= 2)
-	{
-		rotation = Super::m_ChainedRotation;
-	}
-	else
-#endif
-	{
-		rotation = vector.Rotation();
-		rotation.Pitch = rotation.Roll = 0.0f;
-		rotation.Yaw = int(FMath::GridSnap(rotation.Yaw, 90.0f)) % 360;
-	}
-	float distance = vector.Size();
-	while (distance > 0.0f)
-	{
-		FIntVector check;
-		area->GetGridCell(point, check);
-
-		if (CELLS_EQUAL(check, last))
-		{
-			show = true;
-			place = false;
-			this->m_bValid = true;
-			Super::m_ActiveCell = check;
-			break;
-		}
-		// If the cell is next to last and that the cell is not below last (we don't want to place block below others because of physics)
-		if (CELLS_BESIDE(check, last) && !CELLS_EQUAL(check, FIntVector(last.X, last.Y, last.Z - 1)))
-		{
-			// Check to see if the cell is not the one infront or behind of last
-			FVector rotate = rotation.Vector();
-			FIntVector towardsCell(last.X + FMath::RoundToInt(rotate.X), last.Y + FMath::RoundToInt(rotate.Y), last.Z + FMath::RoundToInt(rotate.Z));
-			FIntVector awayCell(last.X - FMath::RoundToInt(rotate.X), last.Y - FMath::RoundToInt(rotate.Y), last.Z - FMath::RoundToInt(rotate.Z));
-			if (!CELLS_EQUAL(check, towardsCell) && !CELLS_EQUAL(check, awayCell))
-			{
-				FVector lastLoc;
-				area->GetGridLocation(last, lastLoc);
-
-				FHitResult lastResult;
-				Super::GetWorld()->LineTraceSingleByChannel(lastResult, lastLoc, lastLoc - FVector(0.0f, 0.0f, area->GetCellSize().Z),
-					ECollisionChannel::ECC_WorldDynamic, FCollisionQueryParams::DefaultQueryParam);
-
-				show = true;
-				place = lastResult.IsValidBlockingHit();
-				this->m_bValid = lastResult.IsValidBlockingHit();
-				Super::m_ActiveCell = check;
-			}
-		}
-
-		point += diff;
-		distance -= diff.Size();
-	}
-	// Check for overlaps with brush. If there is, add the overlap to our chain and do nothing else
-	Super::SetPositionToCell(area, Super::m_ActiveCell);
-	if (Super::IsOverlapped())
-	{
-		// Only need to add it if it's not already part of the chain
-		if (!CELLS_EQUAL(Super::m_ActiveCell, last))
-		{
-			Super::m_Chained.Add(Super::m_ActiveCell);
-		}
-		return;
-	}
-	if (place)
-	{
-		Super::SetPositionToCell(area, last);
-		if (!Super::IsOverlapped())
-		{
-			FIntVector temp = Super::m_ActiveCell;
-			Super::m_ActiveCell = last;
-
-			this->Action(area, nullptr);
-			Super::m_ActiveCell = temp;
-		}
-		Super::m_Chained.Add(Super::m_ActiveCell);
-
-#if KOTC_CONSTRUCTION_CHAIN_AXIS_LOCK
-		// After initial chain blocked has been placed, store the used rotation so that we can lock
-		// the axis which the chian will work on
-		if (Super::m_Chained.Num() == 2)
-		{
-			Super::m_ChainedRotation = rotation;
-		}
-#endif
-	}
-	else
-	{
-		Super::SetPositionToCell(area, last);
-	}
-}
-
-void UPrimaryBrush::UpdateRegular(ABuildArea* area, const FHitResult& trace, bool& show)
-{
-#if WITH_EDITOR
-	if (this->m_bDebugRenderTrace)
-	{
-		if (trace.GetComponent() == nullptr)
-		{
-			DrawDebugLine(Super::GetWorld(), trace.TraceStart, trace.TraceEnd, FColor::Red, false, -1.0f, 0.0f, 2.0f);
-		}
-		else
-		{
-			DrawDebugLine(Super::GetWorld(), trace.TraceStart, trace.ImpactPoint, FColor::Green, false, -1.0f, 0.0f, 2.0f);
-			DrawDebugLine(Super::GetWorld(), trace.ImpactPoint, trace.TraceEnd, FColor::Red, false, -1.0f, 0.0f, 2.0f);
-		}
-	}
-#endif
-	// If we are aiming at something
-	if (trace.GetComponent() != nullptr)
-	{
-		// Check to see if the new point is a valid grid cell
-		show = area->GetGridCell(trace.ImpactPoint + trace.ImpactNormal * area->GetCellSize() / 2.0f, Super::m_ActiveCell);
-		this->m_bValid = show;
-
-		// Only show create brush if looking at top of block
-		if (show && FMath::RoundToInt(trace.ImpactNormal.Z) != 1)
-		{
-			FHitResult belowResult;
-			FVector point = trace.ImpactPoint + trace.ImpactNormal * area->GetCellSize() / 2.0f;
-			Super::GetWorld()->LineTraceSingleByChannel(belowResult, point, point - FVector(0.0f, 0.0f, area->GetCellSize().Z),
-				ECollisionChannel::ECC_WorldDynamic, FCollisionQueryParams::DefaultQueryParam);
-#if WITH_EDITOR
-			if (this->m_bDebugRenderTrace)
-			{
-				DrawDebugLine(Super::GetWorld(), belowResult.TraceStart, belowResult.TraceEnd, FColor::Magenta, false, -1.0f, 0.0f, 2.0f);
-			}
-#endif
-
-			if (Cast<ABlock>(belowResult.GetActor()) == nullptr)
-			{
-				show = false;
-			}
-		}
-	}
-
-	// If we aren't aiming at something, or if we are aiming at something that's not a block
-	if (!this->m_bValid || Cast<ABlock>(trace.GetActor()) == nullptr)
-	{
-		// Trace the ray to determine if there are any blocks below the grid elements we are looking above
-		FVector point = trace.TraceStart, diff = (trace.IsValidBlockingHit()
-			? trace.ImpactPoint : trace.TraceEnd) - trace.TraceStart;
-		FVector normal = (trace.TraceEnd - trace.TraceStart).GetSafeNormal();
-		float distance = diff.Size();
-		diff = diff.GetSafeNormal() * area->GetCellSize() * 0.5f;
-
-		AActor *below = nullptr;
-		while (FMath::FloorToFloat(distance) > 0.0f)
-		{
-			point += diff;
-			distance -= diff.Size();
-
-			FIntVector cell;
-			if (area->GetGridCell(point, cell))
-			{
-				FHitResult result;
-				// If we're looking downwards cast the sideways way else cast the downwards one
-				if (normal.Z <= -0.75f)
-				{
-					FVector sideDir = FVector(normal.X, normal.Y, 0.0f).GetSafeNormal();
-					Super::GetWorld()->LineTraceSingleByChannel(result, point, point - sideDir * area->GetCellSize().Z,
-						ECollisionChannel::ECC_WorldDynamic, FCollisionQueryParams::DefaultQueryParam);
-#if WITH_EDITOR
-					if (this->m_bDebugRenderTrace)
-					{
-						if (result.IsValidBlockingHit())
-						{
-							DrawDebugLine(Super::GetWorld(), result.TraceStart, result.ImpactPoint, FColor::Cyan, false, -1.0f, 0.0f, 2.0f);
-						}
-						else
-						{
-							DrawDebugLine(Super::GetWorld(), result.TraceStart, result.TraceEnd, FColor::Blue, false, -1.0f, 0.0f, 2.0f);
-						}
-					}
-#endif
-				}
-				else
-				{
-					// Cast a small ray down from the current cell to check if there's something below
-					Super::GetWorld()->LineTraceSingleByChannel(result, point, point - FVector(0.0f, 0.0f, area->GetCellSize().Z),
-						ECollisionChannel::ECC_WorldDynamic, FCollisionQueryParams::DefaultQueryParam);
-#if WITH_EDITOR
-					if (this->m_bDebugRenderTrace)
-					{
-						if (result.IsValidBlockingHit())
-						{
-							DrawDebugLine(Super::GetWorld(), result.TraceStart, result.ImpactPoint, FColor::Cyan, false, -1.0f, 0.0f, 2.0f);
-						}
-						else
-						{
-							DrawDebugLine(Super::GetWorld(), result.TraceStart, result.TraceEnd, FColor::Blue, false, -1.0f, 0.0f, 2.0f);
-						}
-					}
-#endif
-				}
-				// Check to see if there's a block below
-				ABlock *block = Cast<ABlock>(result.GetActor());
-				if (block != nullptr)
-				{
-					// Check to see if the block below is visible to the player
-					Super::GetWorld()->LineTraceSingleByChannel(result, trace.TraceStart, result.ImpactPoint - result.ImpactNormal,
-						ECollisionChannel::ECC_WorldDynamic, FCollisionQueryParams::DefaultQueryParam);
-#if WITH_EDITOR
-					if (this->m_bDebugRenderTrace)
-					{
-						if (result.GetActor() == block)
-						{
-							DrawDebugLine(Super::GetWorld(), result.TraceStart, result.ImpactPoint, FColor::Orange, false, -1.0f, 0.0f, 2.0f);
-						}
-						else
-						{
-							DrawDebugLine(Super::GetWorld(), result.TraceStart, result.TraceEnd, FColor::Magenta, false, -1.0f, 0.0f, 2.0f);
-						}
-					}
-#endif
-					if(result.GetActor() == block)
-					{
-						below = block;
-
-						show = true;
-						this->m_bValid = true;
-						Super::m_ActiveCell = cell;
-					}
-				}
-				else if (below != nullptr)
-				{
-					break;
-				}
-			}
-		}
-	}
-	// If the brush is valid, move it to the expected location
-	if (this->m_bValid)
-	{
-		Super::SetPositionToCell(area, Super::m_ActiveCell);
-	}
-}
-
-void UPrimaryBrush::Update(APlayerCharacter *character, ABuildArea* area, const FHitResult& trace)
-{
-	checkf(area != nullptr, TEXT("[CreateBrush] Must provide area"));
-
-	bool show = false;
-	this->m_bValid = false;
-
-	FRotator rotation = this->GetBrushRotation();
-	if (this->m_Rotation != rotation)
-	{
-		this->UpdateBlockChildRotation(this->m_Rotation, rotation);
-		this->m_Rotation = rotation;
-	}
-
-#if KOTC_CONSTRUCTION_CHAIN_ENABLED
-	if (Super::m_bChainMode)
-	{
-		this->UpdateChain(area, trace, show);
-	}
-	else
-#endif
-	{
-		this->UpdateRegular(area, trace, show);
-	}
-
-	bool overlapped = Super::IsOverlapped();
-	// Creation can't be valid if there is an overlap (there's technically a one-update error here since it checks before setting the position)
-	this->m_bValid = this->m_bValid && !overlapped;
-
-	// Set brush visiblity
-	Super::SetBrushVisible(show && !overlapped);
-
-	// TODO visibility hack. do it properly
-	for(AActor *child : this->m_ChildBlocks)
-	{
-		child->SetActorHiddenInGame(!Super::IsBrushVisible());
-	}
-
-	Super::Update(character, area, trace);
-}
+//void UPrimaryBrush::UpdateChain(ABuildArea* area, const FHitResult& trace, bool& show)
+//{
+//	const FIntVector& last = Super::m_Chained.Last();
+//	bool place = false;
+//
+//	FVector end = trace.IsValidBlockingHit() ? trace.ImpactPoint : trace.TraceEnd;
+//	FVector vector = trace.TraceStart - end;
+//	FVector point = end, diff = area->GetCellSize() * 0.25f * vector.GetSafeNormal();
+//
+//	// Get rotation of trace
+//	FRotator rotation;
+//#if KOTC_CONSTRUCTION_CHAIN_AXIS_LOCK
+//	if (Super::m_Chained.Num() >= 2)
+//	{
+//		rotation = Super::m_ChainedRotation;
+//	}
+//	else
+//#endif
+//	{
+//		rotation = vector.Rotation();
+//		rotation.Pitch = rotation.Roll = 0.0f;
+//		rotation.Yaw = int(FMath::GridSnap(rotation.Yaw, 90.0f)) % 360;
+//	}
+//	float distance = vector.Size();
+//	while (distance > 0.0f)
+//	{
+//		FIntVector check;
+//		area->GetGridCell(point, check);
+//
+//		if (CELLS_EQUAL(check, last))
+//		{
+//			show = true;
+//			place = false;
+//			this->m_bValid = true;
+//			Super::m_ActiveCell = check;
+//			break;
+//		}
+//		// If the cell is next to last and that the cell is not below last (we don't want to place block below others because of physics)
+//		if (CELLS_BESIDE(check, last) && !CELLS_EQUAL(check, FIntVector(last.X, last.Y, last.Z - 1)))
+//		{
+//			// Check to see if the cell is not the one infront or behind of last
+//			FVector rotate = rotation.Vector();
+//			FIntVector towardsCell(last.X + FMath::RoundToInt(rotate.X), last.Y + FMath::RoundToInt(rotate.Y), last.Z + FMath::RoundToInt(rotate.Z));
+//			FIntVector awayCell(last.X - FMath::RoundToInt(rotate.X), last.Y - FMath::RoundToInt(rotate.Y), last.Z - FMath::RoundToInt(rotate.Z));
+//			if (!CELLS_EQUAL(check, towardsCell) && !CELLS_EQUAL(check, awayCell))
+//			{
+//				FVector lastLoc;
+//				area->GetGridLocation(last, lastLoc);
+//
+//				FHitResult lastResult;
+//				Super::GetWorld()->LineTraceSingleByChannel(lastResult, lastLoc, lastLoc - FVector(0.0f, 0.0f, area->GetCellSize().Z),
+//					ECollisionChannel::ECC_WorldDynamic, FCollisionQueryParams::DefaultQueryParam);
+//
+//				show = true;
+//				place = lastResult.IsValidBlockingHit();
+//				this->m_bValid = lastResult.IsValidBlockingHit();
+//				Super::m_ActiveCell = check;
+//			}
+//		}
+//
+//		point += diff;
+//		distance -= diff.Size();
+//	}
+//	// Check for overlaps with brush. If there is, add the overlap to our chain and do nothing else
+//	Super::SetPositionToCell(area, Super::m_ActiveCell);
+//	if (Super::IsOverlapped())
+//	{
+//		// Only need to add it if it's not already part of the chain
+//		if (!CELLS_EQUAL(Super::m_ActiveCell, last))
+//		{
+//			Super::m_Chained.Add(Super::m_ActiveCell);
+//		}
+//		return;
+//	}
+//	if (place)
+//	{
+//		Super::SetPositionToCell(area, last);
+//		if (!Super::IsOverlapped())
+//		{
+//			FIntVector temp = Super::m_ActiveCell;
+//			Super::m_ActiveCell = last;
+//
+//			this->Action(area, nullptr);
+//			Super::m_ActiveCell = temp;
+//		}
+//		Super::m_Chained.Add(Super::m_ActiveCell);
+//
+//#if KOTC_CONSTRUCTION_CHAIN_AXIS_LOCK
+//		// After initial chain blocked has been placed, store the used rotation so that we can lock
+//		// the axis which the chian will work on
+//		if (Super::m_Chained.Num() == 2)
+//		{
+//			Super::m_ChainedRotation = rotation;
+//		}
+//#endif
+//	}
+//	else
+//	{
+//		Super::SetPositionToCell(area, last);
+//	}
+//}
+//
+//void UPrimaryBrush::UpdateRegular(ABuildArea* area, const FHitResult& trace, bool& show)
+//{
+//#if WITH_EDITOR
+//	if (this->m_bDebugRenderTrace)
+//	{
+//		if (trace.GetComponent() == nullptr)
+//		{
+//			DrawDebugLine(Super::GetWorld(), trace.TraceStart, trace.TraceEnd, FColor::Red, false, -1.0f, 0.0f, 2.0f);
+//		}
+//		else
+//		{
+//			DrawDebugLine(Super::GetWorld(), trace.TraceStart, trace.ImpactPoint, FColor::Green, false, -1.0f, 0.0f, 2.0f);
+//			DrawDebugLine(Super::GetWorld(), trace.ImpactPoint, trace.TraceEnd, FColor::Red, false, -1.0f, 0.0f, 2.0f);
+//		}
+//	}
+//#endif
+//	// If we are aiming at something
+//	if (trace.GetComponent() != nullptr)
+//	{
+//		// Check to see if the new point is a valid grid cell
+//		show = area->GetGridCell(trace.ImpactPoint + trace.ImpactNormal * area->GetCellSize() / 2.0f, Super::m_ActiveCell);
+//		this->m_bValid = show;
+//
+//		// Only show create brush if looking at top of block
+//		if (show && FMath::RoundToInt(trace.ImpactNormal.Z) != 1)
+//		{
+//			FHitResult belowResult;
+//			FVector point = trace.ImpactPoint + trace.ImpactNormal * area->GetCellSize() / 2.0f;
+//			Super::GetWorld()->LineTraceSingleByChannel(belowResult, point, point - FVector(0.0f, 0.0f, area->GetCellSize().Z),
+//				ECollisionChannel::ECC_WorldDynamic, FCollisionQueryParams::DefaultQueryParam);
+//#if WITH_EDITOR
+//			if (this->m_bDebugRenderTrace)
+//			{
+//				DrawDebugLine(Super::GetWorld(), belowResult.TraceStart, belowResult.TraceEnd, FColor::Magenta, false, -1.0f, 0.0f, 2.0f);
+//			}
+//#endif
+//
+//			if (Cast<ABlock>(belowResult.GetActor()) == nullptr)
+//			{
+//				show = false;
+//			}
+//		}
+//	}
+//
+//	// If we aren't aiming at something, or if we are aiming at something that's not a block
+//	if (!this->m_bValid || Cast<ABlock>(trace.GetActor()) == nullptr)
+//	{
+//		// Trace the ray to determine if there are any blocks below the grid elements we are looking above
+//		FVector point = trace.TraceStart, diff = (trace.IsValidBlockingHit()
+//			? trace.ImpactPoint : trace.TraceEnd) - trace.TraceStart;
+//		FVector normal = (trace.TraceEnd - trace.TraceStart).GetSafeNormal();
+//		float distance = diff.Size();
+//		diff = diff.GetSafeNormal() * area->GetCellSize() * 0.5f;
+//
+//		AActor *below = nullptr;
+//		while (FMath::FloorToFloat(distance) > 0.0f)
+//		{
+//			point += diff;
+//			distance -= diff.Size();
+//
+//			FIntVector cell;
+//			if (area->GetGridCell(point, cell))
+//			{
+//				FHitResult result;
+//				// If we're looking downwards cast the sideways way else cast the downwards one
+//				if (normal.Z <= -0.75f)
+//				{
+//					FVector sideDir = FVector(normal.X, normal.Y, 0.0f).GetSafeNormal();
+//					Super::GetWorld()->LineTraceSingleByChannel(result, point, point - sideDir * area->GetCellSize().Z,
+//						ECollisionChannel::ECC_WorldDynamic, FCollisionQueryParams::DefaultQueryParam);
+//#if WITH_EDITOR
+//					if (this->m_bDebugRenderTrace)
+//					{
+//						if (result.IsValidBlockingHit())
+//						{
+//							DrawDebugLine(Super::GetWorld(), result.TraceStart, result.ImpactPoint, FColor::Cyan, false, -1.0f, 0.0f, 2.0f);
+//						}
+//						else
+//						{
+//							DrawDebugLine(Super::GetWorld(), result.TraceStart, result.TraceEnd, FColor::Blue, false, -1.0f, 0.0f, 2.0f);
+//						}
+//					}
+//#endif
+//				}
+//				else
+//				{
+//					// Cast a small ray down from the current cell to check if there's something below
+//					Super::GetWorld()->LineTraceSingleByChannel(result, point, point - FVector(0.0f, 0.0f, area->GetCellSize().Z),
+//						ECollisionChannel::ECC_WorldDynamic, FCollisionQueryParams::DefaultQueryParam);
+//#if WITH_EDITOR
+//					if (this->m_bDebugRenderTrace)
+//					{
+//						if (result.IsValidBlockingHit())
+//						{
+//							DrawDebugLine(Super::GetWorld(), result.TraceStart, result.ImpactPoint, FColor::Cyan, false, -1.0f, 0.0f, 2.0f);
+//						}
+//						else
+//						{
+//							DrawDebugLine(Super::GetWorld(), result.TraceStart, result.TraceEnd, FColor::Blue, false, -1.0f, 0.0f, 2.0f);
+//						}
+//					}
+//#endif
+//				}
+//				// Check to see if there's a block below
+//				ABlock *block = Cast<ABlock>(result.GetActor());
+//				if (block != nullptr)
+//				{
+//					// Check to see if the block below is visible to the player
+//					Super::GetWorld()->LineTraceSingleByChannel(result, trace.TraceStart, result.ImpactPoint - result.ImpactNormal,
+//						ECollisionChannel::ECC_WorldDynamic, FCollisionQueryParams::DefaultQueryParam);
+//#if WITH_EDITOR
+//					if (this->m_bDebugRenderTrace)
+//					{
+//						if (result.GetActor() == block)
+//						{
+//							DrawDebugLine(Super::GetWorld(), result.TraceStart, result.ImpactPoint, FColor::Orange, false, -1.0f, 0.0f, 2.0f);
+//						}
+//						else
+//						{
+//							DrawDebugLine(Super::GetWorld(), result.TraceStart, result.TraceEnd, FColor::Magenta, false, -1.0f, 0.0f, 2.0f);
+//						}
+//					}
+//#endif
+//					if(result.GetActor() == block)
+//					{
+//						below = block;
+//
+//						show = true;
+//						this->m_bValid = true;
+//						Super::m_ActiveCell = cell;
+//					}
+//				}
+//				else if (below != nullptr)
+//				{
+//					break;
+//				}
+//			}
+//		}
+//	}
+//	// If the brush is valid, move it to the expected location
+//	if (this->m_bValid)
+//	{
+//		Super::SetPositionToCell(area, Super::m_ActiveCell);
+//	}
+//}
+//
+//void UPrimaryBrush::Update(APlayerCharacter *character, ABuildArea* area, const FHitResult& trace)
+//{
+//	checkf(area != nullptr, TEXT("[CreateBrush] Must provide area"));
+//
+//	bool show = false;
+//	this->m_bValid = false;
+//
+//	FRotator rotation = this->GetBrushRotation();
+//	if (this->m_Rotation != rotation)
+//	{
+//		this->UpdateBlockChildRotation(this->m_Rotation, rotation);
+//		this->m_Rotation = rotation;
+//	}
+//
+//#if KOTC_CONSTRUCTION_CHAIN_ENABLED
+//	if (Super::m_bChainMode)
+//	{
+//		this->UpdateChain(area, trace, show);
+//	}
+//	else
+//#endif
+//	{
+//		this->UpdateRegular(area, trace, show);
+//	}
+//
+//	bool overlapped = Super::IsOverlapped();
+//	// Creation can't be valid if there is an overlap (there's technically a one-update error here since it checks before setting the position)
+//	this->m_bValid = this->m_bValid && !overlapped;
+//
+//	// Set brush visiblity
+//	Super::SetBrushVisible(show && !overlapped);
+//
+//	// TODO visibility hack. do it properly
+//	for(AActor *child : this->m_ChildBlocks)
+//	{
+//		child->SetActorHiddenInGame(!Super::IsBrushVisible());
+//	}
+//
+//	Super::Update(character, area, trace);
+//}

@@ -71,7 +71,7 @@ m_DodgePressTimer(DODGE_DOUBLE_TAP_TIME), m_Team(-1), m_BuildReach(DEFAULT_REACH
 	this->m_SecondaryBrush = UObject::CreateDefaultSubobject<USecondaryBrush>(TEXT("SecondaryBrush"));
 	this->m_SecondaryBrush->SetTeam(&this->m_Team);
 	this->m_SecondaryBrush->SetCraftTimer(&this->m_PlacePressCounter);
-	this->m_SecondaryBrush->SetupAttachment(Super::RootComponent);
+	//this->m_SecondaryBrush->SetupAttachment(Super::RootComponent);
 
 	// Create melee collision capsule
 	this->m_MeleeCapsule = UObject::CreateDefaultSubobject<UCapsuleComponent>(TEXT("MeleeCapsule"));

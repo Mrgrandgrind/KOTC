@@ -1,10 +1,12 @@
 #include "King_of_the_Castle.h"
 #include "BlockBrush.h"
 
-#include "../BlockData.h"
-#include "../BuildArea.h"
-#include "../BlockEntity.h"
-#include "../../Character/PlayerCharacter.h"
+#include "Gamemode/BaseGameMode.h"
+#include "Character/PlayerCharacter.h"
+#include "Construction/BlockData.h"
+#include "Construction/BuildArea.h"
+#include "Construction/BlockEntity.h"
+#include "Construction/BlockStructureManager.h"
 
 #include "Runtime/Engine/Classes/Engine/TextRenderActor.h"
 #include "Runtime/Engine/Classes/Components/BillboardComponent.h"
@@ -18,6 +20,8 @@
 #define CONSTRUCTION_BLOCK_LOCATION TEXT("/Game/Blueprints/Construction/BP_ConstructionBlock")
 
 #define DEFAULT_MAX_BLOCK_COUNT 10
+
+#define BRUSH_POSITION_OFFSET FVector(0.0f, Super::Bounds.BoxExtent.Y, 0.0f)
 
 #define BRUSH_COLOR_NAME TEXT("Color")
 #define BRUSH_UNDEFINED_COLOR FLinearColor(1.0f, 1.0f, 1.0f, 1.0f)
@@ -46,6 +50,8 @@ UBlockBrush::UBlockBrush() : m_Team(nullptr), m_TextActor(nullptr), m_Material(n
 
 	Super::bOnlyOwnerSee = true;
 	Super::SetCastShadow(false);
+
+	this->m_bDebugRenderTrace = true;
 }
 
 void UBlockBrush::BeginPlay()
@@ -76,28 +82,6 @@ void UBlockBrush::BeginPlay()
 	this->UBlockBrush::SetBrushVisible(false);
 }
 
-void UBlockBrush::SetBrushVisible(const bool& visible)
-{
-	if (this->IsBrushVisible() == visible)
-	{
-		return;
-	}
-	Super::SetHiddenInGame(!visible, true);
-}
-
-bool UBlockBrush::SetPositionToCell(ABuildArea *area, const FIntVector& cell)
-{
-	FVector position;
-	if (area->GetGridLocation(cell, position))
-	{
-		position.Y += Super::Bounds.BoxExtent.Y;
-		Super::SetWorldLocation(position);
-
-		return true;
-	}
-	return false;
-}
-
 void UBlockBrush::SetChainMode(const bool& enable)
 {
 	this->m_bChainMode = enable;
@@ -118,6 +102,16 @@ UMaterialInstanceDynamic* UBlockBrush::GetMaterialDynamic()
 		Super::SetMaterial(0, material);
 	}
 	return material;
+}
+
+bool UBlockBrush::IsSupport(const FVector& position, const FVector& cellSize) const
+{
+	ABaseGameMode *gamemode = Cast<ABaseGameMode>(Super::GetWorld()->GetAuthGameMode());
+	if (gamemode != nullptr && gamemode->GetStructureManager() != nullptr)
+	{
+		return gamemode->GetStructureManager()->IsSupport(position, cellSize / 2.0f);
+	}
+	return true;
 }
 
 bool UBlockBrush::IsOverlapped() const
@@ -192,6 +186,37 @@ void UBlockBrush::Update(APlayerCharacter *character, ABuildArea *area, const FH
 {
 	this->m_LastTrace = trace;
 
-	FVector location = character->GetActorLocation();
-	this->UpdateCountText(nullptr, &location);
+	if (trace.GetComponent() == nullptr)
+	{
+		this->RenderTrace(trace.TraceStart, trace.TraceEnd, FColor::Orange);
+	}
+	else
+	{
+		this->RenderTrace(trace.TraceStart, trace.ImpactPoint, FColor::Green);
+		this->RenderTrace(trace.ImpactPoint, trace.TraceEnd, FColor::Orange);
+	}
+
+	bool show = false;
+	bool pre = this->OnPreCheck(area, trace, this->m_ActiveCell, show),
+		main = this->OnMainCheck(area, trace, this->m_ActiveCell, show, pre),
+		post = this->OnPostCheck(area, trace, this->m_ActiveCell, show, pre, main);
+
+	this->m_bPositionValid = main && post; // We only need the main and post checks to pass
+
+	if (this->m_bPositionValid)
+	{
+		FVector location;
+		this->m_bPositionValid = area->GetGridLocation(this->m_ActiveCell, location);
+
+		Super::SetWorldLocation(location + BRUSH_POSITION_OFFSET);
+	}
+
+	show = show && this->m_bPositionValid; // If show is true, only do it if the position is valid
+	if (this->IsBrushVisible() != show)
+	{
+		this->SetBrushVisible(show);
+	}
+
+	//FVector location = character->GetActorLocation();
+	//this->UpdateCountText(nullptr, &location);
 }

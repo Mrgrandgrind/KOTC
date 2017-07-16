@@ -62,6 +62,8 @@ public:
 
 	bool IsSupport(class ABlock *block) const;
 
+	bool IsSupport(const FVector& position, const FVector& extent) const;
+
 	void ProcessDestroy(class ABlock *block);
 
 	void ProcessCreate(class ABlock *block);

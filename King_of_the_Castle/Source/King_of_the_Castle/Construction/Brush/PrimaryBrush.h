@@ -16,9 +16,7 @@ public:
 	// Drop x amount of blocks from primary brush
 	virtual void DropBlocks(class UBlockData *data, int count);
 
-	virtual class ABlock* Action(class ABuildArea *area, AActor *source) override;
-
-	virtual void Update(class APlayerCharacter *character, class ABuildArea *area, const FHitResult& trace) override;
+	//virtual class ABlock* Action(class ABuildArea *area, AActor *source) override;
 
 	void SetSelectedIndex(int index);
 
@@ -32,22 +30,32 @@ public:
 
 	FORCEINLINE UBlockData* GetBlockData(const FName id) { return this->GetBlockData(this->GetIndexOf(id)); }
 
-	FORCEINLINE void SetPrefab(TSubclassOf<class APrefab> prefab) { this->m_Prefab = prefab; this->UpdateBlockChildActor(); }
+	FORCEINLINE void SetPrefab(TSubclassOf<class APrefab> prefab) { this->m_Prefab = prefab; /*this->UpdateBlockChildActor();*/ }
 
 protected:
 	FRotator GetBrushRotation() const;
 
-	void UpdateBlockChildRotation(const FRotator& previousRotation, const FRotator& newRotation);
+	//void UpdateBlockChildRotation(const FRotator& previousRotation, const FRotator& newRotation);
 
-	void UpdateBlockChildActor();
+	//void UpdateBlockChildActor();
 
-	void UpdateChain(class ABuildArea *area, const FHitResult& trace, bool& show);
+	//void UpdateChain(class ABuildArea *area, const FHitResult& trace, bool& show);
 
-	void UpdateRegular(class ABuildArea *area, const FHitResult& trace, bool& show);
+	//void UpdateRegular(class ABuildArea *area, const FHitResult& trace, bool& show);
+
+	//virtual void Update(class APlayerCharacter *character, class ABuildArea *area, const FHitResult& trace) override;
+
+	bool CanPlaceOn(const FHitResult& result) const;
+
+	virtual TArray<class ABlock*> OnAction(class ABuildArea *area, AActor *source) override;
+
+	virtual bool OnPreCheck(ABuildArea *area, const FHitResult& result, FGridCell& out, bool& show) override;
+
+	virtual bool OnMainCheck(ABuildArea *area, const FHitResult& result, FGridCell& out, bool& show, const bool& pre) override;
+
+	//virtual bool OnPostCheck(ABuildArea *area, const FHitResult& result, FGridCell& out, bool& show, const bool& pre, const bool& main) override;
 
 private:
-	bool m_bValid;
-
 	FRotator m_Rotation;
 
 	UPROPERTY()
@@ -64,8 +72,4 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Type", meta = (AllowPrivateAccess = "true", DisplayName = "Data Classes"))
 	TArray<TSubclassOf<UBlockData>> m_BlockDataClasses;
-
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Debug", meta = (AllowPrivateAccess = "true", DisplayName = "Render Trace"))
-	bool m_bDebugRenderTrace;
 };

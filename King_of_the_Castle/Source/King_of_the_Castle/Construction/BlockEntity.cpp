@@ -14,7 +14,7 @@
 #define SCALE_MULTIPLIER 0.5f // target scale (multiplier of the block this is an instance of)
 
 #define ENTITY_LIFE_TIME (2.0f * 60.0f) //seconds
-#define ENTITY_LIFE_TIME_OFFSET 0.1f
+#define ENTITY_LIFE_TIME_OFFSET 0.1f //10% +-
 
 #define ATTRACTION_FORCE 50.0f
 #define ATTRACTION_DISTANCE 680.0f
