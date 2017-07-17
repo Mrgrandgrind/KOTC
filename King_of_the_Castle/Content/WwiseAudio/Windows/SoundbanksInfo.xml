@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="11" SoundbankVersion="120">
 	<RootPaths>
-		<ProjectRoot>C:\Users\1405188\Github\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\</ProjectRoot>
-		<SourceFilesRoot>C:\Users\1405188\Github\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\.cache\Windows\</SourceFilesRoot>
-		<SoundBanksRoot>C:\Users\1405188\Github\KingOfTheCastle\King_of_the_Castle\Content\WwiseAudio\Windows\</SoundBanksRoot>
+		<ProjectRoot>D:\Documents\Dare\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\</ProjectRoot>
+		<SourceFilesRoot>D:\Documents\Dare\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\.cache\Windows\</SourceFilesRoot>
+		<SoundBanksRoot>D:\Documents\Dare\KingOfTheCastle\King_of_the_Castle\Content\WwiseAudio\Windows\</SoundBanksRoot>
 		<ExternalSourcesInputFile></ExternalSourcesInputFile>
-		<ExternalSourcesOutputRoot>C:\Users\1405188\Github\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\GeneratedSoundBanks\Windows\</ExternalSourcesOutputRoot>
+		<ExternalSourcesOutputRoot>D:\Documents\Dare\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\GeneratedSoundBanks\Windows\</ExternalSourcesOutputRoot>
 	</RootPaths>
 	<DialogueEvents/>
 	<StreamedFiles/>
