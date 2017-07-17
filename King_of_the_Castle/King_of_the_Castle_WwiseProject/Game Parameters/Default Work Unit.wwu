@@ -5,7 +5,7 @@
 			<ChildrenList>
 				<GameParameter Name="Intensity" ID="{9B788ED6-0DF2-426F-B15D-679FC3E1BBD8}">
 					<PropertyList>
-						<Property Name="InitialValue" Type="Real64" Value="0"/>
+						<Property Name="InitialValue" Type="Real64" Value="1"/>
 					</PropertyList>
 				</GameParameter>
 			</ChildrenList>
