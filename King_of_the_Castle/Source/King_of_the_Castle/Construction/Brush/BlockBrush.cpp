@@ -51,7 +51,7 @@ UBlockBrush::UBlockBrush() : m_Team(nullptr), m_TextActor(nullptr), m_Material(n
 	Super::bOnlyOwnerSee = true;
 	Super::SetCastShadow(false);
 
-	this->m_bDebugRenderTrace = true;
+	//this->m_bDebugRenderTrace = true;
 }
 
 void UBlockBrush::BeginPlay()
@@ -117,7 +117,7 @@ bool UBlockBrush::IsSupport(const FVector& position, const FVector& cellSize) co
 bool UBlockBrush::IsOverlapped() const
 {
 	TArray<UPrimitiveComponent*> components;
-	this->GetOverlappingComponents(components);
+	Super::GetOverlappingComponents(components);
 	for (int i = 0; i < components.Num(); i++)
 	{
 		// If we are overlapping with a players capsule component
@@ -182,6 +182,11 @@ void UBlockBrush::UpdateCountText(UBlockData *data, const FVector *ownerLocation
 	}
 }
 
+TArray<ABlock*> UBlockBrush::Action(class ABuildArea *area, AActor *source)
+{
+	return this->OnAction(area, source);
+}
+
 void UBlockBrush::Update(APlayerCharacter *character, ABuildArea *area, const FHitResult& trace)
 {
 	this->m_LastTrace = trace;
@@ -198,10 +203,9 @@ void UBlockBrush::Update(APlayerCharacter *character, ABuildArea *area, const FH
 
 	bool show = false;
 	bool pre = this->OnPreCheck(area, trace, this->m_ActiveCell, show),
-		main = this->OnMainCheck(area, trace, this->m_ActiveCell, show, pre),
-		post = this->OnPostCheck(area, trace, this->m_ActiveCell, show, pre, main);
+		main = this->OnMainCheck(area, trace, this->m_ActiveCell, show, pre);
 
-	this->m_bPositionValid = main && post; // We only need the main and post checks to pass
+	this->m_bPositionValid = main; // We only need the main and post checks to pass
 
 	if (this->m_bPositionValid)
 	{
@@ -209,6 +213,11 @@ void UBlockBrush::Update(APlayerCharacter *character, ABuildArea *area, const FH
 		this->m_bPositionValid = area->GetGridLocation(this->m_ActiveCell, location);
 
 		Super::SetWorldLocation(location + BRUSH_POSITION_OFFSET);
+
+		if (this->m_bPositionValid)
+		{
+			this->m_bPositionValid = this->OnPostCheck(area, trace, this->m_ActiveCell, show, this->m_bPositionValid);
+		}
 	}
 
 	show = show && this->m_bPositionValid; // If show is true, only do it if the position is valid
@@ -217,6 +226,6 @@ void UBlockBrush::Update(APlayerCharacter *character, ABuildArea *area, const FH
 		this->SetBrushVisible(show);
 	}
 
-	//FVector location = character->GetActorLocation();
-	//this->UpdateCountText(nullptr, &location);
+	FVector location = character->GetActorLocation();
+	this->UpdateCountText(nullptr, &location);
 }

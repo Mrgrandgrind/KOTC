@@ -81,25 +81,27 @@ void USecondaryBrush::SetMode(const EModifyMode& mode)
 	}
 }
 
-ABlock* USecondaryBrush::Action(ABuildArea* area, AActor* source)
+TArray<ABlock*> USecondaryBrush::OnAction(ABuildArea* area, AActor* source)
 {
+	TArray<ABlock*> blocks;
 	if (!Super::IsBrushVisible())
 	{
-		return nullptr;
+		return blocks;
 	}
 	ABlock *block = Cast<ABlock>(Super::m_LastTrace.GetActor());
 	if (block == nullptr || !block->IsDestructable() 
 		|| (block->IsA(AFlagBlock::StaticClass()) && block->GetTeam() == area->GetTeam()))
 	{
-		return nullptr;
+		return blocks;
 	}
 	if (block->GetTeam() != *Super::m_Team)
 	{
-		return nullptr;
+		return blocks;
 	}
 	// If we get here, the destroy is valid and we will turn the block into a dropped one
 	block->DropBlock(source, false);
-	return block;
+	blocks.Add(block);
+	return blocks;
 }
 
 void USecondaryBrush::UpdateChain(ABuildArea *area)

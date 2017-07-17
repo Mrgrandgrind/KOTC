@@ -126,6 +126,26 @@ void APlayerCharacter::BeginPlay()
 	//}
 }
 
+UCameraComponent* APlayerCharacter::GetCamera()
+{
+	if (this->m_Camera != nullptr)
+	{
+		return this->m_Camera;
+	}
+	TInlineComponentArray<UCameraComponent*> cameras;
+	Super::GetComponents<UCameraComponent>(cameras);
+
+	for (UCameraComponent *next : cameras)
+	{
+		if (next->bIsActive)
+		{
+			this->m_Camera = next;
+			break;
+		}
+	}
+	return this->m_Camera;
+}
+
 // Called every frame
 void APlayerCharacter::Tick(float delta)
 {
@@ -222,7 +242,8 @@ void APlayerCharacter::Tick(float delta)
 		{
 			return;
 		}
-		FVector cameraLoc = this->m_Camera->GetComponentLocation(), forward = this->m_Camera->GetForwardVector();
+		UCameraComponent *camera = this->GetCamera();
+		FVector cameraLoc = camera->GetComponentLocation(), forward = camera->GetForwardVector();
 		FVector cameraToPlayer = Super::GetMesh()->GetSocketLocation(BUILD_TRACE_SOCKET) - cameraLoc;
 
 		FVector start = cameraLoc + forward * FVector::DotProduct(cameraToPlayer, forward);
@@ -268,11 +289,8 @@ bool APlayerCharacter::IsBrushVisible() const
 
 void APlayerCharacter::SetBrushVisible(const bool& visible)
 {
-	if(this->m_PrimaryBrush != nullptr && this->m_SecondaryBrush != nullptr)
-	{
-		this->m_PrimaryBrush->SetBrushVisible(visible);
-		this->m_SecondaryBrush->SetBrushVisible(visible);
-	}
+	this->m_PrimaryBrush->SetBrushVisible(visible);
+	this->m_SecondaryBrush->SetBrushVisible(visible);
 }
 
 void APlayerCharacter::SetBuildModeEnabled(const bool& enable)
@@ -304,8 +322,8 @@ void APlayerCharacter::SetTeam(const int& team)
 	Super::GetCapsuleComponent()->SetCollisionProfileName(team <= 1
 		? TEXT("PawnTeam1") : team >= 2 ? TEXT("PawnTeam2") : TEXT("Pawn"));
 
-	// Disable build mode when changing teams
-	//this->SetBuildModeEnabled(false);
+	this->m_PrimaryBrush->OnTeamChange(team);
+	this->m_SecondaryBrush->OnTeamChange(team);
 }
 
 void APlayerCharacter::DropBlock()
@@ -354,7 +372,7 @@ void APlayerCharacter::Dodge()
 	Super::GetCharacterMovement()->GroundFriction = 0.0f;
 
 	// The way the player is facing
-	FVector forward = this->m_Camera->GetForwardVector();
+	FVector forward = this->GetCamera()->GetForwardVector();
 
 	// Same as forward but as FRotator and no Z component
 	FRotator rotation = FVector(forward.X, forward.Y, 0.0f).Rotation().Add(0.0f, 90.0f, 0.0f);
@@ -448,7 +466,7 @@ void APlayerCharacter::InputChargeDisable()
 {
 	Super::GetCharacterMovement()->GroundFriction = 0.0f;
 
-	FVector forward = this->m_Camera->GetForwardVector();
+	FVector forward = this->GetCamera()->GetForwardVector();
 	forward.Z = 0.0f;
 	forward.Normalize();
 

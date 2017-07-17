@@ -120,7 +120,7 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Combat")
 	const EAttackStage& GetAttackStage() const { return this->m_AttackStage; }
 
-	FORCEINLINE UCameraComponent* GetCamera() const { return this->m_Camera; }
+	UCameraComponent* GetCamera();
 
 	FORCEINLINE void SetHealth(const float& health) { this->m_Health = FMath::Max(FMath::Min(health, this->m_MaxHealth), 0.0f); }
 

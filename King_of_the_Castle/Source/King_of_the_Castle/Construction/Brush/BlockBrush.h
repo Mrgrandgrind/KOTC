@@ -30,19 +30,21 @@ public:
 
 	virtual void BeginPlay() override;
 
+	virtual void OnTeamChange(const int& team) { }
+
 	void SetChainMode(const bool& enable);
 
-	virtual class ABlock* Action(class ABuildArea *area, AActor *source) { return nullptr; }
+	TArray<class ABlock*> Action(class ABuildArea *area, AActor *source);
 
 	virtual void Update(class APlayerCharacter *character, class ABuildArea *area, const FHitResult& trace);
 
 	virtual void UpdateCountText(class UBlockData *data = nullptr, const FVector *ownerLocation = nullptr);
 
+	virtual void SetBrushVisible(const bool& visible) { Super::SetHiddenInGame(!visible, true); }
+
 	FORCEINLINE void SetTeam(int *team) { this->m_Team = team; }
 
 	FORCEINLINE bool IsBrushVisible() const { return !Super::bHiddenInGame; }
-
-	FORCEINLINE void SetBrushVisible(const bool& visible) { Super::SetHiddenInGame(!visible, true); }
 
 	FORCEINLINE const FIntVector& GetActiveCell() const { return this->m_ActiveCell; }
 
@@ -61,7 +63,7 @@ protected:
 
 	virtual bool OnMainCheck(ABuildArea *area, const FHitResult& result, FGridCell& out, bool& show, const bool& pre) { return false; }
 
-	virtual bool OnPostCheck(ABuildArea *area, const FHitResult& result, FGridCell& out, bool& show, const bool& pre, const bool& main) { return true; }
+	virtual bool OnPostCheck(ABuildArea *area, const FHitResult& result, FGridCell& out, bool& show, const bool& valid) { return valid; }
 
 	FORCEINLINE bool IsPositionValid() const { return this->m_bPositionValid; }
 

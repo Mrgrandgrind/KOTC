@@ -45,10 +45,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Mode")
 	void SetMode(const EModifyMode& mode);
 
-	// Preform the destroy action. Combining is done within Update.
-	UFUNCTION(BlueprintCallable, Category = "Brush")
-	virtual class ABlock* Action(class ABuildArea *area, AActor *source) override;
-
 	// Update chaining
 	void UpdateChain(class ABuildArea *area);
 
@@ -69,6 +65,10 @@ public:
 
 	// Combine lock must be released whenever the player is no longer trying to combine blocks (released key)
 	FORCEINLINE void ReleaseCombineLock() { this->m_bCombining = false; this->m_CombineLock = nullptr; }
+
+protected:
+	// Preform the destroy action. Combining is done within Update.
+	virtual TArray<class ABlock*> OnAction(class ABuildArea *area, AActor *source) override;
 
 private:
 	// The current mode of the brush
