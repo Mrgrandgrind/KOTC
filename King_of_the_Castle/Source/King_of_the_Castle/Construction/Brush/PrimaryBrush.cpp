@@ -17,7 +17,7 @@
 
 #define DEFAULT_BLOCK_COUNT 0
 #define DEFAULT_MAX_BLOCK_COUNT 10
-#define BRUSH_CREATE_COLOR FLinearColor(0.0f, 1.0f, 0.0f, 1.0f)
+#define BRUSH_CREATE_COLOR FLinearColor(0.0f, 0.75f, 0.0f, 1.0f)
 
 #define BRUSH_PLACE_FLOOR_NORMAL_Z -0.5f
 

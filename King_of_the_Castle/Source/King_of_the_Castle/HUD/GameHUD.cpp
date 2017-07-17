@@ -8,8 +8,8 @@
 #include "Runtime/UMG/Public/UMG.h"
 #include "Runtime/UMG/Public/Blueprint/UserWidget.h"
 
-#define CROSSHAIR_SIZE 0.012f // Multiplier of min(width, height)
-#define CROSSHAIR_COLOR FLinearColor(0.25f, 0.75f, 0.75f, 0.35f)
+#define CROSSHAIR_SIZE 0.016f // Multiplier of min(width, height)
+#define CROSSHAIR_COLOR FLinearColor(0.25f, 0.75f, 0.75f, 0.5f)
 
 #define WIDGET_HUD_LOCATION TEXT("/Game/Blueprints/BP_HUD")
 

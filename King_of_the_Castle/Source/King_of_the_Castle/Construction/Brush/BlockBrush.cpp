@@ -23,15 +23,6 @@
 
 #define BRUSH_POSITION_OFFSET FVector(0.0f, Super::Bounds.BoxExtent.Y, 0.0f)
 
-#define BRUSH_COLOR_NAME TEXT("Color")
-#define BRUSH_UNDEFINED_COLOR FLinearColor(1.0f, 1.0f, 1.0f, 1.0f)
-#define BRUSH_CREATE_COLOR FLinearColor(0.0f, 1.0f, 0.0f, 1.0f)
-#define BRUSH_DESTROY_COLOR FLinearColor(1.0f, 0.0f, 0.0f, 1.0f)
-
-#define BLOCK_CONSTRUCTION_COLOR FColor(55, 77, 55)
-#define BLOCK_DOOR_COLOR FColor(122, 228, 231)
-#define BLOCK_GOLD_COLOR FColor(173, 122, 73)
-
 #define BRUSH_CREATE_TOP_PERCENTAGE 0.25f // The top of the block is defined by this percentage. (i.e. we pretend the top 25% of the block surface is the top)
 
 UBlockBrush::UBlockBrush() : m_Team(nullptr), m_TextActor(nullptr), m_Material(nullptr)

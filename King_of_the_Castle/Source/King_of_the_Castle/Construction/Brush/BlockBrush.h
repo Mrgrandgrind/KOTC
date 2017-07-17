@@ -59,7 +59,7 @@ protected:
 
 	virtual TArray<class ABlock*> OnAction(class ABuildArea *area, AActor *source) { return TArray<class ABlock*>(); }
 
-	virtual bool OnPreCheck(ABuildArea *area, const FHitResult& result, FGridCell& out, bool& show) { return false; }
+	virtual bool OnPreCheck(ABuildArea *area, const FHitResult& result, FGridCell& out, bool& show) { return true; }
 
 	virtual bool OnMainCheck(ABuildArea *area, const FHitResult& result, FGridCell& out, bool& show, const bool& pre) { return false; }
 
