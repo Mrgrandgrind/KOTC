@@ -17,11 +17,11 @@
 					<RTPCValueList ShowAll="true">
 						<RTPCValue>
 							<GameParameterRef Name="Intensity" ID="{9B788ED6-0DF2-426F-B15D-679FC3E1BBD8}"/>
-							<Value>7.03810741591456E-316</Value>
+							<Value>100</Value>
 						</RTPCValue>
 					</RTPCValueList>
 					<CurrentStateList ShowAll="true">
-						<CurrentStateRef Name="Level_2_3" ID="{BF055B69-9F76-4A72-8553-4BAE34141572}"/>
+						<CurrentStateRef Name="Level_2" ID="{A7E6AE57-8FEB-4076-9444-F642E4D5B1D9}"/>
 					</CurrentStateList>
 					<CurrentSwitchList ShowAll="true"/>
 				</SoundcasterSession>

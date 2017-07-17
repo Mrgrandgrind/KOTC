@@ -14,4 +14,5 @@ Audio Bus	ID	Name			Wwise Object Path	Notes
 
 Effect plug-ins	ID	Name	Type				Notes
 	319885456	Wwise Peak Limiter (Custom)	Wwise Peak Limiter			
+	2998002419	Boost_3dB_10KHz	Wwise Parametric EQ			
 

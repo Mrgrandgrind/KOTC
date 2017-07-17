@@ -72,6 +72,41 @@
 											</SequenceList>
 										</MusicTrack>
 										<MusicTrack Name="Pluck 1" ID="{07E3C338-1E51-43DE-A873-95C784AA1E98}" ShortID="871671766">
+											<PropertyList>
+												<Property Name="Volume" Type="Real64">
+													<RTPCList>
+														<RTPC Name="" ID="{233EA676-3C8B-4859-BB39-D7C75E986B29}" ShortID="159424535">
+															<ReferenceList>
+																<Reference Name="ControlInput">
+																	<ObjectRef Name="Intensity" ID="{9B788ED6-0DF2-426F-B15D-679FC3E1BBD8}" WorkUnitID="{C328BBC2-1A81-47C1-AEF7-2B6135AE3CED}"/>
+																</Reference>
+															</ReferenceList>
+															<Curve Name="" ID="{7DA3499F-8908-4F72-83D7-F22DA90E0DE1}">
+																<PropertyList>
+																	<Property Name="Flags" Type="int32" Value="3"/>
+																</PropertyList>
+																<PointList>
+																	<Point>
+																		<XPos>0</XPos>
+																		<YPos>-6.07472</YPos>
+																		<Flags>5</Flags>
+																	</Point>
+																	<Point>
+																		<XPos>19.84649</XPos>
+																		<YPos>0.01658</YPos>
+																		<Flags>0</Flags>
+																	</Point>
+																	<Point>
+																		<XPos>100</XPos>
+																		<YPos>0</YPos>
+																		<Flags>37</Flags>
+																	</Point>
+																</PointList>
+															</Curve>
+														</RTPC>
+													</RTPCList>
+												</Property>
+											</PropertyList>
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -245,13 +280,13 @@
 																		<Flags>5</Flags>
 																	</Point>
 																	<Point>
-																		<XPos>50</XPos>
+																		<XPos>19.95614</XPos>
 																		<YPos>-200</YPos>
 																		<Flags>0</Flags>
 																	</Point>
 																	<Point>
-																		<XPos>69.84649</XPos>
-																		<YPos>-0.05412</YPos>
+																		<XPos>44.51754</XPos>
+																		<YPos>0.05412</YPos>
 																		<Flags>0</Flags>
 																	</Point>
 																	<Point>
@@ -323,12 +358,12 @@
 																		<Flags>5</Flags>
 																	</Point>
 																	<Point>
-																		<XPos>30.26316</XPos>
+																		<XPos>20.06579</XPos>
 																		<YPos>-200</YPos>
 																		<Flags>0</Flags>
 																	</Point>
 																	<Point>
-																		<XPos>49.89035</XPos>
+																		<XPos>50.10965</XPos>
 																		<YPos>0.05412</YPos>
 																		<Flags>0</Flags>
 																	</Point>
@@ -664,7 +699,7 @@
 																		<Flags>5</Flags>
 																	</Point>
 																	<Point>
-																		<XPos>50</XPos>
+																		<XPos>39.91228</XPos>
 																		<YPos>-200</YPos>
 																		<Flags>0</Flags>
 																	</Point>
@@ -742,12 +777,12 @@
 																		<Flags>5</Flags>
 																	</Point>
 																	<Point>
-																		<XPos>70.17544</XPos>
+																		<XPos>50</XPos>
 																		<YPos>-200</YPos>
 																		<Flags>0</Flags>
 																	</Point>
 																	<Point>
-																		<XPos>80.04386</XPos>
+																		<XPos>71.16228</XPos>
 																		<YPos>0.05412</YPos>
 																		<Flags>0</Flags>
 																	</Point>
@@ -1340,6 +1375,7 @@
 							<ChildrenList>
 								<MusicTransition Name="Transition" ID="{3292D25C-B43C-480C-B3AD-066FC8DA2081}">
 									<PropertyList>
+										<Property Name="ExitSourceAt" Type="int16" Value="2"/>
 										<Property Name="UseTransitionObject" Type="bool" Value="True"/>
 									</PropertyList>
 									<TransitionInfo>

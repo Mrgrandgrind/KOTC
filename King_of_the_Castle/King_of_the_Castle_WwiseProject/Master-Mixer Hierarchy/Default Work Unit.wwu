@@ -5,7 +5,10 @@
 			<ChildrenList>
 				<Bus Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}">
 					<ReferenceList>
-						<Reference Name="Effect0">
+						<Reference Name="Effect0" PluginName="Wwise Parametric EQ" CompanyID="0" PluginID="105" PluginType="3">
+							<ObjectRef Name="Boost_3dB_10KHz" ID="{59632554-9396-4E15-889E-7A2F5458DEC3}" WorkUnitID="{E8613F7D-BAD3-45CD-A3ED-505576F31277}"/>
+						</Reference>
+						<Reference Name="Effect1">
 							<Custom>
 								<Effect Name="Wwise Peak Limiter (Custom)" ID="{81BCC914-4A7A-4F2E-AC62-E0574B415F4A}" ShortID="319885456" PluginName="Wwise Peak Limiter" CompanyID="0" PluginID="110" PluginType="3">
 									<PropertyList>
@@ -16,9 +19,7 @@
 						</Reference>
 					</ReferenceList>
 				</Bus>
-				<Bus Name="Master Secondary Bus" ID="{D2E0BC7E-7B3F-4FFE-A670-FAE02761B631}">
-					<ReferenceList/>
-				</Bus>
+				<Bus Name="Master Secondary Bus" ID="{D2E0BC7E-7B3F-4FFE-A670-FAE02761B631}"/>
 				<MotionBus Name="Master Motion Bus" ID="{20A630BA-3398-4676-B927-1004DFE41FD8}"/>
 			</ChildrenList>
 		</WorkUnit>
