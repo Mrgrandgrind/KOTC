@@ -9,10 +9,6 @@
 							<ObjectRef Name="Music_Start" ID="{88A3FF9B-FCC2-43BD-8FBE-E5EC16111B5F}" WorkUnitID="{8F1EA8B4-C444-40AD-B9D4-72B61B06D617}"/>
 							<Position X="0" Y="0"/>
 						</Module>
-						<Module>
-							<ObjectRef Name="Level" ID="{0EB396A7-0F2B-4887-83BA-3EA173BB6D63}" WorkUnitID="{246E0727-97E6-4A22-B039-2F4E93924145}"/>
-							<Position X="1" Y="0"/>
-						</Module>
 					</ModuleList>
 					<RTPCValueList ShowAll="true">
 						<RTPCValue>
@@ -21,7 +17,7 @@
 						</RTPCValue>
 					</RTPCValueList>
 					<CurrentStateList ShowAll="true">
-						<CurrentStateRef Name="Level_2" ID="{A7E6AE57-8FEB-4076-9444-F642E4D5B1D9}"/>
+						<CurrentStateRef Name="Victory" ID="{7A03866F-2D48-4D33-9A1C-E5641D10776E}"/>
 					</CurrentStateList>
 					<CurrentSwitchList ShowAll="true"/>
 				</SoundcasterSession>
