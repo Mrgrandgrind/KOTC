@@ -51,17 +51,6 @@ m_DodgePressTimer(DODGE_DOUBLE_TAP_TIME), m_Team(-1), m_BuildReach(DEFAULT_REACH
 	Super::GetCharacterMovement()->JumpZVelocity = 600.f;
 	Super::GetCharacterMovement()->AirControl = 0.2f;
 
-	// Create a camera boom (pulls in towards the player if there is a collision)
-	this->m_CameraBoom = UObject::CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
-	this->m_CameraBoom->TargetArmLength = 300.0f;
-	this->m_CameraBoom->bUsePawnControlRotation = true;
-	this->m_CameraBoom->SetupAttachment(Super::RootComponent);
-
-	// Create a follow camera
-	this->m_Camera = UObject::CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
-	this->m_Camera->bUsePawnControlRotation = false;
-	this->m_Camera->SetupAttachment(this->m_CameraBoom, USpringArmComponent::SocketName);
-
 	// Create the primary brush
 	this->m_PrimaryBrush = UObject::CreateDefaultSubobject<UPrimaryBrush>(TEXT("PrimaryBrush"));
 	this->m_PrimaryBrush->SetTeam(&this->m_Team);
@@ -115,6 +104,18 @@ void APlayerCharacter::BeginPlay()
 
 	// Update team collision (required for doors to function)
 	this->SetTeam(this->m_Team);
+
+	TInlineComponentArray<UCameraComponent*> cameras;
+	Super::GetComponents<UCameraComponent>(cameras);
+
+	for (UCameraComponent *next : cameras)
+	{
+		if (next->bIsActive)
+		{
+			this->m_Camera = next;
+			break;
+		}
+	}
 
 	// Connect construction and door block data counts
 	//UBlockData *construction = this->m_PrimaryBrush->GetBlockData(EBlockType::Construction);

@@ -353,10 +353,6 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera", meta = (AllowPrivateAccess = "true", DisplayName = "Camera"))
 	class UCameraComponent *m_Camera;
 
-	// Camera boom positioning the camera behind the character 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera", meta = (AllowPrivateAccess = "true", DisplayName = "Camera Boom"))
-	class USpringArmComponent *m_CameraBoom;
-
 	// Melee collision component attached to characters hand
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true", DisplayName = "Melee Capsule"))
 	UCapsuleComponent *m_MeleeCapsule;

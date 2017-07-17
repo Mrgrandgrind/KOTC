@@ -19,7 +19,7 @@
 
 #define MAX_PLAYER_COUNT 4
 
-#define SMASH_CHARACTER_LOCATION TEXT("/Game/Blueprints/Characters/BP_SmashCharacter")
+#define SMASH_CHARACTER_LOCATION TEXT("/Game/Blueprints/Characters/BP_RobotCharacter")
 
 ABaseGameMode::ABaseGameMode() : m_Timer(0.0f), m_GameDuration(DEFAULT_GAME_DURATION), m_MaxEntityCount(MAX_BLOCK_ENTITY_COUNT),
 m_EntityCount(0), m_BlockStructureManager(nullptr), m_PlayerCount(1)
@@ -167,9 +167,19 @@ void ABaseGameMode::SpawnPlayers()
 		{
 			point = team2[t2Idx++ % team2.Num()];
 		}
-		FVector loc = this->m_bUseDefaultStart ? this->m_DefaultStartLocation
-			+ FVector(0.0f, 0.0f, 250.0f) * i : point->GetActorLocation();
-		FRotator rot = this->m_bUseDefaultStart ? this->m_DefaultStartRotation : point->GetActorRotation();
+
+		FVector loc = FVector(0.0f);
+		FRotator rot = FRotator(0.0f);
+		if (point != nullptr)
+		{
+			loc = point->GetActorLocation();
+			rot = point->GetActorRotation();
+		}
+		if (this->m_bUseDefaultStart)
+		{
+			loc = this->m_DefaultStartLocation + FVector(0.0f, 0.0f, 250.0f) * i;
+			rot = this->m_DefaultStartRotation;
+		}
 
 		APlayerCharacter *character = Super::GetWorld()->SpawnActor<APlayerCharacter>(this->m_CharacterClass, loc, rot);
 		if (character == nullptr)
