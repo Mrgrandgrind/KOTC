@@ -223,7 +223,7 @@ void APlayerCharacter::Tick(float delta)
 
 	// Updating building mechanics
 	ABuildArea *area = this->GetActiveBuildArea();
-	if (area == nullptr)
+	if (area == nullptr || Super::GetCharacterMovement()->IsFalling())
 	{
 		if (this->IsBrushVisible())
 		{
