@@ -19,7 +19,7 @@
 				<Property Name="General\LatestLanguage" Type="int32" Value="12"/>
 				<Property Name="General\LatestPlatform" Type="string" Value="Windows"/>
 				<Property Name="GenerateSoundBanks\x64_SelectedLanguages" Type="string" Value="DAAAAA=="/>
-				<Property Name="GenerateSoundBanks\x64_SelectedPlatforms" Type="string" Value="fnoZnYmxO0yUvKb6cnIonw=="/>
+				<Property Name="GenerateSoundBanks\x64_SelectedPlatforms" Type="string" Value="ZS+23D6kI0ST9EdmXzYVRH56GZ2JsTtMlLym+nJyKJ8="/>
 				<Property Name="GenerateSoundBanks\x64_SelectedSoundBanks" Type="string" Value="wYsj1MvzNkW4KyTOuTz3CRTepirpSoVFoZaI7P+q0/o="/>
 				<Property Name="HardwareController\CurrentSession" Type="string" Value="{00000000-0000-0000-0000-000000000000}"/>
 				<Property Name="Interactive Music\x64_{0C6B94A8-C421-4CCE-BE1D-CC51E0823803} - SegmentEditorZoomInfo" Type="string" Value="lUaPqCDbwD8AAAAAAADwPwAAAAAAKGtAAAAAAAAA8D8AAAAAAAAAAAAAAAAAAAAA"/>
@@ -28,7 +28,7 @@
 				<Property Name="Interactive Music\x64_{1521EE16-84FF-4119-A936-CEE3E91B97DD} - SegmentEditorZoomInfo" Type="string" Value="AAAAAAAA8D8AAAAAAADwP+Tet5m8EURAAAAAAAAA8D8AAAAAAAAAAAAAAAAAAAAA"/>
 				<Property Name="Interactive Music\x64_{30DAA472-F188-4A81-82BE-A62960E023D1} - SegmentEditorZoomInfo" Type="string" Value="AAAAAAAA8D8AAAAAAADwP0hyeM361kpAAAAAAAAA8D8AAAAAAAAAAAAAAAAAAAAA"/>
 				<Property Name="Interactive Music\x64_{38B5D873-F3B8-442D-8F34-944EFB071B9C} - SegmentEditorZoomInfo" Type="string" Value="AAAAAAAA8D8AAAAAAADwP9mZkF5EYTBAAAAAAAAA8D8AAAAAAAAAAAAAAAAAAAAA"/>
-				<Property Name="Interactive Music\x64_{394B8390-2DDB-490C-954E-A5859450EE83} - SegmentEditorZoomInfo" Type="string" Value="AAAAAAAA8D8AAAAAAADwPw/t0ACNa0VAAAAAAAAA8D8AAAAAAAAAAAAAAAAAAAAA"/>
+				<Property Name="Interactive Music\x64_{394B8390-2DDB-490C-954E-A5859450EE83} - SegmentEditorZoomInfo" Type="string" Value="AAAAAAAA8D8AAAAAAADwPw/t0ACNa0VAAAAAAAAA8D8AAAAAAAAAAAAAAAAAQG1A"/>
 				<Property Name="Interactive Music\x64_{4427ED9F-00D4-4DB0-9645-E960733D1316} - SegmentEditorZoomInfo" Type="string" Value="4OnW/LBIyT8AAAAAAADwPwAAAAAAKGtAAAAAAAAA8D8AAAAAAAAAAAAAAAAAkIZA"/>
 				<Property Name="Interactive Music\x64_{484E4E54-970C-4F18-BCC9-F855F292ED68} - SegmentEditorZoomInfo" Type="string" Value="AAAAAAAA8D8AAAAAAADwP4PkKRgV2TZAAAAAAAAA8D8AAAAAAAAAAAAAAAAAAAAA"/>
 				<Property Name="Interactive Music\x64_{48AACBBA-8E6F-4CD6-BEC1-7D7C3A826C6A} - SegmentEditorZoomInfo" Type="string" Value="AAAAAABAFEAAAAAAAADwPzj12NZsYWBAAAAAAAAA8D8AAAAAAAAAAAAAAAAAAAAA"/>
@@ -45,7 +45,7 @@
 				<Property Name="Interactive Music\x64_{A748D676-26B7-4C81-B746-45A745986AC3} - SegmentEditorZoomInfo" Type="string" Value="AAAAAAAA8D8AAAAAAADwP89diVOAnThAAAAAAAAA8D8AAAAAAAAAAAAAAAAAAAAA"/>
 				<Property Name="Interactive Music\x64_{ABBD7E78-CF8F-429F-A61E-AE53ABFAD763} - SegmentEditorZoomInfo" Type="string" Value="AAAAAAAA8D8AAAAAAADwPwuox4CPJFBAAAAAAAAA8D8AAAAAAAAAAAAAAAAAAAAA"/>
 				<Property Name="Interactive Music\x64_{B4345590-F95F-4993-B434-736F3446D33F} - SegmentEditorZoomInfo" Type="string" Value="lUaPqCDbwD8AAAAAAADwPwAAAAAAKGtAAAAAAAAA8D8AAAAAAAAAAAAAAAAAAAAA"/>
-				<Property Name="Interactive Music\x64_{BBE85087-14C9-4D28-B655-B91CABC5F01B} - SegmentEditorZoomInfo" Type="string" Value="AAAAAAAA8D8AAAAAAADwP4PkKRgV2TZAAAAAAAAA8D8AAAAAAAAAAAAAAAAAgGVA"/>
+				<Property Name="Interactive Music\x64_{BBE85087-14C9-4D28-B655-B91CABC5F01B} - SegmentEditorZoomInfo" Type="string" Value="AAAAAAAA8D8AAAAAAADwP4PkKRgV2TZAAAAAAAAA8D8AAAAAAAAAAAAAAAAAYHxA"/>
 				<Property Name="Interactive Music\x64_{BFD5D302-D5BC-4190-AE76-8FB7F7D9B051} - SegmentEditorZoomInfo" Type="string" Value="AAAAAABgHkAAAAAAAADwPwAAAAAAKBtAAAAAAAAA8D8AAAAAACCgQAAAAAAAAAAA"/>
 				<Property Name="Interactive Music\x64_{C2C86796-334D-44E0-9CB2-DFE5B0D7B4D8} - SegmentEditorZoomInfo" Type="string" Value="AAAAAAAA8D8AAAAAAADwP+sVuxcDmzlAAAAAAAAA8D8AAAAAAAAAAAAAAAAAAAAA"/>
 				<Property Name="Interactive Music\x64_{C51560C7-EA1D-47BD-8210-6968E33CDE7E} - SegmentEditorZoomInfo" Type="string" Value="lEaPqCDbwD8AAAAAAADwPwAAAAAAKGtAAAAAAAAA8D8AAAAAAAAAAAAAAAAA4HhA"/>
