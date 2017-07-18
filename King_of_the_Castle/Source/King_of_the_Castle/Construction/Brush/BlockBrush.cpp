@@ -105,6 +105,16 @@ bool UBlockBrush::IsSupport(const FVector& position, const FVector& cellSize) co
 	return true;
 }
 
+TArray<ABlock*> UBlockBrush::GetNeighbours(const FVector& position, const FVector& cellSize) const
+{
+	ABaseGameMode *gamemode = Cast<ABaseGameMode>(Super::GetWorld()->GetAuthGameMode());
+	if (gamemode != nullptr && gamemode->GetStructureManager() != nullptr)
+	{
+		return gamemode->GetStructureManager()->GetNeighbours(position, cellSize);
+	}
+	return TArray<ABlock*>();
+}
+
 bool UBlockBrush::IsOverlapped() const
 {
 	TArray<UPrimitiveComponent*> components;

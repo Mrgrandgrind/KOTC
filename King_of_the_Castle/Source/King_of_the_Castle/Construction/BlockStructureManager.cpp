@@ -251,17 +251,22 @@ void ABlockStructureManager::AddNeighbours(ABlock *block, const int& structureIn
 
 TArray<ABlock*> ABlockStructureManager::GetNeighbours(ABlock *block) const
 {
+	FVector origin, extent;
+	block->GetActorBounds(true, origin, extent);
+
+	return this->GetNeighbours(block->GetActorLocation(), extent);
+}
+
+TArray<ABlock*> ABlockStructureManager::GetNeighbours(const FVector& location, FVector extent) const
+{
 	// Find surrounding blocks
 	TArray<ABlock*> surrounding;
-
-	FVector location = block->GetActorLocation(), origin, extent;
-	block->GetActorBounds(true, origin, extent);
 
 	extent += FVector(OFFSET_OFFSET);
 
 	FHitResult result;
-	FCollisionQueryParams params;
-	params.AddIgnoredActor(block);
+	//FCollisionQueryParams params;
+	//params.AddIgnoredActor(block);
 
 	// Loop through the surrounding offsets and line trace to find the surrounding blocks
 	for (const FVector& offset : {
@@ -271,7 +276,7 @@ TArray<ABlock*> ABlockStructureManager::GetNeighbours(ABlock *block) const
 	{
 		// Line trace to find surrounding
 		Super::GetWorld()->LineTraceSingleByChannel(result, location,
-			location + offset, ECollisionChannel::ECC_WorldDynamic, params);
+			location + offset, ECollisionChannel::ECC_WorldDynamic);
 #if WITH_EDITOR
 		if (this->m_bDebugRenderStructure)
 		{

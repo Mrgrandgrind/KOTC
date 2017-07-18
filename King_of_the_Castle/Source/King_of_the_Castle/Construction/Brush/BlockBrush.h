@@ -40,7 +40,7 @@ public:
 
 	virtual void UpdateCountText(class UBlockData *data = nullptr, const FVector *ownerLocation = nullptr);
 
-	virtual void SetBrushVisible(const bool& visible) { Super::SetHiddenInGame(!visible, true); }
+	virtual void SetBrushVisible(const bool& visible) { this->m_bPositionValid = false; Super::SetHiddenInGame(!visible, true); }
 
 	FORCEINLINE void SetTeam(int *team) { this->m_Team = team; }
 
@@ -55,6 +55,8 @@ protected:
 
 	bool IsSupport(const FVector& position, const FVector& cellSize) const;
 
+	TArray<class ABlock*> GetNeighbours(const FVector& position, const FVector& cellSize) const;
+
 	virtual bool IsOverlapped() const;
 
 	virtual TArray<class ABlock*> OnAction(class ABuildArea *area, AActor *source) { return TArray<class ABlock*>(); }
@@ -65,7 +67,7 @@ protected:
 
 	virtual bool OnPostCheck(ABuildArea *area, const FHitResult& result, FGridCell& out, bool& show, const bool& valid) { return valid; }
 
-	FORCEINLINE bool IsPositionValid() const { return this->m_bPositionValid; }
+	FORCEINLINE const bool& IsPositionValid() const { return this->m_bPositionValid; }
 
 	FORCEINLINE void RenderPoint(const FVector& point, const FColor& color) const
 	{

@@ -37,7 +37,6 @@ void UBlockData::SetCount(UPrimaryBrush *brush, const int& count)
 		return;
 	}
 	UBlockData *data = brush->GetBlockData(brush->GetSelectedIndex());
-	//if (data != nullptr && (data == this || data == this->m_Join))
 	if (data == this)
 	{
 		brush->UpdateCountText(data);

@@ -16,8 +16,8 @@
 #include "Runtime/Engine/Classes/Engine/Engine.h"
 #include "Runtime/Engine/Classes/Engine/LocalPlayer.h"
 
-#define BUILD_TRACE_SOCKET TEXT("bind_head01") // The socket (of the player) which the trace originates from
-#define MELEE_TRACE_SOCKET TEXT("bind_r_lowerarm01") // The socket (of the player) where the melee collision box will be bound
+#define BUILD_TRACE_SOCKET TEXT("head") // The socket (of the player) which the trace originates from
+#define MELEE_TRACE_SOCKET TEXT("hand_r") // The socket (of the player) where the melee collision box will be bound
 
 #define ATTACK_PRE_DELAY 0.4f 
 #define ATTACK_COLLISION_DELAY 0.4f
@@ -115,14 +115,6 @@ void APlayerCharacter::BeginPlay()
 			break;
 		}
 	}
-
-	// Connect construction and door block data counts
-	//UBlockData *construction = this->m_PrimaryBrush->GetBlockData(EBlockType::Construction);
-	//UBlockData *door = this->m_PrimaryBrush->GetBlockData(EBlockType::Door);
-	//if (construction != nullptr && door != nullptr)
-	//{
-	//	door->JoinCount(construction);
-	//}
 }
 
 UCameraComponent* APlayerCharacter::GetCamera()
@@ -143,6 +135,24 @@ UCameraComponent* APlayerCharacter::GetCamera()
 		}
 	}
 	return this->m_Camera;
+}
+
+ABuildArea* APlayerCharacter::GetActiveBuildArea()
+{
+	if (this->m_BuildAreas.Num() == 0)
+	{
+		TArray<AActor*> actors;
+		Super::GetOverlappingActors(actors);
+
+		for (AActor *next : actors)
+		{
+			if (next->IsA(ABuildArea::StaticClass()))
+			{
+				this->m_BuildAreas.Add(Cast<ABuildArea>(next));
+			}
+		}
+	}
+	return this->m_BuildAreas.Num() == 0 ? nullptr : this->m_BuildAreas.Last();
 }
 
 // Called every frame
