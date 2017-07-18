@@ -21,7 +21,7 @@
 #define ENTITY_DELAY_TIME_OFFSET (ENTITY_DELAY_TIME_PER_NEXT * 0.75f)
 
 // Sets default values
-ABlockStructureManager::ABlockStructureManager() : m_bSupportWall(true), m_bSupportGround(true)
+ABlockStructureManager::ABlockStructureManager() : m_bSupportWall(false), m_bSupportGround(true)
 {
 	Super::RootComponent = UObject::CreateDefaultSubobject<USceneComponent>(TEXT("BlockStructureManager"));
 
