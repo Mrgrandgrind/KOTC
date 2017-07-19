@@ -328,6 +328,39 @@ bool UPrimaryBrush::OnPreCheck(ABuildArea *area, const FHitResult& result, FGrid
 			return true;
 		}
 	}
+	// Check if there's a an empty space at the players feet
+	ACharacter *character = Cast<ACharacter>(Super::GetOwner());
+	check(character != nullptr);
+
+	FVector origin, extent;
+	character->GetActorBounds(true, origin, extent);
+
+	FCollisionQueryParams params;
+	params.AddIgnoredActor(Super::GetOwner());
+
+	FVector loc = character->GetActorLocation(), point = loc - FVector(0.0f, 0.0f, extent.Z / 2.0f + area->GetCellSize().Z / 2.0f);
+
+	FHitResult floorResult;
+	Super::GetWorld()->LineTraceSingleByChannel(floorResult, loc, point, ECollisionChannel::ECC_WorldDynamic, params);
+	Super::RenderTrace(loc, point, FColor::Purple);
+	if (floorResult.IsValidBlockingHit() && Cast<ABlock>(floorResult.GetActor()) != nullptr)
+	{
+		
+		FRotator rotation = (result.TraceEnd - result.TraceStart).Rotation();
+		rotation.Pitch = 0.0f;
+		FVector normal = rotation.RotateVector(FVector(1.0f, 0.0f, 0.0f));
+		Super::GetWorld()->LineTraceSingleByChannel(floorResult, point, point
+			+ normal * area->GetCellSize(), ECollisionChannel::ECC_WorldDynamic);
+		Super::RenderTrace(point, point + normal * area->GetCellSize(), FColor::Purple);
+
+		if (!floorResult.IsValidBlockingHit())
+		{
+			show = true;
+			area->GetGridCell(floorResult.TraceEnd, out);
+			return true;
+		}
+	}
+
 	return false;
 }
 
@@ -394,9 +427,9 @@ bool UPrimaryBrush::OnMainCheck(ABuildArea *area, const FHitResult& result, FGri
 			character->GetActorBounds(true, origin, extent);
 
 			FVector loc = character->GetActorLocation();
-			if (point.Z <= loc.Z - extent.Z / 2.0f)
+			if (point.Z <= loc.Z - extent.Z / 2)
 			{
-				Super::RenderPoint(loc - FVector(0.0f, 0.0f, extent.Z / 2.0f), FColor::Purple);
+				Super::RenderPoint(loc - FVector(0.0f, 0.0f, extent.Z / 2), FColor::Purple);
 				for (int j = 0; j < 4; j++)
 				{
 					found = FindHorizontal(j * 90.0f);
