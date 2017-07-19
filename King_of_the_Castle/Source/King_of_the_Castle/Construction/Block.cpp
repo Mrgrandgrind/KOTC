@@ -67,7 +67,7 @@ TArray<ABlockEntity*> ABlock::DropBlock(AActor *source, const bool& restrictPick
 // Destroy block
 void ABlock::DestroyBlock(AActor *source)
 {
-	ABaseGameMode *gamemode = Cast<ABaseGameMode>(Super::GetWorld()->GetAuthGameMode());
+	ABaseGameMode *gamemode = GetGameMode<ABaseGameMode>(Super::GetWorld());
 	if (gamemode != nullptr)
 	{
 		gamemode->OnBlockDestroy(this, source);
@@ -100,7 +100,7 @@ ABlock* ABlock::SpawnBlock(UWorld *world, TSubclassOf<ABlock> type, const int& t
 	{
 		block->SetTeam(team);
 
-		ABaseGameMode *gamemode = Cast<ABaseGameMode>(world->GetAuthGameMode());
+		ABaseGameMode *gamemode = GetGameMode<ABaseGameMode>(world);
 		if (gamemode != nullptr)
 		{
 			gamemode->OnBlockPlace(block, source);

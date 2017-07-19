@@ -37,4 +37,10 @@
 #define UE_LOG_INTVECTOR(vector) UE_LOG(LogClass, Log, TEXT("%d, %d, %d"), VECTOR_SPLIT(vector))
 ////
 
+template<typename T>
+FORCEINLINE static T* GetGameMode(class UWorld *world)
+{
+	return Cast<T>(world->GetAuthGameMode());
+}
+
 #endif
