@@ -128,19 +128,18 @@ void ABlock::SetHealth(const float& health)
 	material->SetVectorParameterValue(MATERIAL_DAMAGE_NAME, color);
 }
 
-float ABlock::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+float ABlock::TakeDamage(float damage, FDamageEvent const& damageEvent, AController* eventInstigator, AActor* damageCauser)
 {
 	if(!this->IsDestructable())
 	{
 		return 0.0f;
 	}
-	float actual = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
-	this->SetHealth(this->GetHealth() - actual);
+	this->SetHealth(this->GetHealth() - damage);
 	if (this->m_Health <= 0.0f) // if dead
 	{
-		this->DropBlock(DamageCauser, true);
+		this->DropBlock(damageCauser, true);
 	}
-	return actual;
+	return damage;
 }
 
 #if WITH_EDITOR

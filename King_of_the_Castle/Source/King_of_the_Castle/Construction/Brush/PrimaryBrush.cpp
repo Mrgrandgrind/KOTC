@@ -335,20 +335,30 @@ bool UPrimaryBrush::OnPreCheck(ABuildArea *area, const FHitResult& result, FGrid
 	FVector origin, extent;
 	character->GetActorBounds(true, origin, extent);
 
-	FHitResult floorResult;
-	FRotator rotation = (result.TraceEnd - result.TraceStart).Rotation();
-	rotation.Pitch = 0.0f;
-	FVector normal = rotation.RotateVector(FVector(1.0f, 0.0f, 0.0f));
-	FVector point = character->GetActorLocation() - FVector(0.0f, 0.0f, extent.Z / 2.0f + area->GetCellSize().Z / 2.0f);
-	Super::GetWorld()->LineTraceSingleByChannel(floorResult, point, point 
-		+ normal * area->GetCellSize(), ECollisionChannel::ECC_WorldDynamic);
-	Super::RenderTrace(point, point + normal * area->GetCellSize(), FColor::Purple);
+	FCollisionQueryParams params;
+	params.AddIgnoredActor(Super::GetOwner());
 
-	if (!floorResult.IsValidBlockingHit())
+	FVector loc = character->GetActorLocation(), point = loc - FVector(0.0f, 0.0f, extent.Z / 2.0f + area->GetCellSize().Z / 2.0f);
+
+	FHitResult floorResult;
+	Super::GetWorld()->LineTraceSingleByChannel(floorResult, loc, point, ECollisionChannel::ECC_WorldDynamic, params);
+	Super::RenderTrace(loc, point, FColor::Purple);
+	if (floorResult.IsValidBlockingHit() && Cast<ABlock>(floorResult.GetActor()) != nullptr)
 	{
-		show = true;
-		area->GetGridCell(floorResult.TraceEnd, out);
-		return true;
+		
+		FRotator rotation = (result.TraceEnd - result.TraceStart).Rotation();
+		rotation.Pitch = 0.0f;
+		FVector normal = rotation.RotateVector(FVector(1.0f, 0.0f, 0.0f));
+		Super::GetWorld()->LineTraceSingleByChannel(floorResult, point, point
+			+ normal * area->GetCellSize(), ECollisionChannel::ECC_WorldDynamic);
+		Super::RenderTrace(point, point + normal * area->GetCellSize(), FColor::Purple);
+
+		if (!floorResult.IsValidBlockingHit())
+		{
+			show = true;
+			area->GetGridCell(floorResult.TraceEnd, out);
+			return true;
+		}
 	}
 
 	return false;

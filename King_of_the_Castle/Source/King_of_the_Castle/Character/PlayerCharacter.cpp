@@ -65,7 +65,8 @@ m_DodgePressTimer(DODGE_DOUBLE_TAP_TIME), m_Team(-1), m_BuildReach(DEFAULT_REACH
 	this->m_MeleeCapsule = UObject::CreateDefaultSubobject<UCapsuleComponent>(TEXT("MeleeCapsule"));
 	this->m_MeleeCapsule->bGenerateOverlapEvents = true;
 	this->m_MeleeCapsule->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	this->m_MeleeCapsule->SetupAttachment(Super::GetMesh(), MELEE_TRACE_SOCKET);
+	//this->m_MeleeCapsule->SetupAttachment(Super::GetMesh(), MELEE_TRACE_SOCKET);
+	this->m_MeleeCapsule->SetupAttachment(Super::RootComponent);
 
 	// Delegate the melee capsule collisions
 	TScriptDelegate<FWeakObjectPtr> delegateMelee;
@@ -413,23 +414,66 @@ void APlayerCharacter::Attack()
 	{
 		return;
 	}
-	this->m_AttackStage = EAttackStage::PRE_COLLISION;
+	//this->m_AttackStage = EAttackStage::PRE_COLLISION;
 
-	FTimerHandle handle1;
-	Super::GetWorldTimerManager().SetTimer(handle1, FTimerDelegate::CreateLambda([this]()
+	TArray<AActor*> overlapping;
+	this->m_MeleeCapsule->GetOverlappingActors(overlapping);
+
+	for (AActor *next : overlapping)
 	{
-		FTimerHandle handle2;
-		this->m_AttackStage = EAttackStage::COLLISION;
-		Super::GetWorldTimerManager().SetTimer(handle2, FTimerDelegate::CreateLambda([this]()
+		if (next == this)
 		{
-			FTimerHandle handle3;
-			this->m_AttackStage = EAttackStage::POST_DELAY;
-			Super::GetWorldTimerManager().SetTimer(handle3, FTimerDelegate::CreateLambda([this]()
+			continue;
+		}
+		FDamageEvent event;
+		if (next->IsA(ABlock::StaticClass()))
+		{
+			next->TakeDamage(this->m_MeleeBlockDamage, event, Super::GetController(), this);
+		}
+		if (next->IsA(APlayerCharacter::StaticClass()))
+		{
+			APlayerCharacter *player = Cast<APlayerCharacter>(next);
+
+			// Do not hurt this player if they have immunity or are on the same team
+			if (player->m_LastAttacker == this || player->GetTeam() == this->GetTeam())
 			{
-				this->m_AttackStage = EAttackStage::READY;
-			}), ATTACK_POST_DELAY, false);
-		}), ATTACK_COLLISION_DELAY, false);
-	}), ATTACK_PRE_DELAY, false);
+				return;
+			}
+			// Apply damage to player if they haven't recently been hit
+			player->TakeDamage(this->m_MeleePlayerDamage, event, Super::GetController(), this);
+
+			// Apply knockback force
+			FVector direction = (player->GetActorLocation() - Super::GetActorLocation()).GetSafeNormal();
+			player->LaunchCharacter((direction + this->m_MeleeKnockbackOffset)
+				* this->m_MeleeKnockbackForce, false, false);
+
+			// Stop the player from being damaged multiple times by the same collision by granting temporary immunity
+			player->m_LastAttacker = this;
+			player->m_DamageTimer = 0.0f; // Reset damage timer so they don't regenerate health for a few seconds
+
+			FTimerHandle handle;
+			Super::GetWorldTimerManager().SetTimer(handle, FTimerDelegate::CreateLambda([this, player]()
+			{
+				player->m_LastAttacker = nullptr;
+			}), LAST_ATTACKER_TIMER, false);
+		}
+	}
+
+	//FTimerHandle handle1;
+	//Super::GetWorldTimerManager().SetTimer(handle1, FTimerDelegate::CreateLambda([this]()
+	//{
+	//	FTimerHandle handle2;
+	//	this->m_AttackStage = EAttackStage::COLLISION;
+	//	Super::GetWorldTimerManager().SetTimer(handle2, FTimerDelegate::CreateLambda([this]()
+	//	{
+	//		FTimerHandle handle3;
+	//		this->m_AttackStage = EAttackStage::POST_DELAY;
+	//		Super::GetWorldTimerManager().SetTimer(handle3, FTimerDelegate::CreateLambda([this]()
+	//		{
+	//			this->m_AttackStage = EAttackStage::READY;
+	//		}), ATTACK_POST_DELAY, false);
+	//	}), ATTACK_COLLISION_DELAY, false);
+	//}), ATTACK_PRE_DELAY, false);
 }
 
 void APlayerCharacter::Stun(const float& duration, const bool& regen, const bool& respawn)
