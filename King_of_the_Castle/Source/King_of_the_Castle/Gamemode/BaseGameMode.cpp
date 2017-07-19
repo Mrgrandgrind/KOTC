@@ -87,17 +87,13 @@ void ABaseGameMode::Tick(float delta)
 
 bool ABaseGameMode::GetSpawnPoint(const int& team, FVector& outLocation, FRotator& outRotation) const
 {
-	TArray<ASpawnPoint*> team1, team2;
-	this->GetSpawnPoints(team1, team2);
+	TArray<ASpawnPoint*> points;
+	this->GetSpawnPoints(team, points);
 	
 	ASpawnPoint *point = nullptr;
-	if (team <= 1 && team1.Num() > 0)
+	if (points.Num() > 0)
 	{
-		point = team1[FMath::RandRange(0, team1.Num() - 1)];
-	}
-	else if (team >= 2 && team2.Num() > 0)
-	{
-		point = team2[FMath::RandRange(0, team2.Num() - 1)];
+		point = points[FMath::RandRange(0, points.Num() - 1)];
 	}
 	if (point != nullptr)
 	{
@@ -108,36 +104,34 @@ bool ABaseGameMode::GetSpawnPoint(const int& team, FVector& outLocation, FRotato
 	return false;
 }
 
-void ABaseGameMode::GetSpawnPoints(TArray<class ASpawnPoint*>& team1, TArray<class ASpawnPoint*>& team2) const
+void ABaseGameMode::GetSpawnPoints(const int& team, TArray<class ASpawnPoint*>& out) const
 {
+	out.Empty();
+
 	// Get spawn points
-	TArray<AActor*> out;
-	UGameplayStatics::GetAllActorsOfClass(Super::GetWorld(), ASpawnPoint::StaticClass(), out);
+	TArray<AActor*> all;
+	UGameplayStatics::GetAllActorsOfClass(Super::GetWorld(), ASpawnPoint::StaticClass(), all);
 
 	// Separate the spawn points into teams
-	for (int i = 0; i < out.Num(); i++)
+	for (int i = 0; i < all.Num(); i++)
 	{
-		ASpawnPoint *next = Cast<ASpawnPoint>(out[i]);
-		if (next->GetTeam() == 1 || next->IsTeamIgnored())
+		ASpawnPoint *next = Cast<ASpawnPoint>(all[i]);
+		if (next->GetTeam() == team || next->IsTeamIgnored())
 		{
-			team1.Add(next);
-		}
-		if (next->GetTeam() == 2 || next->IsTeamIgnored())
-		{
-			team2.Add(next);
+			out.Add(next);
 		}
 	}
 }
 
 void ABaseGameMode::SpawnPlayers()
 {
-	// Get spawn points
-	TArray<ASpawnPoint*> team1, team2;
-	this->GetSpawnPoints(team1, team2);
-
 	// TODO Team selection. Teams are temporary hard coded in.
 	auto GetTeam = [this](const int& num)->int
 	{
+		if (this->m_bFreeForAll)
+		{
+			return num + 1;
+		}
 		if (this->m_PlayerCount == 1)
 		{
 			return 1;
@@ -153,19 +147,26 @@ void ABaseGameMode::SpawnPlayers()
 		return -1;
 	};
 
+	TMap<int, TPair<int, TArray<ASpawnPoint*>>> map;
 	// Spawn players
-	for (int i = 0, t1Idx = 0, t2Idx = 0; i < this->m_PlayerCount; i++)
+	for (int i = 0; i < this->m_PlayerCount; i++)
 	{
 		int team = GetTeam(i);
 
-		ASpawnPoint *point = nullptr;
-		if (team <= 1 && team1.Num() > 0)
+		TPair<int, TArray<ASpawnPoint*>> *points = map.Find(team);
+		if (points == nullptr)
 		{
-			point = team1[t1Idx++ % team1.Num()];
+			TPair<int, TArray<ASpawnPoint*>> pair;
+			this->GetSpawnPoints(team, pair.Value);
+			map.Add(team, pair);
+			points = map.Find(team);
 		}
-		else if (team >= 2 && team2.Num() > 0)
+		check(points != nullptr);
+
+		ASpawnPoint *point = nullptr;
+		if (points->Value.Num() > 0)
 		{
-			point = team2[t2Idx++ % team2.Num()];
+			point = points->Value[points->Key++ % points->Value.Num()];
 		}
 
 		FVector loc = FVector(0.0f);

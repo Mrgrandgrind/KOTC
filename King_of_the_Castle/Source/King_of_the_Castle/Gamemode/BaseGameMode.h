@@ -19,7 +19,7 @@ public:
 
 	bool GetSpawnPoint(const int& team, FVector& outLocation, FRotator& outRotation) const;
 
-	void GetSpawnPoints(TArray<class ASpawnPoint*>& team1, TArray<class ASpawnPoint*>& team2) const;
+	void GetSpawnPoints(const int& team, TArray<class ASpawnPoint*>& out) const;
 
 	void SpawnPlayers();
 
@@ -64,6 +64,9 @@ private:
 	// How many players should be ingame
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Players", meta = (AllowPrivateAccess = "true", DisplayName = "Player Count"))
 	int m_PlayerCount;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Players", meta = (AllowPrivateAccess = "true", DisplayName = "Free For All"))
+	bool m_bFreeForAll;
 
 	UPROPERTY()
 	TSubclassOf<class APlayerCharacter> m_CharacterClass;
