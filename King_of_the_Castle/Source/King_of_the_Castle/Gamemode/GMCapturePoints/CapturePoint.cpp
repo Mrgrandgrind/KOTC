@@ -154,7 +154,11 @@ void ACapturePoint::OnBeginOverlap(UPrimitiveComponent *OverlappedComponent, AAc
 	UPrimitiveComponent *OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	APlayerCharacter *character = Cast<APlayerCharacter>(OtherActor);
-	if (character != nullptr && !this->m_Players.Contains(character))
+	if (character == nullptr || OtherComp != character->GetCapsuleComponent())
+	{
+		return;
+	}
+	if (!this->m_Players.Contains(character))
 	{
 		this->m_Players.Add(character);
 
@@ -173,7 +177,11 @@ void ACapturePoint::OnEndOverlap(UPrimitiveComponent *OverlappedComponent, AActo
 	UPrimitiveComponent *OtherComp, int32 OtherBodyIndex)
 {
 	APlayerCharacter *character = Cast<APlayerCharacter>(OtherActor);
-	if (character != nullptr && this->m_Players.Contains(character))
+	if (character == nullptr || OtherComp != character->GetCapsuleComponent())
+	{
+		return;
+	}
+	if (this->m_Players.Contains(character))
 	{
 		this->m_Players.Remove(character);
 

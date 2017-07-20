@@ -28,16 +28,17 @@ public:
 	FORCEINLINE const FName& GetPointName() const { return this->m_PointName; }
 
 protected:
+	// Set light to represet owning team
 	void UpdateSignalLight() const;
 
 	// Returns true if team is constant. False if there are multiple teams or no team.
 	bool GetHoldingTeam(int& team) const;
 
-	float m_CaptureCounter;
-
 	bool m_bCapturing;
 
 	int m_CapturingTeam;
+
+	float m_CaptureCounter;
 
 	// Players inside this capture point
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Capture Point", meta = (DisplayName = "Name"))
@@ -47,9 +48,11 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Capture Point", meta = (DisplayName = "Team Owner"))
 	int m_OwningTeam;
 
+	// All players in this capture point
 	UPROPERTY()
 	TArray<class APlayerCharacter*> m_Players;
 
+	// Owning team signal light
 	UPROPERTY()
 	UPointLightComponent *m_SignalLight;
 };

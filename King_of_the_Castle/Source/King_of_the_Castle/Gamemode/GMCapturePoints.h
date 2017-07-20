@@ -16,6 +16,8 @@ class KING_OF_THE_CASTLE_API AGMCapturePoints : public ABaseGameMode
 public:
 	AGMCapturePoints();
 
+	virtual void Tick(float delta) override;
+
 	virtual void OnCapturePointEnter(class ACapturePoint *point, class APlayerCharacter *character);
 
 	virtual void OnCapturePointExit(class ACapturePoint *point, class APlayerCharacter *character);
@@ -47,7 +49,15 @@ protected:
 	// How long it should take to capture a capture point
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Setup", meta = (DisplayName = "Capture Duration"))
 	float m_CaptureDuration;
+
+	// How long it should take to capture a capture point
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Setup", meta = (DisplayName = "Score Per Second"))
+	float m_ScorePerSecond;
 	
+	// How long it should take to capture a capture point
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Setup", meta = (DisplayName = "Score Per Capture"))
+	float m_ScorePerCapture;
+
 	// Whether or not there should be an intermediate stage between capturing
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Setup", meta = (DisplayName = "Has Neutral State"))
 	bool m_bHasNeutralState;

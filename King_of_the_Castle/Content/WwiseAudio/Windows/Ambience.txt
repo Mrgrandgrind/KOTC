@@ -1,6 +1,3 @@
 Event	ID	Name			Wwise Object Path	Notes
 	2248455103	SampleTest			\Default Work Unit\SampleTest	
 
-In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
-	565128765	TestSample	D:\Documents\Dare\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\.cache\Windows\SFX\TestSample_9E69E797.wem		\Actor-Mixer Hierarchy\Default Work Unit\TestSample		3709344
-
