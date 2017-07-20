@@ -153,12 +153,12 @@ void ACapturePoint::Tick(float delta)
 void ACapturePoint::OnBeginOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor,
 	UPrimitiveComponent *OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherComp == nullptr || !OtherComp->IsA(UStaticMeshComponent::StaticClass()))
+	APlayerCharacter *character = Cast<APlayerCharacter>(OtherActor);
+	if (character == nullptr || OtherComp != character->GetCapsuleComponent())
 	{
 		return;
 	}
-	APlayerCharacter *character = Cast<APlayerCharacter>(OtherActor);
-	if (character != nullptr && !this->m_Players.Contains(character))
+	if (!this->m_Players.Contains(character))
 	{
 		this->m_Players.Add(character);
 
@@ -176,12 +176,12 @@ void ACapturePoint::OnBeginOverlap(UPrimitiveComponent *OverlappedComponent, AAc
 void ACapturePoint::OnEndOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor,
 	UPrimitiveComponent *OtherComp, int32 OtherBodyIndex)
 {
-	if (OtherComp == nullptr || !OtherComp->IsA(UStaticMeshComponent::StaticClass()))
+	APlayerCharacter *character = Cast<APlayerCharacter>(OtherActor);
+	if (character == nullptr || OtherComp != character->GetCapsuleComponent())
 	{
 		return;
 	}
-	APlayerCharacter *character = Cast<APlayerCharacter>(OtherActor);
-	if (character != nullptr && this->m_Players.Contains(character))
+	if (this->m_Players.Contains(character))
 	{
 		this->m_Players.Remove(character);
 
