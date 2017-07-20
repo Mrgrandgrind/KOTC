@@ -48,9 +48,23 @@ public:
 	// Structure manager reference
 	FORCEINLINE class ABlockStructureManager* GetStructureManager() const { return this->m_BlockStructureManager; }
 
+	// Get the score of team
+	UFUNCTION(BlueprintCallable, Category = "Score")
+	int GetScore(const int& team) 
+	{
+		if (!this->m_TeamScores.Contains(team))
+		{
+			return 0;
+		}
+		return int(this->m_TeamScores[team]);
+	}
+
 #if WITH_EDITOR
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 #endif
+
+protected:
+	FORCEINLINE TMap<int, float>& GetScores() { return this->m_TeamScores; }
 
 private:
 	void RemoveBlockEntities(const int& count);
@@ -61,10 +75,13 @@ private:
 
 	bool m_bUseDefaultStart;
 
+	TMap<int, float> m_TeamScores;
+
 	// How many players should be ingame
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Players", meta = (AllowPrivateAccess = "true", DisplayName = "Player Count"))
 	int m_PlayerCount;
 
+	// Spawn everyone on a new team
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Players", meta = (AllowPrivateAccess = "true", DisplayName = "Free For All"))
 	bool m_bFreeForAll;
 

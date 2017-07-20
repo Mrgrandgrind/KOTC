@@ -153,6 +153,10 @@ void ACapturePoint::Tick(float delta)
 void ACapturePoint::OnBeginOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor,
 	UPrimitiveComponent *OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	if (OtherComp == nullptr || !OtherComp->IsA(UStaticMeshComponent::StaticClass()))
+	{
+		return;
+	}
 	APlayerCharacter *character = Cast<APlayerCharacter>(OtherActor);
 	if (character != nullptr && !this->m_Players.Contains(character))
 	{
@@ -172,6 +176,10 @@ void ACapturePoint::OnBeginOverlap(UPrimitiveComponent *OverlappedComponent, AAc
 void ACapturePoint::OnEndOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor,
 	UPrimitiveComponent *OtherComp, int32 OtherBodyIndex)
 {
+	if (OtherComp == nullptr || !OtherComp->IsA(UStaticMeshComponent::StaticClass()))
+	{
+		return;
+	}
 	APlayerCharacter *character = Cast<APlayerCharacter>(OtherActor);
 	if (character != nullptr && this->m_Players.Contains(character))
 	{
