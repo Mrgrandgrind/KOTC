@@ -22,4 +22,6 @@ King_of_the_Castle/King_of_the_Castle_WwiseProject/.cache/*
 King_of_the_Castle/King_of_the_Castle_WwiseProject/.cache/Windows/SFX/Wwise.dat
 King_of_the_Castle/*.wwu
 King_of_the_Castle/*.bnk
+King_of_the_Castle/*.h
+
 
