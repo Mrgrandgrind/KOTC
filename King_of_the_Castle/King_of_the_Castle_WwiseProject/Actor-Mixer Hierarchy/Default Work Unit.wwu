@@ -14,69 +14,6 @@
 					</ReferenceList>
 					<ChildrenList>
 						<SwitchContainer Name="Footstep" ID="{545CA7A5-5695-48E9-B228-E709D97B1717}" ShortID="619903524">
-							<PropertyList>
-								<Property Name="Highpass" Type="int16">
-									<RTPCList>
-										<RTPC Name="" ID="{5BA3F9BA-3D39-4C6B-8183-0B3ACB1B7D99}" ShortID="950842946">
-											<ReferenceList>
-												<Reference Name="ControlInput">
-													<ObjectRef Name="PlayerSpeed" ID="{D7A9068C-62E3-4F14-BEB0-87E2D147EE81}" WorkUnitID="{C328BBC2-1A81-47C1-AEF7-2B6135AE3CED}"/>
-												</Reference>
-											</ReferenceList>
-											<Curve Name="" ID="{1A0A648D-9318-492D-8F31-C34A052F0E5D}">
-												<PropertyList>
-													<Property Name="Flags" Type="int32" Value="65537"/>
-												</PropertyList>
-												<PointList>
-													<Point>
-														<XPos>0</XPos>
-														<YPos>-27</YPos>
-														<Flags>5</Flags>
-													</Point>
-													<Point>
-														<XPos>49.3421052631579</XPos>
-														<YPos>0</YPos>
-														<Flags>0</Flags>
-													</Point>
-													<Point>
-														<XPos>100</XPos>
-														<YPos>0</YPos>
-														<Flags>37</Flags>
-													</Point>
-												</PointList>
-											</Curve>
-										</RTPC>
-									</RTPCList>
-								</Property>
-								<Property Name="Volume" Type="Real64">
-									<RTPCList>
-										<RTPC Name="" ID="{F96D6A42-F251-42E0-AB1D-452388B458DE}" ShortID="645322294">
-											<ReferenceList>
-												<Reference Name="ControlInput">
-													<ObjectRef Name="PlayerSpeed" ID="{D7A9068C-62E3-4F14-BEB0-87E2D147EE81}" WorkUnitID="{C328BBC2-1A81-47C1-AEF7-2B6135AE3CED}"/>
-												</Reference>
-											</ReferenceList>
-											<Curve Name="" ID="{167E08C0-B674-48D6-8679-1DD445187F41}">
-												<PropertyList>
-													<Property Name="Flags" Type="int32" Value="3"/>
-												</PropertyList>
-												<PointList>
-													<Point>
-														<XPos>0</XPos>
-														<YPos>-6.36709</YPos>
-														<Flags>5</Flags>
-													</Point>
-													<Point>
-														<XPos>100</XPos>
-														<YPos>0</YPos>
-														<Flags>37</Flags>
-													</Point>
-												</PointList>
-											</Curve>
-										</RTPC>
-									</RTPCList>
-								</Property>
-							</PropertyList>
 							<ReferenceList>
 								<Reference Name="Conversion">
 									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -100,16 +37,6 @@
 										</Reference>
 									</ReferenceList>
 									<ChildrenList>
-										<RandomSequenceContainer Name="Heel" ID="{2555D62B-0FE6-4BC7-A399-11956E9835C8}" ShortID="983354422">
-											<ReferenceList>
-												<Reference Name="Conversion">
-													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
-												</Reference>
-												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
-												</Reference>
-											</ReferenceList>
-										</RandomSequenceContainer>
 										<RandomSequenceContainer Name="Toe" ID="{C7C94357-3EE9-4313-9752-ACF0F795D525}" ShortID="1033096369">
 											<ReferenceList>
 												<Reference Name="Conversion">
@@ -119,8 +46,81 @@
 													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
 												</Reference>
 											</ReferenceList>
+											<ChildrenList>
+												<Sound Name="Wood_Right_Foot_2" ID="{0DC2B813-4707-426E-8182-31406B759B89}" ShortID="445927231" Type="SoundFX">
+													<PropertyList>
+														<Property Name="Inclusion" Type="bool">
+															<ValueList>
+																<Value>False</Value>
+															</ValueList>
+														</Property>
+													</PropertyList>
+													<ReferenceList>
+														<Reference Name="Conversion">
+															<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
+														</Reference>
+														<Reference Name="OutputBus">
+															<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
+														</Reference>
+													</ReferenceList>
+													<ChildrenList>
+														<AudioFileSource Name="Wood_Right_Foot_2" ID="{3AB3D751-1593-40FD-8253-46F0D909C645}" ShortID="527282302">
+															<PropertyList>
+																<Property Name="FadeInDuration" Type="Real64" Value="7.84737723214286E-04"/>
+																<Property Name="TrimBegin" Type="Real64" Value="6.43484933035714E-03"/>
+															</PropertyList>
+															<Language>SFX</Language>
+															<AudioFile>Wood_Right_Foot_2.wav</AudioFile>
+														</AudioFileSource>
+													</ChildrenList>
+													<ActiveSourceList>
+														<ActiveSource Name="Wood_Right_Foot_2" ID="{3AB3D751-1593-40FD-8253-46F0D909C645}" Platform="Linked"/>
+													</ActiveSourceList>
+												</Sound>
+											</ChildrenList>
+										</RandomSequenceContainer>
+										<RandomSequenceContainer Name="Heel" ID="{78799046-3F41-4CAB-8675-835F8FE53F3E}" ShortID="154026802">
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<Sound Name="Wood_Right_Foot_1" ID="{6DFDFF34-83FA-4BA5-A244-B9D7744279B8}" ShortID="717286373" Type="SoundFX">
+													<ReferenceList>
+														<Reference Name="Conversion">
+															<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
+														</Reference>
+														<Reference Name="OutputBus">
+															<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
+														</Reference>
+													</ReferenceList>
+													<ChildrenList>
+														<AudioFileSource Name="Wood_Right_Foot_1" ID="{47B3B0A1-3E1A-44C8-B5D0-30808B862439}" ShortID="721470732">
+															<PropertyList>
+																<Property Name="FadeInDuration" Type="Real64" Value="3.94112723214286E-04"/>
+																<Property Name="FadeOutDuration" Type="Real64" Value="2.30555943080357E-02"/>
+																<Property Name="TrimBegin" Type="Real64" Value="9.45870535714286E-03"/>
+																<Property Name="TrimEnd" Type="Real64" Value="0.107789829799107"/>
+															</PropertyList>
+															<Language>SFX</Language>
+															<AudioFile>Wood_Right_Foot_1.wav</AudioFile>
+														</AudioFileSource>
+													</ChildrenList>
+													<ActiveSourceList>
+														<ActiveSource Name="Wood_Right_Foot_1" ID="{47B3B0A1-3E1A-44C8-B5D0-30808B862439}" Platform="Linked"/>
+													</ActiveSourceList>
+												</Sound>
+											</ChildrenList>
 										</RandomSequenceContainer>
 									</ChildrenList>
+									<Playlist>
+										<ItemRef Name="Heel" ID="{78799046-3F41-4CAB-8675-835F8FE53F3E}"/>
+										<ItemRef Name="Toe" ID="{C7C94357-3EE9-4313-9752-ACF0F795D525}"/>
+									</Playlist>
 								</RandomSequenceContainer>
 								<RandomSequenceContainer Name="Plastic" ID="{A5331DCA-7D9E-43DE-AB73-9111A1B99107}" ShortID="377680621">
 									<PropertyList>
@@ -157,6 +157,10 @@
 											</ReferenceList>
 										</RandomSequenceContainer>
 									</ChildrenList>
+									<Playlist>
+										<ItemRef Name="Heel" ID="{6E83D9C8-CAEB-4B0A-91FA-F2AE85E1B364}"/>
+										<ItemRef Name="Toe" ID="{C11A92B7-0A3C-4F7C-983C-5861962D4D4B}"/>
+									</Playlist>
 								</RandomSequenceContainer>
 								<RandomSequenceContainer Name="Metal" ID="{FBE56D37-9E20-43C3-BCA7-BAD0B1D084C5}" ShortID="628610040">
 									<PropertyList>
@@ -181,6 +185,33 @@
 													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
 												</Reference>
 											</ReferenceList>
+											<ChildrenList>
+												<Sound Name="Metal_Right_Foot_1" ID="{20CF72D2-A429-4743-A96C-416BD9B76AAE}" ShortID="490665587" Type="SoundFX">
+													<ReferenceList>
+														<Reference Name="Conversion">
+															<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
+														</Reference>
+														<Reference Name="OutputBus">
+															<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
+														</Reference>
+													</ReferenceList>
+													<ChildrenList>
+														<AudioFileSource Name="Metal_Right_Foot_1" ID="{75179FC5-A478-4FB5-A3E4-7B06A74E2EE2}" ShortID="1054418156">
+															<PropertyList>
+																<Property Name="FadeInDuration" Type="Real64" Value="7.5567336309524E-04"/>
+																<Property Name="FadeOutDuration" Type="Real64" Value="1.66248139880952E-02"/>
+																<Property Name="TrimBegin" Type="Real64" Value="2.13099888392857E-02"/>
+																<Property Name="TrimEnd" Type="Real64" Value="0.110026041666667"/>
+															</PropertyList>
+															<Language>SFX</Language>
+															<AudioFile>Metal_Right_Foot_1.wav</AudioFile>
+														</AudioFileSource>
+													</ChildrenList>
+													<ActiveSourceList>
+														<ActiveSource Name="Metal_Right_Foot_1" ID="{75179FC5-A478-4FB5-A3E4-7B06A74E2EE2}" Platform="Linked"/>
+													</ActiveSourceList>
+												</Sound>
+											</ChildrenList>
 										</RandomSequenceContainer>
 										<RandomSequenceContainer Name="Toe" ID="{DE0F98DD-BBCC-4FE6-8923-2E487E1DDE19}" ShortID="50487420">
 											<ReferenceList>
@@ -191,8 +222,44 @@
 													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
 												</Reference>
 											</ReferenceList>
+											<ChildrenList>
+												<Sound Name="Metal_Right_Foot_2" ID="{0854CBEC-2086-4D14-A681-FAEA2C99107F}" ShortID="809771383" Type="SoundFX">
+													<PropertyList>
+														<Property Name="Inclusion" Type="bool">
+															<ValueList>
+																<Value>False</Value>
+															</ValueList>
+														</Property>
+													</PropertyList>
+													<ReferenceList>
+														<Reference Name="Conversion">
+															<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
+														</Reference>
+														<Reference Name="OutputBus">
+															<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
+														</Reference>
+													</ReferenceList>
+													<ChildrenList>
+														<AudioFileSource Name="Metal_Right_Foot_2" ID="{DD14AFB1-3B24-4B53-86C7-E9F8FCFB6D61}" ShortID="848043302">
+															<PropertyList>
+																<Property Name="FadeInDuration" Type="Real64" Value="2.8715587797619E-03"/>
+																<Property Name="TrimBegin" Type="Real64" Value="1.29220145089286E-02"/>
+															</PropertyList>
+															<Language>SFX</Language>
+															<AudioFile>Metal_Right_Foot_2.wav</AudioFile>
+														</AudioFileSource>
+													</ChildrenList>
+													<ActiveSourceList>
+														<ActiveSource Name="Metal_Right_Foot_2" ID="{DD14AFB1-3B24-4B53-86C7-E9F8FCFB6D61}" Platform="Linked"/>
+													</ActiveSourceList>
+												</Sound>
+											</ChildrenList>
 										</RandomSequenceContainer>
 									</ChildrenList>
+									<Playlist>
+										<ItemRef Name="Heel" ID="{38FD7892-CE61-45E5-9E4B-F5BD89B765E9}"/>
+										<ItemRef Name="Toe" ID="{DE0F98DD-BBCC-4FE6-8923-2E487E1DDE19}"/>
+									</Playlist>
 								</RandomSequenceContainer>
 								<RandomSequenceContainer Name="Fabric" ID="{EF442151-65EA-4515-A64E-332035518775}" ShortID="704088440">
 									<PropertyList>
@@ -229,6 +296,10 @@
 											</ReferenceList>
 										</RandomSequenceContainer>
 									</ChildrenList>
+									<Playlist>
+										<ItemRef Name="Heel" ID="{41B024BF-5C54-4E5B-8EA0-475DAFDF8533}"/>
+										<ItemRef Name="Toe" ID="{98E445F7-1E87-488C-9040-745A803F91DB}"/>
+									</Playlist>
 								</RandomSequenceContainer>
 								<RandomSequenceContainer Name="Paper" ID="{94618D27-B959-481D-8D4F-75F57A25695E}" ShortID="503065042">
 									<PropertyList>
@@ -265,6 +336,10 @@
 											</ReferenceList>
 										</RandomSequenceContainer>
 									</ChildrenList>
+									<Playlist>
+										<ItemRef Name="Heel" ID="{915B8B87-3539-4E22-905E-6FA57B04109A}"/>
+										<ItemRef Name="Toe" ID="{5CF79FA2-5D1F-4324-8C60-044FD80C768E}"/>
+									</Playlist>
 								</RandomSequenceContainer>
 							</ChildrenList>
 							<GroupingInfo>
@@ -321,7 +396,7 @@
 								</GroupingList>
 							</GroupingInfo>
 						</SwitchContainer>
-						<SwitchContainer Name="Jump" ID="{FB03DD37-04EC-4337-A9D7-C55247002BFA}" ShortID="381813946">
+						<SwitchContainer Name="JumpUp" ID="{FB03DD37-04EC-4337-A9D7-C55247002BFA}" ShortID="381813946">
 							<ReferenceList>
 								<Reference Name="Conversion">
 									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -331,11 +406,7 @@
 								</Reference>
 							</ReferenceList>
 							<ChildrenList>
-								<RandomSequenceContainer Name="Paper" ID="{CAF56DB9-21F1-4D1D-8B1F-331D0AC26216}" ShortID="540717181">
-									<PropertyList>
-										<Property Name="PlayMechanismStepOrContinuous" Type="int16" Value="0"/>
-										<Property Name="RandomOrSequence" Type="int16" Value="0"/>
-									</PropertyList>
+								<RandomSequenceContainer Name="Wood" ID="{ED15716F-1074-4AE9-8C43-BBBA0CFAF245}" ShortID="946208025">
 									<ReferenceList>
 										<Reference Name="Conversion">
 											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -345,7 +416,7 @@
 										</Reference>
 									</ReferenceList>
 									<ChildrenList>
-										<RandomSequenceContainer Name="Heel" ID="{B3A7C999-7881-4AE8-A035-C39D43FB53D2}" ShortID="103948904">
+										<Sound Name="Wood_Jump_Up_01" ID="{40BCF826-B941-4D30-AD2A-FC9C79C6671F}" ShortID="137190925" Type="SoundFX">
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -354,24 +425,19 @@
 													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
 												</Reference>
 											</ReferenceList>
-										</RandomSequenceContainer>
-										<RandomSequenceContainer Name="Toe" ID="{F8A16EB5-1B5D-4E9F-9381-6877DFFF89AD}" ShortID="1060927690">
-											<ReferenceList>
-												<Reference Name="Conversion">
-													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
-												</Reference>
-												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
-												</Reference>
-											</ReferenceList>
-										</RandomSequenceContainer>
+											<ChildrenList>
+												<AudioFileSource Name="Wood_Jump_Up_01" ID="{BFAF9F9A-E8CA-41F9-A735-A0AE8F2FFAD2}" ShortID="151159769">
+													<Language>SFX</Language>
+													<AudioFile>Wood_Jump_Up.01.wav</AudioFile>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="Wood_Jump_Up_01" ID="{BFAF9F9A-E8CA-41F9-A735-A0AE8F2FFAD2}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
 									</ChildrenList>
 								</RandomSequenceContainer>
-								<RandomSequenceContainer Name="Wood" ID="{DEE44C4A-0912-4625-B347-737FA7BC3A24}" ShortID="80267101">
-									<PropertyList>
-										<Property Name="PlayMechanismStepOrContinuous" Type="int16" Value="0"/>
-										<Property Name="RandomOrSequence" Type="int16" Value="0"/>
-									</PropertyList>
+								<RandomSequenceContainer Name="Plastic" ID="{988E786A-C55D-4EC6-8C0D-3F5F178FB5B8}" ShortID="992323745">
 									<ReferenceList>
 										<Reference Name="Conversion">
 											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -380,34 +446,8 @@
 											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
 										</Reference>
 									</ReferenceList>
-									<ChildrenList>
-										<RandomSequenceContainer Name="Heel" ID="{EE87DBB4-C72F-4EFA-AF55-120BE1A7A912}" ShortID="680256801">
-											<ReferenceList>
-												<Reference Name="Conversion">
-													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
-												</Reference>
-												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
-												</Reference>
-											</ReferenceList>
-										</RandomSequenceContainer>
-										<RandomSequenceContainer Name="Toe" ID="{58C29129-779B-42DB-BFD4-7B45732A2946}" ShortID="1010655892">
-											<ReferenceList>
-												<Reference Name="Conversion">
-													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
-												</Reference>
-												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
-												</Reference>
-											</ReferenceList>
-										</RandomSequenceContainer>
-									</ChildrenList>
 								</RandomSequenceContainer>
-								<RandomSequenceContainer Name="Plastic" ID="{DE3A47B9-EE51-435B-93F4-CB4CB03BC49B}" ShortID="518429262">
-									<PropertyList>
-										<Property Name="PlayMechanismStepOrContinuous" Type="int16" Value="0"/>
-										<Property Name="RandomOrSequence" Type="int16" Value="0"/>
-									</PropertyList>
+								<RandomSequenceContainer Name="Paper" ID="{BBD9BFE6-592D-460E-A7F8-27709617D6C0}" ShortID="405506324">
 									<ReferenceList>
 										<Reference Name="Conversion">
 											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -416,34 +456,8 @@
 											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
 										</Reference>
 									</ReferenceList>
-									<ChildrenList>
-										<RandomSequenceContainer Name="Heel" ID="{22E2599B-0453-4FDB-9A52-C526A32E52A7}" ShortID="893561740">
-											<ReferenceList>
-												<Reference Name="Conversion">
-													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
-												</Reference>
-												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
-												</Reference>
-											</ReferenceList>
-										</RandomSequenceContainer>
-										<RandomSequenceContainer Name="Toe" ID="{BAEA506D-A8F8-4358-8478-5F12E35297AF}" ShortID="703476559">
-											<ReferenceList>
-												<Reference Name="Conversion">
-													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
-												</Reference>
-												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
-												</Reference>
-											</ReferenceList>
-										</RandomSequenceContainer>
-									</ChildrenList>
 								</RandomSequenceContainer>
-								<RandomSequenceContainer Name="Metal" ID="{ADF93AEA-F6F8-4DDA-A24F-0F32F21F3BCE}" ShortID="567356330">
-									<PropertyList>
-										<Property Name="PlayMechanismStepOrContinuous" Type="int16" Value="0"/>
-										<Property Name="RandomOrSequence" Type="int16" Value="0"/>
-									</PropertyList>
+								<RandomSequenceContainer Name="Fabric" ID="{925EDE0E-30FE-4275-8C0C-EAC9C5A883C6}" ShortID="484278821">
 									<ReferenceList>
 										<Reference Name="Conversion">
 											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -452,34 +466,8 @@
 											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
 										</Reference>
 									</ReferenceList>
-									<ChildrenList>
-										<RandomSequenceContainer Name="Heel" ID="{FE5BFC77-1B5B-4C8E-B94F-947F1D634F68}" ShortID="905058987">
-											<ReferenceList>
-												<Reference Name="Conversion">
-													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
-												</Reference>
-												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
-												</Reference>
-											</ReferenceList>
-										</RandomSequenceContainer>
-										<RandomSequenceContainer Name="Toe" ID="{2D59EF67-3CF3-484E-AAB2-5948B151F9A6}" ShortID="381060765">
-											<ReferenceList>
-												<Reference Name="Conversion">
-													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
-												</Reference>
-												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
-												</Reference>
-											</ReferenceList>
-										</RandomSequenceContainer>
-									</ChildrenList>
 								</RandomSequenceContainer>
-								<RandomSequenceContainer Name="Fabric" ID="{E6CF8B37-E8C1-4FBD-8FFB-AEB58976222C}" ShortID="247243904">
-									<PropertyList>
-										<Property Name="PlayMechanismStepOrContinuous" Type="int16" Value="0"/>
-										<Property Name="RandomOrSequence" Type="int16" Value="0"/>
-									</PropertyList>
+								<RandomSequenceContainer Name="Metal" ID="{07D780CE-8B8E-4512-A7E2-9F6257A7D44B}" ShortID="987355503">
 									<ReferenceList>
 										<Reference Name="Conversion">
 											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -489,7 +477,7 @@
 										</Reference>
 									</ReferenceList>
 									<ChildrenList>
-										<RandomSequenceContainer Name="Heel" ID="{ECB50472-96FB-4844-808A-4E3B9D665F61}" ShortID="936045610">
+										<Sound Name="Metal_Jump_Up_01" ID="{4B5E2AF4-1238-49BF-BF37-6AF4F0F592B0}" ShortID="709062662" Type="SoundFX">
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -498,17 +486,16 @@
 													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
 												</Reference>
 											</ReferenceList>
-										</RandomSequenceContainer>
-										<RandomSequenceContainer Name="Toe" ID="{9A5045BA-40B9-4E91-B13F-149FDE12B162}" ShortID="849467844">
-											<ReferenceList>
-												<Reference Name="Conversion">
-													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
-												</Reference>
-												<Reference Name="OutputBus">
-													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
-												</Reference>
-											</ReferenceList>
-										</RandomSequenceContainer>
+											<ChildrenList>
+												<AudioFileSource Name="Metal_Jump_Up_01" ID="{BE7320CE-EE5E-4B3F-BAF9-C82141670893}" ShortID="571621666">
+													<Language>SFX</Language>
+													<AudioFile>Metal_Jump_Up.01.wav</AudioFile>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="Metal_Jump_Up_01" ID="{BE7320CE-EE5E-4B3F-BAF9-C82141670893}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
 									</ChildrenList>
 								</RandomSequenceContainer>
 							</ChildrenList>
@@ -517,21 +504,53 @@
 								<DefaultSwitchRef Name="Wood" ID="{EEA62EB5-CA73-4876-A5C6-DAFE3EF34BF7}"/>
 								<GroupingBehaviorList>
 									<GroupingBehavior>
-										<ItemRef Name="Fabric" ID="{E6CF8B37-E8C1-4FBD-8FFB-AEB58976222C}"/>
+										<ItemRef Name="Fabric" ID="{925EDE0E-30FE-4275-8C0C-EAC9C5A883C6}"/>
 									</GroupingBehavior>
 									<GroupingBehavior>
-										<ItemRef Name="Wood" ID="{DEE44C4A-0912-4625-B347-737FA7BC3A24}"/>
+										<ItemRef Name="Plastic" ID="{988E786A-C55D-4EC6-8C0D-3F5F178FB5B8}"/>
 									</GroupingBehavior>
 									<GroupingBehavior>
-										<ItemRef Name="Plastic" ID="{DE3A47B9-EE51-435B-93F4-CB4CB03BC49B}"/>
+										<ItemRef Name="Wood" ID="{ED15716F-1074-4AE9-8C43-BBBA0CFAF245}"/>
 									</GroupingBehavior>
 									<GroupingBehavior>
-										<ItemRef Name="Paper" ID="{CAF56DB9-21F1-4D1D-8B1F-331D0AC26216}"/>
+										<ItemRef Name="Metal" ID="{07D780CE-8B8E-4512-A7E2-9F6257A7D44B}"/>
 									</GroupingBehavior>
 									<GroupingBehavior>
-										<ItemRef Name="Metal" ID="{ADF93AEA-F6F8-4DDA-A24F-0F32F21F3BCE}"/>
+										<ItemRef Name="Paper" ID="{BBD9BFE6-592D-460E-A7F8-27709617D6C0}"/>
 									</GroupingBehavior>
 								</GroupingBehaviorList>
+								<GroupingList>
+									<Grouping>
+										<SwitchRef Name="Paper" ID="{068CC944-F462-4D09-8625-C5FC39386DE3}"/>
+										<ItemList>
+											<ItemRef Name="Paper" ID="{BBD9BFE6-592D-460E-A7F8-27709617D6C0}"/>
+										</ItemList>
+									</Grouping>
+									<Grouping>
+										<SwitchRef Name="Fabric" ID="{E6F5D29C-85DE-4988-966C-F861D075F64C}"/>
+										<ItemList>
+											<ItemRef Name="Fabric" ID="{925EDE0E-30FE-4275-8C0C-EAC9C5A883C6}"/>
+										</ItemList>
+									</Grouping>
+									<Grouping>
+										<SwitchRef Name="Wood" ID="{EEA62EB5-CA73-4876-A5C6-DAFE3EF34BF7}"/>
+										<ItemList>
+											<ItemRef Name="Wood" ID="{ED15716F-1074-4AE9-8C43-BBBA0CFAF245}"/>
+										</ItemList>
+									</Grouping>
+									<Grouping>
+										<SwitchRef Name="Metal" ID="{07DE4BD4-EE9F-4B17-943A-5528F46B5EF8}"/>
+										<ItemList>
+											<ItemRef Name="Metal" ID="{07D780CE-8B8E-4512-A7E2-9F6257A7D44B}"/>
+										</ItemList>
+									</Grouping>
+									<Grouping>
+										<SwitchRef Name="Plastic" ID="{FFD3BEF5-CC16-4ACB-8655-FAE810969807}"/>
+										<ItemList>
+											<ItemRef Name="Plastic" ID="{988E786A-C55D-4EC6-8C0D-3F5F178FB5B8}"/>
+										</ItemList>
+									</Grouping>
+								</GroupingList>
 							</GroupingInfo>
 						</SwitchContainer>
 						<ActorMixer Name="Movement" ID="{CE442AB0-0340-48DA-A6A1-DBBB1274C0D9}" ShortID="275753082">
@@ -631,8 +650,185 @@
 										</Reference>
 									</ReferenceList>
 								</RandomSequenceContainer>
+								<RandomSequenceContainer Name="BlockDelete" ID="{9163FE63-A4FE-4FF9-880F-92C6658CDB55}" ShortID="581099114">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
+										</Reference>
+									</ReferenceList>
+								</RandomSequenceContainer>
+								<RandomSequenceContainer Name="BlockPlace" ID="{2BA06D05-6A57-4F5C-BA3F-6F21198E7C1F}" ShortID="710833146">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
+										</Reference>
+									</ReferenceList>
+								</RandomSequenceContainer>
 							</ChildrenList>
 						</ActorMixer>
+						<SwitchContainer Name="JumpLand" ID="{3457F1F8-71E4-45FB-A104-18A08FAB13EC}" ShortID="878306676">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
+								</Reference>
+							</ReferenceList>
+							<ChildrenList>
+								<RandomSequenceContainer Name="Wood" ID="{00D47C2D-04D2-4FF9-85F5-94EF2F94F644}" ShortID="267818508">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<Sound Name="Wood_Jump_Land_01" ID="{72F86756-08ED-4E9E-B797-93FAB5D04FE4}" ShortID="79197545" Type="SoundFX">
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="Wood_Jump_Land_01" ID="{4892E5EC-0140-48A3-BCFD-2D0CF0B24E22}" ShortID="91710285">
+													<Language>SFX</Language>
+													<AudioFile>Wood_Jump_Land.01.wav</AudioFile>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="Wood_Jump_Land_01" ID="{4892E5EC-0140-48A3-BCFD-2D0CF0B24E22}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+									</ChildrenList>
+								</RandomSequenceContainer>
+								<RandomSequenceContainer Name="Plastic" ID="{83C51FC6-BB82-4132-8B0C-E9ADDF6B2A32}" ShortID="1012790412">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
+										</Reference>
+									</ReferenceList>
+								</RandomSequenceContainer>
+								<RandomSequenceContainer Name="Paper" ID="{1E4BF8BB-594D-4D94-B8A0-FAD3BDEA76A2}" ShortID="515271944">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
+										</Reference>
+									</ReferenceList>
+								</RandomSequenceContainer>
+								<RandomSequenceContainer Name="Fabric" ID="{43BE9E9A-911E-4E6D-B989-33BAECADED11}" ShortID="1041235019">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
+										</Reference>
+									</ReferenceList>
+								</RandomSequenceContainer>
+								<RandomSequenceContainer Name="Metal" ID="{E0477997-3F52-4256-BEA5-A043C293DCD1}" ShortID="934015111">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<Sound Name="Metal_Jump_Land_01" ID="{2FE3342E-8AA3-4763-9EC0-DBD51E3DBE07}" ShortID="56734753" Type="SoundFX">
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="Metal_Jump_Land_01" ID="{88786C7A-28C4-4E69-AB14-2AADBBAF2783}" ShortID="318839171">
+													<Language>SFX</Language>
+													<AudioFile>Metal_Jump_Land.01.wav</AudioFile>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="Metal_Jump_Land_01" ID="{88786C7A-28C4-4E69-AB14-2AADBBAF2783}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+									</ChildrenList>
+								</RandomSequenceContainer>
+							</ChildrenList>
+							<GroupingInfo>
+								<GroupRef Name="Surface" ID="{E9BD4090-3758-4344-B1BF-12BB8551961C}"/>
+								<DefaultSwitchRef Name="Wood" ID="{EEA62EB5-CA73-4876-A5C6-DAFE3EF34BF7}"/>
+								<GroupingBehaviorList>
+									<GroupingBehavior>
+										<ItemRef Name="Wood" ID="{00D47C2D-04D2-4FF9-85F5-94EF2F94F644}"/>
+									</GroupingBehavior>
+									<GroupingBehavior>
+										<ItemRef Name="Metal" ID="{E0477997-3F52-4256-BEA5-A043C293DCD1}"/>
+									</GroupingBehavior>
+									<GroupingBehavior>
+										<ItemRef Name="Fabric" ID="{43BE9E9A-911E-4E6D-B989-33BAECADED11}"/>
+									</GroupingBehavior>
+									<GroupingBehavior>
+										<ItemRef Name="Paper" ID="{1E4BF8BB-594D-4D94-B8A0-FAD3BDEA76A2}"/>
+									</GroupingBehavior>
+									<GroupingBehavior>
+										<ItemRef Name="Plastic" ID="{83C51FC6-BB82-4132-8B0C-E9ADDF6B2A32}"/>
+									</GroupingBehavior>
+								</GroupingBehaviorList>
+								<GroupingList>
+									<Grouping>
+										<SwitchRef Name="Paper" ID="{068CC944-F462-4D09-8625-C5FC39386DE3}"/>
+										<ItemList>
+											<ItemRef Name="Paper" ID="{1E4BF8BB-594D-4D94-B8A0-FAD3BDEA76A2}"/>
+										</ItemList>
+									</Grouping>
+									<Grouping>
+										<SwitchRef Name="Fabric" ID="{E6F5D29C-85DE-4988-966C-F861D075F64C}"/>
+										<ItemList>
+											<ItemRef Name="Fabric" ID="{43BE9E9A-911E-4E6D-B989-33BAECADED11}"/>
+										</ItemList>
+									</Grouping>
+									<Grouping>
+										<SwitchRef Name="Wood" ID="{EEA62EB5-CA73-4876-A5C6-DAFE3EF34BF7}"/>
+										<ItemList>
+											<ItemRef Name="Wood" ID="{00D47C2D-04D2-4FF9-85F5-94EF2F94F644}"/>
+										</ItemList>
+									</Grouping>
+									<Grouping>
+										<SwitchRef Name="Metal" ID="{07DE4BD4-EE9F-4B17-943A-5528F46B5EF8}"/>
+										<ItemList>
+											<ItemRef Name="Metal" ID="{E0477997-3F52-4256-BEA5-A043C293DCD1}"/>
+										</ItemList>
+									</Grouping>
+									<Grouping>
+										<SwitchRef Name="Plastic" ID="{FFD3BEF5-CC16-4ACB-8655-FAE810969807}"/>
+										<ItemList>
+											<ItemRef Name="Plastic" ID="{83C51FC6-BB82-4132-8B0C-E9ADDF6B2A32}"/>
+										</ItemList>
+									</Grouping>
+								</GroupingList>
+							</GroupingInfo>
+						</SwitchContainer>
 					</ChildrenList>
 				</ActorMixer>
 			</ChildrenList>
