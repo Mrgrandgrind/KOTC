@@ -145,10 +145,7 @@ public:
 #endif
 
 protected:
-	FORCEINLINE class ABuildArea* GetActiveBuildArea() const 
-	{ 
-		return this->m_BuildAreas.Num() == 0 ? nullptr : this->m_BuildAreas.Last();
-	}
+	class ABuildArea* GetActiveBuildArea();
 
 	UFUNCTION()
 	void ToggleBuildMode() { if(!this->m_bBlockMovement) this->SetBuildModeEnabled(!this->m_bBuildingEnabled); }

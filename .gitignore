@@ -20,3 +20,8 @@ King_of_the_Castle/Plugins/Wwise/Binaries
 King_of_the_Castle/Plugins/Wwise/Intermediate
 King_of_the_Castle/King_of_the_Castle_WwiseProject/.cache/*
 King_of_the_Castle/King_of_the_Castle_WwiseProject/.cache/Windows/SFX/Wwise.dat
+*.bnk
+*.wwu
+
+
+

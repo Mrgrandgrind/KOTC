@@ -67,7 +67,7 @@ TArray<ABlockEntity*> ABlock::DropBlock(AActor *source, const bool& restrictPick
 // Destroy block
 void ABlock::DestroyBlock(AActor *source)
 {
-	ABaseGameMode *gamemode = Cast<ABaseGameMode>(Super::GetWorld()->GetAuthGameMode());
+	ABaseGameMode *gamemode = GetGameMode<ABaseGameMode>(Super::GetWorld());
 	if (gamemode != nullptr)
 	{
 		gamemode->OnBlockDestroy(this, source);
@@ -100,7 +100,7 @@ ABlock* ABlock::SpawnBlock(UWorld *world, TSubclassOf<ABlock> type, const int& t
 	{
 		block->SetTeam(team);
 
-		ABaseGameMode *gamemode = Cast<ABaseGameMode>(world->GetAuthGameMode());
+		ABaseGameMode *gamemode = GetGameMode<ABaseGameMode>(world);
 		if (gamemode != nullptr)
 		{
 			gamemode->OnBlockPlace(block, source);
@@ -128,19 +128,18 @@ void ABlock::SetHealth(const float& health)
 	material->SetVectorParameterValue(MATERIAL_DAMAGE_NAME, color);
 }
 
-float ABlock::TakeDamage(float Damage, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+float ABlock::TakeDamage(float damage, FDamageEvent const& damageEvent, AController* eventInstigator, AActor* damageCauser)
 {
 	if(!this->IsDestructable())
 	{
 		return 0.0f;
 	}
-	float actual = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
-	this->SetHealth(this->GetHealth() - actual);
+	this->SetHealth(this->GetHealth() - damage);
 	if (this->m_Health <= 0.0f) // if dead
 	{
-		this->DropBlock(DamageCauser, true);
+		this->DropBlock(damageCauser, true);
 	}
-	return actual;
+	return damage;
 }
 
 #if WITH_EDITOR

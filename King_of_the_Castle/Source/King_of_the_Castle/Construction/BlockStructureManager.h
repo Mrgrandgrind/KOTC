@@ -64,6 +64,10 @@ public:
 
 	bool IsSupport(const FVector& position, const FVector& extent) const;
 
+	TArray<class ABlock*> GetNeighbours(class ABlock *block) const;
+
+	TArray<class ABlock*> GetNeighbours(const FVector& location, FVector extent) const;
+
 	void ProcessDestroy(class ABlock *block);
 
 	void ProcessCreate(class ABlock *block);
@@ -108,8 +112,6 @@ protected:
 #endif
 
 	void AddNeighbours(class ABlock *block, const int& structureIndex, TArray<AActor*>& outArray);
-
-	TArray<class ABlock*> GetNeighbours(class ABlock *block) const;
 
 	// Merge structureB into structureA. Returns structureA and destroys structureB.
 	void MergeIntoA(FStructureMeta *metaA, FStructureMeta *metaB);

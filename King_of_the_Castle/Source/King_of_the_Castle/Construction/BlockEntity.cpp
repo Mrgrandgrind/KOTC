@@ -211,7 +211,7 @@ void ABlockEntity::Tick(float delta)
 		{
 			this->Pickup(closest);
 		}
-		else
+		else if(closestDistance > 10.0f)
 		{
 			UCapsuleComponent *capsule = closest->GetCapsuleComponent();
 			float perc = closest->GetSquaredDistanceTo(this) / ATTRACTION_DISTANCE_SQUARED;

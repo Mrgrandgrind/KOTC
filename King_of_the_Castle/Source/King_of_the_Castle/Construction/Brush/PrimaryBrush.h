@@ -37,15 +37,6 @@ public:
 protected:
 	FRotator GetBrushRotation() const;
 
-	//void UpdateBlockChildRotation(const FRotator& previousRotation, const FRotator& newRotation);
-
-	//void UpdateBlockChildActor();
-
-	//void UpdateChain(class ABuildArea *area, const FHitResult& trace, bool& show);
-
-	//void UpdateRegular(class ABuildArea *area, const FHitResult& trace, bool& show);
-
-	//virtual void Update(class APlayerCharacter *character, class ABuildArea *area, const FHitResult& trace) override;
 
 	bool CanPlaceOn(const FHitResult& result) const;
 

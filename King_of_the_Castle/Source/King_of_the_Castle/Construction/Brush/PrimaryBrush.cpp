@@ -19,7 +19,9 @@
 #define DEFAULT_MAX_BLOCK_COUNT 10
 #define BRUSH_CREATE_COLOR FLinearColor(0.0f, 0.75f, 0.0f, 1.0f)
 
-#define BRUSH_PLACE_FLOOR_NORMAL_Z -0.5f
+#define RAY_COUNT FMath::RoundToInt(KOTC_CONSTRUCTION_REACH_DISTANCE * 2.0f)
+
+#define BRUSH_PLACE_FLOOR_NORMAL_Z -0.5
 
 #define BRUSH_TEXT_MATERIAL_LOCATION TEXT("Material'/Game/Materials/M_BillboardFont.M_BillboardFont'")
 
@@ -169,8 +171,8 @@ FRotator UPrimaryBrush::GetBrushRotation() const
 bool UPrimaryBrush::CanPlaceOn(const FHitResult& result) const
 {
 	return result.IsValidBlockingHit()
-		&& Cast<UStaticMeshComponent>(result.GetComponent()) != nullptr
-		|| result.GetComponent()->IsA(UModelComponent::StaticClass());
+		&& (Cast<UStaticMeshComponent>(result.GetComponent()) != nullptr
+		|| result.GetComponent()->IsA(UModelComponent::StaticClass()));
 }
 
 void UPrimaryBrush::SetBrushVisible(const bool& visible)
@@ -301,15 +303,14 @@ bool UPrimaryBrush::OnPreCheck(ABuildArea *area, const FHitResult& result, FGrid
 			// The position is valid so update the position into our out cell
 			area->GetGridCell(result.ImpactPoint + result.ImpactNormal * area->GetCellSize() / 2.0f, out);
 
-			// Check to see if we new position would spawn a support block,
+			// Check to sfee if we new position would spawn a support block,
 			// if it does then we will always show the brush
 			FVector location;
 			area->GetGridLocation(out, location);
 
-			show = Super::IsSupport(location, area->GetCellSize());
+			show = Super::IsSupport(location, area->GetCellSize()) || Super::GetNeighbours(location, area->GetCellSize()).Num() > 0;
 
-			// If we aren't in a support block spawning location but our ray hit a block
-			//ABlock *block = Cast<ABlock>(result.GetActor());
+			// If we aren't in a support block spawning location but our ray hit something
 			if (!show && result.GetComponent() != nullptr)
 			{
 				// Check to see if there's a block below the cell. If there is, we will still show
@@ -320,9 +321,46 @@ bool UPrimaryBrush::OnPreCheck(ABuildArea *area, const FHitResult& result, FGrid
 
 				Super::RenderTrace(below.TraceStart, show ? below.ImpactPoint : below.TraceEnd, show ? FColor::Cyan : FColor::Blue);
 			}
+			else
+			{
+				Super::RenderPoint(location, FColor::Purple);
+			}
 			return true;
 		}
 	}
+	// Check if there's a an empty space at the players feet
+	ACharacter *character = Cast<ACharacter>(Super::GetOwner());
+	check(character != nullptr);
+
+	FVector origin, extent;
+	character->GetActorBounds(true, origin, extent);
+
+	FCollisionQueryParams params;
+	params.AddIgnoredActor(Super::GetOwner());
+
+	FVector loc = character->GetActorLocation(), point = loc - FVector(0.0f, 0.0f, extent.Z / 2.0f + area->GetCellSize().Z / 2.0f);
+
+	FHitResult floorResult;
+	Super::GetWorld()->LineTraceSingleByChannel(floorResult, loc, point, ECollisionChannel::ECC_WorldDynamic, params);
+	Super::RenderTrace(loc, point, FColor::Purple);
+	if (floorResult.IsValidBlockingHit() && Cast<ABlock>(floorResult.GetActor()) != nullptr)
+	{
+		
+		FRotator rotation = (result.TraceEnd - result.TraceStart).Rotation();
+		rotation.Pitch = 0.0f;
+		FVector normal = rotation.RotateVector(FVector(1.0f, 0.0f, 0.0f));
+		Super::GetWorld()->LineTraceSingleByChannel(floorResult, point, point
+			+ normal * area->GetCellSize(), ECollisionChannel::ECC_WorldDynamic);
+		Super::RenderTrace(point, point + normal * area->GetCellSize(), FColor::Purple);
+
+		if (!floorResult.IsValidBlockingHit())
+		{
+			show = true;
+			area->GetGridCell(floorResult.TraceEnd, out);
+			return true;
+		}
+	}
+
 	return false;
 }
 
@@ -336,11 +374,45 @@ bool UPrimaryBrush::OnMainCheck(ABuildArea *area, const FHitResult& result, FGri
 		// We only need to run main if pre failed or we are looking downwards
 		return true;
 	}
-	float d = 0.0f, dTotal = vector.Size(), dStep = (area->GetCellSize() * normal).Size() * (1.0f / 1.5f);
-	while (d < dTotal)
+	const int& count = RAY_COUNT;
+	float dStep = vector.Size() / count, d = dStep;
+
+	//float d = 0.0f, /*dTotal = vector.Size(),*/ dStep = vector.Size() / count;//(area->GetCellSize() * normal).Size() * (1.0f / 1.5f);
+	//while (d < dTotal)
+	for (int i = 0; i < count; i++)
 	{
 		FVector point;
 		FHitResult trace;
+		bool found = false;
+
+		auto FindVertical = [&]() -> bool
+		{
+			// Cast a block size trace downward from the original trace
+			Super::GetWorld()->LineTraceSingleByChannel(trace, point, point
+				- FVector(0.0f, 0.0f, area->GetCellSize().Z), ECollisionChannel::ECC_WorldDynamic);
+
+			bool hit = trace.IsValidBlockingHit() && this->CanPlaceOn(trace);
+			Super::RenderTrace(trace.TraceStart, hit ? trace.ImpactPoint : trace.TraceEnd, hit ? FColor::Cyan : FColor::Blue);
+
+			return hit;
+		};
+		auto FindHorizontal = [&](const float& angle) -> bool
+		{
+			// Cast a ray towards the player to see if we can place a block on the floor
+			//FVector sideDir = FVector(normal.X, normal.Y, 0.0f).GetSafeNormal();
+			FRotator dirRot = FVector(normal.X, normal.Y, 0.0f).Rotation();
+			dirRot.Yaw = FMath::GridSnap(dirRot.Yaw, 90.0f) + angle;
+			FVector dir = dirRot.RotateVector(FVector(1.0f, 0.0f, 0.0f));
+			Super::GetWorld()->LineTraceSingleByChannel(trace, point, point - dir * area->GetCellSize().Z,
+				ECollisionChannel::ECC_WorldDynamic, FCollisionQueryParams::DefaultQueryParam);
+
+			bool hit = trace.IsValidBlockingHit() && this->CanPlaceOn(trace);
+			hit = hit && (Super::IsSupport(point, area->GetCellSize())
+				|| Super::GetNeighbours(point, area->GetCellSize()).Num() > 0);
+			Super::RenderTrace(trace.TraceStart, hit ? trace.ImpactPoint : trace.TraceEnd, hit ? FColor::Cyan : FColor::Blue);
+
+			return hit;
+		};
 
 		// If the player is looking downwards
 		if (normal.Z <= BRUSH_PLACE_FLOOR_NORMAL_Z)
@@ -348,28 +420,35 @@ bool UPrimaryBrush::OnMainCheck(ABuildArea *area, const FHitResult& result, FGri
 			// Trace from start to end
 			point = start + d * normal;
 
-			// Cast a ray towards the player to see if we can place a block on the floor
-			FVector sideDir = FVector(normal.X, normal.Y, 0.0f).GetSafeNormal();
-			Super::GetWorld()->LineTraceSingleByChannel(trace, point, point - sideDir * area->GetCellSize().Z,
-				ECollisionChannel::ECC_WorldDynamic, FCollisionQueryParams::DefaultQueryParam);
+			ACharacter *character = Cast<ACharacter>(Super::GetOwner());
+			check(character != nullptr);
 
-			bool hit = trace.IsValidBlockingHit() && this->CanPlaceOn(trace);
-			Super::RenderTrace(trace.TraceStart, hit ? trace.ImpactPoint : trace.TraceEnd, hit ? FColor::Cyan : FColor::Blue);
+			FVector origin, extent;
+			character->GetActorBounds(true, origin, extent);
+
+			FVector loc = character->GetActorLocation();
+			if (point.Z <= loc.Z - extent.Z / 2)
+			{
+				Super::RenderPoint(loc - FVector(0.0f, 0.0f, extent.Z / 2), FColor::Purple);
+				for (int j = 0; j < 4; j++)
+				{
+					found = FindHorizontal(j * 90.0f);
+					if (found)
+					{
+						break;
+					}
+				}
+			}
 		}
 		else
 		{
 			// Trace from end to start
-			point = end - d * normal;
+			point = end - (d - dStep) * normal;
 
-			// Cast a block size trace downward from the original trace
-			Super::GetWorld()->LineTraceSingleByChannel(trace, point, point
-				- FVector(0.0f, 0.0f, area->GetCellSize().Z), ECollisionChannel::ECC_WorldDynamic);
-
-			bool hit = trace.IsValidBlockingHit() && this->CanPlaceOn(trace);
-			Super::RenderTrace(trace.TraceStart, hit ? trace.ImpactPoint : trace.TraceEnd, hit ? FColor::Cyan : FColor::Blue);
+			found = FindVertical();
 		}
 		// If this point is a valid place for a block to go
-		if (trace.IsValidBlockingHit() && this->CanPlaceOn(trace))
+		if (found)
 		{
 			// Do an additional check so that when placing on a ledge, it will choose the closest
 			// instead of the furthest. This simply makes sure that we can see the block we hit.
@@ -423,7 +502,23 @@ bool UPrimaryBrush::OnPostCheck(ABuildArea *area, const FHitResult& result, FGri
 	{
 		return false;
 	}
+	// Check for overlap
 	bool overlap = Super::IsOverlapped();
 	show = show && !overlap;
-	return !overlap;
+	if (overlap)
+	{
+		return false;
+	}
+	FVector location;
+	area->GetGridLocation(out, location);
+
+	// Check for structure validity
+	bool structure = Super::IsSupport(location, area->GetCellSize()) 
+		|| Super::GetNeighbours(location, area->GetCellSize()).Num() > 0;
+	show = show && structure;
+	if (!structure)
+	{
+		return false;
+	}
+	return true;
 }

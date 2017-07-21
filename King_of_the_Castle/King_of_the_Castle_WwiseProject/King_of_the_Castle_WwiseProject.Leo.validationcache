@@ -1,5 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ValidationCache Version="1" SchemaVersion="75">
+	<ValidationCacheItem File="C:\Users\Leo\Documents\GitHub\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\Actor-Mixer Hierarchy\Default Work Unit.wwu" DateLow="3681486958" DateHigh="30605552"/>
+	<ValidationCacheItem File="C:\Users\Leo\Documents\GitHub\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\Attenuations\Default Work Unit.wwu" DateLow="3681537088" DateHigh="30605552"/>
+	<ValidationCacheItem File="C:\Users\Leo\Documents\GitHub\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\Audio Devices\Default Work Unit.wwu" DateLow="3681572177" DateHigh="30605552"/>
+	<ValidationCacheItem File="C:\Users\Leo\Documents\GitHub\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\Control Surface Sessions\Default Work Unit.wwu" DateLow="3681627332" DateHigh="30605552"/>
+	<ValidationCacheItem File="C:\Users\Leo\Documents\GitHub\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\Conversion Settings\Default Work Unit.wwu" DateLow="3681702524" DateHigh="30605552"/>
+	<ValidationCacheItem File="C:\Users\Leo\Documents\GitHub\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\Conversion Settings\Factory Conversion Settings.wwu" DateLow="3681752657" DateHigh="30605552"/>
+	<ValidationCacheItem File="C:\Users\Leo\Documents\GitHub\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\Dynamic Dialogue\Default Work Unit.wwu" DateLow="3681797781" DateHigh="30605552"/>
+	<ValidationCacheItem File="C:\Users\Leo\Documents\GitHub\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\Effects\Default Work Unit.wwu" DateLow="3681842921" DateHigh="30605552"/>
+	<ValidationCacheItem File="C:\Users\Leo\Documents\GitHub\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\Effects\Factory Effects.wwu" DateLow="3681903061" DateHigh="30605552"/>
+	<ValidationCacheItem File="C:\Users\Leo\Documents\GitHub\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\Events\Default Work Unit.wwu" DateLow="3681953253" DateHigh="30605552"/>
+	<ValidationCacheItem File="C:\Users\Leo\Documents\GitHub\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\Game Parameters\Default Work Unit.wwu" DateLow="3681998310" DateHigh="30605552"/>
+	<ValidationCacheItem File="C:\Users\Leo\Documents\GitHub\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\Interactive Music Hierarchy\Default Work Unit.wwu" DateLow="3696009780" DateHigh="30605552"/>
+	<ValidationCacheItem File="C:\Users\Leo\Documents\GitHub\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\King_of_the_Castle_WwiseProject.Leo.wsettings" DateLow="3699425477" DateHigh="30605552"/>
+	<ValidationCacheItem File="C:\Users\Leo\Documents\GitHub\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\King_of_the_Castle_WwiseProject.wproj" DateLow="3701750101" DateHigh="30605552"/>
+	<ValidationCacheItem File="C:\Users\Leo\Documents\GitHub\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\Master-Mixer Hierarchy\Default Work Unit.wwu" DateLow="3701794715" DateHigh="30605552"/>
+	<ValidationCacheItem File="C:\Users\Leo\Documents\GitHub\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\Mixing Sessions\Default Work Unit.wwu" DateLow="3702998934" DateHigh="30605552"/>
+	<ValidationCacheItem File="C:\Users\Leo\Documents\GitHub\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\Modulators\Default Work Unit.wwu" DateLow="3704329836" DateHigh="30605552"/>
+	<ValidationCacheItem File="C:\Users\Leo\Documents\GitHub\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\Presets\Default Work Unit.wwu" DateLow="3771442905" DateHigh="30605552"/>
+	<ValidationCacheItem File="C:\Users\Leo\Documents\GitHub\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\Queries\Default Work Unit.wwu" DateLow="3772436809" DateHigh="30605552"/>
+	<ValidationCacheItem File="C:\Users\Leo\Documents\GitHub\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\Queries\Factory Queries.wwu" DateLow="3772477804" DateHigh="30605552"/>
+	<ValidationCacheItem File="C:\Users\Leo\Documents\GitHub\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\SoundBanks\Default Work Unit.wwu" DateLow="3773623798" DateHigh="30605552"/>
+	<ValidationCacheItem File="C:\Users\Leo\Documents\GitHub\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\Soundcaster Sessions\Default Work Unit.wwu" DateLow="3774226453" DateHigh="30605552"/>
+	<ValidationCacheItem File="C:\Users\Leo\Documents\GitHub\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\States\Default Work Unit.wwu" DateLow="3775716340" DateHigh="30605552"/>
+	<ValidationCacheItem File="C:\Users\Leo\Documents\GitHub\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\Switches\Default Work Unit.wwu" DateLow="3775747573" DateHigh="30605552"/>
+	<ValidationCacheItem File="C:\Users\Leo\Documents\GitHub\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\Triggers\Default Work Unit.wwu" DateLow="3777195331" DateHigh="30605552"/>
 	<ValidationCacheItem File="D:\Documents\Dare\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\Actor-Mixer Hierarchy\Default Work Unit.wwu" DateLow="2301333626" DateHigh="30604434"/>
 	<ValidationCacheItem File="D:\Documents\Dare\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\Attenuations\Default Work Unit.wwu" DateLow="2301363785" DateHigh="30604434"/>
 	<ValidationCacheItem File="D:\Documents\Dare\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\Audio Devices\Default Work Unit.wwu" DateLow="2301393541" DateHigh="30604434"/>

@@ -3,28 +3,102 @@
 	<Events>
 		<WorkUnit Name="Default Work Unit" ID="{8F1EA8B4-C444-40AD-B9D4-72B61B06D617}" PersistMode="Standalone">
 			<ChildrenList>
-				<Event Name="SampleTest" ID="{8845997B-4AE8-462C-9042-8CA121F2001A}">
+				<Folder Name="Music" ID="{238A9AE3-54A0-43B7-871A-65EB60CDE2B2}" ShortID="110520470">
 					<ChildrenList>
-						<Action Name="Play" ID="{E2865E0D-22D6-4CAB-80C3-6202BAE885D0}" ShortID="561508058" Type="Play" Scope="One" Global="false">
-							<ElementList>
-								<Element ID="{9A8B56BE-6759-4D27-9D3C-A74BFD6AE9F9}" Global="false">
-									<ObjectRef Name="TestSample" ID="{2CF96DFC-7E4E-4F14-A9DA-ADCDF8230B87}" WorkUnitID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}"/>
-								</Element>
-							</ElementList>
-						</Action>
+						<Event Name="Music_Start" ID="{88A3FF9B-FCC2-43BD-8FBE-E5EC16111B5F}">
+							<ChildrenList>
+								<Action Name="Play" ID="{040A3E8B-2D2C-4756-BACD-62D80E0A4703}" ShortID="1053308904" Type="Play" Scope="One" Global="false">
+									<ElementList>
+										<Element ID="{2AF3D33E-F75C-40A2-A127-50F9E22DCF80}" Global="false">
+											<ObjectRef Name="Level" ID="{0EB396A7-0F2B-4887-83BA-3EA173BB6D63}" WorkUnitID="{246E0727-97E6-4A22-B039-2F4E93924145}"/>
+										</Element>
+									</ElementList>
+								</Action>
+							</ChildrenList>
+						</Event>
 					</ChildrenList>
-				</Event>
-				<Event Name="Music_Start" ID="{88A3FF9B-FCC2-43BD-8FBE-E5EC16111B5F}">
+				</Folder>
+				<Folder Name="SFX" ID="{054CDB92-E7F6-461F-A1B9-2E681BCFE085}" ShortID="473312741">
 					<ChildrenList>
-						<Action Name="Play" ID="{040A3E8B-2D2C-4756-BACD-62D80E0A4703}" ShortID="1053308904" Type="Play" Scope="One" Global="false">
-							<ElementList>
-								<Element ID="{2AF3D33E-F75C-40A2-A127-50F9E22DCF80}" Global="false">
-									<ObjectRef Name="Level" ID="{0EB396A7-0F2B-4887-83BA-3EA173BB6D63}" WorkUnitID="{246E0727-97E6-4A22-B039-2F4E93924145}"/>
-								</Element>
-							</ElementList>
-						</Action>
+						<Event Name="fs_player" ID="{20519390-F0D8-4F57-9112-541B041505D3}">
+							<ChildrenList>
+								<Action Name="Play" ID="{211680B2-E393-4590-8383-A3F85B490CB6}" ShortID="219217810" Type="Play" Scope="One" Global="false">
+									<ElementList>
+										<Element ID="{0D9B92B5-BD40-4ECB-9F2B-F860D3BDE0A2}" Global="false">
+											<ObjectRef Name="Footstep" ID="{545CA7A5-5695-48E9-B228-E709D97B1717}" WorkUnitID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}"/>
+										</Element>
+									</ElementList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="fs_jump" ID="{AA8E9F86-5BA9-41DE-A340-C3634DB6B769}">
+							<ChildrenList>
+								<Action Name="Play" ID="{CB3B86B3-9C78-4A58-80F2-BBF860FF6257}" ShortID="566252887" Type="Play" Scope="One" Global="false">
+									<ElementList>
+										<Element ID="{2C0E0DE0-0873-4C3F-A5C3-339493F5F7F0}" Global="false">
+											<ObjectRef Name="JumpUp" ID="{FB03DD37-04EC-4337-A9D7-C55247002BFA}" WorkUnitID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}"/>
+										</Element>
+									</ElementList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="fs_land" ID="{35FD2CE1-AD78-4197-B810-F6C2822F7F27}">
+							<ChildrenList>
+								<Action Name="Play" ID="{544E60A7-7C0C-4D08-875A-101C500C6E6E}" ShortID="709593446" Type="Play" Scope="One" Global="false">
+									<ElementList>
+										<Element ID="{6DA9F328-6A02-45EF-B939-C79373CC8E8D}" Global="false">
+											<ObjectRef Name="JumpLand" ID="{3457F1F8-71E4-45FB-A104-18A08FAB13EC}" WorkUnitID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}"/>
+										</Element>
+									</ElementList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="punch" ID="{23C7FA1C-07D0-4C63-B65B-C4468D220AA1}">
+							<ChildrenList>
+								<Action Name="Play" ID="{7F3979B9-883F-44A8-AF30-CEA69AF6058F}" ShortID="277614150" Type="Play" Scope="One" Global="false">
+									<ElementList>
+										<Element ID="{EEB8CC98-33B2-412C-A4AD-0B23F948B35A}" Global="false">
+											<ObjectRef Name="Punch" ID="{AC64388B-A425-445F-8917-C641A8834EE6}" WorkUnitID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}"/>
+										</Element>
+									</ElementList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="robot_pain" ID="{C1BB66E4-57F6-4446-9E9F-DF2EE8FC6F70}">
+							<ChildrenList>
+								<Action Name="Play" ID="{5939EFE3-96EE-4690-851C-4680C2909924}" ShortID="711293924" Type="Play" Scope="One" Global="false">
+									<ElementList>
+										<Element ID="{FD12A7F3-500D-4AC5-B98C-84CAB34EE47A}" Global="false">
+											<ObjectRef Name="PainRobot" ID="{D5B33781-630C-489E-B6E9-1F25C3BFF081}" WorkUnitID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}"/>
+										</Element>
+									</ElementList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="block_place" ID="{2E6A9638-AA56-45FE-98AF-972C74958E58}">
+							<ChildrenList>
+								<Action Name="Play" ID="{774F290E-6517-42FB-B9D9-1CA511271BD4}" ShortID="676712327" Type="Play" Scope="One" Global="false">
+									<ElementList>
+										<Element ID="{C7707710-A7EF-4060-B361-AC262254F969}" Global="false">
+											<ObjectRef Name="BlockPlace" ID="{2BA06D05-6A57-4F5C-BA3F-6F21198E7C1F}" WorkUnitID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}"/>
+										</Element>
+									</ElementList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="block_delete" ID="{CCDD2D0C-4839-43D0-B5DB-E71DEC46F8FF}">
+							<ChildrenList>
+								<Action Name="Play" ID="{CCF86A95-CCC9-444B-A581-A2D4277BC771}" ShortID="131633856" Type="Play" Scope="One" Global="false">
+									<ElementList>
+										<Element ID="{56FA9BE8-FE8A-4B6D-A9B8-7891EE3F56DA}" Global="false">
+											<ObjectRef Name="BlockDelete" ID="{9163FE63-A4FE-4FF9-880F-92C6658CDB55}" WorkUnitID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}"/>
+										</Element>
+									</ElementList>
+								</Action>
+							</ChildrenList>
+						</Event>
 					</ChildrenList>
-				</Event>
+				</Folder>
 			</ChildrenList>
 		</WorkUnit>
 	</Events>

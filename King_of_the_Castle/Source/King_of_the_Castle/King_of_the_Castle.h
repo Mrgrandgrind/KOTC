@@ -13,7 +13,7 @@
 #define KOTC_CONSTRUCTION_CHAIN_ENABLED true	// Whether or not chaining (click-and-dragging blocks) should work
 #define KOTC_CONSTRUCTION_CHAIN_AXIS_LOCK true	// Whether or not to lock the axis when chaining blocks
 
-#define KOTC_CONSTRUCTION_REACH_DISTANCE 4		// Number of blocks the player can reach using the brush
+#define KOTC_CONSTRUCTION_REACH_DISTANCE 2.2f		// Number of blocks the player can reach using the brush
 #define KOTC_CONSTRUCTION_REACH_MULTIPLIER 150.0f //Multiplier for distance. 150 is the size of a basic block.
 //////////////////
 
@@ -36,5 +36,11 @@
 #define UE_LOG_VECTOR(vector) UE_LOG(LogClass, Log, TEXT("%f, %f, %f"), VECTOR_SPLIT(vector))
 #define UE_LOG_INTVECTOR(vector) UE_LOG(LogClass, Log, TEXT("%d, %d, %d"), VECTOR_SPLIT(vector))
 ////
+
+template<typename T>
+FORCEINLINE static T* GetGameMode(class UWorld *world)
+{
+	return Cast<T>(world->GetAuthGameMode());
+}
 
 #endif

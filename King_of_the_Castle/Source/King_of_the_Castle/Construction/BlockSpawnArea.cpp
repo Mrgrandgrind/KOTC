@@ -30,6 +30,10 @@ ABlockSpawnArea::ABlockSpawnArea()
 
 bool ABlockSpawnArea::TrySpawn(FVector& out) const
 {
+	if (this->m_Area == nullptr || this->m_SpawnBox == nullptr)
+	{
+		return false;
+	}
 	// Place spawn block somewhere inside the spawn area
 	this->m_SpawnBox->SetWorldScale3D(FVector(SPAWN_BOX_UP_SCALE));
 
