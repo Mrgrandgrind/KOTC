@@ -102,7 +102,6 @@ void ABaseGameMode::Tick(float delta)
 
 void ABaseGameMode::EndGame(FString message)
 {
-
 	this->m_bGameOver = true;
 	for (FConstPlayerControllerIterator itr = Super::GetWorld()->GetPlayerControllerIterator(); itr; ++itr)
 	{

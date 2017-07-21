@@ -418,7 +418,7 @@ bool UPrimaryBrush::OnMainCheck(ABuildArea *area, const FHitResult& result, FGri
 		if (normal.Z <= BRUSH_PLACE_FLOOR_NORMAL_Z)
 		{
 			// Trace from start to end
-			point = start + d * normal;
+			point = start + (d - 6.0f) * normal;
 
 			ACharacter *character = Cast<ACharacter>(Super::GetOwner());
 			check(character != nullptr);
