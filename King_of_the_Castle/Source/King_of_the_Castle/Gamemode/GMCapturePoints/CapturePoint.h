@@ -27,9 +27,13 @@ public:
 
 	FORCEINLINE const FName& GetPointName() const { return this->m_PointName; }
 
+	FORCEINLINE const float& GetScoreMultiplier() const { return this->m_ScoreMultiplier; }
+
+	FORCEINLINE const float& GetScorePerCapture() const { return this->m_ScorePerCapture; }
+
 protected:
 	// Set light to represet owning team
-	void UpdateSignalLight() const;
+	void UpdateSignalLight();
 
 	// Returns true if team is constant. False if there are multiple teams or no team.
 	bool GetHoldingTeam(int& team) const;
@@ -44,8 +48,16 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Capture Point", meta = (DisplayName = "Name"))
 	FName m_PointName;
 
+	// Score multiplier
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Capture Point", meta = (DisplayName = "Score Multiplier"))
+	float m_ScoreMultiplier;
+
+	// Score multiplier
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Capture Point", meta = (DisplayName = "Score Per Capture"))
+	float m_ScorePerCapture;
+
 	// Current owner of this capture point. 0 means neutral
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Capture Point", meta = (DisplayName = "Team Owner"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Capture Point", meta = (DisplayName = "[Debug] Team Owner"))
 	int m_OwningTeam;
 
 	// All players in this capture point

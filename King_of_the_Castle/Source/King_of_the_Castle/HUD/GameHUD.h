@@ -18,6 +18,8 @@ public:
 
 	virtual void DrawHUD() override;
 
+	void SetGameOver(FString message);
+
 	UFUNCTION(BlueprintPure, Category = "Widget")
 	class UUserWidget* GetWidgetHUD() const { return this->m_WidgetHUD; }
 
@@ -38,6 +40,10 @@ private:
 
 	UPROPERTY()
 	class UUserWidget *m_WidgetHUD;
+
+	bool m_bGameOver;
+
+	FString m_Message;
 
 	bool m_bCrosshairVisible;
 };

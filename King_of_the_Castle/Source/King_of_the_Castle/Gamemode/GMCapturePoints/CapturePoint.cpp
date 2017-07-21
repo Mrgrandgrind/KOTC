@@ -6,13 +6,7 @@
 
 #define TEAM_NEUTRAL 0
 
-#define TEAM1_COLOR FLinearColor(0.0f, 0.0f, 1.0f)
-#define TEAM2_COLOR FLinearColor(1.0f, 0.0f, 0.0f)
-#define TEAM3_COLOR FLinearColor(0.0f, 1.0f, 0.0f)
-#define TEAM4_COLOR FLinearColor(1.0f, 0.0f, 1.0f)
-#define TEAM_NEUTRAL_COLOR FLinearColor(1.0f, 1.0f, 1.0f)
-
-ACapturePoint::ACapturePoint() : m_PointName(TEXT("Capture Point")), m_OwningTeam(TEAM_NEUTRAL)
+ACapturePoint::ACapturePoint() : m_PointName(TEXT("Capture Point")), m_ScoreMultiplier(1.0f), m_ScorePerCapture(1.5f), m_OwningTeam(TEAM_NEUTRAL)
 {
 	UBoxComponent *box = UObject::CreateDefaultSubobject<UBoxComponent>(TEXT("CaptureArea"));
 	Super::RootComponent = box;
@@ -83,29 +77,19 @@ bool ACapturePoint::GetHoldingTeam(int& team) const
 	return true;
 }
 
-void ACapturePoint::UpdateSignalLight() const
+void ACapturePoint::UpdateSignalLight() 
 {
-	if (this->m_SignalLight == nullptr)
+	AGMCapturePoints *gamemode = GetGameMode<AGMCapturePoints>(Super::GetWorld());
+	if (gamemode == nullptr)
 	{
 		return;
 	}
-	switch (this->m_OwningTeam)
+	if (this->m_SignalLight == nullptr)
 	{
-		case 1:
-			this->m_SignalLight->SetLightColor(TEAM1_COLOR);
-			break;
-		case 2:
-			this->m_SignalLight->SetLightColor(TEAM2_COLOR);
-			break;
-		case 3:
-			this->m_SignalLight->SetLightColor(TEAM3_COLOR);
-			break;
-		case 4:
-			this->m_SignalLight->SetLightColor(TEAM4_COLOR);
-			break;
-		default:
-			this->m_SignalLight->SetLightColor(TEAM_NEUTRAL_COLOR);
+		this->m_SignalLight = Super::FindComponentByClass<UPointLightComponent>();
+		checkf(this->m_SignalLight != nullptr, TEXT("[CapturePoint] Team Light not found!"));
 	}
+	this->m_SignalLight->SetLightColor(gamemode->GetTeamColor(this->m_OwningTeam));
 }
 
 void ACapturePoint::Tick(float delta)
@@ -158,7 +142,7 @@ void ACapturePoint::OnBeginOverlap(UPrimitiveComponent *OverlappedComponent, AAc
 	{
 		return;
 	}
-	if (!this->m_Players.Contains(character))
+	if (!this->m_Players.Contains(character) && character->GetTeam() >= 0)
 	{
 		this->m_Players.Add(character);
 
@@ -181,7 +165,7 @@ void ACapturePoint::OnEndOverlap(UPrimitiveComponent *OverlappedComponent, AActo
 	{
 		return;
 	}
-	if (this->m_Players.Contains(character))
+	if (this->m_Players.Contains(character) && character->GetTeam() >= 0)
 	{
 		this->m_Players.Remove(character);
 

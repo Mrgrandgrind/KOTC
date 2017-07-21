@@ -43,17 +43,33 @@ void AGameHUD::BeginPlay()
 	}
 }
 
+void AGameHUD::SetGameOver(FString message)
+{
+	this->m_bGameOver = true;
+	this->m_Message = message;
+}
+
 void AGameHUD::DrawHUD()
 {
 	Super::DrawHUD();
-	
-	FVector4 screen = FVector4(Super::Canvas->OrgX, Super::Canvas->OrgY, Super::Canvas->SizeX, Super::Canvas->SizeY);
-	this->m_BuildWheel->Render(this, screen);
 
-	if(this->m_bCrosshairVisible)
+	FVector4 screen = FVector4(Super::Canvas->OrgX, Super::Canvas->OrgY, Super::Canvas->SizeX, Super::Canvas->SizeY);
+	if (this->m_bGameOver)
 	{
-		const float& size = FMath::RoundToFloat(FMath::Min(screen.Z, screen.W) * CROSSHAIR_SIZE);
-		Super::DrawRect(CROSSHAIR_COLOR, screen.X + screen.Z / 2.0f - size / 2.0f,
-			screen.Y + screen.W / 2.0f - size / 2.0f, size, size);
+		float width, height, scale = FMath::Min(screen.Z, screen.W) * 0.005f;
+		Super::GetTextSize(this->m_Message, width, height, nullptr, scale);
+		Super::DrawText(this->m_Message, FColor::White, screen.X + screen.Z / 2.0f - width / 2.0f,
+			screen.Y + screen.W / 2.0f - height / 2.0f, nullptr, scale);
+	}
+	else
+	{
+		this->m_BuildWheel->Render(this, screen);
+
+		if (this->m_bCrosshairVisible)
+		{
+			const float& size = FMath::RoundToFloat(FMath::Min(screen.Z, screen.W) * CROSSHAIR_SIZE);
+			Super::DrawRect(CROSSHAIR_COLOR, screen.X + screen.Z / 2.0f - size / 2.0f,
+				screen.Y + screen.W / 2.0f - size / 2.0f, size, size);
+		}
 	}
 }

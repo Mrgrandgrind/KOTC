@@ -3,9 +3,9 @@
 #include "King_of_the_Castle.h"
 #include "BasicBlock.h"
 
+#include "GameMode/BaseGameMode.h"
+
 #define MATERIAL_TEAM_NAME TEXT("TeamColor")
-#define BLOCK_TEAM1_COLOR FLinearColor(0.4f, 0.4f, 1.0f, 1.0f)
-#define BLOCK_TEAM2_COLOR FLinearColor(1.0f, 0.3f, 0.3f, 1.0f)
 
 ABasicBlock::ABasicBlock()
 {
@@ -28,22 +28,15 @@ void ABasicBlock::SetTeam(const int& team)
 	{
 		return;
 	}
+	ABaseGameMode *gamemode = GetGameMode<ABaseGameMode>(Super::GetWorld());
+	if (gamemode == nullptr)
+	{
+		return;
+	}
 	UMaterialInstanceDynamic *material = Super::GetDynamicMaterial();
 	if (material == nullptr)
 	{
 		return;
 	}
-	FLinearColor color;
-	switch (Super::GetTeam())
-	{
-		case 1:
-			color = BLOCK_TEAM1_COLOR;
-			break;
-		case 2:
-			color = BLOCK_TEAM2_COLOR;
-			break;
-		default:
-			color = FLinearColor::White;
-	}
-	material->SetVectorParameterValue(MATERIAL_TEAM_NAME, color);
+	material->SetVectorParameterValue(MATERIAL_TEAM_NAME, gamemode->GetTeamColor(team));
 }
