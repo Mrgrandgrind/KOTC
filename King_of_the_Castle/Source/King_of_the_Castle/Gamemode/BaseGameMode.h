@@ -23,6 +23,8 @@ public:
 
 	void SpawnPlayers();
 
+	void EndGame(FString message);
+
 	virtual void OnBlockPlace(class ABlock *block, AActor *source);
 
 	virtual void OnBlockDestroy(class ABlock *block, AActor *source);
@@ -48,6 +50,12 @@ public:
 	// Structure manager reference
 	FORCEINLINE class ABlockStructureManager* GetStructureManager() const { return this->m_BlockStructureManager; }
 
+	// Get team color
+	FORCEINLINE const FLinearColor& GetTeamColor(const int& team) const 
+	{ 
+		return team >= 0 && this->m_TeamColors.Num() >= team ? this->m_TeamColors[team - 1] : FLinearColor::White; 
+	}
+
 	// Get the score of team
 	UFUNCTION(BlueprintCallable, Category = "Score")
 	int GetScore(const int& team) 
@@ -64,6 +72,8 @@ public:
 #endif
 
 protected:
+	FORCEINLINE const bool& IsGameOver() const { return this->m_bGameOver; }
+
 	FORCEINLINE TMap<int, float>& GetScores() { return this->m_TeamScores; }
 
 private:
@@ -85,6 +95,10 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Players", meta = (AllowPrivateAccess = "true", DisplayName = "Free For All"))
 	bool m_bFreeForAll;
 
+	// Team colors
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Players", meta = (AllowPrivateAccess = "true", DisplayName = "Team Colors"))
+	TArray<FLinearColor> m_TeamColors;
+
 	UPROPERTY()
 	TSubclassOf<class APlayerCharacter> m_CharacterClass;
 
@@ -102,6 +116,9 @@ private:
 	// How many block entities can exist in the game at a given time
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Game", meta = (AllowPrivateAccess = "true", DisplayName = "Max Entity Count"))
 	int m_MaxEntityCount;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Game", meta = (AllowPrivateAccess = "true", DisplayName = "Game Over"))
+	bool m_bGameOver;
 
 	// Block Entites spawn control
 	int m_EntityCount, m_EntityDespawnFlags;

@@ -30,12 +30,14 @@
 #define DAMAGE_TIMER 2.0f // How long the player has to be out of combat for before health starts to regen again
 #define DODGE_DOUBLE_TAP_TIME 0.32f
 
+#define MATERIAL_LOCATION TEXT("Material'/Game/AdvancedLocomotionV2/Characters/Mannequin/lambert2.lambert2'")
+
 // Sets default values
 APlayerCharacter::APlayerCharacter() : m_bPlacePressed(false), m_PlacePressCounter(0.0f), m_AttackStage(EAttackStage::READY),
 m_DodgePressTimer(DODGE_DOUBLE_TAP_TIME), m_Team(-1), m_BuildReach(DEFAULT_REACH_DISTANCE)
 {
-	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	Super::PrimaryActorTick.bCanEverTick = true;
+	static ConstructorHelpers::FObjectFinder<UMaterialInterface> Material(MATERIAL_LOCATION);
+	this->m_Material = Material.Object;
 
 	this->m_BaseTurnRate = 45.0f;
 	this->m_BaseLookUpRate = 45.0f;
@@ -78,6 +80,8 @@ m_DodgePressTimer(DODGE_DOUBLE_TAP_TIME), m_Team(-1), m_BuildReach(DEFAULT_REACH
 	delegateCap.BindUFunction(this, FName("OnPlayerCollisionHit"));
 	Super::GetCapsuleComponent()->SetNotifyRigidBodyCollision(true);
 	Super::GetCapsuleComponent()->OnComponentHit.Add(delegateCap);
+
+	Super::PrimaryActorTick.bCanEverTick = true;
 }
 
 // Called when the game starts or when spawned
@@ -334,6 +338,19 @@ void APlayerCharacter::SetTeam(const int& team)
 
 	this->m_PrimaryBrush->OnTeamChange(team);
 	this->m_SecondaryBrush->OnTeamChange(team);
+
+	ABaseGameMode *gamemode = GetGameMode<ABaseGameMode>(Super::GetWorld());
+	if (gamemode == nullptr || this->m_Material == nullptr)
+	{
+		return;
+	}
+	UMaterialInstanceDynamic *material = Cast<UMaterialInstanceDynamic>(Super::GetMesh()->GetMaterial(0));
+	if (material == nullptr)
+	{
+		material = UMaterialInstanceDynamic::Create(this->m_Material, Super::GetMesh()->GetOuter());
+		Super::GetMesh()->SetMaterial(0, material);
+	}
+	material->SetVectorParameterValue(TEXT("TeamColor"), gamemode->GetTeamColor(team));
 }
 
 void APlayerCharacter::DropBlock()

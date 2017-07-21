@@ -21,6 +21,11 @@
 
 #define SMASH_CHARACTER_LOCATION TEXT("/Game/Blueprints/Characters/BP_RobotCharacter")
 
+#define TEAM1_COLOR FLinearColor(0.4f, 0.4f, 1.0f)
+#define TEAM2_COLOR FLinearColor(1.0f, 0.3f, 0.3f)
+#define TEAM3_COLOR FLinearColor(0.0f, 0.4f, 0.0f)
+#define TEAM4_COLOR FLinearColor(0.4f, 0.0f, 0.4f)
+
 ABaseGameMode::ABaseGameMode() : m_Timer(0.0f), m_GameDuration(DEFAULT_GAME_DURATION), m_MaxEntityCount(MAX_BLOCK_ENTITY_COUNT),
 m_EntityCount(0), m_BlockStructureManager(nullptr), m_PlayerCount(1)
 {
@@ -36,6 +41,11 @@ m_EntityCount(0), m_BlockStructureManager(nullptr), m_PlayerCount(1)
 
 	this->m_GameDuration = DEFAULT_GAME_DURATION;
 	this->m_CharacterClass = PlayerPawnBPClass.Class;
+
+	this->m_TeamColors.Add(TEAM1_COLOR);
+	this->m_TeamColors.Add(TEAM2_COLOR);
+	this->m_TeamColors.Add(TEAM3_COLOR);
+	this->m_TeamColors.Add(TEAM4_COLOR);
 }
 
 void ABaseGameMode::BeginPlay()
@@ -75,14 +85,34 @@ void ABaseGameMode::Tick(float delta)
 {
 	Super::Tick(delta);
 
+	this->m_FPS = 1.0f / delta;
+
+	if (this->IsGameOver())
+	{
+		return;
+	}
+
 	this->m_Timer += delta;
 
 	if (this->m_Timer >= this->m_GameDuration)
 	{
-
+		this->EndGame(FString::Printf(TEXT("Time Limit Reached")));
 	}
+}
 
-	this->m_FPS = 1.0f / delta;
+void ABaseGameMode::EndGame(FString message)
+{
+
+	this->m_bGameOver = true;
+	for (FConstPlayerControllerIterator itr = Super::GetWorld()->GetPlayerControllerIterator(); itr; ++itr)
+	{
+		AGameHUD *hud = Cast<AGameHUD>((*itr)->GetHUD());
+		if (hud != nullptr)
+		{
+			hud->SetGameOver(message);
+		}
+		(*itr)->SetInputMode(FInputModeUIOnly());
+	}
 }
 
 bool ABaseGameMode::GetSpawnPoint(const int& team, FVector& outLocation, FRotator& outRotation) const
