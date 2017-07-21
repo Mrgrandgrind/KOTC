@@ -361,4 +361,7 @@ private:
 	// This players secondary (destroy) brush
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Build", meta = (AllowPrivateAccess = "true", DisplayName = "Secondary Brush"))
 	class USecondaryBrush *m_SecondaryBrush;
+
+	UPROPERTY()
+	UMaterialInterface *m_Material;
 };
