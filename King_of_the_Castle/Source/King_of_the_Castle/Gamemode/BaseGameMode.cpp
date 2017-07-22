@@ -19,6 +19,7 @@
 
 #define MAX_PLAYER_COUNT 4
 
+#define HUD_LOCATION TEXT("/Game/Blueprints/BP_GameHUD")
 #define SMASH_CHARACTER_LOCATION TEXT("/Game/Blueprints/Characters/BP_RobotCharacter")
 
 #define TEAM1_COLOR FLinearColor(0.4f, 0.4f, 1.0f)
@@ -34,9 +35,13 @@ m_EntityCount(0), m_BlockStructureManager(nullptr), m_PlayerCount(1)
 	{
 		Super::DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
-	Super::HUDClass = AGameHUD::StaticClass();
+	static ConstructorHelpers::FClassFinder<AHUD> HUD(HUD_LOCATION);
+	if (HUD.Class != nullptr)
+	{
+		Super::HUDClass = HUD.Class;
+	}
 	Super::PlayerControllerClass = ADefaultPlayerController::StaticClass();
-
+	
 	Super::PrimaryActorTick.bCanEverTick = true;
 
 	this->m_GameDuration = DEFAULT_GAME_DURATION;
@@ -108,7 +113,7 @@ void ABaseGameMode::EndGame(FString message)
 		AGameHUD *hud = Cast<AGameHUD>((*itr)->GetHUD());
 		if (hud != nullptr)
 		{
-			hud->SetGameOver(message);
+			//hud->SetGameOver(message);
 		}
 		(*itr)->SetInputMode(FInputModeUIOnly());
 	}

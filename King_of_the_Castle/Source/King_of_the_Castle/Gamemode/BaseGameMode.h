@@ -41,6 +41,9 @@ public:
 	// How long a game should last
 	FORCEINLINE const float& GetGameDuration() const { return this->m_GameDuration; }
 
+	// How many players are ingame
+	FORCEINLINE const int& GetPlayerCount() const { return this->m_PlayerCount; }
+
 	// Set how long a game should last
 	FORCEINLINE void SetGameDuration(const float& duration) { this->m_GameDuration = duration; }
 
