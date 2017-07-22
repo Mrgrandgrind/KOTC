@@ -18,7 +18,7 @@ public:
 
 	virtual void DrawHUD() override;
 
-	FORCEINLINE UBuildWheel* GetBuildWheel() const { return this->m_BuildWheel; }
+	//FORCEINLINE UBuildWheel* GetBuildWheel() const { return this->m_BuildWheel; }
 
 	FORCEINLINE void SetCrosshairVisible(const bool& visible) { this->m_bCrosshairVisible = visible; }
 
@@ -30,8 +30,8 @@ private:
 	void RenderBars(const FVector4& screen, const float& scale);
 
 protected:
-	UPROPERTY()
-	UBuildWheel *m_BuildWheel;
+	//UPROPERTY(VisibleAnywhere)
+	//UBuildWheel *m_BuildWheel;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Scale", meta = (DisplayName = "Master Scale"))
 	float m_ScaleMaster;

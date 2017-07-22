@@ -34,7 +34,7 @@ AGameHUD::AGameHUD() : m_bCrosshairVisible(false)
 	this->m_BarPadding = 12.0f;
 	this->m_bRenderBars = true;
 
-	this->m_BuildWheel = UObject::CreateDefaultSubobject<UBuildWheel>(TEXT("BuildWheel"));
+	//this->m_BuildWheel = UObject::CreateDefaultSubobject<UBuildWheel>(TEXT("BuildWheel"));
 }
 
 void AGameHUD::BeginPlay()
@@ -121,5 +121,5 @@ void AGameHUD::DrawHUD()
 		Super::DrawRect(CROSSHAIR_COLOR, screen.X + screen.Z / 2.0f - size / 2.0f,
 			screen.Y + screen.W / 2.0f - size / 2.0f, size, size);
 	}
-	this->m_BuildWheel->Render(this, screen);
+	//this->m_BuildWheel->Render(this, screen);
 }

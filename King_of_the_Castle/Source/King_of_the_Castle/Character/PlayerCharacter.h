@@ -91,7 +91,7 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 		
-	class UBuildWheel* GetBuildWheel() const;
+	//class UBuildWheel* GetBuildWheel() const;
 
 	UFUNCTION(BlueprintPure, Category = "Combat")
 	const float& GetHealth() const { return this->m_Health; }
@@ -174,17 +174,17 @@ protected:
 	void InputBlockDestroyDownEvent();
 
 	// Input: Build wheel controls
-	UFUNCTION(BlueprintCallable, Category = "Event")
-	void InputShowBuildWheel();
+	//UFUNCTION(BlueprintCallable, Category = "Event")
+	//void InputShowBuildWheel();
 
-	UFUNCTION(BlueprintCallable, Category = "Event")
-	void InputHideBuildWheel();
+	//UFUNCTION(BlueprintCallable, Category = "Event")
+	//void InputHideBuildWheel();
 
-	UFUNCTION(BlueprintCallable, Category = "Event")
-	void InputBuildWheelBack();
+	//UFUNCTION(BlueprintCallable, Category = "Event")
+	//void InputBuildWheelBack();
 
-	UFUNCTION(BlueprintCallable, Category = "Event")
-	void InputBuildWheelSelect();
+	//UFUNCTION(BlueprintCallable, Category = "Event")
+	//void InputBuildWheelSelect();
 
 	// Input: Sprint
 	UFUNCTION(BlueprintCallable, Category = "Event")
