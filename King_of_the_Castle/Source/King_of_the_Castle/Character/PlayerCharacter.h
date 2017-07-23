@@ -91,7 +91,7 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 		
-	class UBuildWheel* GetBuildWheel() const;
+	//class UBuildWheel* GetBuildWheel() const;
 
 	UFUNCTION(BlueprintPure, Category = "Combat")
 	const float& GetHealth() const { return this->m_Health; }
@@ -174,17 +174,17 @@ protected:
 	void InputBlockDestroyDownEvent();
 
 	// Input: Build wheel controls
-	UFUNCTION(BlueprintCallable, Category = "Event")
-	void InputShowBuildWheel();
+	//UFUNCTION(BlueprintCallable, Category = "Event")
+	//void InputShowBuildWheel();
 
-	UFUNCTION(BlueprintCallable, Category = "Event")
-	void InputHideBuildWheel();
+	//UFUNCTION(BlueprintCallable, Category = "Event")
+	//void InputHideBuildWheel();
 
-	UFUNCTION(BlueprintCallable, Category = "Event")
-	void InputBuildWheelBack();
+	//UFUNCTION(BlueprintCallable, Category = "Event")
+	//void InputBuildWheelBack();
 
-	UFUNCTION(BlueprintCallable, Category = "Event")
-	void InputBuildWheelSelect();
+	//UFUNCTION(BlueprintCallable, Category = "Event")
+	//void InputBuildWheelSelect();
 
 	// Input: Sprint
 	UFUNCTION(BlueprintCallable, Category = "Event")
@@ -251,38 +251,38 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Walk Speed"))
 	float m_WalkSpeed;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Rush Speed"))
-	float m_RushSpeed;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Sprint Speed"))
 	float m_SprintSpeed;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Rush Turn Multiplier"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats|Rush", meta = (AllowPrivateAccess = "true", DisplayName = "Rush Speed"))
+	float m_RushSpeed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats|Rush", meta = (AllowPrivateAccess = "true", DisplayName = "Rush Turn Multiplier"))
 	float m_RushTurnMultiplier;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Rush Knockback Force"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats|Rush", meta = (AllowPrivateAccess = "true", DisplayName = "Rush Knockback Force"))
 	float m_RushKnockbackForce;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Rush Knockback Offset"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats|Rush", meta = (AllowPrivateAccess = "true", DisplayName = "Rush Knockback Offset"))
 	FVector m_RushKnockbackOffset;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Rush Hit Stun Duration"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats|Rush", meta = (AllowPrivateAccess = "true", DisplayName = "Rush Hit Stun Duration"))
 	float m_RushHitStunDuration;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Rush Acceleration"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats|Rush", meta = (AllowPrivateAccess = "true", DisplayName = "Rush Acceleration"))
 	float m_RushAcceleration;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Dodge Force"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats|Rush", meta = (AllowPrivateAccess = "true", DisplayName = "Rush Stamina Cost"))
+	float m_RushStaminaCost;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats|Dodge", meta = (AllowPrivateAccess = "true", DisplayName = "Dodge Force"))
 	float m_DodgeForce;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Dodge Cooldown Time"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats|Dodge", meta = (AllowPrivateAccess = "true", DisplayName = "Dodge Cooldown Time"))
 	float m_DodgeCooldownTime;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Dodge Stamina Cost"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats|Dodge", meta = (AllowPrivateAccess = "true", DisplayName = "Dodge Stamina Cost"))
 	float m_DodgeStaminaCost;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Rush Stamina Cost"))
-	float m_RushStaminaCost;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Sprint Stamina Cost"))
 	float m_SprintStaminaCost;
@@ -305,25 +305,25 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true", DisplayName = "Melee Knockback Offset"))
 	FVector m_MeleeKnockbackOffset;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Duration"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat|Charge", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Duration"))
 	float m_ChargeDuration;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Stun Duration"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat|Charge", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Stun Duration"))
 	float m_ChargeStunDuration;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Damage"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat|Charge", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Damage"))
 	float m_ChargeDamage;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Stamina Cost"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat|Charge", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Stamina Cost"))
 	float m_ChargeStaminaCost;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Slide Force"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat|Charge", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Slide Force"))
 	float m_ChargeSlideForce;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Knockback Force"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat|Charge", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Knockback Force"))
 	float m_ChargeKnockbackForce;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Knockback Offset"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat|Charge", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Knockback Offset"))
 	FVector m_ChargeKnockbackOffset;
 
 	// Current player team. Set using #SetTeam

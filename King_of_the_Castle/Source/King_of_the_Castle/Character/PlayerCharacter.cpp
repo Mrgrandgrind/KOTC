@@ -218,23 +218,23 @@ void APlayerCharacter::Tick(float delta)
 	}
 
 	// Update building wheel
-	if (Super::GetController() != nullptr)
-	{
-		AGameHUD *hud = Cast<AGameHUD>(((APlayerController*)Super::GetController())->GetHUD());
-		if (hud != nullptr && hud->GetBuildWheel()->IsVisible())
-		{
-			float x = Super::InputComponent->GetAxisValue(TEXT("LeftThumbX")),
-				y = Super::InputComponent->GetAxisValue(TEXT("LeftThumbY"));
-			if (x == 0.0f && y == 0.0f)
-			{
-				hud->GetBuildWheel()->SetSelected(-1);
-			}
-			else
-			{
-				hud->GetBuildWheel()->SetSelected(FMath::Atan2(y, x));
-			}
-		}
-	}
+	//if (Super::GetController() != nullptr)
+	//{
+	//	AGameHUD *hud = Cast<AGameHUD>(((APlayerController*)Super::GetController())->GetHUD());
+	//	if (hud != nullptr && hud->GetBuildWheel()->IsVisible())
+	//	{
+	//		float x = Super::InputComponent->GetAxisValue(TEXT("LeftThumbX")),
+	//			y = Super::InputComponent->GetAxisValue(TEXT("LeftThumbY"));
+	//		if (x == 0.0f && y == 0.0f)
+	//		{
+	//			hud->GetBuildWheel()->SetSelected(-1);
+	//		}
+	//		else
+	//		{
+	//			hud->GetBuildWheel()->SetSelected(FMath::Atan2(y, x));
+	//		}
+	//	}
+	//}
 
 	// Updating building mechanics
 	ABuildArea *area = this->GetActiveBuildArea();
@@ -276,15 +276,15 @@ void APlayerCharacter::Tick(float delta)
 	}
 }
 
-UBuildWheel* APlayerCharacter::GetBuildWheel() const
-{
-	if (Super::GetController() == nullptr)
-	{
-		return nullptr;
-	}
-	AGameHUD *hud = Cast<AGameHUD>(((APlayerController*)Super::GetController())->GetHUD());
-	return hud == nullptr ? nullptr : hud->GetBuildWheel();
-}
+//UBuildWheel* APlayerCharacter::GetBuildWheel() const
+//{
+//	if (Super::GetController() == nullptr)
+//	{
+//		return nullptr;
+//	}
+//	AGameHUD *hud = Cast<AGameHUD>(((APlayerController*)Super::GetController())->GetHUD());
+//	return hud == nullptr ? nullptr : hud->GetBuildWheel();
+//}
 
 int APlayerCharacter::GetPlayerIndex() const
 {
@@ -328,11 +328,11 @@ void APlayerCharacter::SetTeam(const int& team)
 {
 	this->m_Team = team;
 
-	UBuildWheel *wheel = this->GetBuildWheel();
-	if (wheel != nullptr)
-	{
-		wheel->SetTeam(team);
-	}
+	//UBuildWheel *wheel = this->GetBuildWheel();
+	//if (wheel != nullptr)
+	//{
+	//	wheel->SetTeam(team);
+	//}
 	Super::GetCapsuleComponent()->SetCollisionProfileName(team <= 1
 		? TEXT("PawnTeam1") : team >= 2 ? TEXT("PawnTeam2") : TEXT("Pawn"));
 
@@ -694,10 +694,10 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *input)
 	input->BindAction("Destroy Block", IE_Pressed, this, &APlayerCharacter::InputBlockDestroyDownEvent);
 	input->BindAction("Destroy Block", IE_Released, this, &APlayerCharacter::InputBlockDestroyUpEvent);
 
-	input->BindAction("Build Wheel", IE_Pressed, this, &APlayerCharacter::InputShowBuildWheel);
-	input->BindAction("Build Wheel", IE_Released, this, &APlayerCharacter::InputHideBuildWheel);
-	input->BindAction("Build Wheel Back", IE_Pressed, this, &APlayerCharacter::InputBuildWheelBack);
-	input->BindAction("Build Wheel Select", IE_Pressed, this, &APlayerCharacter::InputBuildWheelSelect);
+	//input->BindAction("Build Wheel", IE_Pressed, this, &APlayerCharacter::InputShowBuildWheel);
+	//input->BindAction("Build Wheel", IE_Released, this, &APlayerCharacter::InputHideBuildWheel);
+	//input->BindAction("Build Wheel Back", IE_Pressed, this, &APlayerCharacter::InputBuildWheelBack);
+	//input->BindAction("Build Wheel Select", IE_Pressed, this, &APlayerCharacter::InputBuildWheelSelect);
 
 	input->BindAction("Brush up", IE_Pressed, this, &APlayerCharacter::InputBlockTypeUpEvent);
 	input->BindAction("Brush down", IE_Pressed, this, &APlayerCharacter::InputBlockTypeDownEvent);
@@ -834,43 +834,43 @@ void APlayerCharacter::InputBlockDestroyUpEvent()
 	this->m_SecondaryBrush->SetChainMode(false);
 }
 
-void APlayerCharacter::InputShowBuildWheel()
-{
-	UBuildWheel *wheel = this->GetBuildWheel();
-	if (wheel != nullptr)
-	{
-		wheel->SetVisible(true);
-	}
-	this->m_bBlockMovement = true;
-}
-
-void APlayerCharacter::InputHideBuildWheel()
-{
-	UBuildWheel *wheel = this->GetBuildWheel();
-	if (wheel != nullptr)
-	{
-		wheel->SetVisible(false);
-	}
-	this->m_bBlockMovement = false;
-}
-
-void APlayerCharacter::InputBuildWheelBack()
-{
-	UBuildWheel *wheel = this->GetBuildWheel();
-	if (wheel != nullptr && wheel->IsVisible())
-	{
-		wheel->Back();
-	}
-}
-
-void APlayerCharacter::InputBuildWheelSelect()
-{
-	UBuildWheel *wheel = this->GetBuildWheel();
-	if (wheel != nullptr && wheel->IsVisible())
-	{
-		wheel->Select(this);
-	}
-}
+//void APlayerCharacter::InputShowBuildWheel()
+//{
+//	UBuildWheel *wheel = this->GetBuildWheel();
+//	if (wheel != nullptr)
+//	{
+//		wheel->SetVisible(true);
+//	}
+//	this->m_bBlockMovement = true;
+//}
+//
+//void APlayerCharacter::InputHideBuildWheel()
+//{
+//	UBuildWheel *wheel = this->GetBuildWheel();
+//	if (wheel != nullptr)
+//	{
+//		wheel->SetVisible(false);
+//	}
+//	this->m_bBlockMovement = false;
+//}
+//
+//void APlayerCharacter::InputBuildWheelBack()
+//{
+//	UBuildWheel *wheel = this->GetBuildWheel();
+//	if (wheel != nullptr && wheel->IsVisible())
+//	{
+//		wheel->Back();
+//	}
+//}
+//
+//void APlayerCharacter::InputBuildWheelSelect()
+//{
+//	UBuildWheel *wheel = this->GetBuildWheel();
+//	if (wheel != nullptr && wheel->IsVisible())
+//	{
+//		wheel->Select(this);
+//	}
+//}
 
 #if WITH_EDITOR
 void APlayerCharacter::PostEditChangeProperty(FPropertyChangedEvent& event)

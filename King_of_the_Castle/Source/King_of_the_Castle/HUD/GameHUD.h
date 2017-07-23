@@ -18,32 +18,65 @@ public:
 
 	virtual void DrawHUD() override;
 
-	void SetGameOver(FString message);
-
-	UFUNCTION(BlueprintPure, Category = "Widget")
-	class UUserWidget* GetWidgetHUD() const { return this->m_WidgetHUD; }
-
-	FORCEINLINE UBuildWheel* GetBuildWheel() const { return this->m_BuildWheel; }
+	//FORCEINLINE UBuildWheel* GetBuildWheel() const { return this->m_BuildWheel; }
 
 	FORCEINLINE void SetCrosshairVisible(const bool& visible) { this->m_bCrosshairVisible = visible; }
 
-protected:
-	UPROPERTY()
-	UBuildWheel *m_BuildWheel;
+	FORCEINLINE bool IsViewportVertical() const { return this->m_PlayerCount <= 2; }
 
 private:
-	UPROPERTY()
-	UFont *m_Font;
+	FORCEINLINE class APlayerCharacter* GetCharacter() const { return (APlayerCharacter*)Super::GetOwningPawn(); }
 
-	UPROPERTY()
-	UClass *m_WidgetHUDClass;
+	void RenderBars(const FVector4& screen, const float& scale);
 
-	UPROPERTY()
-	class UUserWidget *m_WidgetHUD;
+protected:
+	//UPROPERTY(VisibleAnywhere)
+	//UBuildWheel *m_BuildWheel;
 
-	bool m_bGameOver;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Scale", meta = (DisplayName = "Master Scale"))
+	float m_ScaleMaster;
 
-	FString m_Message;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Scale", meta = (DisplayName = "Vertical Viewport Scale (1/2 Player)"))
+	float m_ScaleVertical;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Scale", meta = (DisplayName = "Horizontal Viewport Scale (3/4 Player)"))
+	float m_ScaleHorizontal;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Health & Stamina Bars", meta = (DisplayName = "Health Color"))
+	FLinearColor m_BarHealthColor;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Health & Stamina Bars", meta = (DisplayName = "Stamina Color"))
+	FLinearColor m_BarStaminaColor;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Health & Stamina Bars", meta = (DisplayName = "Health Text"))
+	FString m_BarHealthText;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Health & Stamina Bars", meta = (DisplayName = "Stamina Text"))
+	FString m_BarStaminaText;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Health & Stamina Bars", meta = (DisplayName = "Text Scale"))
+	float m_BarTextScale;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Health & Stamina Bars", meta = (DisplayName = "Bar Scale X Health"))
+	float m_BarScaleXHealth;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Health & Stamina Bars", meta = (DisplayName = "Bar Scale X Stamina"))
+	float m_BarScaleXStamina;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Health & Stamina Bars", meta = (DisplayName = "Bar Scale Y"))
+	float m_BarScaleY;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Health & Stamina Bars", meta = (DisplayName = "Bar Separation"))
+	float m_BarSeparation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Health & Stamina Bars", meta = (DisplayName = "Bar Padding"))
+	float m_BarPadding;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Health & Stamina Bars", meta = (DisplayName = "Render Bars"))
+	bool m_bRenderBars;
+
+private:
+	int32 m_ControllerId, m_PlayerCount;
 
 	bool m_bCrosshairVisible;
 };
