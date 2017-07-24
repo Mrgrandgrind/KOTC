@@ -79,6 +79,15 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Health & Stamina Bars", meta = (DisplayName = "Render Bars"))
 	bool m_bRenderBars;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|CapturePoints", meta = (DisplayName = "Text Scale"))
+	float m_CPTextScale;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|CapturePoints", meta = (DisplayName = "Text Y Offset"))
+	float m_CPTextYOffset;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|CapturePoints", meta = (DisplayName = "Render Capture Points"))
+	bool m_bRenderCapturePoints;
+
 private:
 	int32 m_ControllerId, m_PlayerCount;
 

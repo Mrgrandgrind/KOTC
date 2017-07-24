@@ -4,6 +4,7 @@
 #include "GameHUD.h"
 
 #include "Gamemode/BaseGameMode.h"
+#include "Gamemode/GMCapturePoints.h"
 #include "Character/PlayerCharacter.h"
 #include "Gamemode/GMCapturePoints/CapturePoint.h"
 
@@ -34,6 +35,11 @@ AGameHUD::AGameHUD() : m_bCrosshairVisible(false)
 	this->m_BarSeparation = 2.5f;
 	this->m_BarPadding = 12.0f;
 	this->m_bRenderBars = true;
+
+	// Capture Points
+	this->m_CPTextScale = 1.0f;
+	this->m_CPTextYOffset = -25.0f;
+	this->m_bRenderCapturePoints = true;
 
 	//this->m_BuildWheel = UObject::CreateDefaultSubobject<UBuildWheel>(TEXT("BuildWheel"));
 }
@@ -99,6 +105,14 @@ void AGameHUD::RenderBars(const FVector4& screen, const float& scale)
 
 void AGameHUD::RenderCapturePoints(const FVector4& screen, const float& scale)
 {
+	ABaseGameMode *gamemode = GetGameMode<ABaseGameMode>(Super::GetWorld());
+	if (gamemode == nullptr)
+	{
+		return;
+	}
+
+	const int& team = this->GetCharacter()->GetTeam();
+
 	TArray<AActor*> points;
 	UGameplayStatics::GetAllActorsOfClass(Super::GetWorld(), ACapturePoint::StaticClass(), points);
 
@@ -113,11 +127,16 @@ void AGameHUD::RenderCapturePoints(const FVector4& screen, const float& scale)
 		name = name.Mid(0, 1).ToUpper();
 
 		FVector position = Super::Project(actor->GetActorLocation());
-		if (position.X < 0.0f || position.X > screen.Z || position.Y < 0.0f || position.Y > screen.W || position.Z <= 0.0f)
+		position.Y += this->m_CPTextYOffset;
+		if (position.X < 0.0f || position.X > screen.Z || position.Y < 0.0f
+			|| position.Y > screen.W || position.Z <= 0.0f)
 		{
 			continue;
 		}
-		DrawText(name, FLinearColor::Red, position.X, position.Y, nullptr, scale);
+		float width, height;
+		Super::GetTextSize(name, width, height, nullptr, scale * this->m_CPTextScale);
+		DrawText(name, gamemode->GetTeamColor(point->GetOwningTeam()), position.X - width / 2.0f,
+			position.Y - height / 2.0f, nullptr, scale * this->m_CPTextScale);
 	}
 }
 
@@ -129,7 +148,7 @@ void AGameHUD::RenderForAll(const FVector4& screen, const float& scale)
 	}
 	float x = (this->m_PlayerCount == 2 || this->m_PlayerCount == 4) ? screen.Z : screen.Z / 2.0f, 
 		y = (this->m_PlayerCount <= 2) ? 0.0f : screen.W;
-	DrawRect(FLinearColor::Blue, x - 100, y - 100, 200, 200);
+	//DrawRect(FLinearColor::Blue, x - 100, y - 100, 200, 200);
 }
 
 void AGameHUD::DrawHUD()
@@ -146,14 +165,14 @@ void AGameHUD::DrawHUD()
 	scale *= this->m_ScaleMaster;
 	scale *= this->IsViewportVertical() ? this->m_ScaleVertical : this->m_ScaleHorizontal;
 
-	//this->RenderCapturePoints(screen, scale);
+	this->RenderCapturePoints(screen, scale);
 
 	// Render health and stamina bars
 	if (this->m_bRenderBars)
 	{
 		this->RenderBars(screen, scale);
 	}
-	//this->RenderForAll(screen, scale);
+	this->RenderForAll(screen, scale);
 	if (this->m_bCrosshairVisible)
 	{
 		const float& size = FMath::RoundToFloat(scale * CROSSHAIR_SIZE);
@@ -161,4 +180,10 @@ void AGameHUD::DrawHUD()
 			screen.Y + screen.W / 2.0f - size / 2.0f, size, size);
 	}
 	//this->m_BuildWheel->Render(this, screen);
+
+	AGMCapturePoints *gamemode = GetGameMode<AGMCapturePoints>(Super::GetWorld());
+	if (gamemode != nullptr)
+	{
+		Super::DrawText(FString::Printf(TEXT("Score: %d"), gamemode->GetScore(this->GetCharacter()->GetTeam())), FColor::White, 10.0f, screen.W - 30.0f, nullptr, scale * 0.8f);
+	}
 }

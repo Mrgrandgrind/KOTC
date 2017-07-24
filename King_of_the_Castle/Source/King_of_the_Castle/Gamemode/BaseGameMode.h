@@ -56,7 +56,7 @@ public:
 	// Get team color
 	FORCEINLINE const FLinearColor& GetTeamColor(const int& team) const 
 	{ 
-		return team >= 0 && this->m_TeamColors.Num() >= team ? this->m_TeamColors[team - 1] : FLinearColor::White; 
+		return team > 0 && team <= this->m_TeamColors.Num() ? this->m_TeamColors[team - 1] : FLinearColor::White; 
 	}
 
 	// Get the score of team
