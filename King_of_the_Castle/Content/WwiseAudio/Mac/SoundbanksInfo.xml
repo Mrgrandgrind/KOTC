@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="11" SoundbankVersion="120">
 	<RootPaths>
-		<ProjectRoot>C:\Users\Leo\Documents\GitHub\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\</ProjectRoot>
-		<SourceFilesRoot>C:\Users\Leo\Documents\GitHub\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\.cache\Mac\</SourceFilesRoot>
-		<SoundBanksRoot>C:\Users\Leo\Documents\GitHub\KingOfTheCastle\King_of_the_Castle\Content\WwiseAudio\Mac\</SoundBanksRoot>
+		<ProjectRoot>C:\Users\1405188\Github\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\</ProjectRoot>
+		<SourceFilesRoot>C:\Users\1405188\Github\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\.cache\Mac\</SourceFilesRoot>
+		<SoundBanksRoot>C:\Users\1405188\Github\KingOfTheCastle\King_of_the_Castle\Content\WwiseAudio\Mac\</SoundBanksRoot>
 		<ExternalSourcesInputFile></ExternalSourcesInputFile>
-		<ExternalSourcesOutputRoot>C:\Users\Leo\Documents\GitHub\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\GeneratedSoundBanks\Mac\</ExternalSourcesOutputRoot>
+		<ExternalSourcesOutputRoot>C:\Users\1405188\Github\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\GeneratedSoundBanks\Mac\</ExternalSourcesOutputRoot>
 	</RootPaths>
 	<DialogueEvents/>
 	<StreamedFiles/>
@@ -15,8 +15,19 @@
 			<ObjectPath>\SoundBanks\Default Work Unit\Ambience</ObjectPath>
 			<ShortName>Ambience</ShortName>
 			<Path>Ambience.bnk</Path>
+		</SoundBank>
+		<SoundBank Id="393239870" Language="SFX">
+			<ObjectPath>\SoundBanks\Default Work Unit\SFX</ObjectPath>
+			<ShortName>SFX</ShortName>
+			<Path>SFX.bnk</Path>
 			<IncludedEvents>
-				<Event Id="2248455103" Name="SampleTest" ObjectPath="\Events\Default Work Unit\SampleTest"/>
+				<Event Id="2379653190" Name="block_delete" ObjectPath="\Events\Default Work Unit\SFX\block_delete"/>
+				<Event Id="721354172" Name="block_place" ObjectPath="\Events\Default Work Unit\SFX\block_place"/>
+				<Event Id="2372483423" Name="fs_jump" ObjectPath="\Events\Default Work Unit\SFX\fs_jump"/>
+				<Event Id="51218932" Name="fs_land" ObjectPath="\Events\Default Work Unit\SFX\fs_land"/>
+				<Event Id="157611648" Name="fs_player" ObjectPath="\Events\Default Work Unit\SFX\fs_player"/>
+				<Event Id="645565787" Name="punch" ObjectPath="\Events\Default Work Unit\SFX\punch"/>
+				<Event Id="1264150374" Name="robot_pain" ObjectPath="\Events\Default Work Unit\SFX\robot_pain"/>
 			</IncludedEvents>
 		</SoundBank>
 		<SoundBank Id="1355168291" Language="SFX">
@@ -29,9 +40,13 @@
 			<ShortName>Music</ShortName>
 			<Path>Music.bnk</Path>
 			<IncludedEvents>
-				<Event Id="3725903807" Name="Music_Start" ObjectPath="\Events\Default Work Unit\Music_Start"/>
+				<Event Id="3725903807" Name="Music_Start" ObjectPath="\Events\Default Work Unit\Music\Music_Start"/>
 			</IncludedEvents>
 			<IncludedMemoryFiles>
+				<File Id="6552499" Language="SFX">
+					<ShortName>Bass String Staccato 1.wav</ShortName>
+					<Path>SFX\Bass String Staccato 1_4B8CC0C5.wem</Path>
+				</File>
 				<File Id="26947134" Language="SFX">
 					<ShortName>VictoryChord.wav</ShortName>
 					<Path>SFX\VictoryChord_4B8CC0C5.wem</Path>
@@ -40,21 +55,25 @@
 					<ShortName>Violas2.wav</ShortName>
 					<Path>SFX\Violas2_4B8CC0C5.wem</Path>
 				</File>
+				<File Id="41797195" Language="SFX">
+					<ShortName>Strings Pluck Simple 2.wav</ShortName>
+					<Path>SFX\Strings Pluck Simple 2_4B8CC0C5.wem</Path>
+				</File>
+				<File Id="55761702" Language="SFX">
+					<ShortName>Glock Melody 1.wav</ShortName>
+					<Path>SFX\Glock Melody 1_4B8CC0C5.wem</Path>
+				</File>
 				<File Id="56994167" Language="SFX">
 					<ShortName>Timpani Roll.wav</ShortName>
 					<Path>SFX\Timpani Roll_4B8CC0C5.wem</Path>
-				</File>
-				<File Id="66149460" Language="SFX">
-					<ShortName>Main2.wav</ShortName>
-					<Path>SFX\Main2_4B8CC0C5.wem</Path>
 				</File>
 				<File Id="66838259" Language="SFX">
 					<ShortName>Strings 3.wav</ShortName>
 					<Path>SFX\Strings 3_4B8CC0C5.wem</Path>
 				</File>
-				<File Id="135077595" Language="SFX">
-					<ShortName>Base 1.wav</ShortName>
-					<Path>SFX\Base 1_4B8CC0C5.wem</Path>
+				<File Id="228210691" Language="SFX">
+					<ShortName>Glock Melody 2.wav</ShortName>
+					<Path>SFX\Glock Melody 2_4B8CC0C5.wem</Path>
 				</File>
 				<File Id="250705993" Language="SFX">
 					<ShortName>Pluck 1.wav</ShortName>
@@ -63,10 +82,6 @@
 				<File Id="270482935" Language="SFX">
 					<ShortName>TransHornsUP 2.5.wav</ShortName>
 					<Path>SFX\TransHornsUP 2.5_4B8CC0C5.wem</Path>
-				</File>
-				<File Id="281762017" Language="SFX">
-					<ShortName>Woodwind1.2.wav</ShortName>
-					<Path>SFX\Woodwind1.2_4B8CC0C5.wem</Path>
 				</File>
 				<File Id="286038645" Language="SFX">
 					<ShortName>Choir 3.wav</ShortName>
@@ -88,13 +103,9 @@
 					<ShortName>Strings2.wav</ShortName>
 					<Path>SFX\Strings2_4B8CC0C5.wem</Path>
 				</File>
-				<File Id="401446643" Language="SFX">
-					<ShortName>Base2.wav</ShortName>
-					<Path>SFX\Base2_4B8CC0C5.wem</Path>
-				</File>
-				<File Id="630920739" Language="SFX">
-					<ShortName>Woodwinds2.2.wav</ShortName>
-					<Path>SFX\Woodwinds2.2_4B8CC0C5.wem</Path>
+				<File Id="550976678" Language="SFX">
+					<ShortName>Bass String Staccato 2.wav</ShortName>
+					<Path>SFX\Bass String Staccato 2_4B8CC0C5.wem</Path>
 				</File>
 				<File Id="636293168" Language="SFX">
 					<ShortName>TransBassUP 2.5.wav</ShortName>
@@ -104,25 +115,9 @@
 					<ShortName>Base 2.5.wav</ShortName>
 					<Path>SFX\Base 2.5_4B8CC0C5.wem</Path>
 				</File>
-				<File Id="683253868" Language="SFX">
-					<ShortName>Main1.2.wav</ShortName>
-					<Path>SFX\Main1.2_4B8CC0C5.wem</Path>
-				</File>
-				<File Id="796588984" Language="SFX">
-					<ShortName>OrchestralKit2.2.wav</ShortName>
-					<Path>SFX\OrchestralKit2.2_4B8CC0C5.wem</Path>
-				</File>
 				<File Id="816727104" Language="SFX">
 					<ShortName>TransDrumsUP 2.5.wav</ShortName>
 					<Path>SFX\TransDrumsUP 2.5_4B8CC0C5.wem</Path>
-				</File>
-				<File Id="826210323" Language="SFX">
-					<ShortName>Main2.2.wav</ShortName>
-					<Path>SFX\Main2.2_4B8CC0C5.wem</Path>
-				</File>
-				<File Id="917273927" Language="SFX">
-					<ShortName>StringPluck2.2.wav</ShortName>
-					<Path>SFX\StringPluck2.2_4B8CC0C5.wem</Path>
 				</File>
 				<File Id="938053383" Language="SFX">
 					<ShortName>Main 3.wav</ShortName>
