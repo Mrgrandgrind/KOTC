@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="11" SoundbankVersion="120">
 	<RootPaths>
-		<ProjectRoot>C:\Users\Leo\Documents\GitHub\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\</ProjectRoot>
-		<SourceFilesRoot>C:\Users\Leo\Documents\GitHub\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\.cache\Windows\</SourceFilesRoot>
-		<SoundBanksRoot>C:\Users\Leo\Documents\GitHub\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\GeneratedSoundBanks\Windows\</SoundBanksRoot>
+		<ProjectRoot>C:\Users\1405188\Github\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\</ProjectRoot>
+		<SourceFilesRoot>C:\Users\1405188\Github\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\.cache\Windows\</SourceFilesRoot>
+		<SoundBanksRoot>C:\Users\1405188\Github\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\GeneratedSoundBanks\Windows\</SoundBanksRoot>
 		<ExternalSourcesInputFile></ExternalSourcesInputFile>
-		<ExternalSourcesOutputRoot>C:\Users\Leo\Documents\GitHub\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\GeneratedSoundBanks\Windows\</ExternalSourcesOutputRoot>
+		<ExternalSourcesOutputRoot>C:\Users\1405188\Github\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\GeneratedSoundBanks\Windows\</ExternalSourcesOutputRoot>
 	</RootPaths>
 	<DialogueEvents/>
 	<StreamedFiles/>
@@ -26,9 +26,13 @@
 			<ShortName>Music</ShortName>
 			<Path>Music.bnk</Path>
 			<IncludedEvents>
-				<Event Id="3725903807" Name="Music_Start" ObjectPath="\Events\Default Work Unit\Music_Start"/>
+				<Event Id="3725903807" Name="Music_Start" ObjectPath="\Events\Default Work Unit\Music\Music_Start"/>
 			</IncludedEvents>
 			<IncludedMemoryFiles>
+				<File Id="13791034" Language="SFX">
+					<ShortName>Strings Pluck Simple 2.wav</ShortName>
+					<Path>SFX\Strings Pluck Simple 2_4B8CC0C5.wem</Path>
+				</File>
 				<File Id="26947134" Language="SFX">
 					<ShortName>VictoryChord.wav</ShortName>
 					<Path>SFX\VictoryChord_4B8CC0C5.wem</Path>
@@ -48,14 +52,6 @@
 				<File Id="66838259" Language="SFX">
 					<ShortName>Strings 3.wav</ShortName>
 					<Path>SFX\Strings 3_4B8CC0C5.wem</Path>
-				</File>
-				<File Id="135077595" Language="SFX">
-					<ShortName>Base 1.wav</ShortName>
-					<Path>SFX\Base 1_4B8CC0C5.wem</Path>
-				</File>
-				<File Id="250705993" Language="SFX">
-					<ShortName>Pluck 1.wav</ShortName>
-					<Path>SFX\Pluck 1_4B8CC0C5.wem</Path>
 				</File>
 				<File Id="270482935" Language="SFX">
 					<ShortName>TransHornsUP 2.5.wav</ShortName>
@@ -101,10 +97,6 @@
 					<ShortName>Base 2.5.wav</ShortName>
 					<Path>SFX\Base 2.5_4B8CC0C5.wem</Path>
 				</File>
-				<File Id="683253868" Language="SFX">
-					<ShortName>Main1.2.wav</ShortName>
-					<Path>SFX\Main1.2_4B8CC0C5.wem</Path>
-				</File>
 				<File Id="796588984" Language="SFX">
 					<ShortName>OrchestralKit2.2.wav</ShortName>
 					<Path>SFX\OrchestralKit2.2_4B8CC0C5.wem</Path>
@@ -117,6 +109,10 @@
 					<ShortName>Main2.2.wav</ShortName>
 					<Path>SFX\Main2.2_4B8CC0C5.wem</Path>
 				</File>
+				<File Id="870182626" Language="SFX">
+					<ShortName>Bass String Staccato 2.wav</ShortName>
+					<Path>SFX\Bass String Staccato 2_4B8CC0C5.wem</Path>
+				</File>
 				<File Id="917273927" Language="SFX">
 					<ShortName>StringPluck2.2.wav</ShortName>
 					<Path>SFX\StringPluck2.2_4B8CC0C5.wem</Path>
@@ -128,6 +124,18 @@
 				<File Id="939317380" Language="SFX">
 					<ShortName>Base 3.wav</ShortName>
 					<Path>SFX\Base 3_4B8CC0C5.wem</Path>
+				</File>
+				<File Id="954665566" Language="SFX">
+					<ShortName>Glock Melody 2.wav</ShortName>
+					<Path>SFX\Glock Melody 2_4B8CC0C5.wem</Path>
+				</File>
+				<File Id="962298221" Language="SFX">
+					<ShortName>Bass String Staccato 1.wav</ShortName>
+					<Path>SFX\Bass String Staccato 1_4B8CC0C5.wem</Path>
+				</File>
+				<File Id="962464890" Language="SFX">
+					<ShortName>Glock Melody 1.wav</ShortName>
+					<Path>SFX\Glock Melody 1_4B8CC0C5.wem</Path>
 				</File>
 				<File Id="995870063" Language="SFX">
 					<ShortName>Main 2.5.wav</ShortName>
