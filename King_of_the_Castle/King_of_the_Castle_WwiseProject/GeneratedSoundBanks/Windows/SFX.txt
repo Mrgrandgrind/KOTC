@@ -1,0 +1,19 @@
+Event	ID	Name			Wwise Object Path	Notes
+	51218932	fs_land			\Default Work Unit\SFX\fs_land	
+	157611648	fs_player			\Default Work Unit\SFX\fs_player	
+	645565787	punch			\Default Work Unit\SFX\punch	
+	721354172	block_place			\Default Work Unit\SFX\block_place	
+	1264150374	robot_pain			\Default Work Unit\SFX\robot_pain	
+	2372483423	fs_jump			\Default Work Unit\SFX\fs_jump	
+	2379653190	block_delete			\Default Work Unit\SFX\block_delete	
+
+Switch Group	ID	Name			Wwise Object Path	Notes
+	1834394558	Surface			\Default Work Unit\Surface	
+
+Switch	ID	Name	Switch Group			Notes
+	660835419	Plastic	Surface			
+	1970351858	Fabric	Surface			
+	2058049674	Wood	Surface			
+	2473969246	Metal	Surface			
+	3126687001	Paper	Surface			
+

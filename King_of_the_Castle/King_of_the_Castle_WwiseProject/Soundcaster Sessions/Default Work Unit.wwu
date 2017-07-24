@@ -13,7 +13,7 @@
 					<RTPCValueList ShowAll="true">
 						<RTPCValue>
 							<GameParameterRef Name="Intensity" ID="{9B788ED6-0DF2-426F-B15D-679FC3E1BBD8}"/>
-							<Value>0</Value>
+							<Value>49</Value>
 						</RTPCValue>
 						<RTPCValue>
 							<GameParameterRef Name="Robot" ID="{F2470410-56F4-4B51-8BB4-62EDF3419DF1}"/>
@@ -25,7 +25,7 @@
 						</RTPCValue>
 					</RTPCValueList>
 					<CurrentStateList ShowAll="true">
-						<CurrentStateRef Name="Level_1" ID="{4BA60DF8-6001-49C4-A920-98ABEBC94510}"/>
+						<CurrentStateRef Name="Level_2" ID="{A7E6AE57-8FEB-4076-9444-F642E4D5B1D9}"/>
 					</CurrentStateList>
 					<CurrentSwitchList ShowAll="true">
 						<CurrentSwitchRef Name="Fabric" ID="{E6F5D29C-85DE-4988-966C-F861D075F64C}"/>
