@@ -26,6 +26,16 @@ ACapturePoint::ACapturePoint() : m_PointName(TEXT("Capture Point")), m_ScoreMult
 	Super::PrimaryActorTick.bCanEverTick = true;
 }
 
+float ACapturePoint::GetCapturePercentage() const
+{
+	AGMCapturePoints *gamemode = GetGameMode<AGMCapturePoints>(Super::GetWorld());
+	if (gamemode == nullptr)
+	{
+		return 0.0f;
+	}
+	return this->m_CaptureCounter / gamemode->GetCaptureDuration();
+}
+
 void ACapturePoint::SetCapturing(const bool& capturing, const int& team)
 {
 	if (this->m_bCapturing == capturing)
@@ -99,6 +109,12 @@ void ACapturePoint::Tick(float delta)
 	// Do nothing if we are not currently capturing
 	if (!this->m_bCapturing)
 	{
+		int team;
+		if (this->m_CaptureCounter > 0.0f && (this->m_Players.Num() == 0
+			|| (this->GetHoldingTeam(team) && team == this->m_OwningTeam)))
+		{
+			this->m_CaptureCounter = FMath::Max(0.0f, this->m_CaptureCounter - delta);
+		}
 		return;
 	}
 

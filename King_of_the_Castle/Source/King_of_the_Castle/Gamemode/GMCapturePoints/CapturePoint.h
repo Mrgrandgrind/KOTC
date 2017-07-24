@@ -23,6 +23,8 @@ public:
 	void OnEndOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor,
 		UPrimitiveComponent *OtherComp, int32 OtherBodyIndex);
 
+	float GetCapturePercentage() const;
+
 	FORCEINLINE const int& GetOwningTeam() const { return this->m_OwningTeam; }
 
 	FORCEINLINE const FName& GetPointName() const { return this->m_PointName; }
@@ -30,6 +32,10 @@ public:
 	FORCEINLINE const float& GetScoreMultiplier() const { return this->m_ScoreMultiplier; }
 
 	FORCEINLINE const float& GetScorePerCapture() const { return this->m_ScorePerCapture; }
+
+	FORCEINLINE const bool& IsBeingCaptured() const { return this->m_bCapturing; }
+
+	FORCEINLINE const int& GetCapturingTeam() const { return this->m_CapturingTeam; }
 
 protected:
 	// Set light to represet owning team

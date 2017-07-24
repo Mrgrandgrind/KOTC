@@ -53,14 +53,14 @@ void AGMCapturePoints::OnCapturePointExit(ACapturePoint *point, APlayerCharacter
 
 void AGMCapturePoints::OnCapturePointCaptureBegin(class ACapturePoint *point, const int& team)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(
-		TEXT("%s is being captured by team %d!"), *point->GetPointName().ToString(), team));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(
+	//	TEXT("%s is being captured by team %d!"), *point->GetPointName().ToString(), team));
 }
 
 void AGMCapturePoints::OnCapturePointCaptureEnd(class ACapturePoint *point, const int& team)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(
-		TEXT("%s is no longer being captured by team %d!"), *point->GetPointName().ToString(), team));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(
+	//	TEXT("%s is no longer being captured by team %d!"), *point->GetPointName().ToString(), team));
 }
 
 void AGMCapturePoints::OnCapturePointCaptured(ACapturePoint *point)
@@ -75,8 +75,8 @@ void AGMCapturePoints::OnCapturePointCaptured(ACapturePoint *point)
 	score[point->GetOwningTeam()] += point->GetScorePerCapture();
 	this->m_Multiplier[point->GetOwningTeam()] += point->GetScoreMultiplier();
 
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(
-		TEXT("%s was captured by team %d! They now control %d points!"), *point->GetPointName().ToString(), point->GetOwningTeam(), count));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(
+	//	TEXT("%s was captured by team %d! They now control %d points!"), *point->GetPointName().ToString(), point->GetOwningTeam(), count));
 }
 
 void AGMCapturePoints::OnCapturePointReleased(ACapturePoint *point)
@@ -84,6 +84,6 @@ void AGMCapturePoints::OnCapturePointReleased(ACapturePoint *point)
 	int count = --this->GetCaptureCount(point->GetOwningTeam());
 	this->m_Multiplier[point->GetOwningTeam()] -= point->GetScoreMultiplier();
 
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(
-		TEXT("%s is no longer owned by team %d! They now control %d points!"), *point->GetPointName().ToString(), point->GetOwningTeam(), count));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(
+	//	TEXT("%s is no longer owned by team %d! They now control %d points!"), *point->GetPointName().ToString(), point->GetOwningTeam(), count));
 }

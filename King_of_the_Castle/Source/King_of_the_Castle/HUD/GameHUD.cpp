@@ -16,6 +16,18 @@
 #define HEALTH_COLOR FLinearColor(1.0f, 0.1f, 0.1f, 0.75f)
 #define STAMINA_COLOR FLinearColor(0.1f, 0.8f, 0.1f, 0.75f)
 
+#define CP_OWNED_COLOR FLinearColor(0.0f, 0.75f, 0.0f, 0.25f)
+#define CP_UNOWNED_COLOR  FLinearColor(1.0f, 0.0f, 0.0f, 0.25f)
+#define CP_TEXT_COLOR FLinearColor(1.0f, 1.0f, 1.0f, 0.8f)
+
+#define CP_MATERIAL_PARAM_ALPHA TEXT("Alpha")
+#define CP_MATERIAL_PARAM_BOX_COLOR TEXT("Color")
+#define CP_MATERIAL_PARAM_TEAM_COLOR TEXT("TeamColor")
+#define CP_MATERIAL_PARAM_TEAM_SIZE TEXT("TeamBoxSize")
+#define CP_MATERIAL_PARAM_CAPTURE_PERC TEXT("TeamCapturePerc")
+#define CP_MATERIAL_PARAM_CAPTURE_COLOR TEXT("TeamCaptureColor")
+#define CP_MATERIAL TEXT("Material'/Game/Materials/HUD/M_CapturePoint.M_CapturePoint'")
+
 AGameHUD::AGameHUD() : m_bCrosshairVisible(false)
 {
 	// Scale
@@ -37,6 +49,12 @@ AGameHUD::AGameHUD() : m_bCrosshairVisible(false)
 	this->m_bRenderBars = true;
 
 	// Capture Points
+	this->m_CPOwnedColor = CP_OWNED_COLOR;
+	this->m_CPUnownedColor = CP_UNOWNED_COLOR;
+	this->m_CPBoxScale = 20.5f;
+	this->m_CPTeamBoxUVSize = 0.12f;
+	this->m_CPTeamBoxAlpha = 0.5f;
+	this->m_CPTextColor = CP_TEXT_COLOR;
 	this->m_CPTextScale = 1.0f;
 	this->m_CPTextYOffset = -25.0f;
 	this->m_bRenderCapturePoints = true;
@@ -78,7 +96,7 @@ void AGameHUD::RenderBars(const FVector4& screen, const float& scale)
 	float healthPerc = character->GetHealth() / character->GetMaxHealth();
 
 	Super::GetTextSize(this->m_BarHealthText, textWidth, textHeight, nullptr, scale * this->m_BarTextScale);
-	Super::DrawText(this->m_BarHealthText, FLinearColor::White, x - textWidth / 2.0f, 
+	Super::DrawText(this->m_BarHealthText, FLinearColor::White, x - textWidth / 2.0f,
 		y + height / 2.0f - textHeight / 2.0f, nullptr, scale * this->m_BarTextScale);
 
 	offset = opposite ? -(textWidth / 4.0f + padding / 2.0f) : (textWidth / 4.0f + padding / 2.0f);
@@ -110,33 +128,69 @@ void AGameHUD::RenderCapturePoints(const FVector4& screen, const float& scale)
 	{
 		return;
 	}
-
 	const int& team = this->GetCharacter()->GetTeam();
 
 	TArray<AActor*> points;
 	UGameplayStatics::GetAllActorsOfClass(Super::GetWorld(), ACapturePoint::StaticClass(), points);
 
-	for (AActor *actor : points)
+	if (this->m_CPMaterials.Num() < points.Num())
 	{
-		ACapturePoint *point = Cast<ACapturePoint>(actor);
+		// Automatically create dynamic material for each capture point
+		for (int i = 0; i < points.Num() - this->m_CPMaterials.Num(); i++)
+		{
+			UMaterialInstanceDynamic *material = UMaterialInstanceDynamic::Create(this->m_CPMaterial, Super::GetOuter());
+			if (material == nullptr)
+			{
+				return;
+			}
+			this->m_CPMaterials.Add(material);
+		}
+	}
+
+	//for (AActor *actor : points)
+	for (int i = 0; i < points.Num(); i++)
+	{
+		ACapturePoint *point = Cast<ACapturePoint>(points[i]);
 		FString name = point->GetPointName().ToString();
+		// Don't render if the point has no name
 		if (name.Len() == 0)
 		{
 			continue;
 		}
+		// Set the letter to the uppercase first character
 		name = name.Mid(0, 1).ToUpper();
 
-		FVector position = Super::Project(actor->GetActorLocation());
+		FVector position = Super::Project(points[i]->GetActorLocation());
 		position.Y += this->m_CPTextYOffset;
-		if (position.X < 0.0f || position.X > screen.Z || position.Y < 0.0f
-			|| position.Y > screen.W || position.Z <= 0.0f)
+
+		float textScale = scale * this->m_CPTextScale, boxScale = textScale * this->m_CPBoxScale;
+		if (position.Z <= 0.0f 
+			|| position.X < boxScale / 2.0f || position.X > screen.Z - boxScale / 2.0f
+			|| position.Y < boxScale / 2.0f || position.Y > screen.W - boxScale / 2.0f)
 		{
 			continue;
 		}
+		// Draw background box
+		check(this->m_CPMaterials.Num() > i);
+		UMaterialInstanceDynamic *material = Cast<UMaterialInstanceDynamic>(this->m_CPMaterials[i]);
+		if (material == nullptr)
+		{
+			continue;
+		}
+		material->SetScalarParameterValue(CP_MATERIAL_PARAM_ALPHA, this->m_CPTeamBoxAlpha);
+		material->SetVectorParameterValue(CP_MATERIAL_PARAM_BOX_COLOR, team == point->GetOwningTeam() ? this->m_CPOwnedColor : this->m_CPUnownedColor);
+		material->SetVectorParameterValue(CP_MATERIAL_PARAM_TEAM_COLOR, gamemode->GetTeamColor(point->GetOwningTeam()));
+		material->SetScalarParameterValue(CP_MATERIAL_PARAM_TEAM_SIZE, this->m_CPTeamBoxUVSize);
+		material->SetScalarParameterValue(CP_MATERIAL_PARAM_CAPTURE_PERC, point->GetCapturePercentage());
+		material->SetVectorParameterValue(CP_MATERIAL_PARAM_CAPTURE_COLOR, gamemode->GetTeamColor(point->GetCapturingTeam()));
+
+		Super::DrawMaterialSimple(material, position.X - boxScale / 2.0f, position.Y - boxScale / 2.0f, boxScale, boxScale);
+
+		// Draw Text
 		float width, height;
-		Super::GetTextSize(name, width, height, nullptr, scale * this->m_CPTextScale);
-		DrawText(name, gamemode->GetTeamColor(point->GetOwningTeam()), position.X - width / 2.0f,
-			position.Y - height / 2.0f, nullptr, scale * this->m_CPTextScale);
+		Super::GetTextSize(name, width, height, nullptr, textScale);
+		Super::DrawText(name, this->m_CPTextColor, position.X - width / 2.0f,
+			position.Y - height / 2.0f, nullptr, textScale);
 	}
 }
 
@@ -146,7 +200,7 @@ void AGameHUD::RenderForAll(const FVector4& screen, const float& scale)
 	{
 		return;
 	}
-	float x = (this->m_PlayerCount == 2 || this->m_PlayerCount == 4) ? screen.Z : screen.Z / 2.0f, 
+	float x = (this->m_PlayerCount == 2 || this->m_PlayerCount == 4) ? screen.Z : screen.Z / 2.0f,
 		y = (this->m_PlayerCount <= 2) ? 0.0f : screen.W;
 	//DrawRect(FLinearColor::Blue, x - 100, y - 100, 200, 200);
 }
@@ -184,6 +238,7 @@ void AGameHUD::DrawHUD()
 	AGMCapturePoints *gamemode = GetGameMode<AGMCapturePoints>(Super::GetWorld());
 	if (gamemode != nullptr)
 	{
-		Super::DrawText(FString::Printf(TEXT("Score: %d"), gamemode->GetScore(this->GetCharacter()->GetTeam())), FColor::White, 10.0f, screen.W - 30.0f, nullptr, scale * 0.8f);
+		Super::DrawText(FString::Printf(TEXT("Score: %d"), gamemode->GetScore(this->GetCharacter()->GetTeam())),
+			FColor::White, 10.0f, screen.W - 30.0f, nullptr, scale * 0.8f);
 	}
 }
