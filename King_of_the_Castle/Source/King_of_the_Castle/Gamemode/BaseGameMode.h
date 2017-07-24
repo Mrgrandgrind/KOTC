@@ -116,6 +116,10 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Game", meta = (AllowPrivateAccess = "true", DisplayName = "Game Duration"))
 	float m_GameDuration;
 
+	// How long a game should last (seconds)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Game", meta = (AllowPrivateAccess = "true", DisplayName = "Infinite Game Time"))
+	bool m_bInfiniteTime;
+
 	// How many block entities can exist in the game at a given time
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Game", meta = (AllowPrivateAccess = "true", DisplayName = "Max Entity Count"))
 	int m_MaxEntityCount;

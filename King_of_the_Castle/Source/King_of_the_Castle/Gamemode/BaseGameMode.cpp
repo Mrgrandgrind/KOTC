@@ -99,7 +99,7 @@ void ABaseGameMode::Tick(float delta)
 
 	this->m_Timer += delta;
 
-	if (this->m_Timer >= this->m_GameDuration)
+	if (this->m_Timer >= this->m_GameDuration && !this->m_bInfiniteTime)
 	{
 		this->EndGame(FString::Printf(TEXT("Time Limit Reached")));
 	}

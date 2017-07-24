@@ -29,6 +29,10 @@ private:
 
 	void RenderBars(const FVector4& screen, const float& scale);
 
+	void RenderCapturePoints(const FVector4& screen, const float& scale);
+
+	void RenderForAll(const FVector4& screen, const float& scale);
+
 protected:
 	//UPROPERTY(VisibleAnywhere)
 	//UBuildWheel *m_BuildWheel;

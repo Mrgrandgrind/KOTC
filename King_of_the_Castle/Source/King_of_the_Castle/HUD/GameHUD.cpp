@@ -5,6 +5,7 @@
 
 #include "Gamemode/BaseGameMode.h"
 #include "Character/PlayerCharacter.h"
+#include "Gamemode/GMCapturePoints/CapturePoint.h"
 
 #include "Engine/Canvas.h"
 
@@ -96,6 +97,41 @@ void AGameHUD::RenderBars(const FVector4& screen, const float& scale)
 	Super::DrawRect(this->m_BarStaminaColor * 0.3f, x + offset + widthStamina * staminaPerc, y, widthStamina * (1.0f - staminaPerc), height);
 }
 
+void AGameHUD::RenderCapturePoints(const FVector4& screen, const float& scale)
+{
+	TArray<AActor*> points;
+	UGameplayStatics::GetAllActorsOfClass(Super::GetWorld(), ACapturePoint::StaticClass(), points);
+
+	for (AActor *actor : points)
+	{
+		ACapturePoint *point = Cast<ACapturePoint>(actor);
+		FString name = point->GetPointName().ToString();
+		if (name.Len() == 0)
+		{
+			continue;
+		}
+		name = name.Mid(0, 1).ToUpper();
+
+		FVector position = Super::Project(actor->GetActorLocation());
+		if (position.X < 0.0f || position.X > screen.Z || position.Y < 0.0f || position.Y > screen.W || position.Z <= 0.0f)
+		{
+			continue;
+		}
+		DrawText(name, FLinearColor::Red, position.X, position.Y, nullptr, scale);
+	}
+}
+
+void AGameHUD::RenderForAll(const FVector4& screen, const float& scale)
+{
+	if (this->m_ControllerId != 0)
+	{
+		return;
+	}
+	float x = (this->m_PlayerCount == 2 || this->m_PlayerCount == 4) ? screen.Z : screen.Z / 2.0f, 
+		y = (this->m_PlayerCount <= 2) ? 0.0f : screen.W;
+	DrawRect(FLinearColor::Blue, x - 100, y - 100, 200, 200);
+}
+
 void AGameHUD::DrawHUD()
 {
 	Super::DrawHUD();
@@ -110,11 +146,14 @@ void AGameHUD::DrawHUD()
 	scale *= this->m_ScaleMaster;
 	scale *= this->IsViewportVertical() ? this->m_ScaleVertical : this->m_ScaleHorizontal;
 
+	//this->RenderCapturePoints(screen, scale);
+
 	// Render health and stamina bars
 	if (this->m_bRenderBars)
 	{
 		this->RenderBars(screen, scale);
 	}
+	//this->RenderForAll(screen, scale);
 	if (this->m_bCrosshairVisible)
 	{
 		const float& size = FMath::RoundToFloat(scale * CROSSHAIR_SIZE);
