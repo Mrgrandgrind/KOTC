@@ -17,8 +17,10 @@
 #define STAMINA_COLOR FLinearColor(0.1f, 0.8f, 0.1f, 0.75f)
 
 #define CP_OWNED_COLOR FLinearColor(0.0f, 0.75f, 0.0f, 0.25f)
-#define CP_UNOWNED_COLOR  FLinearColor(1.0f, 0.0f, 0.0f, 0.25f)
+#define CP_UNOWNED_COLOR  FLinearColor(0.8f, 0.0f, 0.0f, 0.25f)
 #define CP_TEXT_COLOR FLinearColor(1.0f, 1.0f, 1.0f, 0.8f)
+
+#define IP_TIME_TEXT_COLOR FLinearColor(0.9f, 0.9f, 0.9f, 0.9f)
 
 #define CP_MATERIAL_PARAM_ALPHA TEXT("Alpha")
 #define CP_MATERIAL_PARAM_BOX_COLOR TEXT("Color")
@@ -59,6 +61,13 @@ AGameHUD::AGameHUD() : m_bCrosshairVisible(false)
 	this->m_CPTextScale = 1.0f;
 	this->m_CPTextZOffset = 140.0f;
 	this->m_bRenderCapturePoints = true;
+
+	// Info Panel
+	this->m_IPTimeBoxScale = 1.25f;
+	this->m_IPTimeTextScale = 1.1f;
+	this->m_IPTimeTextColor = IP_TIME_TEXT_COLOR;
+	this->m_bRenderTime = true;
+	this->m_bRenderInfoPanel = true;
 
 	//this->m_BuildWheel = UObject::CreateDefaultSubobject<UBuildWheel>(TEXT("BuildWheel"));
 }
@@ -104,7 +113,7 @@ void AGameHUD::RenderBars(const FVector4& screen, const float& scale)
 	Super::DrawRect(this->m_BarHealthColor, x + offset, y, widthHealth * healthPerc, height * 0.6f);
 	Super::DrawRect(this->m_BarHealthColor * 0.9f, x + offset, y + height * 0.6f, widthHealth * healthPerc, height * 0.4f);
 
-	Super::DrawRect(this->m_BarHealthColor * 0.3f, x + offset + widthHealth * healthPerc, y, widthHealth * (1.0f - healthPerc), height);
+	Super::DrawRect(this->m_BarHealthColor * 0.4f, x + offset + widthHealth * healthPerc, y, widthHealth * (1.0f - healthPerc), height);
 
 	// Stamina
 	float staminaPerc = character->GetStamina() / character->GetMaxStamina();
@@ -119,11 +128,15 @@ void AGameHUD::RenderBars(const FVector4& screen, const float& scale)
 	Super::DrawRect(this->m_BarStaminaColor * 0.9f, x + offset, y, widthStamina * staminaPerc, height * 0.4f);
 	Super::DrawRect(this->m_BarStaminaColor, x + offset, y + height * 0.4f, widthStamina * staminaPerc, height * 0.6f);
 
-	Super::DrawRect(this->m_BarStaminaColor * 0.3f, x + offset + widthStamina * staminaPerc, y, widthStamina * (1.0f - staminaPerc), height);
+	Super::DrawRect(this->m_BarStaminaColor * 0.4f, x + offset + widthStamina * staminaPerc, y, widthStamina * (1.0f - staminaPerc), height);
 }
 
 void AGameHUD::RenderCapturePoints(const FVector4& screen, const float& scale)
 {
+	if (this->m_CPMaterial == nullptr)
+	{
+		return;
+	}
 	ABaseGameMode *gamemode = GetGameMode<ABaseGameMode>(Super::GetWorld());
 	if (gamemode == nullptr)
 	{
@@ -158,7 +171,11 @@ void AGameHUD::RenderCapturePoints(const FVector4& screen, const float& scale)
 			continue;
 		}
 		// Draw background box
-		UMaterialInstanceDynamic *material = point->GetHUDMaterial();
+		if (!this->m_CPMaterials.Contains(point))
+		{
+			this->m_CPMaterials.Add(point, UMaterialInstanceDynamic::Create(this->m_CPMaterial, Super::GetOuter()));
+		}
+		UMaterialInstanceDynamic *material = Cast<UMaterialInstanceDynamic>(this->m_CPMaterials[point]);
 		if (material == nullptr)
 		{
 			continue; 
@@ -190,9 +207,27 @@ void AGameHUD::RenderForAll(const FVector4& screen, const float& scale)
 	{
 		return;
 	}
+	AGMCapturePoints *gamemode = GetGameMode<AGMCapturePoints>(Super::GetWorld());
+	if (gamemode == nullptr)
+	{
+		return;
+	}
+	float width, height;
 	float x = (this->m_PlayerCount == 2 || this->m_PlayerCount == 4) ? screen.Z : screen.Z / 2.0f,
 		y = (this->m_PlayerCount <= 2) ? 0.0f : screen.W;
-	//DrawRect(FLinearColor::Blue, x - 100, y - 100, 200, 200);
+
+	if (this->m_bRenderTime)
+	{
+		float timeScale = scale * this->m_IPTimeTextScale;
+		int time = int(gamemode->GetGameDuration() - gamemode->GetTime());
+
+		FString timeText = FString::Printf(TEXT("%02d:%02d"), time / 60, time % 60);
+		Super::GetTextSize(timeText, width, height, nullptr, timeScale);
+
+		Super::DrawRect(FLinearColor::Blue, x - this->m_IPTimeBoxScale * width / 2.0f, y - this->m_IPTimeBoxScale
+			* height / 2.0f, this->m_IPTimeBoxScale * width, this->m_IPTimeBoxScale * height);
+		Super::DrawText(timeText, this->m_IPTimeTextColor, x - width / 2.0f, y - height / 2.0f, nullptr, timeScale);
+	}
 }
 
 void AGameHUD::DrawHUD()

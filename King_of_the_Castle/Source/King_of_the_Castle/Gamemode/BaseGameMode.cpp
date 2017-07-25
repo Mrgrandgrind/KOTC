@@ -220,7 +220,7 @@ void ABaseGameMode::SpawnPlayers()
 		APlayerCharacter *character = Super::GetWorld()->SpawnActor<APlayerCharacter>(this->m_CharacterClass, loc, rot);
 		if (character == nullptr)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(
+			GEngine->AddOnScreenDebugMessage(-1, 60.0f, FColor::Red, FString::Printf(
 				TEXT("Unable to spawn player %d due to a collision!"), i + 1));
 			continue;
 		}
