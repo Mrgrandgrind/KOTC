@@ -106,11 +106,26 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Capture Points", meta = (DisplayName = "Text Y Offset"))
 	float m_CPTextZOffset;
 
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Capture Points", meta = (DisplayName = "Capture Point Material"))
-	//UMaterialInterface *m_CPMaterial;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Capture Points", meta = (DisplayName = "Capture Point Material"))
+	UMaterialInterface *m_CPMaterial;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Capture Points", meta = (DisplayName = "Render Capture Points"))
 	bool m_bRenderCapturePoints;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Info Panel", meta = (DisplayName = "Time Box Scale"))
+	float m_IPTimeBoxScale;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Info Panel", meta = (DisplayName = "Time Text Scale"))
+	float m_IPTimeTextScale;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Info Panel", meta = (DisplayName = "Time Text Color"))
+	FLinearColor m_IPTimeTextColor;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Info Panel", meta = (DisplayName = "Render Time"))
+	bool m_bRenderTime;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Info Panel", meta = (DisplayName = "Render Info Panel"))
+	bool m_bRenderInfoPanel;
 
 private:
 	int32 m_ControllerId, m_PlayerCount;
@@ -118,6 +133,6 @@ private:
 	bool m_bCrosshairVisible;
 
 	// Each flag will have their own material instance because DrawMaterial doesn't immediately draw and material parameters get overwritten
-	//UPROPERTY()
-	//TArray<UMaterialInterface*> m_CPMaterials;
+	UPROPERTY()
+	TMap<class ACapturePoint*, UMaterialInterface*> m_CPMaterials;
 };
