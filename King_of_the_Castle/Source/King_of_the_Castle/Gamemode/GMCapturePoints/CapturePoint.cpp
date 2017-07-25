@@ -6,6 +6,8 @@
 
 #define TEAM_NEUTRAL 0
 
+#define CP_MATERIAL TEXT("Material'/Game/Materials/HUD/M_CapturePoint.M_CapturePoint'")
+
 ACapturePoint::ACapturePoint() : m_PointName(TEXT("Capture Point")), m_ScoreMultiplier(1.0f), m_ScorePerCapture(1.5f), m_OwningTeam(TEAM_NEUTRAL)
 {
 	UBoxComponent *box = UObject::CreateDefaultSubobject<UBoxComponent>(TEXT("CaptureArea"));
@@ -24,6 +26,16 @@ ACapturePoint::ACapturePoint() : m_PointName(TEXT("Capture Point")), m_ScoreMult
 	box->OnComponentEndOverlap.Add(sde);
 
 	Super::PrimaryActorTick.bCanEverTick = true;
+}
+
+void ACapturePoint::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (this->m_HUDMaterial != nullptr)
+	{
+		this->m_HUDMaterial = UMaterialInstanceDynamic::Create(this->m_HUDMaterial, Super::GetOuter());
+	}
 }
 
 float ACapturePoint::GetCapturePercentage() const

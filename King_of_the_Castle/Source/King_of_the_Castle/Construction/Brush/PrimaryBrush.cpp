@@ -51,11 +51,11 @@ UPrimaryBrush::UPrimaryBrush() : m_SelectedTypeIndex(0)
 	//	this->m_BlockDataClasses.Add(DataGold.Class);
 	//}
 
-	static ConstructorHelpers::FClassFinder<UBlockData> DataFlag(DATA_FLAG_LOCATION);
-	if (DataFlag.Succeeded())
-	{
-		this->m_BlockDataClasses.Add(DataFlag.Class);
-	}
+	//static ConstructorHelpers::FClassFinder<UBlockData> DataFlag(DATA_FLAG_LOCATION);
+	//if (DataFlag.Succeeded())
+	//{
+	//	this->m_BlockDataClasses.Add(DataFlag.Class);
+	//}
 
 	Super::bAbsoluteRotation = true;
 }

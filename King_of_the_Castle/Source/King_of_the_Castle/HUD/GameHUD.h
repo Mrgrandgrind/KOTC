@@ -91,8 +91,11 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Capture Points", meta = (DisplayName = "Team Box UV Size"))
 	float m_CPTeamBoxUVSize;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Capture Points", meta = (DisplayName = "Team Box Alpha"))
-	float m_CPTeamBoxAlpha;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Capture Points", meta = (DisplayName = "Box Alpha"))
+	float m_CPBoxAlpha;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Capture Points", meta = (DisplayName = "Box Flash Speed"))
+	float m_CPBoxFlashSpeed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Capture Points", meta = (DisplayName = "Text Color"))
 	FLinearColor m_CPTextColor;
@@ -101,10 +104,10 @@ protected:
 	float m_CPTextScale;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Capture Points", meta = (DisplayName = "Text Y Offset"))
-	float m_CPTextYOffset;
+	float m_CPTextZOffset;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Capture Points", meta = (DisplayName = "Capture Point Material"))
-	UMaterialInterface *m_CPMaterial;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Capture Points", meta = (DisplayName = "Capture Point Material"))
+	//UMaterialInterface *m_CPMaterial;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Capture Points", meta = (DisplayName = "Render Capture Points"))
 	bool m_bRenderCapturePoints;
@@ -115,6 +118,6 @@ private:
 	bool m_bCrosshairVisible;
 
 	// Each flag will have their own material instance because DrawMaterial doesn't immediately draw and material parameters get overwritten
-	UPROPERTY()
-	TArray<UMaterialInterface*> m_CPMaterials;
+	//UPROPERTY()
+	//TArray<UMaterialInterface*> m_CPMaterials;
 };

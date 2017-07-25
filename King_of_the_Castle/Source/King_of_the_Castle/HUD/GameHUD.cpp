@@ -26,7 +26,7 @@
 #define CP_MATERIAL_PARAM_TEAM_SIZE TEXT("TeamBoxSize")
 #define CP_MATERIAL_PARAM_CAPTURE_PERC TEXT("TeamCapturePerc")
 #define CP_MATERIAL_PARAM_CAPTURE_COLOR TEXT("TeamCaptureColor")
-#define CP_MATERIAL TEXT("Material'/Game/Materials/HUD/M_CapturePoint.M_CapturePoint'")
+#define CP_MATERIAL_PARAM_FLASH_SPEED TEXT("BoxFlashSpeed")
 
 AGameHUD::AGameHUD() : m_bCrosshairVisible(false)
 {
@@ -51,12 +51,13 @@ AGameHUD::AGameHUD() : m_bCrosshairVisible(false)
 	// Capture Points
 	this->m_CPOwnedColor = CP_OWNED_COLOR;
 	this->m_CPUnownedColor = CP_UNOWNED_COLOR;
-	this->m_CPBoxScale = 20.5f;
+	this->m_CPBoxScale = 18.0f;
 	this->m_CPTeamBoxUVSize = 0.12f;
-	this->m_CPTeamBoxAlpha = 0.5f;
+	this->m_CPBoxAlpha = 0.5f;
+	this->m_CPBoxFlashSpeed = 0.65f;
 	this->m_CPTextColor = CP_TEXT_COLOR;
 	this->m_CPTextScale = 1.0f;
-	this->m_CPTextYOffset = -25.0f;
+	this->m_CPTextZOffset = 140.0f;
 	this->m_bRenderCapturePoints = true;
 
 	//this->m_BuildWheel = UObject::CreateDefaultSubobject<UBuildWheel>(TEXT("BuildWheel"));
@@ -133,20 +134,6 @@ void AGameHUD::RenderCapturePoints(const FVector4& screen, const float& scale)
 	TArray<AActor*> points;
 	UGameplayStatics::GetAllActorsOfClass(Super::GetWorld(), ACapturePoint::StaticClass(), points);
 
-	if (this->m_CPMaterials.Num() < points.Num())
-	{
-		// Automatically create dynamic material for each capture point
-		for (int i = 0; i < points.Num() - this->m_CPMaterials.Num(); i++)
-		{
-			UMaterialInstanceDynamic *material = UMaterialInstanceDynamic::Create(this->m_CPMaterial, Super::GetOuter());
-			if (material == nullptr)
-			{
-				return;
-			}
-			this->m_CPMaterials.Add(material);
-		}
-	}
-
 	//for (AActor *actor : points)
 	for (int i = 0; i < points.Num(); i++)
 	{
@@ -160,8 +147,8 @@ void AGameHUD::RenderCapturePoints(const FVector4& screen, const float& scale)
 		// Set the letter to the uppercase first character
 		name = name.Mid(0, 1).ToUpper();
 
-		FVector position = Super::Project(points[i]->GetActorLocation());
-		position.Y += this->m_CPTextYOffset;
+		// Screen position
+		FVector position = Super::Project(points[i]->GetActorLocation() + FVector(0.0f, 0.0f, this->m_CPTextZOffset));
 
 		float textScale = scale * this->m_CPTextScale, boxScale = textScale * this->m_CPBoxScale;
 		if (position.Z <= 0.0f 
@@ -171,18 +158,21 @@ void AGameHUD::RenderCapturePoints(const FVector4& screen, const float& scale)
 			continue;
 		}
 		// Draw background box
-		check(this->m_CPMaterials.Num() > i);
-		UMaterialInstanceDynamic *material = Cast<UMaterialInstanceDynamic>(this->m_CPMaterials[i]);
+		UMaterialInstanceDynamic *material = point->GetHUDMaterial();
 		if (material == nullptr)
 		{
-			continue;
+			continue; 
 		}
-		material->SetScalarParameterValue(CP_MATERIAL_PARAM_ALPHA, this->m_CPTeamBoxAlpha);
+		material->SetScalarParameterValue(CP_MATERIAL_PARAM_ALPHA, this->m_CPBoxAlpha);
+		material->SetScalarParameterValue(CP_MATERIAL_PARAM_FLASH_SPEED, this->m_CPBoxFlashSpeed);
 		material->SetVectorParameterValue(CP_MATERIAL_PARAM_BOX_COLOR, team == point->GetOwningTeam() ? this->m_CPOwnedColor : this->m_CPUnownedColor);
 		material->SetVectorParameterValue(CP_MATERIAL_PARAM_TEAM_COLOR, gamemode->GetTeamColor(point->GetOwningTeam()));
 		material->SetScalarParameterValue(CP_MATERIAL_PARAM_TEAM_SIZE, this->m_CPTeamBoxUVSize);
 		material->SetScalarParameterValue(CP_MATERIAL_PARAM_CAPTURE_PERC, point->GetCapturePercentage());
 		material->SetVectorParameterValue(CP_MATERIAL_PARAM_CAPTURE_COLOR, gamemode->GetTeamColor(point->GetCapturingTeam()));
+
+		//position.X = FMath::Max(boxScale, FMath::Min(screen.Z - boxScale, position.X));
+		//position.Y = FMath::Max(boxScale, FMath::Min(screen.W - boxScale, position.Y));
 
 		Super::DrawMaterialSimple(material, position.X - boxScale / 2.0f, position.Y - boxScale / 2.0f, boxScale, boxScale);
 

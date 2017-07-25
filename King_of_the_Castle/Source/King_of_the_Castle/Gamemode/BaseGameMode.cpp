@@ -11,6 +11,7 @@
 #include "Character/DefaultPlayerController.h"
 
 #include "Runtime/Engine/Public/EngineUtils.h"
+#include "Runtime/Engine/Classes/Engine/Engine.h"
 
 #define DEFAULT_GAME_DURATION 10.0f * 60.0f //seconds
 
@@ -219,6 +220,8 @@ void ABaseGameMode::SpawnPlayers()
 		APlayerCharacter *character = Super::GetWorld()->SpawnActor<APlayerCharacter>(this->m_CharacterClass, loc, rot);
 		if (character == nullptr)
 		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(
+				TEXT("Unable to spawn player %d due to a collision!"), i + 1));
 			continue;
 		}
 		character->SetTeam(team);

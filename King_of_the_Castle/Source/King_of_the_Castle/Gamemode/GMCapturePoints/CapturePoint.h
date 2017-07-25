@@ -11,6 +11,8 @@ class KING_OF_THE_CASTLE_API ACapturePoint : public AActor
 public:	
 	ACapturePoint();
 
+	virtual void BeginPlay() override;
+
 	virtual void Tick(float delta) override;
 
 	void SetCapturing(const bool& capturing, const int& team);
@@ -36,6 +38,8 @@ public:
 	FORCEINLINE const bool& IsBeingCaptured() const { return this->m_bCapturing; }
 
 	FORCEINLINE const int& GetCapturingTeam() const { return this->m_CapturingTeam; }
+
+	FORCEINLINE UMaterialInstanceDynamic* GetHUDMaterial() const { return Cast<UMaterialInstanceDynamic>(this->m_HUDMaterial); }
 
 protected:
 	// Set light to represet owning team
@@ -65,6 +69,10 @@ protected:
 	// Current owner of this capture point. 0 means neutral
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Capture Point", meta = (DisplayName = "[Debug] Team Owner"))
 	int m_OwningTeam;
+
+	// Material for this capture point. Used in HUD.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Materials", meta = (DisplayName = "Capture Point Material"))
+	UMaterialInterface *m_HUDMaterial;
 
 	// All players in this capture point
 	UPROPERTY()
