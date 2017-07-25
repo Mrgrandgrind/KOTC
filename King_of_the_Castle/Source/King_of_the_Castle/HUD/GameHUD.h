@@ -37,6 +37,9 @@ protected:
 	//UPROPERTY(VisibleAnywhere)
 	//UBuildWheel *m_BuildWheel;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD", meta = (DisplayName = "Font"))
+	class UFont *m_Font;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Scale", meta = (DisplayName = "Master Scale"))
 	float m_ScaleMaster;
 
@@ -123,6 +126,18 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Info Panel", meta = (DisplayName = "Render Time"))
 	bool m_bRenderTime;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Info Panel", meta = (DisplayName = "Team Bar Width"))
+	float m_IPTeamBarWidth;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Info Panel", meta = (DisplayName = "Team Bar Min Height"))
+	float m_IPTeamBarMinHeight;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Info Panel", meta = (DisplayName = "Team Bar Max Height"))
+	float m_IPTeamBarMaxHeight;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Info Panel", meta = (DisplayName = "Team Bar Alpha"))
+	float m_IPTeamBarAlpha;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Info Panel", meta = (DisplayName = "Render Info Panel"))
 	bool m_bRenderInfoPanel;

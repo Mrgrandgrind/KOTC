@@ -42,7 +42,7 @@ AGameHUD::AGameHUD() : m_bCrosshairVisible(false)
 	this->m_BarStaminaColor = STAMINA_COLOR;
 	this->m_BarHealthText = TEXT("HP");
 	this->m_BarStaminaText = TEXT("SP");
-	this->m_BarTextScale = 0.65f;
+	this->m_BarTextScale = 0.4f;
 	this->m_BarScaleXHealth = 120.0f;
 	this->m_BarScaleXStamina = 90.0f;
 	this->m_BarScaleY = 10.0f;
@@ -53,20 +53,24 @@ AGameHUD::AGameHUD() : m_bCrosshairVisible(false)
 	// Capture Points
 	this->m_CPOwnedColor = CP_OWNED_COLOR;
 	this->m_CPUnownedColor = CP_UNOWNED_COLOR;
-	this->m_CPBoxScale = 18.0f;
+	this->m_CPBoxScale = 29.4f;
 	this->m_CPTeamBoxUVSize = 0.12f;
 	this->m_CPBoxAlpha = 0.5f;
 	this->m_CPBoxFlashSpeed = 0.65f;
 	this->m_CPTextColor = CP_TEXT_COLOR;
-	this->m_CPTextScale = 1.0f;
+	this->m_CPTextScale = 0.5f;
 	this->m_CPTextZOffset = 140.0f;
 	this->m_bRenderCapturePoints = true;
 
 	// Info Panel
 	this->m_IPTimeBoxScale = 1.25f;
-	this->m_IPTimeTextScale = 1.1f;
+	this->m_IPTimeTextScale = 0.6f;
 	this->m_IPTimeTextColor = IP_TIME_TEXT_COLOR;
 	this->m_bRenderTime = true;
+	this->m_IPTeamBarWidth = 8.0f;
+	this->m_IPTeamBarMinHeight = 50.0f;
+	this->m_IPTeamBarMaxHeight = 225.0f;
+	this->m_IPTeamBarAlpha = 0.5f;
 	this->m_bRenderInfoPanel = true;
 
 	//this->m_BuildWheel = UObject::CreateDefaultSubobject<UBuildWheel>(TEXT("BuildWheel"));
@@ -105,9 +109,9 @@ void AGameHUD::RenderBars(const FVector4& screen, const float& scale)
 	// Health
 	float healthPerc = character->GetHealth() / character->GetMaxHealth();
 
-	Super::GetTextSize(this->m_BarHealthText, textWidth, textHeight, nullptr, scale * this->m_BarTextScale);
+	Super::GetTextSize(this->m_BarHealthText, textWidth, textHeight, this->m_Font, scale * this->m_BarTextScale);
 	Super::DrawText(this->m_BarHealthText, FLinearColor::White, x - textWidth / 2.0f,
-		y + height / 2.0f - textHeight / 2.0f, nullptr, scale * this->m_BarTextScale);
+		y + height / 2.0f - textHeight / 2.0f, this->m_Font, scale * this->m_BarTextScale);
 
 	offset = opposite ? -(textWidth / 4.0f + padding / 2.0f) : (textWidth / 4.0f + padding / 2.0f);
 	Super::DrawRect(this->m_BarHealthColor, x + offset, y, widthHealth * healthPerc, height * 0.6f);
@@ -120,9 +124,9 @@ void AGameHUD::RenderBars(const FVector4& screen, const float& scale)
 
 	y += height + scale * this->m_BarSeparation;
 
-	Super::GetTextSize(this->m_BarHealthText, textWidth, textHeight, nullptr, scale * this->m_BarTextScale);
+	Super::GetTextSize(this->m_BarHealthText, textWidth, textHeight, this->m_Font, scale * this->m_BarTextScale);
 	Super::DrawText(this->m_BarStaminaText, FLinearColor::White, x - textWidth / 2.0f,
-		y + height / 2.0f - textHeight / 2.0f, nullptr, scale * this->m_BarTextScale);
+		y + height / 2.0f - textHeight / 2.0f, this->m_Font, scale * this->m_BarTextScale);
 
 	offset = opposite ? -(textWidth / 4.0f + padding / 2.0f) : (textWidth / 4.0f + padding / 2.0f);
 	Super::DrawRect(this->m_BarStaminaColor * 0.9f, x + offset, y, widthStamina * staminaPerc, height * 0.4f);
@@ -195,9 +199,9 @@ void AGameHUD::RenderCapturePoints(const FVector4& screen, const float& scale)
 
 		// Draw Text
 		float width, height;
-		Super::GetTextSize(name, width, height, nullptr, textScale);
+		Super::GetTextSize(name, width, height, this->m_Font, textScale);
 		Super::DrawText(name, this->m_CPTextColor, position.X - width / 2.0f,
-			position.Y - height / 2.0f, nullptr, textScale);
+			position.Y - height / 2.0f, this->m_Font, textScale);
 	}
 }
 
@@ -216,17 +220,66 @@ void AGameHUD::RenderForAll(const FVector4& screen, const float& scale)
 	float x = (this->m_PlayerCount == 2 || this->m_PlayerCount == 4) ? screen.Z : screen.Z / 2.0f,
 		y = (this->m_PlayerCount <= 2) ? 0.0f : screen.W;
 
+	//float barScale = this->m_IPTeamBarWidth * scale;
+	//for (int i = 0; i < gamemode->GetTeamCount(); i++)
+	//{
+	//	FLinearColor color = gamemode->GetTeamColor(i + 1);
+	//	color.A = this->m_IPTeamBarAlpha;
+
+	//	float h = this->m_IPTeamBarMinHeight * scale + (this->m_IPTeamBarMaxHeight - this->m_IPTeamBarMinHeight)
+	//		* scale * gamemode->GetScore(i + 1) / gamemode->GetWinScore();
+	//	Super::DrawRect(color, x - h / 2.0f, y + barScale * i - barScale * gamemode->GetTeamCount() / 2.0f, h, barScale);
+	//}
+
+	const float barWidth = 250.0f * scale, barHeight = FMath::RoundToFloat(20.0f * scale);
+
+	TArray<float> ratios;
+	float ratioTotal = 0.0f;
+	// Calculate ratios
+	for (int i = 0; i < gamemode->GetTeamCount(); i++)
+	{
+		float ratio = gamemode->GetScore(i + 1) / gamemode->GetWinScore();
+		ratios.Add(ratio);
+		ratioTotal += ratio;
+	}
+	if (ratioTotal == 0.0f)
+	{
+		ratios.Empty();
+		ratios.Init(1.0f, gamemode->GetTeamCount());
+		ratioTotal = gamemode->GetTeamCount();
+	}
+	// Render rect using normalize ratio
+	float barX = x - barWidth / 2.0f;
+	for (int i = 0; i < gamemode->GetTeamCount(); i++)
+	{
+		FLinearColor color = gamemode->GetTeamColor(i + 1);
+		color.A = this->m_IPTeamBarAlpha;
+
+		float w = barWidth * ratios[i] / ratioTotal;
+		Super::DrawRect(color, barX, y - barHeight / 2.0f, w, barHeight);
+
+		FString score = FString::Printf(TEXT("%d"), gamemode->GetScore(i + 1));
+		Super::GetTextSize(score, width, height, this->m_Font, scale * 0.6f);
+
+		if (w > width)
+		{
+			Super::DrawText(score, this->m_IPTimeTextColor, barX + w / 2.0f - width / 2.0f, y - height / 2.0f, this->m_Font, scale * 0.6f);
+		}
+
+		barX += w;
+	}
+
 	if (this->m_bRenderTime)
 	{
 		float timeScale = scale * this->m_IPTimeTextScale;
 		int time = int(gamemode->GetGameDuration() - gamemode->GetTime());
 
 		FString timeText = FString::Printf(TEXT("%02d:%02d"), time / 60, time % 60);
-		Super::GetTextSize(timeText, width, height, nullptr, timeScale);
+		Super::GetTextSize(timeText, width, height, this->m_Font, timeScale);
 
-		Super::DrawRect(FLinearColor::Blue, x - this->m_IPTimeBoxScale * width / 2.0f, y - this->m_IPTimeBoxScale
-			* height / 2.0f, this->m_IPTimeBoxScale * width, this->m_IPTimeBoxScale * height);
-		Super::DrawText(timeText, this->m_IPTimeTextColor, x - width / 2.0f, y - height / 2.0f, nullptr, timeScale);
+		Super::DrawRect(FLinearColor(0.05f, 0.05f, 0.05f, 0.8f), x - this->m_IPTimeBoxScale * width / 2.0f, y - this->m_IPTimeBoxScale
+			* height / 2.0f - barHeight, this->m_IPTimeBoxScale * width, this->m_IPTimeBoxScale * height);
+		Super::DrawText(timeText, this->m_IPTimeTextColor, x - width / 2.0f, y - height / 2.0f - barHeight, this->m_Font, timeScale);
 	}
 }
 
@@ -260,10 +313,10 @@ void AGameHUD::DrawHUD()
 	}
 	//this->m_BuildWheel->Render(this, screen);
 
-	AGMCapturePoints *gamemode = GetGameMode<AGMCapturePoints>(Super::GetWorld());
-	if (gamemode != nullptr)
-	{
-		Super::DrawText(FString::Printf(TEXT("Score: %d"), gamemode->GetScore(this->GetCharacter()->GetTeam())),
-			FColor::White, 10.0f, screen.W - 30.0f, nullptr, scale * 0.8f);
-	}
+	//AGMCapturePoints *gamemode = GetGameMode<AGMCapturePoints>(Super::GetWorld());
+	//if (gamemode != nullptr)
+	//{
+	//	Super::DrawText(FString::Printf(TEXT("Score: %d"), gamemode->GetScore(this->GetCharacter()->GetTeam())),
+	//		FColor::White, 10.0f, screen.W - 30.0f, nullptr, scale * 0.8f);
+	//}
 }

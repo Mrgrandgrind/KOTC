@@ -44,6 +44,9 @@ public:
 	// How many players are ingame
 	FORCEINLINE const int& GetPlayerCount() const { return this->m_PlayerCount; }
 
+	// How many different teams there are
+	FORCEINLINE const int& GetTeamCount() const { return this->m_TeamCount; }
+
 	// Set how long a game should last
 	FORCEINLINE void SetGameDuration(const float& duration) { this->m_GameDuration = duration; }
 
@@ -89,6 +92,8 @@ private:
 	bool m_bUseDefaultStart;
 
 	TMap<int, float> m_TeamScores;
+	
+	int m_TeamCount;
 
 	// How many players should be ingame
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Players", meta = (AllowPrivateAccess = "true", DisplayName = "Player Count"))

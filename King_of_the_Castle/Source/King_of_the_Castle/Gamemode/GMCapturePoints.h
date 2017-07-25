@@ -30,6 +30,8 @@ public:
 
 	virtual void OnCapturePointReleased(class ACapturePoint *point);
 
+	FORCEINLINE const float& GetWinScore() const { return this->m_WinScore; }
+
 	FORCEINLINE const float& GetCaptureDuration() const { return this->m_CaptureDuration; }
 
 	FORCEINLINE const bool& IsNeutralStateEnabled() const { return this->m_bHasNeutralState; }

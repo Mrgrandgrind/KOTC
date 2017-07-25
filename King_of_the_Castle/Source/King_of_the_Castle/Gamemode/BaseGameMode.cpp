@@ -226,6 +226,11 @@ void ABaseGameMode::SpawnPlayers()
 		}
 		character->SetTeam(team);
 
+		if (team > this->m_TeamCount)
+		{
+			this->m_TeamCount = team;
+		}
+
 		APlayerController *controller;
 		if (i == 0)
 		{
