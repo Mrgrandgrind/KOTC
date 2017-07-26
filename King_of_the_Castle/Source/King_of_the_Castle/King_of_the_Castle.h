@@ -13,8 +13,9 @@
 #define KOTC_CONSTRUCTION_CHAIN_ENABLED true	// Whether or not chaining (click-and-dragging blocks) should work
 #define KOTC_CONSTRUCTION_CHAIN_AXIS_LOCK true	// Whether or not to lock the axis when chaining blocks
 
-#define KOTC_CONSTRUCTION_REACH_DISTANCE 1.8f		// Number of blocks the player can reach using the brush
-#define KOTC_CONSTRUCTION_REACH_MULTIPLIER 150.0f //Multiplier for distance. 150 is the size of a basic block.
+#define KOTC_CONSTRUCTION_BLOCK_REACH 1.0f
+//#define KOTC_CONSTRUCTION_REACH_DISTANCE 1.8f		// Number of blocks the player can reach using the brush
+//#define KOTC_CONSTRUCTION_REACH_MULTIPLIER 150.0f //Multiplier for distance. 150 is the size of a basic block.
 //////////////////
 
 // Cheats //

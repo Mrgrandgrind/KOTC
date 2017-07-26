@@ -50,25 +50,6 @@ public:
 
 	FORCEINLINE bool IsChaining() const { return this->m_Chained.Num() > 1; }
 
-protected:
-	UMaterialInstanceDynamic* GetMaterialDynamic();
-
-	bool IsSupport(const FVector& position, const FVector& cellSize) const;
-
-	TArray<class ABlock*> GetNeighbours(const FVector& position, const FVector& cellSize) const;
-
-	virtual bool IsOverlapped() const;
-
-	virtual TArray<class ABlock*> OnAction(class ABuildArea *area, AActor *source) { return TArray<class ABlock*>(); }
-
-	virtual bool OnPreCheck(ABuildArea *area, const FHitResult& result, FGridCell& out, bool& show) { return true; }
-
-	virtual bool OnMainCheck(ABuildArea *area, const FHitResult& result, FGridCell& out, bool& show, const bool& pre) { return false; }
-
-	virtual bool OnPostCheck(ABuildArea *area, const FHitResult& result, FGridCell& out, bool& show, const bool& valid) { return valid; }
-
-	FORCEINLINE const bool& IsPositionValid() const { return this->m_bPositionValid; }
-
 	FORCEINLINE void RenderPoint(const FVector& point, const FColor& color) const
 	{
 #if WITH_EDITOR
@@ -88,6 +69,25 @@ protected:
 		}
 #endif
 	}
+
+protected:
+	UMaterialInstanceDynamic* GetMaterialDynamic();
+
+	bool IsSupport(const FVector& position, const FVector& cellSize) const;
+
+	TArray<class ABlock*> GetNeighbours(const FVector& position, const FVector& cellSize) const;
+
+	virtual bool IsOverlapped() const;
+
+	virtual TArray<class ABlock*> OnAction(class ABuildArea *area, AActor *source) { return TArray<class ABlock*>(); }
+
+	virtual bool OnPreCheck(ABuildArea *area, const FHitResult& result, FGridCell& out, bool& show) { return true; }
+
+	virtual bool OnMainCheck(ABuildArea *area, const FHitResult& result, FGridCell& out, bool& show, const bool& pre) { return false; }
+
+	virtual bool OnPostCheck(ABuildArea *area, const FHitResult& result, FGridCell& out, bool& show, const bool& valid) { return valid; }
+
+	FORCEINLINE const bool& IsPositionValid() const { return this->m_bPositionValid; }
 
 	int *m_Team;
 

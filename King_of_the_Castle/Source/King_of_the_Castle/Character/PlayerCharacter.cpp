@@ -34,7 +34,7 @@
 
 // Sets default values
 APlayerCharacter::APlayerCharacter() : m_bPlacePressed(false), m_PlacePressCounter(0.0f), m_AttackStage(EAttackStage::READY),
-m_DodgePressTimer(DODGE_DOUBLE_TAP_TIME), m_Team(-1), m_BuildReach(DEFAULT_REACH_DISTANCE)
+m_DodgePressTimer(DODGE_DOUBLE_TAP_TIME), m_Team(-1), m_BuildReach(KOTC_CONSTRUCTION_BLOCK_REACH)
 {
 	static ConstructorHelpers::FObjectFinder<UMaterialInterface> Material(MATERIAL_LOCATION);
 	this->m_Material = Material.Object;
@@ -126,7 +126,7 @@ UCameraComponent* APlayerCharacter::GetCamera()
 {
 	if (this->m_Camera != nullptr)
 	{
-		return this->m_Camera;
+		//return this->m_Camera;
 	}
 	TInlineComponentArray<UCameraComponent*> cameras;
 	Super::GetComponents<UCameraComponent>(cameras);
@@ -260,19 +260,25 @@ void APlayerCharacter::Tick(float delta)
 		FVector cameraLoc = camera->GetComponentLocation(), forward = camera->GetForwardVector();
 		FVector cameraToPlayer = Super::GetMesh()->GetSocketLocation(BUILD_TRACE_SOCKET) - cameraLoc;
 
+		FVector farDir = FVector(forward.X, forward.Y, 0.0f).GetSafeNormal();
+		float len = FMath::Min(1.0f / FVector::DotProduct(forward, farDir), KOTC_CONSTRUCTION_BLOCK_REACH * 2.0f);
+
 		FVector start = cameraLoc + forward * FVector::DotProduct(cameraToPlayer, forward);
-		FVector end = start + forward * this->m_BuildReach;
+		FVector end = start + forward * this->m_BuildReach * len * area->GetCellSize();
+
+		this->m_PrimaryBrush->RenderTrace(start, start + farDir * this->m_BuildReach * area->GetCellSize(), FColor::Purple);
 
 		// Perform the trace from the player in the direction of the camera
+		FHitResult result;
 		FCollisionQueryParams params;
 		params.AddIgnoredActor(this);
-		Super::GetWorld()->LineTraceSingleByChannel(this->m_TraceResult, start, end, ECollisionChannel::ECC_WorldDynamic, params);
+		Super::GetWorld()->LineTraceSingleByChannel(result, start, end, ECollisionChannel::ECC_WorldDynamic, params);
 
 		// Update create brush
-		this->m_PrimaryBrush->Update(this, area, this->m_TraceResult);
+		this->m_PrimaryBrush->Update(this, area, result);
 
 		// Update modify brush
-		this->m_SecondaryBrush->Update(this, area, this->m_TraceResult);
+		this->m_SecondaryBrush->Update(this, area, result);
 	}
 }
 
@@ -324,7 +330,7 @@ void APlayerCharacter::SetBuildModeEnabled(const bool& enable)
 	}
 }
 
-void APlayerCharacter::SetTeam(const int& team)
+void APlayerCharacter::SetTeam(const int32& team)
 {
 	this->m_Team = team;
 

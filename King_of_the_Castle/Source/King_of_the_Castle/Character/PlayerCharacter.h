@@ -35,7 +35,7 @@ public:
 	int GetPlayerIndex() const;
 
 	// Set the players team
-	void SetTeam(const int& team);
+	void SetTeam(const int32& team);
 
 	// Are either of the brushes visible
 	bool IsBrushVisible() const;
@@ -126,7 +126,7 @@ public:
 
 	FORCEINLINE void SetStamina(const float& stamina) { this->m_Stamina = FMath::Max(FMath::Min(stamina, this->m_MaxStamina), 0.0f); }
 
-	FORCEINLINE const int& GetTeam() const { return this->m_Team; }
+	FORCEINLINE const int32& GetTeam() const { return this->m_Team; }
 
 	FORCEINLINE const bool& IsBuildModeEnabled() const { return this->m_bBuildingEnabled; }
 
@@ -208,9 +208,6 @@ protected:
 	void InputChargeDisable();
 
 private:
-	// Result of last trace. The trace happens every tick when building mode is enabled.
-	FHitResult m_TraceResult;
-
 	// Whether or not the build place input has been activated
 	bool m_bPlacePressed;
 	float m_PlacePressCounter;
@@ -328,7 +325,7 @@ private:
 
 	// Current player team. Set using #SetTeam
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Team", meta = (AllowPrivateAccess = "true", DisplayName = "Team"))
-	int m_Team;
+	int32 m_Team;
 
 	// Whether or not build mode is active
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Build", meta = (AllowPrivateAccess = "true", DisplayName = "Build Enabled"))

@@ -21,7 +21,7 @@ public:
 	void KOTC_Stun(const float& duration);
 
 	UFUNCTION(Exec)
-	void KOTC_SetTeam(const int& team);
+	void KOTC_SetTeam(const int32& team);
 
 	UFUNCTION(Exec)
 	void KOTC_SetHealth(const float& health);
@@ -33,7 +33,7 @@ public:
 	void KOTC_SetBlockReach(const float& reach);
 
 	UFUNCTION(Exec)
-	void KOTC_SetBlockCount(const int& count);
+	void KOTC_SetBlockCount(const int32& count);
 
 	UFUNCTION(Exec)
 	void KOTC_DebugBreakBlocks();

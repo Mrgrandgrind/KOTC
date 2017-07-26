@@ -280,8 +280,8 @@ void AGameHUD::RenderForAll(const FVector4& screen, const float& scale)
 		Super::DrawRect(color, barX, y - barHeight / 2.0f, w, barHeight);
 
 		color = FLinearColor(color.R * 0.25f, color.G * 0.25f, color.B * 0.25f, 0.25f);
-		Super::DrawRect(color, barX, y - barHeight / 2.0f, w * 0.1f, barHeight);
-		Super::DrawRect(color, barX + w, y - barHeight / 2.0f, -w * 0.1f, barHeight);
+		//Super::DrawRect(color, barX, y - barHeight / 2.0f, w * 0.1f, barHeight);
+		//Super::DrawRect(color, barX + w, y - barHeight / 2.0f, -w * 0.1f, barHeight);
 		Super::DrawRect(color, barX + w * 0.1f, y - barHeight / 2.0f, w * 0.8f, barHeight * 0.15f);
 		Super::DrawRect(color, barX + w * 0.1f, y + barHeight / 2.0f, w * 0.8f, -barHeight * 0.15f);
 

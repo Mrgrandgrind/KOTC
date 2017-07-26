@@ -33,7 +33,7 @@ void ADefaultPlayerController::KOTC_Stun(const float& duration)
 	}
 }
 
-void ADefaultPlayerController::KOTC_SetTeam(const int& team)
+void ADefaultPlayerController::KOTC_SetTeam(const int32& team)
 {
 	APlayerCharacter *character = this->GetCharacter();
 	if (character != nullptr)
@@ -65,12 +65,11 @@ void ADefaultPlayerController::KOTC_SetBlockReach(const float& reach)
 	APlayerCharacter *character = this->GetCharacter();
 	if (character != nullptr)
 	{
-		character->SetBuildReach(reach <= 0 ? DEFAULT_REACH_DISTANCE 
-			: (reach * KOTC_CONSTRUCTION_REACH_MULTIPLIER));
+		character->SetBuildReach(reach <= 0 ? KOTC_CONSTRUCTION_BLOCK_REACH : reach);
 	}
 }
 
-void ADefaultPlayerController::KOTC_SetBlockCount(const int& count)
+void ADefaultPlayerController::KOTC_SetBlockCount(const int32& count)
 {
 	APlayerCharacter *character = this->GetCharacter();
 	if (character == nullptr)
