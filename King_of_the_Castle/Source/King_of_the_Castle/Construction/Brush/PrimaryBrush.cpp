@@ -187,6 +187,10 @@ void UPrimaryBrush::UpdateChildBlocks()
 {
 	for (AActor *next : this->m_ChildBlocks)
 	{
+		if (next == nullptr)
+		{
+			continue;
+		}
 		next->Destroy();
 	}
 	this->m_ChildBlocks.Empty();

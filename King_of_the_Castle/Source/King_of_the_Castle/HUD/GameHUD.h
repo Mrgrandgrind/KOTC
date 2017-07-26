@@ -27,11 +27,20 @@ public:
 private:
 	FORCEINLINE class APlayerCharacter* GetCharacter() const { return (APlayerCharacter*)Super::GetOwningPawn(); }
 
+	void RenderPlace(const FVector4& screen, const float& scale);
+
 	void RenderBars(const FVector4& screen, const float& scale);
 
 	void RenderCapturePoints(const FVector4& screen, const float& scale);
 
 	void RenderForAll(const FVector4& screen, const float& scale);
+
+	FORCEINLINE bool IsOpposite()
+	{
+		return (this->m_PlayerCount == 2 && this->m_ControllerId == 1)
+			|| (this->m_PlayerCount == 3 && this->m_ControllerId == 2)
+			|| (this->m_PlayerCount == 4 && (this->m_ControllerId == 1 || this->m_ControllerId == 3));
+	}
 
 protected:
 	//UPROPERTY(VisibleAnywhere)
@@ -130,17 +139,29 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Info Panel", meta = (DisplayName = "Team Bar Width"))
 	float m_IPTeamBarWidth;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Info Panel", meta = (DisplayName = "Team Bar Min Height"))
-	float m_IPTeamBarMinHeight;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Info Panel", meta = (DisplayName = "Team Bar Max Height"))
-	float m_IPTeamBarMaxHeight;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Info Panel", meta = (DisplayName = "Team Bar Height"))
+	float m_IPTeamBarHeight;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Info Panel", meta = (DisplayName = "Team Bar Alpha"))
 	float m_IPTeamBarAlpha;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Info Panel", meta = (DisplayName = "Render Info Panel"))
 	bool m_bRenderInfoPanel;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Score Place", meta = (DisplayName = "Place Text Scale"))
+	float m_PlaceTextScale;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Score Place", meta = (DisplayName = "Sub Text Scale"))
+	float m_PlaceSubTextScale;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Score Place", meta = (DisplayName = "Padding"))
+	float m_PlacePadding;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Score Place", meta = (DisplayName = "Text Color"))
+	FLinearColor m_PlaceTextColor;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Score Place", meta = (DisplayName = "Render Score Place"))
+	bool m_bRenderScorePlace;
 
 private:
 	int32 m_ControllerId, m_PlayerCount;

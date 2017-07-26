@@ -62,6 +62,28 @@ public:
 		return team > 0 && team <= this->m_TeamColors.Num() ? this->m_TeamColors[team - 1] : FLinearColor::White; 
 	}
 
+	FORCEINLINE int32 GetPlace(const int& team)
+	{
+		if (!this->m_TeamScores.Contains(team))
+		{
+			return this->m_TeamCount;
+		}
+		const float& score = this->m_TeamScores[team];
+		int placement = 1;
+		for (auto next : this->m_TeamScores)
+		{
+			if (next.Key == team)
+			{
+				continue;
+			}
+			if (next.Value > score)
+			{
+				placement++;
+			}
+		}
+		return placement;
+	}
+
 	// Get the score of team
 	UFUNCTION(BlueprintCallable, Category = "Score")
 	int GetScore(const int& team) 

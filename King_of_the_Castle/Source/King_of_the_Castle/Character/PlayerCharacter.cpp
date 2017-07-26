@@ -673,18 +673,18 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *input)
 	input->BindAxis("LeftThumbX");
 	input->BindAxis("LeftThumbY");
 
-	input->BindAxis("MoveRight", this, &APlayerCharacter::MoveRight);
-	input->BindAxis("MoveForward", this, &APlayerCharacter::MoveForward);
+	//input->BindAxis("MoveRight", this, &APlayerCharacter::MoveRight);
+	//input->BindAxis("MoveForward", this, &APlayerCharacter::MoveForward);
 
-	input->BindAxis("Turn", this, &APawn::AddControllerYawInput);
-	input->BindAxis("TurnRate", this, &APlayerCharacter::TurnAtRate);
-	input->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
-	input->BindAxis("LookUpRate", this, &APlayerCharacter::LookUpAtRate);
+	//input->BindAxis("Turn", this, &APawn::AddControllerYawInput);
+	//input->BindAxis("TurnRate", this, &APlayerCharacter::TurnAtRate);
+	//input->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
+	//input->BindAxis("LookUpRate", this, &APlayerCharacter::LookUpAtRate);
 
-	input->BindAxis("Turn", this, &APawn::AddControllerYawInput);
-	input->BindAxis("TurnRate", this, &APlayerCharacter::TurnAtRate);
-	input->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
-	input->BindAxis("LookUpRate", this, &APlayerCharacter::LookUpAtRate);
+	//input->BindAxis("Turn", this, &APawn::AddControllerYawInput);
+	//input->BindAxis("TurnRate", this, &APlayerCharacter::TurnAtRate);
+	//input->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
+	//input->BindAxis("LookUpRate", this, &APlayerCharacter::LookUpAtRate);
 
 	input->BindAction("Jump", IE_Pressed, this, &APlayerCharacter::Jump);
 	input->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
