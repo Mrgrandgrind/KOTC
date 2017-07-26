@@ -39,6 +39,10 @@
 					<ShortName>fs_wood_toe.3.wav</ShortName>
 					<Path>SFX\fs_wood_toe.3_9E69E797.wem</Path>
 				</File>
+				<File Id="85191755" Language="SFX">
+					<ShortName>Punch_hit.wav</ShortName>
+					<Path>SFX\Punch_hit_9E69E797.wem</Path>
+				</File>
 				<File Id="205995591" Language="SFX">
 					<ShortName>jump_up_wood.11.wav</ShortName>
 					<Path>SFX\jump_up_wood.11_9E69E797.wem</Path>
@@ -86,6 +90,10 @@
 				<File Id="743773537" Language="SFX">
 					<ShortName>fs_wood_heel.11.wav</ShortName>
 					<Path>SFX\fs_wood_heel.11_9E69E797.wem</Path>
+				</File>
+				<File Id="803215861" Language="SFX">
+					<ShortName>Punch_air.wav</ShortName>
+					<Path>SFX\Punch_air_9E69E797.wem</Path>
 				</File>
 				<File Id="843506730" Language="SFX">
 					<ShortName>robot_whir_3.wav</ShortName>
