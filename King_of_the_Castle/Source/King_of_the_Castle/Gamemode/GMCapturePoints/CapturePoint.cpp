@@ -12,7 +12,8 @@ ACapturePoint::ACapturePoint() : m_PointName(TEXT("Capture Point")), m_ScoreMult
 	Super::RootComponent = box;
 
 	this->m_SignalLight = UObject::CreateDefaultSubobject<UPointLightComponent>(TEXT("SignalLight"));
-	this->m_SignalLight->SetIntensity(10000.0f);
+	this->m_SignalLight->SetIntensity(15000.0f);
+	this->m_SignalLight->SetMobility(EComponentMobility::Stationary);
 	this->m_SignalLight->SetupAttachment(Super::RootComponent);
 
 	TScriptDelegate<FWeakObjectPtr> sdb;

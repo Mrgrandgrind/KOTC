@@ -71,6 +71,6 @@ protected:
 	TArray<class APlayerCharacter*> m_Players;
 
 	// Owning team signal light
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Light", meta = (DisplayName = "Signal Light"))
 	UPointLightComponent *m_SignalLight;
 };
