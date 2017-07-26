@@ -25,11 +25,11 @@
 						</RTPCValue>
 						<RTPCValue>
 							<GameParameterRef Name="PlayerSpeed" ID="{D7A9068C-62E3-4F14-BEB0-87E2D147EE81}"/>
-							<Value>0</Value>
+							<Value>100</Value>
 						</RTPCValue>
 					</RTPCValueList>
 					<CurrentStateList ShowAll="true">
-						<CurrentStateRef Name="Level_2" ID="{A7E6AE57-8FEB-4076-9444-F642E4D5B1D9}"/>
+						<CurrentStateRef Name="Level_1" ID="{4BA60DF8-6001-49C4-A920-98ABEBC94510}"/>
 					</CurrentStateList>
 					<CurrentSwitchList ShowAll="true">
 						<CurrentSwitchRef Name="Wood" ID="{EEA62EB5-CA73-4876-A5C6-DAFE3EF34BF7}"/>
