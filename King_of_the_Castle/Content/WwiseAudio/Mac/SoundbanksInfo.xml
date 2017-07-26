@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Mac" BasePlatform="Mac" SchemaVersion="11" SoundbankVersion="120">
 	<RootPaths>
-		<ProjectRoot>C:\Users\1405188\Github\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\</ProjectRoot>
-		<SourceFilesRoot>C:\Users\1405188\Github\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\.cache\Mac\</SourceFilesRoot>
-		<SoundBanksRoot>C:\Users\1405188\Github\KingOfTheCastle\King_of_the_Castle\Content\WwiseAudio\Mac\</SoundBanksRoot>
+		<ProjectRoot>D:\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\</ProjectRoot>
+		<SourceFilesRoot>D:\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\.cache\Mac\</SourceFilesRoot>
+		<SoundBanksRoot>D:\KingOfTheCastle\King_of_the_Castle\Content\WwiseAudio\Mac\</SoundBanksRoot>
 		<ExternalSourcesInputFile></ExternalSourcesInputFile>
-		<ExternalSourcesOutputRoot>C:\Users\1405188\Github\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\GeneratedSoundBanks\Mac\</ExternalSourcesOutputRoot>
+		<ExternalSourcesOutputRoot>D:\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\GeneratedSoundBanks\Mac\</ExternalSourcesOutputRoot>
 	</RootPaths>
 	<DialogueEvents/>
 	<StreamedFiles/>
