@@ -9,6 +9,10 @@
 							<ObjectRef Name="Music_Start" ID="{88A3FF9B-FCC2-43BD-8FBE-E5EC16111B5F}" WorkUnitID="{8F1EA8B4-C444-40AD-B9D4-72B61B06D617}"/>
 							<Position X="0" Y="0"/>
 						</Module>
+						<Module>
+							<ObjectRef Name="fs_player" ID="{20519390-F0D8-4F57-9112-541B041505D3}" WorkUnitID="{8F1EA8B4-C444-40AD-B9D4-72B61B06D617}"/>
+							<Position X="1" Y="0"/>
+						</Module>
 					</ModuleList>
 					<RTPCValueList ShowAll="true">
 						<RTPCValue>
@@ -28,7 +32,7 @@
 						<CurrentStateRef Name="Level_2" ID="{A7E6AE57-8FEB-4076-9444-F642E4D5B1D9}"/>
 					</CurrentStateList>
 					<CurrentSwitchList ShowAll="true">
-						<CurrentSwitchRef Name="Fabric" ID="{E6F5D29C-85DE-4988-966C-F861D075F64C}"/>
+						<CurrentSwitchRef Name="Wood" ID="{EEA62EB5-CA73-4876-A5C6-DAFE3EF34BF7}"/>
 					</CurrentSwitchList>
 				</SoundcasterSession>
 			</ChildrenList>
