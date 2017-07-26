@@ -31,9 +31,17 @@
 				<Event Id="1264150374" Name="robot_pain" ObjectPath="\Events\Default Work Unit\SFX\robot_pain"/>
 			</IncludedEvents>
 			<IncludedMemoryFiles>
+				<File Id="41819352" Language="SFX">
+					<ShortName>robot_whir_1.wav</ShortName>
+					<Path>SFX\robot_whir_1_9E69E797.wem</Path>
+				</File>
 				<File Id="69752363" Language="SFX">
 					<ShortName>fs_wood_toe.3.wav</ShortName>
 					<Path>SFX\fs_wood_toe.3_9E69E797.wem</Path>
+				</File>
+				<File Id="85191755" Language="SFX">
+					<ShortName>Punch_hit.wav</ShortName>
+					<Path>SFX\Punch_hit_9E69E797.wem</Path>
 				</File>
 				<File Id="205995591" Language="SFX">
 					<ShortName>jump_up_wood.11.wav</ShortName>
@@ -46,6 +54,10 @@
 				<File Id="362036670" Language="SFX">
 					<ShortName>jump_land_wood.17.wav</ShortName>
 					<Path>SFX\jump_land_wood.17_9E69E797.wem</Path>
+				</File>
+				<File Id="483532692" Language="SFX">
+					<ShortName>robot_whir_6.wav</ShortName>
+					<Path>SFX\robot_whir_6_9E69E797.wem</Path>
 				</File>
 				<File Id="498000549" Language="SFX">
 					<ShortName>fs_wood_toe.11.wav</ShortName>
@@ -79,9 +91,21 @@
 					<ShortName>fs_wood_heel.11.wav</ShortName>
 					<Path>SFX\fs_wood_heel.11_9E69E797.wem</Path>
 				</File>
+				<File Id="803215861" Language="SFX">
+					<ShortName>Punch_air.wav</ShortName>
+					<Path>SFX\Punch_air_9E69E797.wem</Path>
+				</File>
+				<File Id="843506730" Language="SFX">
+					<ShortName>robot_whir_3.wav</ShortName>
+					<Path>SFX\robot_whir_3_9E69E797.wem</Path>
+				</File>
 				<File Id="853369910" Language="SFX">
 					<ShortName>fs_wood_toe.5.wav</ShortName>
 					<Path>SFX\fs_wood_toe.5_9E69E797.wem</Path>
+				</File>
+				<File Id="865230941" Language="SFX">
+					<ShortName>robot_whir_4.wav</ShortName>
+					<Path>SFX\robot_whir_4_9E69E797.wem</Path>
 				</File>
 				<File Id="875707245" Language="SFX">
 					<ShortName>jump_land_wood.19.wav</ShortName>
@@ -91,9 +115,17 @@
 					<ShortName>fs_wood_toe.13.wav</ShortName>
 					<Path>SFX\fs_wood_toe.13_9E69E797.wem</Path>
 				</File>
+				<File Id="923809630" Language="SFX">
+					<ShortName>robot_whir_2.wav</ShortName>
+					<Path>SFX\robot_whir_2_9E69E797.wem</Path>
+				</File>
 				<File Id="957496795" Language="SFX">
 					<ShortName>fs_wood_heel.19.wav</ShortName>
 					<Path>SFX\fs_wood_heel.19_9E69E797.wem</Path>
+				</File>
+				<File Id="958901499" Language="SFX">
+					<ShortName>robot_whir_5.wav</ShortName>
+					<Path>SFX\robot_whir_5_9E69E797.wem</Path>
 				</File>
 				<File Id="966534732" Language="SFX">
 					<ShortName>fs_wood_toe.9.wav</ShortName>

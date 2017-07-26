@@ -4,6 +4,13 @@
 		<WorkUnit Name="Default Work Unit" ID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}" PersistMode="Standalone">
 			<ChildrenList>
 				<ActorMixer Name="Character" ID="{80EFD26D-2E3C-4369-B7A3-E33355BD97A0}" ShortID="976060023">
+					<PropertyList>
+						<Property Name="Volume" Type="Real64">
+							<ValueList>
+								<Value>-2</Value>
+							</ValueList>
+						</Property>
+					</PropertyList>
 					<ReferenceList>
 						<Reference Name="Conversion">
 							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -82,6 +89,11 @@
 										</Property>
 										<Property Name="PlayMechanismStepOrContinuous" Type="int16" Value="0"/>
 										<Property Name="RandomOrSequence" Type="int16" Value="0"/>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-2</Value>
+											</ValueList>
+										</Property>
 									</PropertyList>
 									<ReferenceList>
 										<Reference Name="Conversion">
@@ -93,6 +105,8 @@
 													<PropertyList>
 														<Property Name="FilterTypeBand1" Type="int32" Value="1"/>
 														<Property Name="FrequencyBand1" Type="Real32" Value="95"/>
+														<Property Name="FrequencyBand2" Type="Real32" Value="5952"/>
+														<Property Name="GainBand2" Type="Real32" Value="-2"/>
 													</PropertyList>
 												</Effect>
 											</Custom>
@@ -229,6 +243,15 @@
 											</ChildrenList>
 										</RandomSequenceContainer>
 										<RandomSequenceContainer Name="Heel" ID="{78799046-3F41-4CAB-8675-835F8FE53F3E}" ShortID="154026802">
+											<PropertyList>
+												<Property Name="PlayMechanismSpecialTransitionsValue" Type="Real64">
+													<ModifierList>
+														<ModifierInfo>
+															<Modifier Name="" ID="{CF056646-C975-4F7D-8320-901E2164B7AB}"/>
+														</ModifierInfo>
+													</ModifierList>
+												</Property>
+											</PropertyList>
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -821,6 +844,18 @@
 												</RTPC>
 											</RTPCList>
 										</Property>
+										<Property Name="PlayMechanismSpecialTransitionsValue" Type="Real64">
+											<ModifierList>
+												<ModifierInfo>
+													<Modifier Name="" ID="{64C9FDD6-A9D9-48A9-9226-972C98F64974}"/>
+												</ModifierInfo>
+											</ModifierList>
+										</Property>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-3</Value>
+											</ValueList>
+										</Property>
 									</PropertyList>
 									<ReferenceList>
 										<Reference Name="Conversion">
@@ -830,6 +865,122 @@
 											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
 										</Reference>
 									</ReferenceList>
+									<ChildrenList>
+										<Sound Name="robot_whir_1" ID="{DBD9B41C-6B44-4EA4-8D33-ECB68BF592D5}" ShortID="259431354" Type="SoundFX">
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="robot_whir_1" ID="{72B537B6-3D56-4916-805A-7FBBB8B4E641}" ShortID="41819352">
+													<Language>SFX</Language>
+													<AudioFile>robot_whir_1.wav</AudioFile>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="robot_whir_1" ID="{72B537B6-3D56-4916-805A-7FBBB8B4E641}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="robot_whir_2" ID="{674609B2-A80B-4222-89DE-4DBCCE807324}" ShortID="145280600" Type="SoundFX">
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="robot_whir_2" ID="{95233197-F570-4010-BC55-E310F5BA694E}" ShortID="923809630">
+													<Language>SFX</Language>
+													<AudioFile>robot_whir_2.wav</AudioFile>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="robot_whir_2" ID="{95233197-F570-4010-BC55-E310F5BA694E}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="robot_whir_3" ID="{76F43F1B-D278-40CC-8B3E-E5C9F86963F1}" ShortID="750440103" Type="SoundFX">
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="robot_whir_3" ID="{CE955FF1-B391-4CBF-8224-1E95452A9615}" ShortID="843506730">
+													<Language>SFX</Language>
+													<AudioFile>robot_whir_3.wav</AudioFile>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="robot_whir_3" ID="{CE955FF1-B391-4CBF-8224-1E95452A9615}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="robot_whir_4" ID="{7F128C33-571B-48BB-90D6-4D03FE03FBBA}" ShortID="972158035" Type="SoundFX">
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="robot_whir_4" ID="{AE749143-019C-4710-8069-81C89EF75904}" ShortID="865230941">
+													<Language>SFX</Language>
+													<AudioFile>robot_whir_4.wav</AudioFile>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="robot_whir_4" ID="{AE749143-019C-4710-8069-81C89EF75904}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="robot_whir_5" ID="{F42505ED-D9B5-4757-BF8C-9FB042B0783A}" ShortID="247459952" Type="SoundFX">
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="robot_whir_5" ID="{0D22F532-8C07-429F-8FFC-32AC2035E19A}" ShortID="958901499">
+													<Language>SFX</Language>
+													<AudioFile>robot_whir_5.wav</AudioFile>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="robot_whir_5" ID="{0D22F532-8C07-429F-8FFC-32AC2035E19A}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+										<Sound Name="robot_whir_6" ID="{015DFFCB-2533-4A92-AF05-550ACB590A92}" ShortID="281477900" Type="SoundFX">
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="robot_whir_6" ID="{A7F7BC50-FFAA-4767-A58B-BC8293271DA8}" ShortID="483532692">
+													<Language>SFX</Language>
+													<AudioFile>robot_whir_6.wav</AudioFile>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="robot_whir_6" ID="{A7F7BC50-FFAA-4767-A58B-BC8293271DA8}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+									</ChildrenList>
 								</RandomSequenceContainer>
 							</ChildrenList>
 						</ActorMixer>
@@ -844,6 +995,15 @@
 							</ReferenceList>
 							<ChildrenList>
 								<RandomSequenceContainer Name="Punch" ID="{AC64388B-A425-445F-8917-C641A8834EE6}" ShortID="288598389">
+									<PropertyList>
+										<Property Name="PlayMechanismSpecialTransitionsValue" Type="Real64">
+											<ModifierList>
+												<ModifierInfo>
+													<Modifier Name="" ID="{07A7873E-D87F-4B2D-A8AC-90D15736B067}"/>
+												</ModifierInfo>
+											</ModifierList>
+										</Property>
+									</PropertyList>
 									<ReferenceList>
 										<Reference Name="Conversion">
 											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -852,8 +1012,45 @@
 											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
 										</Reference>
 									</ReferenceList>
+									<ChildrenList>
+										<Sound Name="Punch_air" ID="{3817EDC0-B9B7-480D-B172-72130250D888}" ShortID="843047592" Type="SoundFX">
+											<PropertyList>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>10</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="Punch_air" ID="{F600F70B-1431-4836-B203-E0B959426F48}" ShortID="803215861">
+													<Language>SFX</Language>
+													<AudioFile>Punch_air.wav</AudioFile>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="Punch_air" ID="{F600F70B-1431-4836-B203-E0B959426F48}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+									</ChildrenList>
 								</RandomSequenceContainer>
 								<RandomSequenceContainer Name="PainRobot" ID="{D5B33781-630C-489E-B6E9-1F25C3BFF081}" ShortID="80810475">
+									<PropertyList>
+										<Property Name="PlayMechanismSpecialTransitionsValue" Type="Real64">
+											<ModifierList>
+												<ModifierInfo>
+													<Modifier Name="" ID="{17F92D2E-2244-48B6-BAB0-AD5BE917B862}"/>
+												</ModifierInfo>
+											</ModifierList>
+										</Property>
+									</PropertyList>
 									<ReferenceList>
 										<Reference Name="Conversion">
 											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -862,8 +1059,45 @@
 											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
 										</Reference>
 									</ReferenceList>
+									<ChildrenList>
+										<Sound Name="Punch_hit" ID="{6194AEA9-9E67-41E9-B56C-3BE9C271BA64}" ShortID="328305699" Type="SoundFX">
+											<PropertyList>
+												<Property Name="Volume" Type="Real64">
+													<ValueList>
+														<Value>12</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
+											<ReferenceList>
+												<Reference Name="Conversion">
+													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
+												</Reference>
+												<Reference Name="OutputBus">
+													<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
+												</Reference>
+											</ReferenceList>
+											<ChildrenList>
+												<AudioFileSource Name="Punch_hit" ID="{A6D78EEA-7E97-464C-9DC2-5892534AE2A1}" ShortID="85191755">
+													<Language>SFX</Language>
+													<AudioFile>Punch_hit.wav</AudioFile>
+												</AudioFileSource>
+											</ChildrenList>
+											<ActiveSourceList>
+												<ActiveSource Name="Punch_hit" ID="{A6D78EEA-7E97-464C-9DC2-5892534AE2A1}" Platform="Linked"/>
+											</ActiveSourceList>
+										</Sound>
+									</ChildrenList>
 								</RandomSequenceContainer>
 								<RandomSequenceContainer Name="PainCow" ID="{C04CA904-2164-4512-97DF-69715A0F8646}" ShortID="887623192">
+									<PropertyList>
+										<Property Name="PlayMechanismSpecialTransitionsValue" Type="Real64">
+											<ModifierList>
+												<ModifierInfo>
+													<Modifier Name="" ID="{79A8B06A-5138-4D30-86BC-DEA6FA878AE8}"/>
+												</ModifierInfo>
+											</ModifierList>
+										</Property>
+									</PropertyList>
 									<ReferenceList>
 										<Reference Name="Conversion">
 											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>

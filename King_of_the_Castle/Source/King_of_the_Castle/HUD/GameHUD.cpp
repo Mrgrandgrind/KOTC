@@ -30,8 +30,16 @@
 #define CP_MATERIAL_PARAM_CAPTURE_COLOR TEXT("TeamCaptureColor")
 #define CP_MATERIAL_PARAM_FLASH_SPEED TEXT("BoxFlashSpeed")
 
+#define FONT_LOCATION TEXT("Font'/Engine/EngineFonts/RobotoDistanceField.RobotoDistanceField'")
+
 AGameHUD::AGameHUD() : m_bCrosshairVisible(false)
 {
+	static ConstructorHelpers::FObjectFinder<UFont> Font(FONT_LOCATION);
+	if (Font.Succeeded())
+	{
+		this->m_Font = Font.Object;
+	}
+
 	// Scale
 	this->m_ScaleMaster = 1.0f;
 	this->m_ScaleVertical = 0.003f;
@@ -64,7 +72,7 @@ AGameHUD::AGameHUD() : m_bCrosshairVisible(false)
 
 	// Info Panel
 	this->m_IPTimeBoxScale = 1.25f;
-	this->m_IPTimeTextScale = 0.6f;
+	this->m_IPTimeTextScale = 0.5f;
 	this->m_IPTimeTextColor = IP_TIME_TEXT_COLOR;
 	this->m_bRenderTime = true;
 	this->m_IPTeamBarWidth = 8.0f;
@@ -233,6 +241,19 @@ void AGameHUD::RenderForAll(const FVector4& screen, const float& scale)
 
 	const float barWidth = 250.0f * scale, barHeight = FMath::RoundToFloat(20.0f * scale);
 
+	if (this->m_bRenderTime)
+	{
+		float timeScale = scale * this->m_IPTimeTextScale;
+		int time = int(gamemode->GetGameDuration() - gamemode->GetTime());
+
+		FString timeText = FString::Printf(TEXT("%02d:%02d"), time / 60, time % 60);
+		Super::GetTextSize(timeText, width, height, this->m_Font, timeScale);
+
+		Super::DrawRect(FLinearColor(0.05f, 0.05f, 0.05f, 0.8f), x - this->m_IPTimeBoxScale * width / 2.0f, y - this->m_IPTimeBoxScale
+			* height - barHeight / 2.0f, this->m_IPTimeBoxScale * width, this->m_IPTimeBoxScale * height);
+		Super::DrawText(timeText, this->m_IPTimeTextColor, x - width / 2.0f, y - height - barHeight / 2.0f, this->m_Font, timeScale);
+	}
+
 	TArray<float> ratios;
 	float ratioTotal = 0.0f;
 	// Calculate ratios
@@ -258,6 +279,12 @@ void AGameHUD::RenderForAll(const FVector4& screen, const float& scale)
 		float w = barWidth * ratios[i] / ratioTotal;
 		Super::DrawRect(color, barX, y - barHeight / 2.0f, w, barHeight);
 
+		color = FLinearColor(color.R * 0.25f, color.G * 0.25f, color.B * 0.25f, 0.25f);
+		Super::DrawRect(color, barX, y - barHeight / 2.0f, w * 0.1f, barHeight);
+		Super::DrawRect(color, barX + w, y - barHeight / 2.0f, -w * 0.1f, barHeight);
+		Super::DrawRect(color, barX + w * 0.1f, y - barHeight / 2.0f, w * 0.8f, barHeight * 0.15f);
+		Super::DrawRect(color, barX + w * 0.1f, y + barHeight / 2.0f, w * 0.8f, -barHeight * 0.15f);
+
 		FString score = FString::Printf(TEXT("%d"), gamemode->GetScore(i + 1));
 		Super::GetTextSize(score, width, height, this->m_Font, scale * 0.6f);
 
@@ -265,21 +292,7 @@ void AGameHUD::RenderForAll(const FVector4& screen, const float& scale)
 		{
 			Super::DrawText(score, this->m_IPTimeTextColor, barX + w / 2.0f - width / 2.0f, y - height / 2.0f, this->m_Font, scale * 0.6f);
 		}
-
 		barX += w;
-	}
-
-	if (this->m_bRenderTime)
-	{
-		float timeScale = scale * this->m_IPTimeTextScale;
-		int time = int(gamemode->GetGameDuration() - gamemode->GetTime());
-
-		FString timeText = FString::Printf(TEXT("%02d:%02d"), time / 60, time % 60);
-		Super::GetTextSize(timeText, width, height, this->m_Font, timeScale);
-
-		Super::DrawRect(FLinearColor(0.05f, 0.05f, 0.05f, 0.8f), x - this->m_IPTimeBoxScale * width / 2.0f, y - this->m_IPTimeBoxScale
-			* height / 2.0f - barHeight, this->m_IPTimeBoxScale * width, this->m_IPTimeBoxScale * height);
-		Super::DrawText(timeText, this->m_IPTimeTextColor, x - width / 2.0f, y - height / 2.0f - barHeight, this->m_Font, timeScale);
 	}
 }
 
