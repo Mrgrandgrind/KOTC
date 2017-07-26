@@ -24,6 +24,8 @@
 						<ObjectRef Name="robot_pain" ID="{C1BB66E4-57F6-4446-9E9F-DF2EE8FC6F70}" WorkUnitID="{8F1EA8B4-C444-40AD-B9D4-72B61B06D617}" Filter="7" Origin="Manual"/>
 						<ObjectRef Name="block_place" ID="{2E6A9638-AA56-45FE-98AF-972C74958E58}" WorkUnitID="{8F1EA8B4-C444-40AD-B9D4-72B61B06D617}" Filter="7" Origin="Manual"/>
 						<ObjectRef Name="punch" ID="{23C7FA1C-07D0-4C63-B65B-C4468D220AA1}" WorkUnitID="{8F1EA8B4-C444-40AD-B9D4-72B61B06D617}" Filter="7" Origin="Manual"/>
+						<ObjectRef Name="Default Work Unit" ID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}" WorkUnitID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}" Filter="7" Origin="Manual"/>
+						<ObjectRef Name="fs_player_sprint" ID="{11CE960B-A191-4EFB-8AAC-350280E47806}" WorkUnitID="{8F1EA8B4-C444-40AD-B9D4-72B61B06D617}" Filter="7" Origin="Manual"/>
 						<ObjectRef Name="fs_player" ID="{20519390-F0D8-4F57-9112-541B041505D3}" WorkUnitID="{8F1EA8B4-C444-40AD-B9D4-72B61B06D617}" Filter="7" Origin="Manual"/>
 					</ObjectInclusionList>
 					<ObjectExclusionList/>
