@@ -298,7 +298,7 @@ bool UPrimaryBrush::OnPreCheck(ABuildArea *area, const FHitResult& result, FGrid
 	if (result.IsValidBlockingHit())
 	{
 		FVector normal = (result.TraceEnd - result.TraceStart).GetSafeNormal();
-		FVector point = result.IsValidBlockingHit() ? result.ImpactPoint - normal : result.TraceEnd;
+		FVector point = result.IsValidBlockingHit() ? result.ImpactPoint - normal * 2.0f : result.TraceEnd;
 
 		FIntVector cell;
 		if (area->GetGridCell(point, cell))
@@ -346,13 +346,13 @@ bool UPrimaryBrush::OnMainCheck(ABuildArea *area, const FHitResult& result, FGri
 
 		FVector point = FVector(result.TraceEnd.X, result.TraceEnd.Y, loc.Z - extent.Z / 2.0f - area->GetCellSize().Z / 2.0f);//result.TraceEnd - FVector(0.0f, 0.0f, area->GetCellSize().Z);
 		Super::RenderTrace(result.TraceEnd, point, FColor::Blue);
-
+ 
 		FHitResult trace;
 		Super::GetWorld()->LineTraceSingleByChannel(trace, result.TraceEnd, point, ECollisionChannel::ECC_WorldDynamic);
 		if (trace.IsValidBlockingHit())
 		{
 			FVector traceNormal = (trace.TraceEnd - trace.TraceStart).GetSafeNormal();
-			if (area->GetGridCell(trace.ImpactPoint - traceNormal, cell) && isSupportedAt(trace.ImpactPoint - traceNormal))
+			if (area->GetGridCell(trace.ImpactPoint - traceNormal * 2.0f, cell) && isSupportedAt(trace.ImpactPoint - traceNormal * 2.0f))
 			{
 				out = cell;
 				show = true;

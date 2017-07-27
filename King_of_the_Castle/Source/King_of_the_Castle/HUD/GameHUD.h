@@ -58,8 +58,11 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Scale", meta = (DisplayName = "Horizontal Viewport Scale (3/4 Player)"))
 	float m_ScaleHorizontal;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Health & Stamina Bars", meta = (DisplayName = "Health Color"))
-	FLinearColor m_BarHealthColor;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Health & Stamina Bars", meta = (DisplayName = "Health Color Max"))
+	FLinearColor m_BarHealthMaxColor;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Health & Stamina Bars", meta = (DisplayName = "Health Color Min"))
+	FLinearColor m_BarHealthMinColor;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Health & Stamina Bars", meta = (DisplayName = "Stamina Color"))
 	FLinearColor m_BarStaminaColor;

@@ -19,9 +19,9 @@
 #define BUILD_TRACE_SOCKET TEXT("head") // The socket (of the player) which the trace originates from
 #define MELEE_TRACE_SOCKET TEXT("hand_r") // The socket (of the player) where the melee collision box will be bound
 
-#define ATTACK_PRE_DELAY 0.6f 
-#define ATTACK_COLLISION_DELAY 0.4f
-#define ATTACK_POST_DELAY 0.2f
+#define ATTACK_FORWARD_PREDELAY 0.6f
+#define ATTACK_LOWER_PREDELAY 0.2f
+#define ATTACK_DURATION 1.8f
 
 #define CHARGE_ATTACK_ANIMATION_DURATION 2.0f
 
@@ -33,7 +33,7 @@
 #define MATERIAL_LOCATION TEXT("Material'/Game/AdvancedLocomotionV2/Characters/Mannequin/lambert2.lambert2'")
 
 // Sets default values
-APlayerCharacter::APlayerCharacter() : m_bPlacePressed(false), m_PlacePressCounter(0.0f), m_AttackStage(EAttackStage::READY),
+APlayerCharacter::APlayerCharacter() : m_bPlacePressed(false), m_PlacePressCounter(0.0f), m_AttackType(EAttackType::None),
 m_DodgePressTimer(DODGE_DOUBLE_TAP_TIME), m_Team(-1), m_BuildReach(KOTC_CONSTRUCTION_BLOCK_REACH)
 {
 	static ConstructorHelpers::FObjectFinder<UMaterialInterface> Material(MATERIAL_LOCATION);
@@ -63,23 +63,17 @@ m_DodgePressTimer(DODGE_DOUBLE_TAP_TIME), m_Team(-1), m_BuildReach(KOTC_CONSTRUC
 	this->m_SecondaryBrush->SetTeam(&this->m_Team);
 	this->m_SecondaryBrush->SetupAttachment(Super::RootComponent);
 
-	// Create melee collision capsule
-	this->m_MeleeCapsule = UObject::CreateDefaultSubobject<UCapsuleComponent>(TEXT("MeleeCapsule"));
-	this->m_MeleeCapsule->bGenerateOverlapEvents = true;
-	this->m_MeleeCapsule->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	//this->m_MeleeCapsule->SetupAttachment(Super::GetMesh(), MELEE_TRACE_SOCKET);
-	this->m_MeleeCapsule->SetupAttachment(Super::RootComponent);
+	// Lower melee capsule
+	this->m_LowerMeleeCapsule = UObject::CreateDefaultSubobject<UCapsuleComponent>(TEXT("LowerMeleeCapsule"));
+	this->m_LowerMeleeCapsule->bGenerateOverlapEvents = true;
+	this->m_LowerMeleeCapsule->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	this->m_LowerMeleeCapsule->SetupAttachment(Super::RootComponent);
 
-	// Delegate the melee capsule collisions
-	TScriptDelegate<FWeakObjectPtr> delegateMelee;
-	delegateMelee.BindUFunction(this, FName("OnMeleeEndCollision"));
-	this->m_MeleeCapsule->OnComponentEndOverlap.Add(delegateMelee);
-
-	// Enable hit events on the capsule
-	TScriptDelegate<FWeakObjectPtr> delegateCap;
-	delegateCap.BindUFunction(this, FName("OnPlayerCollisionHit"));
-	Super::GetCapsuleComponent()->SetNotifyRigidBodyCollision(true);
-	Super::GetCapsuleComponent()->OnComponentHit.Add(delegateCap);
+	// Forward melee capsule
+	this->m_ForwardMeleeCapsule = UObject::CreateDefaultSubobject<UCapsuleComponent>(TEXT("ForwardMeleeCapsule"));
+	this->m_ForwardMeleeCapsule->bGenerateOverlapEvents = true;
+	this->m_ForwardMeleeCapsule->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	this->m_ForwardMeleeCapsule->SetupAttachment(Super::RootComponent);
 
 	Super::PrimaryActorTick.bCanEverTick = true;
 }
@@ -108,25 +102,13 @@ void APlayerCharacter::BeginPlay()
 
 	// Update team collision (required for doors to function)
 	this->SetTeam(this->m_Team);
-
-	TInlineComponentArray<UCameraComponent*> cameras;
-	Super::GetComponents<UCameraComponent>(cameras);
-
-	for (UCameraComponent *next : cameras)
-	{
-		if (next->bIsActive)
-		{
-			this->m_Camera = next;
-			break;
-		}
-	}
 }
 
 UCameraComponent* APlayerCharacter::GetCamera()
 {
-	if (this->m_Camera != nullptr)
+	if (this->m_Camera != nullptr && this->m_Camera->bIsActive)
 	{
-		//return this->m_Camera;
+		return this->m_Camera;
 	}
 	TInlineComponentArray<UCameraComponent*> cameras;
 	Super::GetComponents<UCameraComponent>(cameras);
@@ -175,12 +157,6 @@ void APlayerCharacter::Tick(float delta)
 		this->m_DodgeCooldownCounter += delta;
 	}
 
-	// Charger counter. To check how long the player has been charging their attack for.
-	if (this->m_bCharging)
-	{
-		this->m_ChargeCounter = FMath::Min(this->m_ChargeCounter + delta, this->m_ChargeDuration);
-	}
-
 	// Damage timer. Stops the player regenerating health until out of combat for DAMAGE_TIMER seconds.
 	if (this->m_DamageTimer < DAMAGE_TIMER)
 	{
@@ -188,13 +164,18 @@ void APlayerCharacter::Tick(float delta)
 	}
 
 	// Regenerate health and stamina
-	if (this->m_Health < this->m_MaxHealth && this->m_DamageTimer >= DAMAGE_TIMER)
+	if (this->m_Health < this->m_MaxHealth && this->m_Health > 0.0f && this->m_DamageTimer >= DAMAGE_TIMER)
 	{
 		this->SetHealth(this->m_Health + this->m_HealthRegenSpeed * delta);
 	}
 	if (this->m_Stamina < this->m_MaxStamina && !this->m_bRushing && !this->m_bSprinting)
 	{
 		this->SetStamina(this->m_Stamina + this->m_StaminaRegenSpeed * delta);
+	}
+
+	if (this->IsAttacking())
+	{
+		Super::AddMovementInput(this->GetCamera()->GetForwardVector(), 0.1f);
 	}
 
 	// Subtract cost of stamina if rushing or sprinting
@@ -334,11 +315,6 @@ void APlayerCharacter::SetTeam(const int32& team)
 {
 	this->m_Team = team;
 
-	//UBuildWheel *wheel = this->GetBuildWheel();
-	//if (wheel != nullptr)
-	//{
-	//	wheel->SetTeam(team);
-	//}
 	Super::GetCapsuleComponent()->SetCollisionProfileName(team <= 1
 		? TEXT("PawnTeam1") : team >= 2 ? TEXT("PawnTeam2") : TEXT("Pawn"));
 
@@ -398,7 +374,7 @@ void APlayerCharacter::Dodge()
 		y = Super::InputComponent->GetAxisValue(TEXT("LeftThumbY"));
 
 	// If there's no direction do nothing
-	if(x == 0.0f && y == 0.0f)
+	if (x == 0.0f && y == 0.0f)
 	{
 		return;
 	}
@@ -422,14 +398,13 @@ void APlayerCharacter::Dodge()
 	FTimerHandle handle;
 	Super::GetWorldTimerManager().SetTimer(handle, FTimerDelegate::CreateLambda([this]()
 	{
-		this->m_bCharging = false;
 		Super::GetCharacterMovement()->GroundFriction = 8.0f;
 	}), CHARGE_ATTACK_ANIMATION_DURATION, false);
 }
 
 void APlayerCharacter::Attack()
 {
-	if (this->m_bIsStunned || this->m_AttackStage != EAttackStage::READY)
+	if (this->m_bAttacking || this->m_bIsStunned)
 	{
 		return;
 	}
@@ -437,72 +412,113 @@ void APlayerCharacter::Attack()
 	{
 		return;
 	}
-	this->m_AttackStage = EAttackStage::PRE_COLLISION;
+	if (Super::GetCharacterMovement()->IsFalling())
+	{
+		return;
+	}
+	this->m_bAttacking = true;
+	this->m_AttackType = EAttackType::Forward;
+
+	//if (Super::GetCharacterMovement()->IsFalling())
+	//{
+	//	Super::LaunchCharacter(FVector(0.0f, 0.0f, -1000.0f), false, true);
+	//}
 
 	FTimerHandle handle;
 	Super::GetWorldTimerManager().SetTimer(handle, FTimerDelegate::CreateLambda([this]()
 	{
-		TArray<AActor*> overlapping;
-		this->m_MeleeCapsule->GetOverlappingActors(overlapping);
+		this->SetStamina(this->m_Stamina - this->m_MeleeStaminaCost);
+		this->CheckAttackCollision(this->m_ForwardMeleeCapsule);
 
-		for (AActor *next : overlapping)
+		this->m_bAttacking = false;
+	}), ATTACK_FORWARD_PREDELAY, false);
+}
+
+void APlayerCharacter::AttackLower()
+{
+	if (this->m_bAttacking || this->m_bIsStunned)
+	{
+		return;
+	}
+	if (this->m_Stamina < this->m_MeleeStaminaCost)
+	{
+		return;
+	}
+	if (!Super::GetCharacterMovement()->IsFalling())
+	{
+		return;
+	}
+	FVector origin, extent;
+	Super::GetActorBounds(true, origin, extent);
+
+	FVector start = Super::GetActorLocation() - extent.Z / 2.0f, end = start - FVector(0.0f, 0.0f, 500.0f);
+
+	FHitResult result;
+	Super::GetWorld()->LineTraceSingleByChannel(result, start, end, ECollisionChannel::ECC_WorldDynamic);
+
+	if (!result.IsValidBlockingHit())
+	{
+		this->Attack();
+		return;
+	}
+
+	this->m_bAttacking = true;
+	this->m_AttackType = EAttackType::Lower;
+
+	float height = Super::GetActorLocation().Z;
+	Super::LaunchCharacter(FVector(0.0f, 0.0f, -800.0f), false, true);
+
+	FTimerHandle handle;
+	Super::GetWorldTimerManager().SetTimer(handle, FTimerDelegate::CreateLambda([this]()
+	{
+		this->SetStamina(this->m_Stamina - this->m_MeleeStaminaCost);
+		this->CheckAttackCollision(this->m_LowerMeleeCapsule);
+
+		this->m_bAttacking = false;
+	}), ATTACK_LOWER_PREDELAY, false);
+}
+
+void APlayerCharacter::CheckAttackCollision(UCapsuleComponent *capsule, const float& damageMultiplier)
+{
+	if (capsule == nullptr)
+	{
+		return;
+	}
+	TArray<AActor*> overlapping;
+	capsule->GetOverlappingActors(overlapping);
+
+	for (AActor *next : overlapping)
+	{
+		if (next == this)
 		{
-			if (next == this)
+			continue;
+		}
+		FDamageEvent event;
+		if (next->IsA(ABlock::StaticClass()))
+		{
+			next->TakeDamage(this->m_MeleeBlockDamage * damageMultiplier, event, Super::GetController(), this);
+		}
+		if (next->IsA(APlayerCharacter::StaticClass()))
+		{
+			APlayerCharacter *player = Cast<APlayerCharacter>(next);
+
+			// Do not hurt this player if they are on the same team
+			if (player->GetTeam() == this->GetTeam())
 			{
 				continue;
 			}
-			FDamageEvent event;
-			if (next->IsA(ABlock::StaticClass()))
-			{
-				next->TakeDamage(this->m_MeleeBlockDamage, event, Super::GetController(), this);
-			}
-			if (next->IsA(APlayerCharacter::StaticClass()))
-			{
-				APlayerCharacter *player = Cast<APlayerCharacter>(next);
+			// Apply damage to player if they haven't recently been hit
+			player->TakeDamage(this->m_MeleePlayerDamage * damageMultiplier, event, Super::GetController(), this);
 
-				// Do not hurt this player if they have immunity or are on the same team
-				if (player->m_LastAttacker == this || player->GetTeam() == this->GetTeam())
-				{
-					return;
-				}
-				// Apply damage to player if they haven't recently been hit
-				player->TakeDamage(this->m_MeleePlayerDamage, event, Super::GetController(), this);
+			// Apply knockback force
+			FVector direction = (player->GetActorLocation() - Super::GetActorLocation()).GetSafeNormal();
+			player->LaunchCharacter((direction + this->m_MeleeKnockbackOffset)
+				* this->m_MeleeKnockbackForce, false, false);
 
-				// Apply knockback force
-				FVector direction = (player->GetActorLocation() - Super::GetActorLocation()).GetSafeNormal();
-				player->LaunchCharacter((direction + this->m_MeleeKnockbackOffset)
-					* this->m_MeleeKnockbackForce, false, false);
-
-				// Stop the player from being damaged multiple times by the same collision by granting temporary immunity
-				player->m_LastAttacker = this;
-				player->m_DamageTimer = 0.0f; // Reset damage timer so they don't regenerate health for a few seconds
-
-				FTimerHandle handle2;
-				Super::GetWorldTimerManager().SetTimer(handle2, FTimerDelegate::CreateLambda([this, player]()
-				{
-					player->m_LastAttacker = nullptr;
-				}), LAST_ATTACKER_TIMER, false);
-			}
+			// Reset damage timer so they don't regenerate health for a few seconds
+			player->m_DamageTimer = 0.0f; 
 		}
-
-		this->m_AttackStage = EAttackStage::READY;
-	}), ATTACK_PRE_DELAY, false);
-
-	//FTimerHandle handle1;
-	//Super::GetWorldTimerManager().SetTimer(handle1, FTimerDelegate::CreateLambda([this]()
-	//{
-	//	FTimerHandle handle2;
-	//	this->m_AttackStage = EAttackStage::COLLISION;
-	//	Super::GetWorldTimerManager().SetTimer(handle2, FTimerDelegate::CreateLambda([this]()
-	//	{
-	//		FTimerHandle handle3;
-	//		this->m_AttackStage = EAttackStage::POST_DELAY;
-	//		Super::GetWorldTimerManager().SetTimer(handle3, FTimerDelegate::CreateLambda([this]()
-	//		{
-	//			this->m_AttackStage = EAttackStage::READY;
-	//		}), ATTACK_POST_DELAY, false);
-	//	}), ATTACK_COLLISION_DELAY, false);
-	//}), ATTACK_PRE_DELAY, false);
+	}
 }
 
 void APlayerCharacter::Stun(const float& duration, const bool& regen, const bool& respawn)
@@ -524,7 +540,6 @@ void APlayerCharacter::Stun(const float& duration, const bool& regen, const bool
 	FTimerHandle handle;
 	Super::GetWorldTimerManager().SetTimer(handle, FTimerDelegate::CreateLambda([this, regen, respawn]()
 	{
-		this->m_bIsStunned = false;
 		if (regen)
 		{
 			this->m_Health = this->m_MaxHealth;
@@ -541,114 +556,8 @@ void APlayerCharacter::Stun(const float& duration, const bool& regen, const bool
 				Super::SetActorRotation(rotation);
 			}
 		}
+		this->m_bIsStunned = false;
 	}), duration <= 0.0f ? this->m_StunDelay : duration, false);
-}
-
-void APlayerCharacter::InputChargeDisable()
-{
-	Super::GetCharacterMovement()->GroundFriction = 0.0f;
-
-	FVector forward = this->GetCamera()->GetForwardVector();
-	forward.Z = 0.0f;
-	forward.Normalize();
-
-	float power = this->m_ChargeDuration == 0.0f ? 1.0f : this->m_ChargeCounter / this->m_ChargeDuration;
-	Super::LaunchCharacter(forward * this->m_ChargeSlideForce * power, true, true);
-
-	//this->Attack();
-
-	FTimerHandle handle;
-	Super::GetWorldTimerManager().SetTimer(handle, FTimerDelegate::CreateLambda([this]()
-	{
-		this->m_bCharging = false;
-		Super::GetCharacterMovement()->GroundFriction = 8.0f;
-	}), CHARGE_ATTACK_ANIMATION_DURATION, false);
-}
-
-void APlayerCharacter::OnPlayerCollisionHit(UPrimitiveComponent* hitComponent, AActor* otherActor,
-	UPrimitiveComponent* otherComp, FVector normalImpulse, const FHitResult& hit)
-{
-	// Check to see if we hit another player that's not on the same team
-	APlayerCharacter *player = Cast<APlayerCharacter>(otherActor);
-	if (player != nullptr && player->GetTeam() != this->GetTeam())
-	{
-		FVector direction = (player->GetActorLocation() - Super::GetActorLocation()).GetSafeNormal();
-		if (this->m_bCharging)
-		{
-			// Get charge power percentage
-			float power = this->m_ChargeDuration == 0.0f ? 1.0f : this->m_ChargeCounter / this->m_ChargeDuration;
-
-			// Knockback this player in the opposite direction
-			direction += this->m_ChargeKnockbackOffset;
-			player->LaunchCharacter(direction * this->m_ChargeKnockbackForce * power, true, true);
-
-			// Temporarily stun the opponent
-			player->Stun(this->m_ChargeStunDuration * power);
-		}
-		else if (this->m_bRushing)
-		{
-			// Get rush power percentage
-			float power = this->m_RushSpeed == 0.0f ? 0.0f : (Super::GetCharacterMovement()->MaxWalkSpeed / this->m_RushSpeed);
-
-			// Knockback the enemy player
-			direction += this->m_MeleeKnockbackOffset;
-			player->LaunchCharacter(direction * this->m_RushKnockbackForce * power, true, true);
-
-			// Knockback this player in the opposite direction
-			Super::LaunchCharacter(-direction * this->m_RushKnockbackForce * power, true, true);
-
-			// Temporarily stun the opponent
-			player->Stun(this->m_RushHitStunDuration * power);
-
-			// Drain all stamina
-			this->SetStamina(0.0f);
-
-			// Disable rush
-			this->InputRushDisable();
-		}
-	}
-}
-
-void APlayerCharacter::OnMeleeEndCollision(UPrimitiveComponent* overlappedComponent,
-	AActor* otherActor, UPrimitiveComponent* otherComp, int32 otherBodyIndex)
-{
-	// Ignore collisions if we are not currently attacking
-	if (this->m_AttackStage != EAttackStage::COLLISION || otherActor == nullptr || otherActor == this)
-	{
-		return;
-	}
-	FDamageEvent event;
-	if (otherActor->IsA(ABlock::StaticClass()))
-	{
-		otherActor->TakeDamage(this->m_MeleeBlockDamage, event, Super::GetController(), this);
-	}
-	if (otherActor->IsA(APlayerCharacter::StaticClass()))
-	{
-		APlayerCharacter *player = Cast<APlayerCharacter>(otherActor);
-
-		// Do not hurt this player if they have immunity or are on the same team
-		if (player->m_LastAttacker == this || player->GetTeam() == this->GetTeam())
-		{
-			return;
-		}
-		// Apply damage to player if they haven't recently been hit
-		player->TakeDamage(this->m_MeleePlayerDamage, event, Super::GetController(), this);
-
-		// Apply knockback force
-		FVector direction = (player->GetActorLocation() - Super::GetActorLocation()).GetSafeNormal();
-		player->LaunchCharacter((direction + this->m_MeleeKnockbackOffset)
-			* this->m_MeleeKnockbackForce, false, false);
-
-		// Stop the player from being damaged multiple times by the same collision by granting temporary immunity
-		player->m_LastAttacker = this;
-		player->m_DamageTimer = 0.0f; // Reset damage timer so they don't regenerate health for a few seconds
-
-		FTimerHandle handle;
-		Super::GetWorldTimerManager().SetTimer(handle, FTimerDelegate::CreateLambda([this, player]()
-		{
-			player->m_LastAttacker = nullptr;
-		}), LAST_ATTACKER_TIMER, false);
-	}
 }
 
 float APlayerCharacter::TakeDamage(float damageAmount, FDamageEvent const& damageEvent,
@@ -659,7 +568,7 @@ float APlayerCharacter::TakeDamage(float damageAmount, FDamageEvent const& damag
 		this->SetHealth(this->m_Health - damageAmount);
 		if (this->m_Health <= 0.0f)
 		{
-			this->Stun();
+			this->Stun(this->m_StunDelay, true, true);
 		}
 	}
 	return damageAmount;
@@ -697,9 +606,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *input)
 
 	input->BindAction("Dodge", IE_Pressed, this, &APlayerCharacter::Dodge);
 	input->BindAction("Attack", IE_Pressed, this, &APlayerCharacter::Attack);
-
-	//input->BindAction("Charge Attack", IE_Pressed, this, &APlayerCharacter::InputChargeEnable);
-	//input->BindAction("Charge Attack", IE_Released, this, &APlayerCharacter::InputChargeDisable);
+	input->BindAction("Attack Low", IE_Pressed, this, &APlayerCharacter::AttackLower);
 
 	input->BindAction("Place Block", IE_Pressed, this, &APlayerCharacter::InputBlockPlaceDownEvent);
 	input->BindAction("Place Block", IE_Released, this, &APlayerCharacter::InputBlockPlaceUpEvent);
