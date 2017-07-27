@@ -19,8 +19,9 @@
 #define BUILD_TRACE_SOCKET TEXT("head") // The socket (of the player) which the trace originates from
 #define MELEE_TRACE_SOCKET TEXT("hand_r") // The socket (of the player) where the melee collision box will be bound
 
-#define ATTACK_FORWARD_PREDELAY 0.6f
+#define ATTACK_UPPER_PREDELAY 0.2f
 #define ATTACK_LOWER_PREDELAY 0.2f
+#define ATTACK_FORWARD_PREDELAY 0.6f
 #define ATTACK_DURATION 1.8f
 
 #define CHARGE_ATTACK_ANIMATION_DURATION 2.0f
@@ -33,7 +34,7 @@
 #define MATERIAL_LOCATION TEXT("Material'/Game/AdvancedLocomotionV2/Characters/Mannequin/lambert2.lambert2'")
 
 // Sets default values
-APlayerCharacter::APlayerCharacter() : m_bPlacePressed(false), m_PlacePressCounter(0.0f), m_AttackType(EAttackType::None),
+APlayerCharacter::APlayerCharacter() : m_bPlacePressed(false), m_PlacePressCounter(0.0f), 
 m_DodgePressTimer(DODGE_DOUBLE_TAP_TIME), m_Team(-1), m_BuildReach(KOTC_CONSTRUCTION_BLOCK_REACH)
 {
 	static ConstructorHelpers::FObjectFinder<UMaterialInterface> Material(MATERIAL_LOCATION);
@@ -62,6 +63,12 @@ m_DodgePressTimer(DODGE_DOUBLE_TAP_TIME), m_Team(-1), m_BuildReach(KOTC_CONSTRUC
 	this->m_SecondaryBrush = UObject::CreateDefaultSubobject<USecondaryBrush>(TEXT("SecondaryBrush"));
 	this->m_SecondaryBrush->SetTeam(&this->m_Team);
 	this->m_SecondaryBrush->SetupAttachment(Super::RootComponent);
+
+	// Upper melee capsule
+	this->m_UpperMeleeCapsule = UObject::CreateDefaultSubobject<UCapsuleComponent>(TEXT("UpperMeleeCapsule"));
+	this->m_UpperMeleeCapsule->bGenerateOverlapEvents = true;
+	this->m_UpperMeleeCapsule->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	this->m_UpperMeleeCapsule->SetupAttachment(Super::RootComponent);
 
 	// Lower melee capsule
 	this->m_LowerMeleeCapsule = UObject::CreateDefaultSubobject<UCapsuleComponent>(TEXT("LowerMeleeCapsule"));
@@ -434,6 +441,29 @@ void APlayerCharacter::Attack()
 	}), ATTACK_FORWARD_PREDELAY, false);
 }
 
+void APlayerCharacter::AttackUpper()
+{
+	if (this->m_bAttacking || this->m_bIsStunned)
+	{
+		return;
+	}
+	if (this->m_Stamina < this->m_MeleeStaminaCost)
+	{
+		return;
+	}
+	this->m_bAttacking = true;
+	this->m_AttackType = EAttackType::Upper;
+
+	FTimerHandle handle;
+	Super::GetWorldTimerManager().SetTimer(handle, FTimerDelegate::CreateLambda([this]()
+	{
+		this->SetStamina(this->m_Stamina - this->m_MeleeStaminaCost);
+		this->CheckAttackCollision(this->m_UpperMeleeCapsule);
+
+		this->m_bAttacking = false;
+	}), ATTACK_UPPER_PREDELAY, false);
+}
+
 void APlayerCharacter::AttackLower()
 {
 	if (this->m_bAttacking || this->m_bIsStunned)
@@ -606,6 +636,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *input)
 
 	input->BindAction("Dodge", IE_Pressed, this, &APlayerCharacter::Dodge);
 	input->BindAction("Attack", IE_Pressed, this, &APlayerCharacter::Attack);
+	input->BindAction("Attack High", IE_Pressed, this, &APlayerCharacter::AttackUpper);
 	input->BindAction("Attack Low", IE_Pressed, this, &APlayerCharacter::AttackLower);
 
 	input->BindAction("Place Block", IE_Pressed, this, &APlayerCharacter::InputBlockPlaceDownEvent);

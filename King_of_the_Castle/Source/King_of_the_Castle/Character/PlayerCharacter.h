@@ -10,9 +10,9 @@
 UENUM(Blueprintable)
 enum class EAttackType : uint8
 {
-	None,
-	Forward,
-	Lower
+	Upper,
+	Lower,
+	Forward
 };
 
 UCLASS()
@@ -66,6 +66,8 @@ public:
 	virtual void Dodge();
 
 	virtual void Attack();
+
+	virtual void AttackUpper();
 
 	virtual void AttackLower();
 
@@ -300,6 +302,9 @@ private:
 	// Follow camera 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera", meta = (AllowPrivateAccess = "true", DisplayName = "Camera"))
 	class UCameraComponent *m_Camera;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true", DisplayName = "Upper Melee Capsule"))
+	UCapsuleComponent *m_UpperMeleeCapsule;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true", DisplayName = "Lower Melee Capsule"))
 	UCapsuleComponent *m_LowerMeleeCapsule;
