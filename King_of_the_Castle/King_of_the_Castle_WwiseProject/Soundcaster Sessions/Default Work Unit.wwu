@@ -10,8 +10,20 @@
 							<Position X="0" Y="0"/>
 						</Module>
 						<Module>
+							<ObjectRef Name="fs_land" ID="{35FD2CE1-AD78-4197-B810-F6C2822F7F27}" WorkUnitID="{8F1EA8B4-C444-40AD-B9D4-72B61B06D617}"/>
+							<Position X="0" Y="1"/>
+						</Module>
+						<Module>
 							<ObjectRef Name="fs_player" ID="{20519390-F0D8-4F57-9112-541B041505D3}" WorkUnitID="{8F1EA8B4-C444-40AD-B9D4-72B61B06D617}"/>
 							<Position X="1" Y="0"/>
+						</Module>
+						<Module>
+							<ObjectRef Name="fs_player_sprint" ID="{11CE960B-A191-4EFB-8AAC-350280E47806}" WorkUnitID="{8F1EA8B4-C444-40AD-B9D4-72B61B06D617}"/>
+							<Position X="2" Y="0"/>
+						</Module>
+						<Module>
+							<ObjectRef Name="fs_jump" ID="{AA8E9F86-5BA9-41DE-A340-C3634DB6B769}" WorkUnitID="{8F1EA8B4-C444-40AD-B9D4-72B61B06D617}"/>
+							<Position X="3" Y="0"/>
 						</Module>
 					</ModuleList>
 					<RTPCValueList ShowAll="true">
@@ -25,14 +37,14 @@
 						</RTPCValue>
 						<RTPCValue>
 							<GameParameterRef Name="PlayerSpeed" ID="{D7A9068C-62E3-4F14-BEB0-87E2D147EE81}"/>
-							<Value>100</Value>
+							<Value>0</Value>
 						</RTPCValue>
 					</RTPCValueList>
 					<CurrentStateList ShowAll="true">
 						<CurrentStateRef Name="Level_1" ID="{4BA60DF8-6001-49C4-A920-98ABEBC94510}"/>
 					</CurrentStateList>
 					<CurrentSwitchList ShowAll="true">
-						<CurrentSwitchRef Name="Wood" ID="{EEA62EB5-CA73-4876-A5C6-DAFE3EF34BF7}"/>
+						<CurrentSwitchRef Name="Paper" ID="{068CC944-F462-4D09-8625-C5FC39386DE3}"/>
 					</CurrentSwitchList>
 				</SoundcasterSession>
 			</ChildrenList>

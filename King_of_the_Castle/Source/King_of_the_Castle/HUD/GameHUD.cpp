@@ -13,8 +13,9 @@
 #define CROSSHAIR_SIZE 0.016f // Multiplier of min(width, height)
 #define CROSSHAIR_COLOR FLinearColor(0.25f, 0.75f, 0.75f, 0.5f)
 
-#define HEALTH_COLOR FLinearColor(1.0f, 0.1f, 0.1f, 0.75f)
-#define STAMINA_COLOR FLinearColor(0.1f, 0.8f, 0.1f, 0.75f)
+#define HEALTH_FULL_COLOR FLinearColor(0.1f, 0.8f, 0.1f, 0.75f)
+#define HEALTH_EMPTY_COLOR FLinearColor(1.0f, 0.1f, 0.1f, 0.75f)
+#define STAMINA_COLOR FLinearColor(0.1f, 0.2f, 0.9f, 0.75f)
 
 #define CP_OWNED_COLOR FLinearColor(0.0f, 0.75f, 0.0f, 0.25f)
 #define CP_UNOWNED_COLOR  FLinearColor(0.8f, 0.0f, 0.0f, 0.25f)
@@ -48,7 +49,8 @@ AGameHUD::AGameHUD() : m_bCrosshairVisible(false)
 	this->m_ScaleHorizontal = 0.005f;
 
 	// Health and Stamina bars
-	this->m_BarHealthColor = HEALTH_COLOR;
+	this->m_BarHealthMaxColor = HEALTH_FULL_COLOR;
+	this->m_BarHealthMinColor = HEALTH_EMPTY_COLOR;
 	this->m_BarStaminaColor = STAMINA_COLOR;
 	this->m_BarHealthText = TEXT("HP");
 	this->m_BarStaminaText = TEXT("SP");
@@ -146,16 +148,17 @@ void AGameHUD::RenderBars(const FVector4& screen, const float& scale)
 	float textWidth, textHeight, offset;
 	// Health
 	float healthPerc = character->GetHealth() / character->GetMaxHealth();
+	FLinearColor healthColor = this->m_BarHealthMinColor + (m_BarHealthMaxColor - m_BarHealthMinColor) * healthPerc;
 
 	Super::GetTextSize(this->m_BarHealthText, textWidth, textHeight, this->m_Font, scale * this->m_BarTextScale);
 	Super::DrawText(this->m_BarHealthText, FLinearColor::White, x - textWidth / 2.0f,
 		y + height / 2.0f - textHeight / 2.0f, this->m_Font, scale * this->m_BarTextScale);
 
 	offset = this->IsOpposite() ? -(textWidth / 4.0f + padding / 2.0f) : (textWidth / 4.0f + padding / 2.0f);
-	Super::DrawRect(this->m_BarHealthColor, x + offset, y, widthHealth * healthPerc, height * 0.6f);
-	Super::DrawRect(this->m_BarHealthColor * 0.9f, x + offset, y + height * 0.6f, widthHealth * healthPerc, height * 0.4f);
+	Super::DrawRect(healthColor, x + offset, y, widthHealth * healthPerc, height * 0.6f);
+	Super::DrawRect(healthColor * 0.9f, x + offset, y + height * 0.6f, widthHealth * healthPerc, height * 0.4f);
 
-	Super::DrawRect(this->m_BarHealthColor * 0.4f, x + offset + widthHealth * healthPerc, y, widthHealth * (1.0f - healthPerc), height);
+	Super::DrawRect(healthColor * 0.4f, x + offset + widthHealth * healthPerc, y, widthHealth * (1.0f - healthPerc), height);
 
 	// Stamina
 	float staminaPerc = character->GetStamina() / character->GetMaxStamina();
@@ -371,4 +374,9 @@ void AGameHUD::DrawHUD()
 			screen.Y + screen.W / 2.0f - size / 2.0f, size, size);
 	}
 	//this->m_BuildWheel->Render(this, screen);
+
+	if (this->GetCharacter()->GetHealth() <= 0.0f)
+	{
+		Super::DrawText(TEXT("DEAD"), FLinearColor::Red, 100, 100, this->m_Font, scale * 2.0f);
+	}
 }

@@ -22,13 +22,6 @@
 					<ChildrenList>
 						<Event Name="fs_player" ID="{20519390-F0D8-4F57-9112-541B041505D3}">
 							<ChildrenList>
-								<Action Name="Play" ID="{211680B2-E393-4590-8383-A3F85B490CB6}" ShortID="219217810" Type="Play" Scope="One" Global="false">
-									<ElementList>
-										<Element ID="{0D9B92B5-BD40-4ECB-9F2B-F860D3BDE0A2}" Global="false">
-											<ObjectRef Name="Footstep" ID="{545CA7A5-5695-48E9-B228-E709D97B1717}" WorkUnitID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}"/>
-										</Element>
-									</ElementList>
-								</Action>
 								<Action Name="Set Voice Low-pass Filter" ID="{1DC5251C-012A-44E0-8D3E-8DA718C6F1BC}" ShortID="969791500" Type="ChangeLPF" Scope="One" Global="false">
 									<PropertyList>
 										<Property Name="FadeCurve" Type="int16" Value="2"/>
@@ -48,13 +41,27 @@
 										</Element>
 									</ElementList>
 								</Action>
-								<Action Name="Set Voice Low-pass Filter" ID="{31479E9A-843A-441E-9923-8691578E33CB}" ShortID="380273460" Type="ChangeLPF" Scope="One" Global="false">
+								<Action Name="Set Game Parameter" ID="{352F39B4-E922-42B0-AF7D-F2458CF488B2}" ShortID="848865306" Type="SetGameParameter" Scope="One" Global="false">
+									<ElementList>
+										<Element ID="{B76CFD90-2F3E-4160-AA93-51296D9561D6}" Global="false">
+											<ObjectRef Name="PlayerSpeed" ID="{D7A9068C-62E3-4F14-BEB0-87E2D147EE81}" WorkUnitID="{C328BBC2-1A81-47C1-AEF7-2B6135AE3CED}"/>
+										</Element>
+									</ElementList>
+								</Action>
+								<Action Name="Play" ID="{E5780F0A-9F99-4A24-910C-F0FD4C01E6BA}" ShortID="292548397" Type="Play" Scope="One" Global="false">
+									<ElementList>
+										<Element ID="{B2F97492-8BC2-47A5-85D6-3FE452999603}" Global="false">
+											<ObjectRef Name="Footstep" ID="{545CA7A5-5695-48E9-B228-E709D97B1717}" WorkUnitID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}"/>
+										</Element>
+									</ElementList>
+								</Action>
+								<Action Name="Set Voice Volume" ID="{8073B703-E483-4D35-AA52-7536EFDF6A4C}" ShortID="638148201" Type="ChangeVolume" Scope="One" Global="false">
 									<PropertyList>
-										<Property Name="Lowpass" Type="int16" Value="32"/>
+										<Property Name="Volume" Type="Real64" Value="-3"/>
 									</PropertyList>
 									<ElementList>
-										<Element ID="{7BB01DA0-CC30-45BF-B8FF-CB36EE6B3560}" Global="false">
-											<ObjectRef Name="RobotWhir" ID="{2E720E02-7BFA-4C13-B7F0-359A3300C7D1}" WorkUnitID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}"/>
+										<Element ID="{7478D2DB-1C93-4B13-BF38-F8AF99B12188}" Global="false">
+											<ObjectRef Name="Footstep" ID="{545CA7A5-5695-48E9-B228-E709D97B1717}" WorkUnitID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}"/>
 										</Element>
 									</ElementList>
 								</Action>
@@ -90,6 +97,16 @@
 								<Action Name="Play" ID="{C43F2D40-816B-46E5-B122-87AA13F7AFFA}" ShortID="25963422" Type="Play" Scope="One" Global="false">
 									<ElementList>
 										<Element ID="{2BD61F00-0DAF-49B0-9673-17B39DB2595C}" Global="false">
+											<ObjectRef Name="RobotWhir" ID="{2E720E02-7BFA-4C13-B7F0-359A3300C7D1}" WorkUnitID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}"/>
+										</Element>
+									</ElementList>
+								</Action>
+								<Action Name="Set Voice Low-pass Filter" ID="{82076B6B-D026-4D37-B2A3-F7F45B4923CB}" ShortID="872523474" Type="ChangeLPF" Scope="One" Global="false">
+									<PropertyList>
+										<Property Name="Lowpass" Type="int16" Value="30"/>
+									</PropertyList>
+									<ElementList>
+										<Element ID="{4CFA5E06-183E-4547-A48D-0AC701812273}" Global="false">
 											<ObjectRef Name="RobotWhir" ID="{2E720E02-7BFA-4C13-B7F0-359A3300C7D1}" WorkUnitID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}"/>
 										</Element>
 									</ElementList>
@@ -152,6 +169,7 @@
 								<Action Name="Set Game Parameter" ID="{EA5DD5BD-D28B-40FF-9092-0039ABD055B5}" ShortID="808609012" Type="SetGameParameter" Scope="One" Global="false">
 									<PropertyList>
 										<Property Name="FadeCurve" Type="int16" Value="2"/>
+										<Property Name="FadeTime" Type="Real64" Value="0.5"/>
 										<Property Name="GameParameterValue" Type="Real64" Value="100"/>
 									</PropertyList>
 									<ElementList>
@@ -185,6 +203,13 @@
 									</ElementList>
 								</Action>
 								<Action Name="Set Voice Low-pass Filter" ID="{E92365E5-9ACC-42BD-A404-1E327B7A3093}" ShortID="703711314" Type="ChangeLPF" Scope="One" Global="false">
+									<PropertyList>
+										<Property Name="Inclusion" Type="bool">
+											<ValueList>
+												<Value>False</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
 									<ElementList>
 										<Element ID="{1D5B2293-D191-4612-9365-096A7E1F15C5}" Global="false">
 											<ObjectRef Name="RobotWhir" ID="{2E720E02-7BFA-4C13-B7F0-359A3300C7D1}" WorkUnitID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}"/>

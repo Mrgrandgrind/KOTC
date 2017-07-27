@@ -7,9 +7,8 @@
 					<ChildrenList>
 						<Switch Name="Wood" ID="{EEA62EB5-CA73-4876-A5C6-DAFE3EF34BF7}"/>
 						<Switch Name="Paper" ID="{068CC944-F462-4D09-8625-C5FC39386DE3}"/>
-						<Switch Name="Plastic" ID="{FFD3BEF5-CC16-4ACB-8655-FAE810969807}"/>
-						<Switch Name="Metal" ID="{07DE4BD4-EE9F-4B17-943A-5528F46B5EF8}"/>
-						<Switch Name="Fabric" ID="{E6F5D29C-85DE-4988-966C-F861D075F64C}"/>
+						<Switch Name="PlasticLight" ID="{FFD3BEF5-CC16-4ACB-8655-FAE810969807}"/>
+						<Switch Name="PlasticHeavy" ID="{07DE4BD4-EE9F-4B17-943A-5528F46B5EF8}"/>
 					</ChildrenList>
 				</SwitchGroup>
 			</ChildrenList>

@@ -7,13 +7,12 @@
 
 #define DEFAULT_REACH_DISTANCE (KOTC_CONSTRUCTION_REACH_MULTIPLIER * KOTC_CONSTRUCTION_REACH_DISTANCE) // The reach distance of the trace (roughly 4 blocks)
 
-UENUM(BlueprintType)		
-enum class EAttackStage : uint8
+UENUM(Blueprintable)
+enum class EAttackType : uint8
 {
-	READY = 0			UMETA(DisplayName = "Ready"),			// Ready for attack call
-	PRE_COLLISION = 1 	UMETA(DisplayName = "Pre Collision"),	// Animation has started, cannot yet apply damage
-	COLLISION = 2		UMETA(DisplayName = "Collision"),		// Check for collisions and apply damage
-	POST_DELAY = 3		UMETA(DisplayName = "Post Delay"),		// Attack complete, now having a delay before we become ready again
+	Upper,
+	Lower,
+	Forward
 };
 
 UCLASS()
@@ -64,24 +63,18 @@ public:
 	// Modify camera pitch (up and down)
 	void LookUpAtRate(float rate);
 
-	// Perform a dodge
-	void Dodge();
+	virtual void Dodge();
 
-	// Perform an attack
-	void Attack();
+	virtual void Attack();
+
+	virtual void AttackUpper();
+
+	virtual void AttackLower();
+
+	virtual void CheckAttackCollision(UCapsuleComponent *capsule, const float& damageMultiplier = 1.0f);
 
 	// Stun the player. You can set the duration (-1 = default) and whether or not to regenerate health to full after stun.
 	void Stun(const float& duration = -1, const bool& regen = false, const bool& respawn = false);
-
-	// When the players collision hits something
-	UFUNCTION()
-	void OnPlayerCollisionHit(UPrimitiveComponent *hitComponent, AActor *otherActor,
-		UPrimitiveComponent *otherComp, FVector normalImpulse, const FHitResult& hit);
-
-	// When the melee capsule hits something
-	UFUNCTION()
-	void OnMeleeEndCollision(UPrimitiveComponent *overlappedComponent, AActor *otherActor,
-		UPrimitiveComponent *otherComp, int32 otherBodyIndex);
 
 	//damage handling
 	UFUNCTION(BlueprintCallable, Category = "Combat")
@@ -109,16 +102,10 @@ public:
 	const bool& IsStunned() const { return this->m_bIsStunned; }
 
 	UFUNCTION(BlueprintPure, Category = "Combat")
-	bool IsAttacking() const { return int(this->m_AttackStage) > 0 && this->m_AttackStage != EAttackStage::POST_DELAY;  }
+	bool IsAttacking() const { return this->m_bAttacking;  }
 
 	UFUNCTION(BlueprintPure, Category = "Combat")
-	const bool& IsCharging() const { return this->m_bCharging; }
-
-	UFUNCTION(BlueprintPure, Category = "Combat")
-	const float& GetChargeCounter() const { return this->m_ChargeCounter; }
-
-	UFUNCTION(BlueprintPure, Category = "Combat")
-	const EAttackStage& GetAttackStage() const { return this->m_AttackStage; }
+	const EAttackType& GetAttackType() const { return this->m_AttackType; }
 
 	UCameraComponent* GetCamera();
 
@@ -200,13 +187,6 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Event")
 	void InputRushDisable() { this->m_bRushing = false; this->UpdateMovementSpeed(); }
 
-	// Input: Charge. Disabling the charge releases the 'stored charged energy'.
-	UFUNCTION(BlueprintCallable, Category = "Event")
-	void InputChargeEnable() { this->m_bCharging = true; this->m_ChargeCounter = 0.0f; }
-
-	UFUNCTION(BlueprintCallable, Category = "Event")
-	void InputChargeDisable();
-
 private:
 	// Whether or not the build place input has been activated
 	bool m_bPlacePressed;
@@ -216,16 +196,13 @@ private:
 	bool m_bBlockMovement;
 
 	// State booleans
-	bool m_bIsStunned, m_bSprinting, m_bRushing, m_bCharging;
+	bool m_bIsStunned, m_bAttacking, m_bSprinting, m_bRushing;
 
-	// Attack stage
-	EAttackStage m_AttackStage;
+	// Current attack type
+	EAttackType m_AttackType;
 
 	// Timers and counters
-	float m_DamageTimer, m_DodgePressTimer, m_DodgeCooldownCounter, m_ChargeCounter;
-
-	// Last attacker. Only set briefly after an attack. The set player cannot hurt this player whilst set.
-	APlayerCharacter *m_LastAttacker;
+	float m_DamageTimer, m_DodgePressTimer, m_DodgeCooldownCounter;
 
 	// Current players health and stamina
 	float m_Health, m_Stamina;
@@ -302,27 +279,6 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true", DisplayName = "Melee Knockback Offset"))
 	FVector m_MeleeKnockbackOffset;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat|Charge", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Duration"))
-	float m_ChargeDuration;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat|Charge", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Stun Duration"))
-	float m_ChargeStunDuration;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat|Charge", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Damage"))
-	float m_ChargeDamage;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat|Charge", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Stamina Cost"))
-	float m_ChargeStaminaCost;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat|Charge", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Slide Force"))
-	float m_ChargeSlideForce;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat|Charge", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Knockback Force"))
-	float m_ChargeKnockbackForce;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat|Charge", meta = (AllowPrivateAccess = "true", DisplayName = "Charge Knockback Offset"))
-	FVector m_ChargeKnockbackOffset;
-
 	// Current player team. Set using #SetTeam
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Team", meta = (AllowPrivateAccess = "true", DisplayName = "Team"))
 	int32 m_Team;
@@ -347,9 +303,15 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera", meta = (AllowPrivateAccess = "true", DisplayName = "Camera"))
 	class UCameraComponent *m_Camera;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true", DisplayName = "Upper Melee Capsule"))
+	UCapsuleComponent *m_UpperMeleeCapsule;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true", DisplayName = "Lower Melee Capsule"))
+	UCapsuleComponent *m_LowerMeleeCapsule;
+
 	// Melee collision component attached to characters hand
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true", DisplayName = "Melee Capsule"))
-	UCapsuleComponent *m_MeleeCapsule;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true", DisplayName = "Forward Melee Capsule"))
+	UCapsuleComponent *m_ForwardMeleeCapsule;
 
 	// This players primary (create) brush
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Build", meta = (AllowPrivateAccess = "true", DisplayName = "Primary Brush"))
