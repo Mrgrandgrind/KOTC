@@ -91,6 +91,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Health & Stamina Bars", meta = (DisplayName = "Bar Padding"))
 	float m_BarPadding;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Health & Stamina Bars", meta = (DisplayName = "Bar Move Speed"))
+	float m_BarMoveSpeed;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Health & Stamina Bars", meta = (DisplayName = "Render Bars"))
 	bool m_bRenderBars;
 
@@ -148,6 +151,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Info Panel", meta = (DisplayName = "Team Bar Alpha"))
 	float m_IPTeamBarAlpha;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Info Panel", meta = (DisplayName = "Team Bar Move Speed"))
+	float m_IPTeamBarMoveSpeed;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD|Info Panel", meta = (DisplayName = "Render Info Panel"))
 	bool m_bRenderInfoPanel;
 
@@ -170,6 +176,9 @@ private:
 	int32 m_ControllerId, m_PlayerCount;
 
 	bool m_bCrosshairVisible;
+
+	float m_HealthPerc, m_StaminaPerc;
+	TArray<float> m_TeamBarScores;
 
 	// Each flag will have their own material instance because DrawMaterial doesn't immediately draw and material parameters get overwritten
 	UPROPERTY()

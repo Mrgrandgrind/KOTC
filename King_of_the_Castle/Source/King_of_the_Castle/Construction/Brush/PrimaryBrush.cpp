@@ -56,7 +56,7 @@ UPrimaryBrush::UPrimaryBrush() : m_SelectedTypeIndex(0)
 	//}
 
 	Super::bAbsoluteRotation = true;
-	//Super::m_bDebugRenderTrace = true;
+	Super::m_bDebugRenderTrace = true;
 }
 
 void UPrimaryBrush::BeginPlay()
@@ -298,7 +298,9 @@ bool UPrimaryBrush::OnPreCheck(ABuildArea *area, const FHitResult& result, FGrid
 	if (result.IsValidBlockingHit())
 	{
 		FVector normal = (result.TraceEnd - result.TraceStart).GetSafeNormal();
-		FVector point = result.IsValidBlockingHit() ? result.ImpactPoint - normal * 2.0f : result.TraceEnd;
+		FVector point = result.IsValidBlockingHit() ? result.ImpactPoint - normal * area->GetCellSize() / 2.0f : result.TraceEnd;
+
+		Super::RenderPoint(point, FColor::Purple);
 
 		FIntVector cell;
 		if (area->GetGridCell(point, cell))
@@ -344,20 +346,28 @@ bool UPrimaryBrush::OnMainCheck(ABuildArea *area, const FHitResult& result, FGri
 		FVector loc = character->GetActorLocation();
 		Super::RenderPoint(loc - FVector(0.0f, 0.0f, extent.Z / 2.0f), FColor::Blue);
 
-		FVector point = FVector(result.TraceEnd.X, result.TraceEnd.Y, loc.Z - extent.Z / 2.0f - area->GetCellSize().Z / 2.0f);//result.TraceEnd - FVector(0.0f, 0.0f, area->GetCellSize().Z);
-		Super::RenderTrace(result.TraceEnd, point, FColor::Blue);
+		FVector point = FVector(result.TraceEnd.X, result.TraceEnd.Y, loc.Z - extent.Z / 2.0f - area->GetCellSize().Z / 2.0f);
  
 		FHitResult trace;
 		Super::GetWorld()->LineTraceSingleByChannel(trace, result.TraceEnd, point, ECollisionChannel::ECC_WorldDynamic);
 		if (trace.IsValidBlockingHit())
 		{
+			Super::RenderTrace(trace.TraceStart, trace.ImpactPoint, FColor::Cyan);
+			Super::RenderTrace(trace.ImpactPoint, trace.TraceEnd, FColor::Blue);
+
 			FVector traceNormal = (trace.TraceEnd - trace.TraceStart).GetSafeNormal();
-			if (area->GetGridCell(trace.ImpactPoint - traceNormal * 2.0f, cell) && isSupportedAt(trace.ImpactPoint - traceNormal * 2.0f))
+			FVector tracePoint = trace.ImpactPoint - traceNormal * area->GetCellSize() / 2.0f;
+			Super::RenderPoint(tracePoint, FColor::Turquoise);
+			if (area->GetGridCell(tracePoint, cell) && isSupportedAt(tracePoint))
 			{
 				out = cell;
 				show = true;
 				return true;
 			}
+		}
+		else
+		{
+			Super::RenderTrace(trace.TraceStart, trace.TraceEnd, FColor::Blue);
 		}
 		if (area->GetGridCell(point, cell) && isSupportedAt(point))
 		{
@@ -375,6 +385,19 @@ bool UPrimaryBrush::OnPostCheck(ABuildArea *area, const FHitResult& result, FGri
 	{
 		return false;
 	}
+	// Check if player is trying to 1x1 tower
+	APlayerCharacter *character = Cast<APlayerCharacter>(Super::GetOwner());
+	if (character != nullptr && character->GetCharacterMovement()->IsFalling())
+	{
+		FGridCell playerCell;
+		if (area->GetGridCell(character->GetActorLocation(), playerCell)
+			&& out.X == playerCell.X && out.Y == playerCell.Y && out.Z < playerCell.Z)
+		{
+			show = false;
+			return false;
+		}
+	}
+
 	// Check for overlap
 	bool overlap = Super::IsOverlapped();
 	show = show && !overlap;
@@ -407,7 +430,7 @@ bool UPrimaryBrush::OnPostCheck(ABuildArea *area, const FHitResult& result, FGri
 //		// The position is valid so update the position into our out cell
 //		area->GetGridCell(result.ImpactPoint + result.ImpactNormal * area->GetCellSize() / 2.0f, out);
 
-//		// Check to sfee if we new position would spawn a support block,
+//		// Check to see if we new position would spawn a support block,
 //		// if it does then we will always show the brush
 //		FVector location;
 //		area->GetGridLocation(out, location);

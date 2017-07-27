@@ -19,8 +19,8 @@
 #define BUILD_TRACE_SOCKET TEXT("head") // The socket (of the player) which the trace originates from
 #define MELEE_TRACE_SOCKET TEXT("hand_r") // The socket (of the player) where the melee collision box will be bound
 
-#define ATTACK_UPPER_PREDELAY 0.2f
-#define ATTACK_LOWER_PREDELAY 0.2f
+#define ATTACK_UPPER_PREDELAY 0.14f
+#define ATTACK_LOWER_PREDELAY 0.14f
 #define ATTACK_FORWARD_PREDELAY 0.6f
 #define ATTACK_DURATION 1.8f
 
@@ -226,7 +226,7 @@ void APlayerCharacter::Tick(float delta)
 
 	// Updating building mechanics
 	ABuildArea *area = this->GetActiveBuildArea();
-	if (area == nullptr || Super::GetCharacterMovement()->IsFalling())
+	if (area == nullptr)
 	{
 		if (this->IsBrushVisible())
 		{

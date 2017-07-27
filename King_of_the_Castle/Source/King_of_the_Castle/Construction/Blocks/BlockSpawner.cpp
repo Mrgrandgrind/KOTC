@@ -7,7 +7,7 @@
 #include "Construction/Blocks/BasicBlock.h"
 
 #define SPAWN_RATE 1.0f
-#define ENTITY_LIFE_TIME 15.0f // seconds
+#define ENTITY_LIFE_TIME 16.0f // seconds
 
 #define IMPULSE_STRENGTH_MAX 600.0f
 #define IMPULSE_STRENGTH_MIN 400.0f

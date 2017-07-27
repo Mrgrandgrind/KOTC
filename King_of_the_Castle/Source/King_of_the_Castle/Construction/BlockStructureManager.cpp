@@ -7,6 +7,7 @@
 #include "Construction/BlockEntity.h"
 
 #include "DrawDebugHelpers.h"
+#include "Runtime/Engine/Classes/Engine/BlockingVolume.h"
 #include "Runtime/Engine/Classes/Engine/StaticMeshActor.h"
 #include "Runtime/Engine/Classes/Components/ModelComponent.h"
 
@@ -94,7 +95,9 @@ bool ABlockStructureManager::IsSupport(const FVector& position, const FVector& e
 {
 	auto isValid = [](FHitResult& result)->bool
 	{
-		return result.IsValidBlockingHit() && (Cast<AStaticMeshActor>(result.GetActor()) != nullptr
+		return result.IsValidBlockingHit() 
+			&& (Cast<AStaticMeshActor>(result.GetActor()) != nullptr
+			|| Cast<ABlockingVolume>(result.GetActor()) != nullptr
 			|| Cast<UModelComponent>(result.GetComponent()) != nullptr);
 	};
 
@@ -294,7 +297,7 @@ TArray<ABlock*> ABlockStructureManager::GetNeighbours(const FVector& location, F
 #if WITH_EDITOR
 		if (this->m_bDebugRenderStructure)
 		{
-			DrawDebugLine(Super::GetWorld(), location, location + offset, FColor::Silver, false, DEBUG_DURATION, 0, 4.0f);
+			//DrawDebugLine(Super::GetWorld(), location, location + offset, FColor::Silver, false, DEBUG_DURATION, 0, 4.0f);
 		}
 #endif
 		if (!result.IsValidBlockingHit())
