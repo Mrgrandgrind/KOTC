@@ -2006,6 +2006,11 @@
 							<ChildrenList>
 								<RandomSequenceContainer Name="Punch" ID="{AC64388B-A425-445F-8917-C641A8834EE6}" ShortID="288598389">
 									<PropertyList>
+										<Property Name="Inclusion" Type="bool">
+											<ValueList>
+												<Value>False</Value>
+											</ValueList>
+										</Property>
 										<Property Name="PlayMechanismSpecialTransitionsValue" Type="Real64">
 											<ModifierList>
 												<ModifierInfo>

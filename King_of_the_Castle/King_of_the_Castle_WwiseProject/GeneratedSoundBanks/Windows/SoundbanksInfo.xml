@@ -35,21 +35,9 @@
 					<ShortName>robot_whir_1.wav</ShortName>
 					<Path>SFX\robot_whir_1_9E69E797.wem</Path>
 				</File>
-				<File Id="48452165" Language="SFX">
-					<ShortName>fs_plasticheavy_toe.15.wav</ShortName>
-					<Path>SFX\fs_plasticheavy_toe.15_9E69E797.wem</Path>
-				</File>
 				<File Id="52435702" Language="SFX">
 					<ShortName>jump_plasticheavy_up merged.wav</ShortName>
 					<Path>SFX\jump_plasticheavy_up merged_9E69E797.wem</Path>
-				</File>
-				<File Id="55138160" Language="SFX">
-					<ShortName>fs_plasticlight_toe.7.wav</ShortName>
-					<Path>SFX\fs_plasticlight_toe.7_9E69E797.wem</Path>
-				</File>
-				<File Id="69752363" Language="SFX">
-					<ShortName>fs_wood_toe.3.wav</ShortName>
-					<Path>SFX\fs_wood_toe.3_9E69E797.wem</Path>
 				</File>
 				<File Id="73141056" Language="SFX">
 					<ShortName>jump_land_paper.13.wav</ShortName>
@@ -59,33 +47,9 @@
 					<ShortName>Punch_hit.wav</ShortName>
 					<Path>SFX\Punch_hit_9E69E797.wem</Path>
 				</File>
-				<File Id="102622324" Language="SFX">
-					<ShortName>fs_plasticheavy_toe.13.wav</ShortName>
-					<Path>SFX\fs_plasticheavy_toe.13_9E69E797.wem</Path>
-				</File>
 				<File Id="104078924" Language="SFX">
 					<ShortName>jump_land_paper.15.wav</ShortName>
 					<Path>SFX\jump_land_paper.15_9E69E797.wem</Path>
-				</File>
-				<File Id="104452572" Language="SFX">
-					<ShortName>fs_plasticheavy_heel.17.wav</ShortName>
-					<Path>SFX\fs_plasticheavy_heel.17_9E69E797.wem</Path>
-				</File>
-				<File Id="116008375" Language="SFX">
-					<ShortName>fs_paper_heel.19.wav</ShortName>
-					<Path>SFX\fs_paper_heel.19_9E69E797.wem</Path>
-				</File>
-				<File Id="164525032" Language="SFX">
-					<ShortName>fs_plasticheavy_heel.21.wav</ShortName>
-					<Path>SFX\fs_plasticheavy_heel.21_9E69E797.wem</Path>
-				</File>
-				<File Id="181211327" Language="SFX">
-					<ShortName>fs_paper_toe.7.wav</ShortName>
-					<Path>SFX\fs_paper_toe.7_9E69E797.wem</Path>
-				</File>
-				<File Id="191613327" Language="SFX">
-					<ShortName>fs_plasticlight_heel.9.wav</ShortName>
-					<Path>SFX\fs_plasticlight_heel.9_9E69E797.wem</Path>
 				</File>
 				<File Id="205995591" Language="SFX">
 					<ShortName>jump_up_wood.11.wav</ShortName>
@@ -95,26 +59,6 @@
 					<ShortName>jump_land_paper.3.wav</ShortName>
 					<Path>SFX\jump_land_paper.3_9E69E797.wem</Path>
 				</File>
-				<File Id="239861491" Language="SFX">
-					<ShortName>fs_paper_toe.11.wav</ShortName>
-					<Path>SFX\fs_paper_toe.11_9E69E797.wem</Path>
-				</File>
-				<File Id="241432707" Language="SFX">
-					<ShortName>fs_paper_toe.5.wav</ShortName>
-					<Path>SFX\fs_paper_toe.5_9E69E797.wem</Path>
-				</File>
-				<File Id="276201146" Language="SFX">
-					<ShortName>fs_plasticheavy_heel.13.wav</ShortName>
-					<Path>SFX\fs_plasticheavy_heel.13_9E69E797.wem</Path>
-				</File>
-				<File Id="281082601" Language="SFX">
-					<ShortName>fs_plasticheavy_toe.11.wav</ShortName>
-					<Path>SFX\fs_plasticheavy_toe.11_9E69E797.wem</Path>
-				</File>
-				<File Id="314163124" Language="SFX">
-					<ShortName>fs_plasticlight_heel.3.wav</ShortName>
-					<Path>SFX\fs_plasticlight_heel.3_9E69E797.wem</Path>
-				</File>
 				<File Id="333252647" Language="SFX">
 					<ShortName>jump_plasticheavy_up.7.wav</ShortName>
 					<Path>SFX\jump_plasticheavy_up.7_9E69E797.wem</Path>
@@ -122,10 +66,6 @@
 				<File Id="338443434" Language="SFX">
 					<ShortName>jump_up_wood.15.wav</ShortName>
 					<Path>SFX\jump_up_wood.15_9E69E797.wem</Path>
-				</File>
-				<File Id="353357156" Language="SFX">
-					<ShortName>fs_paper_heel.32.wav</ShortName>
-					<Path>SFX\fs_paper_heel.32_9E69E797.wem</Path>
 				</File>
 				<File Id="356234548" Language="SFX">
 					<ShortName>jump_lightplastic_up.11.wav</ShortName>
@@ -135,81 +75,21 @@
 					<ShortName>jump_land_wood.17.wav</ShortName>
 					<Path>SFX\jump_land_wood.17_9E69E797.wem</Path>
 				</File>
-				<File Id="377756718" Language="SFX">
-					<ShortName>fs_plasticlight_toe.17.wav</ShortName>
-					<Path>SFX\fs_plasticlight_toe.17_9E69E797.wem</Path>
-				</File>
-				<File Id="392339444" Language="SFX">
-					<ShortName>fs_paper_heel.23.wav</ShortName>
-					<Path>SFX\fs_paper_heel.23_9E69E797.wem</Path>
-				</File>
-				<File Id="399504496" Language="SFX">
-					<ShortName>fs_paper_toe.15.wav</ShortName>
-					<Path>SFX\fs_paper_toe.15_9E69E797.wem</Path>
-				</File>
-				<File Id="404412763" Language="SFX">
-					<ShortName>fs_paper_toe.9.wav</ShortName>
-					<Path>SFX\fs_paper_toe.9_9E69E797.wem</Path>
-				</File>
 				<File Id="415247550" Language="SFX">
 					<ShortName>jump_plasticheavy_land.23.wav</ShortName>
 					<Path>SFX\jump_plasticheavy_land.23_9E69E797.wem</Path>
-				</File>
-				<File Id="430707675" Language="SFX">
-					<ShortName>fs_paper_heel.29.wav</ShortName>
-					<Path>SFX\fs_paper_heel.29_9E69E797.wem</Path>
 				</File>
 				<File Id="435676158" Language="SFX">
 					<ShortName>jump_lightplastic_up.7.wav</ShortName>
 					<Path>SFX\jump_lightplastic_up.7_9E69E797.wem</Path>
 				</File>
-				<File Id="465351780" Language="SFX">
-					<ShortName>fs_plasticheavy_heel.19.wav</ShortName>
-					<Path>SFX\fs_plasticheavy_heel.19_9E69E797.wem</Path>
-				</File>
-				<File Id="476020320" Language="SFX">
-					<ShortName>fs_plasticlight_toe.19.wav</ShortName>
-					<Path>SFX\fs_plasticlight_toe.19_9E69E797.wem</Path>
-				</File>
 				<File Id="483532692" Language="SFX">
 					<ShortName>robot_whir_6.wav</ShortName>
 					<Path>SFX\robot_whir_6_9E69E797.wem</Path>
 				</File>
-				<File Id="494383800" Language="SFX">
-					<ShortName>fs_paper_heel.25.wav</ShortName>
-					<Path>SFX\fs_paper_heel.25_9E69E797.wem</Path>
-				</File>
-				<File Id="498000549" Language="SFX">
-					<ShortName>fs_wood_toe.11.wav</ShortName>
-					<Path>SFX\fs_wood_toe.11_9E69E797.wem</Path>
-				</File>
-				<File Id="507270761" Language="SFX">
-					<ShortName>fs_paper_heel.21.wav</ShortName>
-					<Path>SFX\fs_paper_heel.21_9E69E797.wem</Path>
-				</File>
-				<File Id="508295674" Language="SFX">
-					<ShortName>fs_wood_heel.17.wav</ShortName>
-					<Path>SFX\fs_wood_heel.17_9E69E797.wem</Path>
-				</File>
-				<File Id="512684154" Language="SFX">
-					<ShortName>fs_plasticheavy_toe.7.wav</ShortName>
-					<Path>SFX\fs_plasticheavy_toe.7_9E69E797.wem</Path>
-				</File>
-				<File Id="555378130" Language="SFX">
-					<ShortName>fs_plasticheavy_heel.9.wav</ShortName>
-					<Path>SFX\fs_plasticheavy_heel.9_9E69E797.wem</Path>
-				</File>
-				<File Id="557690983" Language="SFX">
-					<ShortName>fs_plasticlight_toe.5.wav</ShortName>
-					<Path>SFX\fs_plasticlight_toe.5_9E69E797.wem</Path>
-				</File>
 				<File Id="563468909" Language="SFX">
 					<ShortName>jump_land_wood.21.wav</ShortName>
 					<Path>SFX\jump_land_wood.21_9E69E797.wem</Path>
-				</File>
-				<File Id="565547272" Language="SFX">
-					<ShortName>fs_wood_heel.7.wav</ShortName>
-					<Path>SFX\fs_wood_heel.7_9E69E797.wem</Path>
 				</File>
 				<File Id="571775956" Language="SFX">
 					<ShortName>jump_plasticheavy_land.19.wav</ShortName>
@@ -223,34 +103,6 @@
 					<ShortName>jump_lightplastic_land.5.wav</ShortName>
 					<Path>SFX\jump_lightplastic_land.5_9E69E797.wem</Path>
 				</File>
-				<File Id="689139830" Language="SFX">
-					<ShortName>fs_plasticlight_heel.7.wav</ShortName>
-					<Path>SFX\fs_plasticlight_heel.7_9E69E797.wem</Path>
-				</File>
-				<File Id="689508127" Language="SFX">
-					<ShortName>fs_wood_heel.21.wav</ShortName>
-					<Path>SFX\fs_wood_heel.21_9E69E797.wem</Path>
-				</File>
-				<File Id="708479974" Language="SFX">
-					<ShortName>fs_wood_heel.13.wav</ShortName>
-					<Path>SFX\fs_wood_heel.13_9E69E797.wem</Path>
-				</File>
-				<File Id="709237550" Language="SFX">
-					<ShortName>fs_wood_toe.7.wav</ShortName>
-					<Path>SFX\fs_wood_toe.7_9E69E797.wem</Path>
-				</File>
-				<File Id="722012125" Language="SFX">
-					<ShortName>fs_paper_toe.19.wav</ShortName>
-					<Path>SFX\fs_paper_toe.19_9E69E797.wem</Path>
-				</File>
-				<File Id="729148062" Language="SFX">
-					<ShortName>fs_plasticheavy_heel.7.wav</ShortName>
-					<Path>SFX\fs_plasticheavy_heel.7_9E69E797.wem</Path>
-				</File>
-				<File Id="743773537" Language="SFX">
-					<ShortName>fs_wood_heel.11.wav</ShortName>
-					<Path>SFX\fs_wood_heel.11_9E69E797.wem</Path>
-				</File>
 				<File Id="794892614" Language="SFX">
 					<ShortName>jump_lightplastic_up.9.wav</ShortName>
 					<Path>SFX\jump_lightplastic_up.9_9E69E797.wem</Path>
@@ -259,49 +111,17 @@
 					<ShortName>jump_lightplastic_land.11.wav</ShortName>
 					<Path>SFX\jump_lightplastic_land.11_9E69E797.wem</Path>
 				</File>
-				<File Id="803215861" Language="SFX">
-					<ShortName>Punch_air.wav</ShortName>
-					<Path>SFX\Punch_air_9E69E797.wem</Path>
-				</File>
-				<File Id="808569740" Language="SFX">
-					<ShortName>fs_plasticlight_toe.11.wav</ShortName>
-					<Path>SFX\fs_plasticlight_toe.11_9E69E797.wem</Path>
-				</File>
 				<File Id="843506730" Language="SFX">
 					<ShortName>robot_whir_3.wav</ShortName>
 					<Path>SFX\robot_whir_3_9E69E797.wem</Path>
-				</File>
-				<File Id="853369910" Language="SFX">
-					<ShortName>fs_wood_toe.5.wav</ShortName>
-					<Path>SFX\fs_wood_toe.5_9E69E797.wem</Path>
 				</File>
 				<File Id="865230941" Language="SFX">
 					<ShortName>robot_whir_4.wav</ShortName>
 					<Path>SFX\robot_whir_4_9E69E797.wem</Path>
 				</File>
-				<File Id="869388708" Language="SFX">
-					<ShortName>fs_plasticlight_toe.15.wav</ShortName>
-					<Path>SFX\fs_plasticlight_toe.15_9E69E797.wem</Path>
-				</File>
 				<File Id="875707245" Language="SFX">
 					<ShortName>jump_land_wood.19.wav</ShortName>
 					<Path>SFX\jump_land_wood.19_9E69E797.wem</Path>
-				</File>
-				<File Id="900796214" Language="SFX">
-					<ShortName>fs_plasticlight_heel.13.wav</ShortName>
-					<Path>SFX\fs_plasticlight_heel.13_9E69E797.wem</Path>
-				</File>
-				<File Id="902838732" Language="SFX">
-					<ShortName>fs_plasticlight_heel.5.wav</ShortName>
-					<Path>SFX\fs_plasticlight_heel.5_9E69E797.wem</Path>
-				</File>
-				<File Id="918211040" Language="SFX">
-					<ShortName>fs_plasticheavy_toe.5.wav</ShortName>
-					<Path>SFX\fs_plasticheavy_toe.5_9E69E797.wem</Path>
-				</File>
-				<File Id="919970134" Language="SFX">
-					<ShortName>fs_wood_toe.13.wav</ShortName>
-					<Path>SFX\fs_wood_toe.13_9E69E797.wem</Path>
 				</File>
 				<File Id="922268322" Language="SFX">
 					<ShortName>jump_plasticheavy_land.21.wav</ShortName>
@@ -311,29 +131,13 @@
 					<ShortName>robot_whir_2.wav</ShortName>
 					<Path>SFX\robot_whir_2_9E69E797.wem</Path>
 				</File>
-				<File Id="957496795" Language="SFX">
-					<ShortName>fs_wood_heel.19.wav</ShortName>
-					<Path>SFX\fs_wood_heel.19_9E69E797.wem</Path>
-				</File>
 				<File Id="958901499" Language="SFX">
 					<ShortName>robot_whir_5.wav</ShortName>
 					<Path>SFX\robot_whir_5_9E69E797.wem</Path>
 				</File>
-				<File Id="966534732" Language="SFX">
-					<ShortName>fs_wood_toe.9.wav</ShortName>
-					<Path>SFX\fs_wood_toe.9_9E69E797.wem</Path>
-				</File>
-				<File Id="1022246176" Language="SFX">
-					<ShortName>fs_plasticlight_heel.11.wav</ShortName>
-					<Path>SFX\fs_plasticlight_heel.11_9E69E797.wem</Path>
-				</File>
 				<File Id="1023171489" Language="SFX">
 					<ShortName>jump_up_wood.13.wav</ShortName>
 					<Path>SFX\jump_up_wood.13_9E69E797.wem</Path>
-				</File>
-				<File Id="1036655489" Language="SFX">
-					<ShortName>fs_plasticheavy_toe.9.wav</ShortName>
-					<Path>SFX\fs_plasticheavy_toe.9_9E69E797.wem</Path>
 				</File>
 				<File Id="1070385145" Language="SFX">
 					<ShortName>jump_lightplastic_land.7.wav</ShortName>
