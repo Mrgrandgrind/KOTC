@@ -122,7 +122,7 @@ void AGameHUD::RenderPlace(const FVector4& screen, const float& scale)
 
 	//x += width;
 	//Super::GetTextSize(subStr, width, height, this->m_Font, scale * this->m_PlaceSubTextScale);
-	Super::DrawText(subStr, this->m_PlaceTextColor, x + widthw, y, this->m_Font, scale * this->m_PlaceSubTextScale);
+	Super::DrawText(subStr, this->m_PlaceTextColor, x + width, y, this->m_Font, scale * this->m_PlaceSubTextScale);
 }
 
 void AGameHUD::RenderBars(const FVector4& screen, const float& scale)
