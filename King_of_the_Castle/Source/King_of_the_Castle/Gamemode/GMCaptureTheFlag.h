@@ -24,6 +24,8 @@ public:
 
 	virtual void OnBlockDrop(class ABlockEntity *block, class APlayerCharacter *player, const int& newCount) override;
 
+	virtual FName GetGameModeName() const override { return TEXT("Capture The Flag"); }
+
 	FORCEINLINE class APlayerCharacter* GetFlagHolder(const int& team) const
 	{
 		if(team == 1)

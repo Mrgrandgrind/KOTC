@@ -139,6 +139,13 @@ protected:
 
 	void UpdateMovementSpeed() const;
 
+	// Input: Show scores
+	UFUNCTION(BlueprintCallable, Category = "Event")
+	void InputShowScoresTable();
+
+	UFUNCTION(BlueprintCallable, Category = "Event")
+	void InputHideScoresTable();
+
 	// Called whenever the player moved up a block type with their brush
 	UFUNCTION(BlueprintCallable, Category = "Event")
 	void InputBlockTypeUpEvent();
@@ -159,19 +166,6 @@ protected:
 
 	UFUNCTION(BlueprintCallable, Category = "Event")
 	void InputBlockDestroyDownEvent();
-
-	// Input: Build wheel controls
-	//UFUNCTION(BlueprintCallable, Category = "Event")
-	//void InputShowBuildWheel();
-
-	//UFUNCTION(BlueprintCallable, Category = "Event")
-	//void InputHideBuildWheel();
-
-	//UFUNCTION(BlueprintCallable, Category = "Event")
-	//void InputBuildWheelBack();
-
-	//UFUNCTION(BlueprintCallable, Category = "Event")
-	//void InputBuildWheelSelect();
 
 	// Input: Sprint
 	UFUNCTION(BlueprintCallable, Category = "Event")

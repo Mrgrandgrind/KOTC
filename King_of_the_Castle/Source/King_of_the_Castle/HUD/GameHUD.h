@@ -18,9 +18,9 @@ public:
 
 	virtual void DrawHUD() override;
 
-	//FORCEINLINE UBuildWheel* GetBuildWheel() const { return this->m_BuildWheel; }
-
 	FORCEINLINE void SetCrosshairVisible(const bool& visible) { this->m_bCrosshairVisible = visible; }
+
+	FORCEINLINE void SetScoresTableVisible(const bool& visible) { this->m_bScoresTableVisible = visible; }
 
 	FORCEINLINE bool IsViewportVertical() const { return this->m_PlayerCount <= 2; }
 
@@ -33,6 +33,8 @@ private:
 
 	void RenderCapturePoints(const FVector4& screen, const float& scale);
 
+	void RenderScores(const FVector4& screen, const float& scale);
+
 	void RenderForAll(const FVector4& screen, const float& scale);
 
 	FORCEINLINE bool IsOpposite()
@@ -43,9 +45,6 @@ private:
 	}
 
 protected:
-	//UPROPERTY(VisibleAnywhere)
-	//UBuildWheel *m_BuildWheel;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD", meta = (DisplayName = "Font"))
 	class UFont *m_Font;
 
@@ -175,7 +174,7 @@ protected:
 private:
 	int32 m_ControllerId, m_PlayerCount;
 
-	bool m_bCrosshairVisible;
+	bool m_bCrosshairVisible, m_bScoresTableVisible;
 
 	float m_HealthPerc, m_StaminaPerc;
 	TArray<float> m_TeamBarScores;

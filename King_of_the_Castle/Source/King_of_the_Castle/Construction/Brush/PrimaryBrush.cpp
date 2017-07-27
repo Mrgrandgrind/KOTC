@@ -56,7 +56,7 @@ UPrimaryBrush::UPrimaryBrush() : m_SelectedTypeIndex(0)
 	//}
 
 	Super::bAbsoluteRotation = true;
-	Super::m_bDebugRenderTrace = true;
+	//Super::m_bDebugRenderTrace = true;
 }
 
 void UPrimaryBrush::BeginPlay()

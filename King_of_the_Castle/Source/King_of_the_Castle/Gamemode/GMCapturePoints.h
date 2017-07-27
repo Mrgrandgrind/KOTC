@@ -30,6 +30,8 @@ public:
 
 	virtual void OnCapturePointReleased(class ACapturePoint *point);
 
+	virtual FName GetGameModeName() const override { return TEXT("Capture Points"); }
+
 	FORCEINLINE const float& GetWinScore() const { return this->m_WinScore; }
 
 	FORCEINLINE const float& GetCaptureDuration() const { return this->m_CaptureDuration; }

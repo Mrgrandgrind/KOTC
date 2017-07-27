@@ -9,7 +9,7 @@ UCLASS()
 class KING_OF_THE_CASTLE_API ABaseGameMode : public AGameMode
 {
 	GENERATED_BODY()
-	
+
 public:
 	ABaseGameMode();
 
@@ -34,6 +34,8 @@ public:
 	virtual void OnBlockDrop(class ABlockEntity *block, class APlayerCharacter *player, const int& newCount) { }
 
 	virtual APawn* SpawnDefaultPawnFor_Implementation(AController* NewPlayer, class AActor* StartSpot) override;
+
+	virtual FName GetGameModeName() const { return TEXT("Undefined"); }
 
 	// Time since the game started
 	FORCEINLINE const float& GetTime() const { return this->m_Timer; }

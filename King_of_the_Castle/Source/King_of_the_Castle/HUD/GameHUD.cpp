@@ -35,7 +35,7 @@
 
 #define FONT_LOCATION TEXT("Font'/Engine/EngineFonts/RobotoDistanceField.RobotoDistanceField'")
 
-AGameHUD::AGameHUD() : m_bCrosshairVisible(false)
+AGameHUD::AGameHUD() : m_bCrosshairVisible(false), m_bScoresTableVisible(false)
 {
 	static ConstructorHelpers::FObjectFinder<UFont> Font(FONT_LOCATION);
 	if (Font.Succeeded())
@@ -92,8 +92,6 @@ AGameHUD::AGameHUD() : m_bCrosshairVisible(false)
 	this->m_PlacePadding = 12.0f;
 	this->m_PlaceTextColor = PLACE_TEXT_COLOR;
 	this->m_bRenderScorePlace = true;
-
-	//this->m_BuildWheel = UObject::CreateDefaultSubobject<UBuildWheel>(TEXT("BuildWheel"));
 }
 
 void AGameHUD::BeginPlay()
@@ -112,7 +110,7 @@ void AGameHUD::RenderPlace(const FVector4& screen, const float& scale)
 		return;
 	}
 	int32 place = gamemode->GetPlace(this->GetCharacter()->GetTeam());
-	FString placeStr = FString::FromInt(place), subStr = place == 1 ? TEXT("st") 
+	FString placeStr = FString::FromInt(place), subStr = place == 1 ? TEXT("st")
 		: place == 2 ? TEXT("nd") : place == 3 ? TEXT("rd") : TEXT("th");
 
 	float numWidth, numHeight, subWidth, subHeight;
@@ -149,7 +147,7 @@ void AGameHUD::RenderBars(const FVector4& screen, const float& scale)
 	float textWidth, textHeight, offset;
 	// Health
 	float healthPerc = character->GetHealth() / character->GetMaxHealth();
-	healthPerc = this->m_HealthPerc = FMath::FInterpTo(this->m_HealthPerc, healthPerc, 
+	healthPerc = this->m_HealthPerc = FMath::FInterpTo(this->m_HealthPerc, healthPerc,
 		Super::GetWorld()->GetDeltaSeconds(), this->m_BarMoveSpeed);
 
 	FLinearColor healthColor = this->m_BarHealthMinColor + (m_BarHealthMaxColor - m_BarHealthMinColor) * healthPerc;
@@ -215,7 +213,7 @@ void AGameHUD::RenderCapturePoints(const FVector4& screen, const float& scale)
 		FVector position = Super::Project(points[i]->GetActorLocation() + FVector(0.0f, 0.0f, this->m_CPTextZOffset));
 
 		float textScale = scale * this->m_CPTextScale, boxScale = textScale * this->m_CPBoxScale;
-		if (position.Z <= 0.0f 
+		if (position.Z <= 0.0f
 			|| position.X < boxScale / 2.0f || position.X > screen.Z - boxScale / 2.0f
 			|| position.Y < boxScale / 2.0f || position.Y > screen.W - boxScale / 2.0f)
 		{
@@ -229,7 +227,7 @@ void AGameHUD::RenderCapturePoints(const FVector4& screen, const float& scale)
 		UMaterialInstanceDynamic *material = Cast<UMaterialInstanceDynamic>(this->m_CPMaterials[point]);
 		if (material == nullptr)
 		{
-			continue; 
+			continue;
 		}
 		material->SetScalarParameterValue(CP_MATERIAL_PARAM_ALPHA, this->m_CPBoxAlpha);
 		material->SetScalarParameterValue(CP_MATERIAL_PARAM_FLASH_SPEED, this->m_CPBoxFlashSpeed);
@@ -250,6 +248,54 @@ void AGameHUD::RenderCapturePoints(const FVector4& screen, const float& scale)
 		Super::DrawText(name, this->m_CPTextColor, position.X - width / 2.0f,
 			position.Y - height / 2.0f, this->m_Font, textScale);
 	}
+}
+
+void AGameHUD::RenderScores(const FVector4& screen, const float& scale)
+{
+	AGMCapturePoints *gamemode = GetGameMode<AGMCapturePoints>(Super::GetWorld());
+	if (gamemode == nullptr)
+	{
+		return;
+	}
+	float x, y;
+	float width, height;
+
+	// Render gamemode name
+	FString name = gamemode->GetGameModeName().ToString();
+	Super::GetTextSize(name, width, height, this->m_Font, scale * 0.8f);
+
+	x = screen.X + screen.Z / 2.0f - width / 2.0f;
+	y = screen.Y + screen.W * 0.15f - height / 2.0f;
+
+	float offset = scale * 8.0f;
+	Super::DrawRect(FLinearColor::Blue, x - offset / 2.0f, y - offset / 4.0f, width + offset, height + offset / 2.0f);
+	Super::DrawText(name, FLinearColor::White, x, y, this->m_Font, scale * 0.8f);
+
+	// Render graph axis
+	float graphWidth = scale * 180.0f, graphHeight = scale * 100.0f;
+
+	float axisSize = scale * 3.0f, axisExtra = scale * 10.0f;
+	// x axis
+	Super::DrawRect(FLinearColor::Red, screen.X + screen.Z / 2.0f - graphWidth / 2.0f - axisExtra,
+		screen.Y + screen.W / 2.0f + graphHeight / 2.0f, graphWidth + axisExtra * 2.0f, axisSize);
+	// y axis
+	Super::DrawRect(FLinearColor::Red, screen.X + screen.Z / 2.0f - graphWidth / 2.0f,
+		screen.Y + screen.W / 2.0f - graphHeight / 2.0f, axisSize, graphHeight + axisExtra);
+
+	float barGoalHeight = scale * 20.0f;
+	float barGap = scale * 20.0f, barSize = (graphWidth - barGap - barGap * (gamemode->GetTeamCount() - 1)) / gamemode->GetTeamCount();
+	for (int i = 0; i < gamemode->GetTeamCount(); i++)
+	{
+		float barHeight = (graphHeight - barGoalHeight) * 1.0f;// (gamemode->GetScore(i + 1) / gamemode->GetWinScore());
+		Super::DrawRect(gamemode->GetTeamColor(i + 1),
+			screen.X + screen.Z / 2.0f - graphWidth / 2.0f + axisSize + barGap / 2.0f + barSize * i + barGap * i,
+			screen.Y + screen.W / 2.0f + graphHeight / 2.0f, barSize, -barHeight);
+	}
+
+	// Draw goal line
+	float goalLineHeight = scale * 2.0f;
+	Super::DrawRect(FLinearColor::Green, screen.X + screen.Z / 2.0f - graphWidth / 2.0f, 
+		screen.Y + screen.W / 2.0f - graphHeight / 2.0f + barGoalHeight - goalLineHeight, graphWidth, goalLineHeight);
 }
 
 void AGameHUD::RenderForAll(const FVector4& screen, const float& scale)
@@ -313,7 +359,7 @@ void AGameHUD::RenderForAll(const FVector4& screen, const float& scale)
 	// Calculate ratios
 	for (int i = 0; i < gamemode->GetTeamCount(); i++)
 	{
-		float score = FMath::FInterpConstantTo(this->m_TeamBarScores[i], gamemode->GetScore(i + 1), 
+		float score = FMath::FInterpConstantTo(this->m_TeamBarScores[i], gamemode->GetScore(i + 1),
 			Super::GetWorld()->GetDeltaSeconds(), this->m_IPTeamBarMoveSpeed);
 		this->m_TeamBarScores[i] = score;
 
@@ -394,5 +440,10 @@ void AGameHUD::DrawHUD()
 	if (this->GetCharacter()->GetHealth() <= 0.0f)
 	{
 		Super::DrawText(TEXT("DEAD"), FLinearColor::Red, 100, 100, this->m_Font, scale * 2.0f);
+	}
+
+	if (this->m_bScoresTableVisible)
+	{
+		this->RenderScores(screen, scale);
 	}
 }
