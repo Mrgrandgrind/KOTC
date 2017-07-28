@@ -7,13 +7,13 @@
 #include "Construction/Blocks/BasicBlock.h"
 
 #define SPAWN_RATE 1.0f
-#define ENTITY_LIFE_TIME 16.0f // seconds
+#define SPAWNED_ENTITY_LIFE_TIME 16.0f // seconds
 
 #define IMPULSE_STRENGTH_MAX 600.0f
 #define IMPULSE_STRENGTH_MIN 400.0f
 #define MAX_ANGLE_XY 90.0f
 
-ABlockSpawner::ABlockSpawner() : m_SpawnRate(SPAWN_RATE), m_EntityLifeTime(ENTITY_LIFE_TIME), 
+ABlockSpawner::ABlockSpawner() : m_SpawnRate(SPAWN_RATE), m_EntityLifeTime(SPAWNED_ENTITY_LIFE_TIME),
 m_ImpulseStrengthMin(IMPULSE_STRENGTH_MIN), m_ImpulseStrengthMax(IMPULSE_STRENGTH_MAX)
 {
 	Super::PrimaryActorTick.bCanEverTick = true;

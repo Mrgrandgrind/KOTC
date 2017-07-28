@@ -4,6 +4,8 @@
 #include "PlayerCharacter.h"
 
 #include "HUD/GameHUD.h"
+#include "HUD/Components/CrosshairComponent.h"
+#include "HUD/Components/ScoresOverlayComponent.h"
 #include "Construction/Block.h"
 #include "Construction/BlockData.h"
 #include "Construction/BuildArea.h"
@@ -292,10 +294,16 @@ void APlayerCharacter::SetBuildModeEnabled(const bool& enable)
 	if (Super::GetController() != nullptr)
 	{
 		AGameHUD *hud = Cast<AGameHUD>(((APlayerController*)Super::GetController())->GetHUD());
-		if (hud != nullptr)
+		if (hud == nullptr)
 		{
-			hud->SetCrosshairVisible(enable);
+			return;
 		}
+		UCrosshairComponent *component = hud->FindComponent<UCrosshairComponent>();
+		if (component == nullptr)
+		{
+			return;
+		}
+		component->SetVisible(enable);
 	}
 }
 
@@ -637,27 +645,23 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *input)
 
 	input->BindAction("Drop Block", IE_Pressed, this, &APlayerCharacter::DropBlock);
 
-	input->BindAction("View Scores", IE_Pressed, this, &APlayerCharacter::InputShowScoresTable);
-	input->BindAction("View Scores", IE_Released, this, &APlayerCharacter::InputHideScoresTable);
+	input->BindAction("View Scores", IE_Pressed, this, &APlayerCharacter::InputToggleScoresTable);
+	input->BindAction("View Scores", IE_Released, this, &APlayerCharacter::InputToggleScoresTable);
 }
 
-void APlayerCharacter::InputShowScoresTable()
+void APlayerCharacter::InputToggleScoresTable()
 {
 	AGameHUD *hud = Cast<AGameHUD>(((APlayerController*)Super::GetController())->GetHUD());
-	if (hud != nullptr)
+	if (hud == nullptr)
 	{
-		hud->SetScoresTableVisible(true);
+		return;
 	}
-}
-
-void APlayerCharacter::InputHideScoresTable()
-{
-
-	AGameHUD *hud = Cast<AGameHUD>(((APlayerController*)Super::GetController())->GetHUD());
-	if (hud != nullptr)
+	UScoresOverlayComponent *component = hud->FindComponent<UScoresOverlayComponent>();
+	if (component == nullptr)
 	{
-		hud->SetScoresTableVisible(false);
+		return;
 	}
+	component->SetVisible(!component->IsVisible());
 }
 
 void APlayerCharacter::Jump()

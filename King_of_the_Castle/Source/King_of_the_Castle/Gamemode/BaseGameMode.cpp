@@ -20,7 +20,7 @@
 
 #define MAX_PLAYER_COUNT 4
 
-#define HUD_LOCATION TEXT("/Game/Blueprints/BP_GameHUD")
+#define HUD_LOCATION TEXT("/Game/Blueprints/HUD/BP_GameHUD_CP")
 #define SMASH_CHARACTER_LOCATION TEXT("/Game/Blueprints/Characters/BP_RobotCharacter")
 
 #define TEAM1_COLOR FLinearColor(0.4f, 0.4f, 1.0f)

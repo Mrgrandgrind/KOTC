@@ -141,10 +141,7 @@ protected:
 
 	// Input: Show scores
 	UFUNCTION(BlueprintCallable, Category = "Event")
-	void InputShowScoresTable();
-
-	UFUNCTION(BlueprintCallable, Category = "Event")
-	void InputHideScoresTable();
+	void InputToggleScoresTable();
 
 	// Called whenever the player moved up a block type with their brush
 	UFUNCTION(BlueprintCallable, Category = "Event")
