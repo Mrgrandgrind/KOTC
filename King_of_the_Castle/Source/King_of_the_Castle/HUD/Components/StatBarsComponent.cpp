@@ -19,7 +19,7 @@ UStatBarsComponent::UStatBarsComponent()
 	this->m_TextScale = 0.4f;
 	this->m_ScaleXHealth = 120.0f;
 	this->m_ScaleXStamina = 90.0f;
-	this->m_ScaleY = 10.0f;
+	this->m_ScaleY = 8.5f;
 	this->m_SeparationY = 2.5f;
 	this->m_MoveSpeed = 2.0f;
 

@@ -62,7 +62,7 @@ void UScoreBarComponent::Render(AGameHUD *hud, const FVector2D& origin, const FV
 		y += barHeight;
 	}
 
-	if (this->m_bRenderTime)
+	if (this->m_bRenderTime && !gamemode->IsTimerDisabled())
 	{
 		float timeScale = scale * this->m_TimeTextScale;
 		int time = int(gamemode->GetGameDuration() - gamemode->GetTime());

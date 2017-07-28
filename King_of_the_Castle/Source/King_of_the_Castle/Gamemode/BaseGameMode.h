@@ -49,6 +49,9 @@ public:
 	// How many different teams there are
 	FORCEINLINE const int& GetTeamCount() const { return this->m_TeamCount; }
 
+	// Does this game have infinite time
+	FORCEINLINE const bool& IsTimerDisabled() const { return this->m_bDisableTimer; }
+
 	// Set how long a game should last
 	FORCEINLINE void SetGameDuration(const float& duration) { this->m_GameDuration = duration; }
 
@@ -119,6 +122,8 @@ private:
 	
 	int m_TeamCount;
 
+	bool m_bGameOver;
+
 	// How many players should be ingame
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Players", meta = (AllowPrivateAccess = "true", DisplayName = "Player Count"))
 	int m_PlayerCount;
@@ -146,16 +151,13 @@ private:
 	float m_GameDuration;
 
 	// How long a game should last (seconds)
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Game", meta = (AllowPrivateAccess = "true", DisplayName = "Infinite Game Time"))
-	bool m_bInfiniteTime;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Game", meta = (AllowPrivateAccess = "true", DisplayName = "Disable Game Timer"))
+	bool m_bDisableTimer;
 
 	// How many block entities can exist in the game at a given time
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Game", meta = (AllowPrivateAccess = "true", DisplayName = "Max Entity Count"))
 	int m_MaxEntityCount;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Game", meta = (AllowPrivateAccess = "true", DisplayName = "Game Over"))
-	bool m_bGameOver;
-
+	
 	// Block Entites spawn control
 	int m_EntityCount, m_EntityDespawnFlags;
 
