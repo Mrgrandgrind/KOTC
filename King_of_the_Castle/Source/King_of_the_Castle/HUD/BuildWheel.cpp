@@ -296,7 +296,7 @@ void UBuildWheel::Render(AHUD* display, FVector4& screen)
 
 	// Draw lines and text
 	float inner = radius - (radius / MAX_MAT_RADIUS) * (OUTER_RADIUS / 2.0f);
-	for (int i = 0; i < activeMenu.m_Segments.size(); i++)
+	for (unsigned int i = 0; i < activeMenu.m_Segments.size(); i++)
 	{
 		WheelMenuSegment& segment = activeMenu.m_Segments[i];
 
