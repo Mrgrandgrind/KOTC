@@ -20,12 +20,17 @@
 					<ObjectInclusionList>
 						<ObjectRef Name="fs_land" ID="{35FD2CE1-AD78-4197-B810-F6C2822F7F27}" WorkUnitID="{8F1EA8B4-C444-40AD-B9D4-72B61B06D617}" Filter="7" Origin="Manual"/>
 						<ObjectRef Name="fs_jump" ID="{AA8E9F86-5BA9-41DE-A340-C3634DB6B769}" WorkUnitID="{8F1EA8B4-C444-40AD-B9D4-72B61B06D617}" Filter="7" Origin="Manual"/>
-						<ObjectRef Name="block_delete" ID="{CCDD2D0C-4839-43D0-B5DB-E71DEC46F8FF}" WorkUnitID="{8F1EA8B4-C444-40AD-B9D4-72B61B06D617}" Filter="7" Origin="Manual"/>
+						<ObjectRef Name="JumpUp" ID="{FB03DD37-04EC-4337-A9D7-C55247002BFA}" WorkUnitID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}" Filter="7" Origin="Manual"/>
 						<ObjectRef Name="robot_pain" ID="{C1BB66E4-57F6-4446-9E9F-DF2EE8FC6F70}" WorkUnitID="{8F1EA8B4-C444-40AD-B9D4-72B61B06D617}" Filter="7" Origin="Manual"/>
+						<ObjectRef Name="JumpLand" ID="{3457F1F8-71E4-45FB-A104-18A08FAB13EC}" WorkUnitID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}" Filter="7" Origin="Manual"/>
 						<ObjectRef Name="block_place" ID="{2E6A9638-AA56-45FE-98AF-972C74958E58}" WorkUnitID="{8F1EA8B4-C444-40AD-B9D4-72B61B06D617}" Filter="7" Origin="Manual"/>
+						<ObjectRef Name="Footstep" ID="{545CA7A5-5695-48E9-B228-E709D97B1717}" WorkUnitID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}" Filter="7" Origin="Manual"/>
+						<ObjectRef Name="base_captured" ID="{8D6E05FE-3EAC-4A4E-ABDB-00B1452C386B}" WorkUnitID="{8F1EA8B4-C444-40AD-B9D4-72B61B06D617}" Filter="7" Origin="Manual"/>
+						<ObjectRef Name="base_capturing" ID="{34ED9C97-1934-4B27-9BCE-BC44DF4D8BB6}" WorkUnitID="{8F1EA8B4-C444-40AD-B9D4-72B61B06D617}" Filter="7" Origin="Manual"/>
 						<ObjectRef Name="punch" ID="{23C7FA1C-07D0-4C63-B65B-C4468D220AA1}" WorkUnitID="{8F1EA8B4-C444-40AD-B9D4-72B61B06D617}" Filter="7" Origin="Manual"/>
 						<ObjectRef Name="Default Work Unit" ID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}" WorkUnitID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}" Filter="7" Origin="Manual"/>
 						<ObjectRef Name="fs_player_sprint" ID="{11CE960B-A191-4EFB-8AAC-350280E47806}" WorkUnitID="{8F1EA8B4-C444-40AD-B9D4-72B61B06D617}" Filter="7" Origin="Manual"/>
+						<ObjectRef Name="fs_plastic_heavy" ID="{25E7061A-6501-4F2E-A2DE-D4CBD735B57C}" WorkUnitID="{8F1EA8B4-C444-40AD-B9D4-72B61B06D617}" Filter="7" Origin="Manual"/>
 						<ObjectRef Name="fs_player" ID="{20519390-F0D8-4F57-9112-541B041505D3}" WorkUnitID="{8F1EA8B4-C444-40AD-B9D4-72B61B06D617}" Filter="7" Origin="Manual"/>
 					</ObjectInclusionList>
 					<ObjectExclusionList/>

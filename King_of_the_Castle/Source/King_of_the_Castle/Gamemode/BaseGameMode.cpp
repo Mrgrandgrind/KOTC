@@ -250,7 +250,7 @@ void ABaseGameMode::SpawnPlayers()
 	}
 }
 
-void ABaseGameMode::OnBlockPlace(ABlock *block, AActor *source)
+void ABaseGameMode::OnBlockPlace_Implementation(ABlock *block, AActor *source)
 {
 	if(block->IsA(ABlockEntity::StaticClass()))
 	{
@@ -266,7 +266,7 @@ void ABaseGameMode::OnBlockPlace(ABlock *block, AActor *source)
 	}
 }
 
-void ABaseGameMode::OnBlockDestroy(ABlock *block, AActor *source)
+void ABaseGameMode::OnBlockDestroy_Implementation(ABlock *block, AActor *source)
 {
 	if (block->IsA(ABlockEntity::StaticClass()))
 	{
@@ -280,6 +280,14 @@ void ABaseGameMode::OnBlockDestroy(ABlock *block, AActor *source)
 	{
 		this->m_BlockStructureManager->ProcessDestroy(block);
 	}
+}
+
+void ABaseGameMode::OnBlockPickup_Implementation(class ABlockEntity *block, class APlayerCharacter *player, const int& newCount)
+{
+}
+
+void ABaseGameMode::OnBlockDrop_Implementation(class ABlockEntity *block, class APlayerCharacter *player, const int& newCount)
+{
 }
 
 void ABaseGameMode::RemoveBlockEntities(const int& count)

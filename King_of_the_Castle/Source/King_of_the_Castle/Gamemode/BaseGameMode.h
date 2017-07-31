@@ -25,13 +25,17 @@ public:
 
 	void EndGame(FString message);
 
-	virtual void OnBlockPlace(class ABlock *block, AActor *source);
+	UFUNCTION(BlueprintNativeEvent)
+	void OnBlockPlace(class ABlock *block, AActor *source);
 
-	virtual void OnBlockDestroy(class ABlock *block, AActor *source);
+	UFUNCTION(BlueprintNativeEvent)
+	void OnBlockDestroy(class ABlock *block, AActor *source);
 
-	virtual void OnBlockPickup(class ABlockEntity *block, class APlayerCharacter *player, const int& newCount) { }
+	UFUNCTION(BlueprintNativeEvent)
+	void OnBlockPickup(class ABlockEntity *block, class APlayerCharacter *player, const int& newCount);
 
-	virtual void OnBlockDrop(class ABlockEntity *block, class APlayerCharacter *player, const int& newCount) { }
+	UFUNCTION(BlueprintNativeEvent)
+	void OnBlockDrop(class ABlockEntity *block, class APlayerCharacter *player, const int& newCount);
 
 	virtual APawn* SpawnDefaultPawnFor_Implementation(AController* NewPlayer, class AActor* StartSpot) override;
 

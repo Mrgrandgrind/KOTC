@@ -15,6 +15,10 @@ public:
 
 	void SetCapturing(const bool& capturing, const int& team);
 
+	UFUNCTION(BlueprintNativeEvent)
+	void OnCaptureTick(const int& capturingTeam, const int& owningTeam, const float& capturePercentage,
+		const TArray<class APlayerCharacter*>& players, const float& speedMultiplier);
+
 	UFUNCTION()
 	void OnBeginOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor,
 		UPrimitiveComponent *OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -36,6 +40,8 @@ public:
 	FORCEINLINE const bool& IsBeingCaptured() const { return this->m_bCapturing; }
 
 	FORCEINLINE const int& GetCapturingTeam() const { return this->m_CapturingTeam; }
+
+	FORCEINLINE const TArray<class APlayerCharacter*>& GetPlayers() { return this->m_Players; }
 
 protected:
 	// Set light to represet owning team

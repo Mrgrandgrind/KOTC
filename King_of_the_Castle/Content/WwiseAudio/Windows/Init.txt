@@ -1,3 +1,12 @@
+Switch Group	ID	Name			Wwise Object Path	Notes
+	3865314626	Material			\Default Work Unit\Material	
+
+Switch	ID	Name	Switch Group			Notes
+	427942364	PlasticHeavy	Material			
+	1092019977	PlasticLight	Material			
+	2058049674	Wood	Material			
+	3126687001	Paper	Material			
+
 State Group	ID	Name			Wwise Object Path	Notes
 	3991942870	Music			\Default Work Unit\Music	
 

@@ -43,27 +43,27 @@ void AGMCapturePoints::Tick(float delta)
 	}
 }
 
-void AGMCapturePoints::OnCapturePointEnter(ACapturePoint *point, APlayerCharacter *character)
+void AGMCapturePoints::OnCapturePointEnter_Implementation(ACapturePoint *point, APlayerCharacter *character)
 {
 }
 
-void AGMCapturePoints::OnCapturePointExit(ACapturePoint *point, APlayerCharacter *character)
+void AGMCapturePoints::OnCapturePointExit_Implementation(ACapturePoint *point, APlayerCharacter *character)
 {
 }
 
-void AGMCapturePoints::OnCapturePointCaptureBegin(class ACapturePoint *point, const int& team)
+void AGMCapturePoints::OnCapturePointCaptureBegin_Implementation(class ACapturePoint *point, const int& team)
 {
 	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(
 	//	TEXT("%s is being captured by team %d!"), *point->GetPointName().ToString(), team));
 }
 
-void AGMCapturePoints::OnCapturePointCaptureEnd(class ACapturePoint *point, const int& team)
+void AGMCapturePoints::OnCapturePointCaptureEnd_Implementation(class ACapturePoint *point, const int& team)
 {
 	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(
 	//	TEXT("%s is no longer being captured by team %d!"), *point->GetPointName().ToString(), team));
 }
 
-void AGMCapturePoints::OnCapturePointCaptured(ACapturePoint *point)
+void AGMCapturePoints::OnCapturePointCaptured_Implementation(ACapturePoint *point)
 {
 	int count = ++this->GetCaptureCount(point->GetOwningTeam());
 
@@ -79,7 +79,7 @@ void AGMCapturePoints::OnCapturePointCaptured(ACapturePoint *point)
 	//	TEXT("%s was captured by team %d! They now control %d points!"), *point->GetPointName().ToString(), point->GetOwningTeam(), count));
 }
 
-void AGMCapturePoints::OnCapturePointReleased(ACapturePoint *point)
+void AGMCapturePoints::OnCapturePointReleased_Implementation(ACapturePoint *point)
 {
 	int count = --this->GetCaptureCount(point->GetOwningTeam());
 	this->m_Multiplier[point->GetOwningTeam()] -= point->GetScoreMultiplier();

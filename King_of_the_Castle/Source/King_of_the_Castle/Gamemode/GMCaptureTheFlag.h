@@ -16,13 +16,15 @@ class KING_OF_THE_CASTLE_API AGMCaptureTheFlag : public ABaseGameMode
 public:
 	AGMCaptureTheFlag();
 
-	virtual void OnBlockPlace(class ABlock *block, AActor *source) override;
+	//virtual void OnBlockPlace(class ABlock *block, AActor *source) override;
 
-	virtual void OnBlockDestroy(class ABlock *block, AActor *source) override;
+	void OnBlockPlace_Implementation(class ABlock *block, AActor *source) override;
 
-	virtual void OnBlockPickup(class ABlockEntity *block, class APlayerCharacter *player, const int& newCount) override;
+	void OnBlockDestroy_Implementation(class ABlock *block, AActor *source) override;
 
-	virtual void OnBlockDrop(class ABlockEntity *block, class APlayerCharacter *player, const int& newCount) override;
+	void OnBlockPickup_Implementation(class ABlockEntity *block, class APlayerCharacter *player, const int& newCount) override;
+
+	void OnBlockDrop_Implementation(class ABlockEntity *block, class APlayerCharacter *player, const int& newCount) override;
 
 	virtual FName GetGameModeName() const override { return TEXT("Capture The Flag"); }
 
