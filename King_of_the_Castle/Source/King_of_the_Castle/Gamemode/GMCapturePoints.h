@@ -18,17 +18,23 @@ public:
 
 	virtual void Tick(float delta) override;
 
-	virtual void OnCapturePointEnter(class ACapturePoint *point, class APlayerCharacter *character);
+	UFUNCTION(BlueprintNativeEvent)
+	void OnCapturePointEnter(class ACapturePoint *point, class APlayerCharacter *character);
 
-	virtual void OnCapturePointExit(class ACapturePoint *point, class APlayerCharacter *character);
+	UFUNCTION(BlueprintNativeEvent)
+	void OnCapturePointExit(class ACapturePoint *point, class APlayerCharacter *character);
 
-	virtual void OnCapturePointCaptureBegin(class ACapturePoint *point, const int& team);
+	UFUNCTION(BlueprintNativeEvent)
+	void OnCapturePointCaptureBegin(class ACapturePoint *point, const int& team);
 
-	virtual void OnCapturePointCaptureEnd(class ACapturePoint *point, const int& team);
+	UFUNCTION(BlueprintNativeEvent)
+	void OnCapturePointCaptureEnd(class ACapturePoint *point, const int& team);
 
-	virtual void OnCapturePointCaptured(class ACapturePoint *point);
+	UFUNCTION(BlueprintNativeEvent)
+	void OnCapturePointCaptured(class ACapturePoint *point);
 
-	virtual void OnCapturePointReleased(class ACapturePoint *point);
+	UFUNCTION(BlueprintNativeEvent)
+	void OnCapturePointReleased(class ACapturePoint *point);
 
 	virtual FName GetGameModeName() const override { return TEXT("Capture Points"); }
 

@@ -11,7 +11,7 @@ AGMCaptureTheFlag::AGMCaptureTheFlag() : m_FlagHolderTeam1(nullptr), m_FlagHolde
 {
 }
 
-void AGMCaptureTheFlag::OnBlockPlace(ABlock* block, AActor* source)
+void AGMCaptureTheFlag::OnBlockPlace_Implementation(ABlock* block, AActor* source)
 {
 	Super::OnBlockPlace(block, source);
 
@@ -37,12 +37,12 @@ void AGMCaptureTheFlag::OnBlockPlace(ABlock* block, AActor* source)
 	}
 }
 
-void AGMCaptureTheFlag::OnBlockDestroy(ABlock* block, AActor* source)
+void AGMCaptureTheFlag::OnBlockDestroy_Implementation(ABlock* block, AActor* source)
 {
 	Super::OnBlockDestroy(block, source);
 }
 
-void AGMCaptureTheFlag::OnBlockPickup(ABlockEntity* block, APlayerCharacter* player, const int& newCount)
+void AGMCaptureTheFlag::OnBlockPickup_Implementation(ABlockEntity* block, APlayerCharacter* player, const int& newCount)
 {
 	Super::OnBlockPickup(block, player, newCount);
 
@@ -64,7 +64,7 @@ void AGMCaptureTheFlag::OnBlockPickup(ABlockEntity* block, APlayerCharacter* pla
 	}
 }
 
-void AGMCaptureTheFlag::OnBlockDrop(ABlockEntity* block, APlayerCharacter* player, const int& newCount)
+void AGMCaptureTheFlag::OnBlockDrop_Implementation(ABlockEntity* block, APlayerCharacter* player, const int& newCount)
 {
 	Super::OnBlockDrop(block, player, newCount);
 
