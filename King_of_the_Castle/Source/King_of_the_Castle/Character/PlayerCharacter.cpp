@@ -470,10 +470,14 @@ void APlayerCharacter::AttackLower()
 	FVector origin, extent;
 	Super::GetActorBounds(true, origin, extent);
 
-	FVector start = Super::GetActorLocation() - extent.Z / 2.0f, end = start - FVector(0.0f, 0.0f, 500.0f);
+	FVector start = Super::GetActorLocation() - FVector(0.0f, 0.0f, extent.Z / 2.0f), 
+		end = start - FVector(0.0f, 0.0f, 500.0f);
+
+	FCollisionQueryParams params;
+	params.AddIgnoredActor(this);
 
 	FHitResult result;
-	Super::GetWorld()->LineTraceSingleByChannel(result, start, end, ECollisionChannel::ECC_WorldDynamic);
+	Super::GetWorld()->LineTraceSingleByChannel(result, start, end, ECollisionChannel::ECC_WorldDynamic, params);
 
 	if (!result.IsValidBlockingHit())
 	{

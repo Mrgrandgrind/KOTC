@@ -16,7 +16,7 @@ UScoresOverlayComponent::UScoresOverlayComponent()
 	this->m_TitleTextColor = TITLE_COLOR;
 
 	this->m_BarAlpha = 0.75f;
-	this->m_BarMoveSpeed = 17.5f;
+	this->m_BarMoveSpeed = 125.0f;
 
 	this->m_GoalLineHeight = 1.3f;
 	this->m_GoalHeightOffset = 20.0f;
@@ -137,7 +137,7 @@ void UScoresOverlayComponent::Render(class AGameHUD *hud, const FVector2D& origi
 		color.A = this->m_BarAlpha;
 
 		//int score = (1.0f - float(i) / gamemode->GetTeamCount()) * gamemode->GetWinScore(); // (gamemode->GetScore(i + 1) / gamemode->GetWinScore());
-		int score = gamemode->GetScore(i + 1);
+		float score = float(gamemode->GetScore(i + 1));
 		score = FMath::FInterpConstantTo(this->m_Scores[i], score, hud->GetWorld()->GetDeltaSeconds(), this->m_BarMoveSpeed);
 		this->m_Scores[i] = score;
 
@@ -151,5 +151,4 @@ void UScoresOverlayComponent::Render(class AGameHUD *hud, const FVector2D& origi
 		hud->GetTextSize(teamText, width, height, hud->GetFont(), 0.38f * scale);
 		hud->DrawText(teamText, this->m_GoalColor, x + barSize / 2.0f - width / 2.0f, y + axisSize * 1.5f, hud->GetFont(), 0.38f * scale);
 	}
-	// Sir Meyer
 }
