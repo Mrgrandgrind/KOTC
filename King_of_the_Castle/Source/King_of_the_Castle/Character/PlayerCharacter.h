@@ -73,8 +73,12 @@ public:
 
 	virtual void CheckAttackCollision(UCapsuleComponent *capsule, const float& damageMultiplier = 1.0f);
 
+	UFUNCTION(BlueprintNativeEvent)
+	void OnAttacked(AActor *other, const float& damage);
+
 	// Stun the player. You can set the duration (-1 = default) and whether or not to regenerate health to full after stun.
-	void Stun(const float& duration = -1, const bool& regen = false, const bool& respawn = false);
+	UFUNCTION(BlueprintNativeEvent)
+	void OnStunned(const float& duration, bool regen, bool respawn);
 
 	//damage handling
 	UFUNCTION(BlueprintCallable, Category = "Combat")

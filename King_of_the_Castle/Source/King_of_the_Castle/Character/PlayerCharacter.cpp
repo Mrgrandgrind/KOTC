@@ -540,7 +540,7 @@ void APlayerCharacter::CheckAttackCollision(UCapsuleComponent *capsule, const fl
 	}
 }
 
-void APlayerCharacter::Stun(const float& duration, const bool& regen, const bool& respawn)
+void APlayerCharacter::OnStunned_Implementation(const float& duration, bool regen, bool respawn)
 {
 	// Don't stun if already stunned
 	if (this->m_bIsStunned)
@@ -580,15 +580,21 @@ void APlayerCharacter::Stun(const float& duration, const bool& regen, const bool
 	}), duration <= 0.0f ? this->m_StunDelay : duration, false);
 }
 
+void APlayerCharacter::OnAttacked_Implementation(AActor *other, const float& damage)
+{
+}
+
 float APlayerCharacter::TakeDamage(float damageAmount, FDamageEvent const& damageEvent,
 	AController *eventInstigator, AActor *damageCauser)
 {
 	if (!this->m_bIsStunned)
 	{
 		this->SetHealth(this->m_Health - damageAmount);
+		this->OnAttacked(damageCauser, damageAmount);
+
 		if (this->m_Health <= 0.0f)
 		{
-			this->Stun(this->m_StunDelay, true, true);
+			this->OnStunned(this->m_StunDelay, true, true);
 		}
 	}
 	return damageAmount;

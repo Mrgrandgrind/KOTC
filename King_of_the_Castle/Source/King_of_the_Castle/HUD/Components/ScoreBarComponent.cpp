@@ -6,20 +6,20 @@
 #include "Character/PlayerCharacter.h"
 #include "Gamemode/GMCapturePoints.h"
 
-#define IP_TIME_TEXT_COLOR FLinearColor(0.9f, 0.9f, 0.9f, 0.9f)
-#define IP_TIME_BOX_COLOR FLinearColor(0.05f, 0.05f, 0.05f, 0.8f)
-#define IP_BAR_TEXT_COLOR FLinearColor(0.9f, 0.9f, 0.9f, 0.9f)
+#define IP_TIME_TEXT_COLOR FLinearColor(0.9f, 0.9f, 0.9f, 0.8f)
+#define IP_TIME_BOX_COLOR FLinearColor(0.05f, 0.05f, 0.05f, 0.75f)
+#define IP_BAR_TEXT_COLOR FLinearColor(0.9f, 0.9f, 0.9f, 0.8f)
 
 UScoreBarComponent::UScoreBarComponent()
 {
 	this->m_TimeTextScale = 0.5f;
 	this->m_TimeTextColor = IP_TIME_TEXT_COLOR;
-	this->m_TimeBoxScale = 1.25f;
+	this->m_TimeBoxScale = 1.2f;
 	this->m_TimeBoxColor = IP_TIME_BOX_COLOR;
 	this->m_bRenderTime = true;
 
-	this->m_BarWidth = 250.0f;
-	this->m_BarHeight = 20.0f;
+	this->m_BarWidth = 225.0f;
+	this->m_BarHeight = 16.0f;
 	this->m_BarAlpha = 0.5f;
 	this->m_BarMoveSpeed = 1.0f;
 	this->m_BarTextScale = 0.6f;
