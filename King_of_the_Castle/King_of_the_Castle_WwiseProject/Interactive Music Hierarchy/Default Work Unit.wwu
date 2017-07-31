@@ -43,6 +43,7 @@
 								<MusicSegment Name="Level 1" ID="{94A62D8D-E4CD-437F-82CD-717E0D208A10}" ShortID="392068355">
 									<PropertyList>
 										<Property Name="EndPosition" Type="Real64" Value="22592.6666666667"/>
+										<Property Name="OverrideEffect" Type="bool" Value="True"/>
 									</PropertyList>
 									<ReferenceList>
 										<Reference Name="Conversion">

@@ -3,13 +3,48 @@
 	<Switches>
 		<WorkUnit Name="Default Work Unit" ID="{5E8E9BFC-22C2-4DAB-AE7E-0A31E555C32C}" PersistMode="Standalone">
 			<ChildrenList>
-				<SwitchGroup Name="Surface" ID="{E9BD4090-3758-4344-B1BF-12BB8551961C}">
+				<SwitchGroup Name="Material" ID="{E9BD4090-3758-4344-B1BF-12BB8551961C}">
 					<ChildrenList>
 						<Switch Name="Wood" ID="{EEA62EB5-CA73-4876-A5C6-DAFE3EF34BF7}"/>
 						<Switch Name="Paper" ID="{068CC944-F462-4D09-8625-C5FC39386DE3}"/>
 						<Switch Name="PlasticLight" ID="{FFD3BEF5-CC16-4ACB-8655-FAE810969807}"/>
 						<Switch Name="PlasticHeavy" ID="{07DE4BD4-EE9F-4B17-943A-5528F46B5EF8}"/>
 					</ChildrenList>
+					<SwitchOnRTPC>
+						<GameParameterRef Name="Material" ID="{511A41DC-6D4C-4EDB-94B5-6B183C40F979}"/>
+						<Curve Name="" ID="{65608C26-EA43-42DC-8138-98094DAC9946}">
+							<PropertyList>
+								<Property Name="Flags" Type="int32" Value="65537"/>
+							</PropertyList>
+							<PointList>
+								<Point>
+									<XPos>0</XPos>
+									<YPos>1</YPos>
+									<Flags>5</Flags>
+								</Point>
+								<Point>
+									<XPos>25.50676</XPos>
+									<YPos>2</YPos>
+									<Flags>0</Flags>
+								</Point>
+								<Point>
+									<XPos>50.33784</XPos>
+									<YPos>3</YPos>
+									<Flags>0</Flags>
+								</Point>
+								<Point>
+									<XPos>75.16892</XPos>
+									<YPos>4</YPos>
+									<Flags>0</Flags>
+								</Point>
+								<Point>
+									<XPos>100</XPos>
+									<YPos>0</YPos>
+									<Flags>37</Flags>
+								</Point>
+							</PointList>
+						</Curve>
+					</SwitchOnRTPC>
 				</SwitchGroup>
 			</ChildrenList>
 		</WorkUnit>

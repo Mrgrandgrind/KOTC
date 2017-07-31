@@ -18,6 +18,9 @@
 						<Property Name="InitialValue" Type="Real64" Value="0"/>
 					</PropertyList>
 				</GameParameter>
+				<GameParameter Name="Material" ID="{511A41DC-6D4C-4EDB-94B5-6B183C40F979}"/>
+				<GameParameter Name="Players_Capturing" ID="{409E353A-43CC-4EFC-A9F0-9D63FFB3B607}"/>
+				<GameParameter Name="Vol_Start" ID="{EF35A9A3-5ADA-4FFF-A678-AA0A4208072E}"/>
 			</ChildrenList>
 		</WorkUnit>
 	</GameParameters>
