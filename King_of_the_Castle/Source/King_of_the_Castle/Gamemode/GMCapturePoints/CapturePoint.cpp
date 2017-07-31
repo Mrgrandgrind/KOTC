@@ -103,6 +103,11 @@ void ACapturePoint::UpdateSignalLight()
 	this->m_SignalLight->SetLightColor(gamemode->GetTeamColor(this->m_OwningTeam));
 }
 
+void ACapturePoint::OnCaptureTick_Implementation(const int& capturingTeam, const int& owningTeam, const float& capturePercentage,
+	const TArray<class APlayerCharacter*>& players, const float& speedMultiplier)
+{
+}
+
 void ACapturePoint::Tick(float delta)
 {
 	Super::Tick(delta);
@@ -125,7 +130,11 @@ void ACapturePoint::Tick(float delta)
 	{
 		return;
 	}
-	this->m_CaptureCounter += delta * (gamemode->IsSpeedDependantOnMembers() ? this->m_Players.Num() : 1.0f);
+	float speed = gamemode->IsSpeedDependantOnMembers() ? this->m_Players.Num() : 1.0f;
+	this->m_CaptureCounter += speed * delta;
+
+	this->OnCaptureTick(this->m_CapturingTeam, this->m_OwningTeam, FMath::Min(1.0f, 
+		this->m_CaptureCounter / gamemode->GetCaptureDuration()), this->m_Players, speed);
 
 	if (this->m_CaptureCounter >= gamemode->GetCaptureDuration())
 	{
