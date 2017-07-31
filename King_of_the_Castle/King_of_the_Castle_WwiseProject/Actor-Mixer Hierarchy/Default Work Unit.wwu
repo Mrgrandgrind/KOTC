@@ -74,7 +74,7 @@
 															</Point>
 															<Point>
 																<XPos>100</XPos>
-																<YPos>-0.05</YPos>
+																<YPos>-0.04</YPos>
 																<Flags>37</Flags>
 															</Point>
 														</PointList>
@@ -405,7 +405,7 @@
 															</Point>
 															<Point>
 																<XPos>100</XPos>
-																<YPos>-4.99999999999972E-02</YPos>
+																<YPos>-0.04</YPos>
 																<Flags>37</Flags>
 															</Point>
 														</PointList>
@@ -427,9 +427,6 @@
 										</Reference>
 										<Reference Name="Effect0" PluginName="Wwise Parametric EQ" CompanyID="0" PluginID="105" PluginType="3">
 											<ObjectRef Name="High_Pass_60Hz" ID="{F9627628-0B10-4272-BC30-D4C20423CB38}" WorkUnitID="{E8613F7D-BAD3-45CD-A3ED-505576F31277}"/>
-										</Reference>
-										<Reference Name="Effect1" PluginName="Wwise Matrix Reverb" CompanyID="0" PluginID="115" PluginType="3">
-											<ObjectRef Name="Big_Garage1" ID="{172402A8-22F4-40FC-BE1D-5269594CB633}" WorkUnitID="{E8613F7D-BAD3-45CD-A3ED-505576F31277}"/>
 										</Reference>
 										<Reference Name="OutputBus">
 											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
@@ -714,12 +711,12 @@
 														<PointList>
 															<Point>
 																<XPos>0</XPos>
-																<YPos>0.100000000000001</YPos>
+																<YPos>0.07</YPos>
 																<Flags>5</Flags>
 															</Point>
 															<Point>
 																<XPos>100</XPos>
-																<YPos>-4.99999999999972E-02</YPos>
+																<YPos>-0.04</YPos>
 																<Flags>37</Flags>
 															</Point>
 														</PointList>
@@ -1035,12 +1032,12 @@
 														<PointList>
 															<Point>
 																<XPos>0</XPos>
-																<YPos>0.100000000000001</YPos>
+																<YPos>0.07</YPos>
 																<Flags>5</Flags>
 															</Point>
 															<Point>
 																<XPos>100</XPos>
-																<YPos>-4.99999999999972E-02</YPos>
+																<YPos>-0.04</YPos>
 																<Flags>37</Flags>
 															</Point>
 														</PointList>
@@ -1687,9 +1684,6 @@
 												</Effect>
 											</Custom>
 										</Reference>
-										<Reference Name="Effect1" PluginName="Wwise Matrix Reverb" CompanyID="0" PluginID="115" PluginType="3">
-											<ObjectRef Name="Tunnel1" ID="{CC44B890-9865-4157-965F-86FED27BC4C6}" WorkUnitID="{E8613F7D-BAD3-45CD-A3ED-505576F31277}"/>
-										</Reference>
 										<Reference Name="OutputBus">
 											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
 										</Reference>
@@ -1756,8 +1750,8 @@
 								</RandomSequenceContainer>
 							</ChildrenList>
 							<GroupingInfo>
-								<GroupRef Name="" ID="{00000000-0000-0000-0000-000000000000}"/>
-								<DefaultSwitchRef Name="" ID="{00000000-0000-0000-0000-000000000000}"/>
+								<GroupRef Name="SurfaceSound" ID="{7616E42F-3188-4C10-9751-ED9216D96115}"/>
+								<DefaultSwitchRef Name="Wood" ID="{824DD01B-3578-4D53-8FA0-36CE99535B3A}"/>
 								<GroupingBehaviorList>
 									<GroupingBehavior>
 										<ItemRef Name="PlasticLight" ID="{988E786A-C55D-4EC6-8C0D-3F5F178FB5B8}"/>
@@ -1772,6 +1766,32 @@
 										<ItemRef Name="Paper" ID="{BBD9BFE6-592D-460E-A7F8-27709617D6C0}"/>
 									</GroupingBehavior>
 								</GroupingBehaviorList>
+								<GroupingList>
+									<Grouping>
+										<SwitchRef Name="Wood" ID="{824DD01B-3578-4D53-8FA0-36CE99535B3A}"/>
+										<ItemList>
+											<ItemRef Name="Wood" ID="{ED15716F-1074-4AE9-8C43-BBBA0CFAF245}"/>
+										</ItemList>
+									</Grouping>
+									<Grouping>
+										<SwitchRef Name="Paper" ID="{B629996A-82F6-4B56-93EB-F85A9671303D}"/>
+										<ItemList>
+											<ItemRef Name="Paper" ID="{BBD9BFE6-592D-460E-A7F8-27709617D6C0}"/>
+										</ItemList>
+									</Grouping>
+									<Grouping>
+										<SwitchRef Name="PlasticHeavy" ID="{BA6DE582-6DDC-4BE9-91BD-C814C409070F}"/>
+										<ItemList>
+											<ItemRef Name="PlasticHeavy" ID="{07D780CE-8B8E-4512-A7E2-9F6257A7D44B}"/>
+										</ItemList>
+									</Grouping>
+									<Grouping>
+										<SwitchRef Name="PlasticLight" ID="{656D1CE4-D25C-44A1-8B29-60228D5D55EC}"/>
+										<ItemList>
+											<ItemRef Name="PlasticLight" ID="{988E786A-C55D-4EC6-8C0D-3F5F178FB5B8}"/>
+										</ItemList>
+									</Grouping>
+								</GroupingList>
 							</GroupingInfo>
 						</SwitchContainer>
 						<ActorMixer Name="Movement" ID="{CE442AB0-0340-48DA-A6A1-DBBB1274C0D9}" ShortID="275753082">
@@ -1826,6 +1846,7 @@
 												<Value>4</Value>
 											</ValueList>
 										</Property>
+										<Property Name="OverrideEffect" Type="bool" Value="True"/>
 										<Property Name="Pitch" Type="int32">
 											<ModifierList>
 												<ModifierInfo>
@@ -1912,6 +1933,16 @@
 									<ReferenceList>
 										<Reference Name="Conversion">
 											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
+										</Reference>
+										<Reference Name="Effect0">
+											<Custom>
+												<Effect Name="Wwise Parametric EQ (Custom)" ID="{3AD762C3-CF8A-47A5-9E62-55D04A7B06C7}" ShortID="175320416" PluginName="Wwise Parametric EQ" CompanyID="0" PluginID="105" PluginType="3">
+													<PropertyList>
+														<Property Name="FrequencyBand2" Type="Real32" Value="2364"/>
+														<Property Name="GainBand2" Type="Real32" Value="-3"/>
+													</PropertyList>
+												</Effect>
+											</Custom>
 										</Reference>
 										<Reference Name="OutputBus">
 											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
@@ -2837,8 +2868,8 @@
 								</RandomSequenceContainer>
 							</ChildrenList>
 							<GroupingInfo>
-								<GroupRef Name="" ID="{00000000-0000-0000-0000-000000000000}"/>
-								<DefaultSwitchRef Name="" ID="{00000000-0000-0000-0000-000000000000}"/>
+								<GroupRef Name="SurfaceSound" ID="{7616E42F-3188-4C10-9751-ED9216D96115}"/>
+								<DefaultSwitchRef Name="Wood" ID="{824DD01B-3578-4D53-8FA0-36CE99535B3A}"/>
 								<GroupingBehaviorList>
 									<GroupingBehavior>
 										<ItemRef Name="Wood" ID="{00D47C2D-04D2-4FF9-85F5-94EF2F94F644}"/>
@@ -2853,6 +2884,32 @@
 										<ItemRef Name="PlasticLight" ID="{83C51FC6-BB82-4132-8B0C-E9ADDF6B2A32}"/>
 									</GroupingBehavior>
 								</GroupingBehaviorList>
+								<GroupingList>
+									<Grouping>
+										<SwitchRef Name="Wood" ID="{824DD01B-3578-4D53-8FA0-36CE99535B3A}"/>
+										<ItemList>
+											<ItemRef Name="Wood" ID="{00D47C2D-04D2-4FF9-85F5-94EF2F94F644}"/>
+										</ItemList>
+									</Grouping>
+									<Grouping>
+										<SwitchRef Name="Paper" ID="{B629996A-82F6-4B56-93EB-F85A9671303D}"/>
+										<ItemList>
+											<ItemRef Name="Paper" ID="{1E4BF8BB-594D-4D94-B8A0-FAD3BDEA76A2}"/>
+										</ItemList>
+									</Grouping>
+									<Grouping>
+										<SwitchRef Name="PlasticHeavy" ID="{BA6DE582-6DDC-4BE9-91BD-C814C409070F}"/>
+										<ItemList>
+											<ItemRef Name="PlasticHeavy" ID="{E0477997-3F52-4256-BEA5-A043C293DCD1}"/>
+										</ItemList>
+									</Grouping>
+									<Grouping>
+										<SwitchRef Name="PlasticLight" ID="{656D1CE4-D25C-44A1-8B29-60228D5D55EC}"/>
+										<ItemList>
+											<ItemRef Name="PlasticLight" ID="{83C51FC6-BB82-4132-8B0C-E9ADDF6B2A32}"/>
+										</ItemList>
+									</Grouping>
+								</GroupingList>
 							</GroupingInfo>
 						</SwitchContainer>
 					</ChildrenList>

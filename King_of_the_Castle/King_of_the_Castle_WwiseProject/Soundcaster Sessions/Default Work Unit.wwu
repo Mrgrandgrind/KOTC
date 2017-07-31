@@ -61,7 +61,7 @@
 						</RTPCValue>
 						<RTPCValue>
 							<GameParameterRef Name="PlayerSpeed" ID="{D7A9068C-62E3-4F14-BEB0-87E2D147EE81}"/>
-							<Value>0</Value>
+							<Value>7.67543859649123</Value>
 						</RTPCValue>
 						<RTPCValue>
 							<GameParameterRef Name="Vol_Start" ID="{EF35A9A3-5ADA-4FFF-A678-AA0A4208072E}"/>
@@ -69,10 +69,10 @@
 						</RTPCValue>
 					</RTPCValueList>
 					<CurrentStateList ShowAll="true">
-						<CurrentStateRef Name="Level_1" ID="{4BA60DF8-6001-49C4-A920-98ABEBC94510}"/>
+						<CurrentStateRef Name="Level_2" ID="{A7E6AE57-8FEB-4076-9444-F642E4D5B1D9}"/>
 					</CurrentStateList>
 					<CurrentSwitchList ShowAll="true">
-						<CurrentSwitchRef Name="PlasticLight" ID="{656D1CE4-D25C-44A1-8B29-60228D5D55EC}"/>
+						<CurrentSwitchRef Name="Wood" ID="{824DD01B-3578-4D53-8FA0-36CE99535B3A}"/>
 					</CurrentSwitchList>
 				</SoundcasterSession>
 			</ChildrenList>
