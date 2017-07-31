@@ -229,17 +229,6 @@
 								</Action>
 							</ChildrenList>
 						</Event>
-						<Event Name="fs_plastic_heavy" ID="{25E7061A-6501-4F2E-A2DE-D4CBD735B57C}">
-							<ChildrenList>
-								<Action Name="Play" ID="{BAFA3F7B-E6AF-4BAD-81F4-8B757ADFB0BD}" ShortID="920227838" Type="Play" Scope="One" Global="false">
-									<ElementList>
-										<Element ID="{DF036830-E7D8-411D-A013-028B69BC5AA1}" Global="false">
-											<ObjectRef Name="PlasticHeavy" ID="{FBE56D37-9E20-43C3-BCA7-BAD0B1D084C5}" WorkUnitID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}"/>
-										</Element>
-									</ElementList>
-								</Action>
-							</ChildrenList>
-						</Event>
 					</ChildrenList>
 				</Folder>
 			</ChildrenList>

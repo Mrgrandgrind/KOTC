@@ -22,17 +22,11 @@
 					<ChildrenList>
 						<SwitchContainer Name="Footstep" ID="{545CA7A5-5695-48E9-B228-E709D97B1717}" ShortID="619903524">
 							<PropertyList>
-								<Property Name="IgnoreParentMaxSoundInstance" Type="bool" Value="True"/>
 								<Property Name="IsGlobalLimit" Type="int16" Value="1"/>
 								<Property Name="MaxReachedBehavior" Type="int16" Value="1"/>
 								<Property Name="MaxSoundPerInstance" Type="int16">
 									<ValueList>
 										<Value>4</Value>
-									</ValueList>
-								</Property>
-								<Property Name="UseMaxSoundPerInstance" Type="bool">
-									<ValueList>
-										<Value>True</Value>
 									</ValueList>
 								</Property>
 								<Property Name="Volume" Type="Real64">
@@ -1344,8 +1338,8 @@
 								</RandomSequenceContainer>
 							</ChildrenList>
 							<GroupingInfo>
-								<GroupRef Name="Material" ID="{E9BD4090-3758-4344-B1BF-12BB8551961C}"/>
-								<DefaultSwitchRef Name="Wood" ID="{EEA62EB5-CA73-4876-A5C6-DAFE3EF34BF7}"/>
+								<GroupRef Name="SurfaceSound" ID="{7616E42F-3188-4C10-9751-ED9216D96115}"/>
+								<DefaultSwitchRef Name="Wood" ID="{824DD01B-3578-4D53-8FA0-36CE99535B3A}"/>
 								<GroupingBehaviorList>
 									<GroupingBehavior>
 										<ItemRef Name="Paper" ID="{94618D27-B959-481D-8D4F-75F57A25695E}"/>
@@ -1362,25 +1356,25 @@
 								</GroupingBehaviorList>
 								<GroupingList>
 									<Grouping>
-										<SwitchRef Name="Paper" ID="{068CC944-F462-4D09-8625-C5FC39386DE3}"/>
-										<ItemList>
-											<ItemRef Name="Paper" ID="{94618D27-B959-481D-8D4F-75F57A25695E}"/>
-										</ItemList>
-									</Grouping>
-									<Grouping>
-										<SwitchRef Name="Wood" ID="{EEA62EB5-CA73-4876-A5C6-DAFE3EF34BF7}"/>
+										<SwitchRef Name="Wood" ID="{824DD01B-3578-4D53-8FA0-36CE99535B3A}"/>
 										<ItemList>
 											<ItemRef Name="Wood" ID="{A43CF48A-3C58-498C-AFDA-C02FCC8E410E}"/>
 										</ItemList>
 									</Grouping>
 									<Grouping>
-										<SwitchRef Name="PlasticHeavy" ID="{07DE4BD4-EE9F-4B17-943A-5528F46B5EF8}"/>
+										<SwitchRef Name="Paper" ID="{B629996A-82F6-4B56-93EB-F85A9671303D}"/>
+										<ItemList>
+											<ItemRef Name="Paper" ID="{94618D27-B959-481D-8D4F-75F57A25695E}"/>
+										</ItemList>
+									</Grouping>
+									<Grouping>
+										<SwitchRef Name="PlasticHeavy" ID="{BA6DE582-6DDC-4BE9-91BD-C814C409070F}"/>
 										<ItemList>
 											<ItemRef Name="PlasticHeavy" ID="{FBE56D37-9E20-43C3-BCA7-BAD0B1D084C5}"/>
 										</ItemList>
 									</Grouping>
 									<Grouping>
-										<SwitchRef Name="PlasticLight" ID="{FFD3BEF5-CC16-4ACB-8655-FAE810969807}"/>
+										<SwitchRef Name="PlasticLight" ID="{656D1CE4-D25C-44A1-8B29-60228D5D55EC}"/>
 										<ItemList>
 											<ItemRef Name="PlasticLight" ID="{A5331DCA-7D9E-43DE-AB73-9111A1B99107}"/>
 										</ItemList>
@@ -1762,8 +1756,8 @@
 								</RandomSequenceContainer>
 							</ChildrenList>
 							<GroupingInfo>
-								<GroupRef Name="Material" ID="{E9BD4090-3758-4344-B1BF-12BB8551961C}"/>
-								<DefaultSwitchRef Name="Wood" ID="{EEA62EB5-CA73-4876-A5C6-DAFE3EF34BF7}"/>
+								<GroupRef Name="" ID="{00000000-0000-0000-0000-000000000000}"/>
+								<DefaultSwitchRef Name="" ID="{00000000-0000-0000-0000-000000000000}"/>
 								<GroupingBehaviorList>
 									<GroupingBehavior>
 										<ItemRef Name="PlasticLight" ID="{988E786A-C55D-4EC6-8C0D-3F5F178FB5B8}"/>
@@ -1778,32 +1772,6 @@
 										<ItemRef Name="Paper" ID="{BBD9BFE6-592D-460E-A7F8-27709617D6C0}"/>
 									</GroupingBehavior>
 								</GroupingBehaviorList>
-								<GroupingList>
-									<Grouping>
-										<SwitchRef Name="Paper" ID="{068CC944-F462-4D09-8625-C5FC39386DE3}"/>
-										<ItemList>
-											<ItemRef Name="Paper" ID="{BBD9BFE6-592D-460E-A7F8-27709617D6C0}"/>
-										</ItemList>
-									</Grouping>
-									<Grouping>
-										<SwitchRef Name="Wood" ID="{EEA62EB5-CA73-4876-A5C6-DAFE3EF34BF7}"/>
-										<ItemList>
-											<ItemRef Name="Wood" ID="{ED15716F-1074-4AE9-8C43-BBBA0CFAF245}"/>
-										</ItemList>
-									</Grouping>
-									<Grouping>
-										<SwitchRef Name="PlasticHeavy" ID="{07DE4BD4-EE9F-4B17-943A-5528F46B5EF8}"/>
-										<ItemList>
-											<ItemRef Name="PlasticHeavy" ID="{07D780CE-8B8E-4512-A7E2-9F6257A7D44B}"/>
-										</ItemList>
-									</Grouping>
-									<Grouping>
-										<SwitchRef Name="PlasticLight" ID="{FFD3BEF5-CC16-4ACB-8655-FAE810969807}"/>
-										<ItemList>
-											<ItemRef Name="PlasticLight" ID="{988E786A-C55D-4EC6-8C0D-3F5F178FB5B8}"/>
-										</ItemList>
-									</Grouping>
-								</GroupingList>
 							</GroupingInfo>
 						</SwitchContainer>
 						<ActorMixer Name="Movement" ID="{CE442AB0-0340-48DA-A6A1-DBBB1274C0D9}" ShortID="275753082">
@@ -2869,8 +2837,8 @@
 								</RandomSequenceContainer>
 							</ChildrenList>
 							<GroupingInfo>
-								<GroupRef Name="Material" ID="{E9BD4090-3758-4344-B1BF-12BB8551961C}"/>
-								<DefaultSwitchRef Name="Wood" ID="{EEA62EB5-CA73-4876-A5C6-DAFE3EF34BF7}"/>
+								<GroupRef Name="" ID="{00000000-0000-0000-0000-000000000000}"/>
+								<DefaultSwitchRef Name="" ID="{00000000-0000-0000-0000-000000000000}"/>
 								<GroupingBehaviorList>
 									<GroupingBehavior>
 										<ItemRef Name="Wood" ID="{00D47C2D-04D2-4FF9-85F5-94EF2F94F644}"/>
@@ -2885,32 +2853,6 @@
 										<ItemRef Name="PlasticLight" ID="{83C51FC6-BB82-4132-8B0C-E9ADDF6B2A32}"/>
 									</GroupingBehavior>
 								</GroupingBehaviorList>
-								<GroupingList>
-									<Grouping>
-										<SwitchRef Name="Paper" ID="{068CC944-F462-4D09-8625-C5FC39386DE3}"/>
-										<ItemList>
-											<ItemRef Name="Paper" ID="{1E4BF8BB-594D-4D94-B8A0-FAD3BDEA76A2}"/>
-										</ItemList>
-									</Grouping>
-									<Grouping>
-										<SwitchRef Name="Wood" ID="{EEA62EB5-CA73-4876-A5C6-DAFE3EF34BF7}"/>
-										<ItemList>
-											<ItemRef Name="Wood" ID="{00D47C2D-04D2-4FF9-85F5-94EF2F94F644}"/>
-										</ItemList>
-									</Grouping>
-									<Grouping>
-										<SwitchRef Name="PlasticHeavy" ID="{07DE4BD4-EE9F-4B17-943A-5528F46B5EF8}"/>
-										<ItemList>
-											<ItemRef Name="PlasticHeavy" ID="{E0477997-3F52-4256-BEA5-A043C293DCD1}"/>
-										</ItemList>
-									</Grouping>
-									<Grouping>
-										<SwitchRef Name="PlasticLight" ID="{FFD3BEF5-CC16-4ACB-8655-FAE810969807}"/>
-										<ItemList>
-											<ItemRef Name="PlasticLight" ID="{83C51FC6-BB82-4132-8B0C-E9ADDF6B2A32}"/>
-										</ItemList>
-									</Grouping>
-								</GroupingList>
 							</GroupingInfo>
 						</SwitchContainer>
 					</ChildrenList>

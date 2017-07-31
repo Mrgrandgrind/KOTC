@@ -57,7 +57,7 @@
 						</RTPCValue>
 						<RTPCValue>
 							<GameParameterRef Name="Players_Capturing" ID="{409E353A-43CC-4EFC-A9F0-9D63FFB3B607}"/>
-							<Value>100</Value>
+							<Value>0</Value>
 						</RTPCValue>
 						<RTPCValue>
 							<GameParameterRef Name="PlayerSpeed" ID="{D7A9068C-62E3-4F14-BEB0-87E2D147EE81}"/>
@@ -72,7 +72,7 @@
 						<CurrentStateRef Name="Level_1" ID="{4BA60DF8-6001-49C4-A920-98ABEBC94510}"/>
 					</CurrentStateList>
 					<CurrentSwitchList ShowAll="true">
-						<CurrentSwitchRef Name="PlasticHeavy" ID="{07DE4BD4-EE9F-4B17-943A-5528F46B5EF8}"/>
+						<CurrentSwitchRef Name="PlasticLight" ID="{656D1CE4-D25C-44A1-8B29-60228D5D55EC}"/>
 					</CurrentSwitchList>
 				</SoundcasterSession>
 			</ChildrenList>
