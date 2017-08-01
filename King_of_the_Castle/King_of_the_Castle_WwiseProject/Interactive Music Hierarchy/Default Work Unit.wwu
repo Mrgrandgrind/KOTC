@@ -5,6 +5,13 @@
 			<ChildrenList>
 				<MusicSwitchContainer Name="Level" ID="{0EB396A7-0F2B-4887-83BA-3EA173BB6D63}" ShortID="915091250">
 					<PropertyList>
+						<Property Name="Lowpass" Type="int16">
+							<ModifierList>
+								<ModifierInfo>
+									<Modifier Name="" ID="{166A191C-A793-480A-B7FE-EB85AF203603}"/>
+								</ModifierInfo>
+							</ModifierList>
+						</Property>
 						<Property Name="Volume" Type="Real64">
 							<ValueList>
 								<Value>-20</Value>
@@ -2384,6 +2391,13 @@
 				<MusicSegment Name="Timpani Roll" ID="{48AACBBA-8E6F-4CD6-BEC1-7D7C3A826C6A}" ShortID="835395647">
 					<PropertyList>
 						<Property Name="EndPosition" Type="Real64" Value="7006.33333333333"/>
+						<Property Name="Lowpass" Type="int16">
+							<ModifierList>
+								<ModifierInfo>
+									<Modifier Name="" ID="{B90E9BEB-A811-4646-9C92-4F3C8126F310}"/>
+								</ModifierInfo>
+							</ModifierList>
+						</Property>
 						<Property Name="MaxSoundPerInstance" Type="int16">
 							<ValueList>
 								<Value>1</Value>
@@ -2396,7 +2410,7 @@
 						</Property>
 						<Property Name="Volume" Type="Real64">
 							<ValueList>
-								<Value>-4</Value>
+								<Value>-14</Value>
 							</ValueList>
 						</Property>
 					</PropertyList>

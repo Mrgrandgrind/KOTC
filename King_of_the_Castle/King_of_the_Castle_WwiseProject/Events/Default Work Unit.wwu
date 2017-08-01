@@ -212,7 +212,7 @@
 								<Action Name="Play" ID="{CCB0D671-08FA-4B5C-96C5-AF7E843B3782}" ShortID="43560275" Type="Play" Scope="One" Global="false">
 									<ElementList>
 										<Element ID="{4E9F3D4B-79CC-429D-BFCB-A163E984D020}" Global="false">
-											<ObjectRef Name="Base Capturing" ID="{6D19826F-A7F3-4B68-A9D4-EB3FA3FB7E4F}" WorkUnitID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}"/>
+											<ObjectRef Name="Capturing" ID="{7FC6B43C-81EE-4D6F-9098-69A6468EAB75}" WorkUnitID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}"/>
 										</Element>
 									</ElementList>
 								</Action>
@@ -223,7 +223,7 @@
 								<Action Name="Play" ID="{7E102DAC-5FF6-4E53-A91C-C8EF4C7FC1A8}" ShortID="658594045" Type="Play" Scope="One" Global="false">
 									<ElementList>
 										<Element ID="{79BA232A-5519-4535-BEBA-6B71A5C9A3D3}" Global="false">
-											<ObjectRef Name="Base Captured" ID="{709211A2-7459-4B7F-BF3A-16C10FF0C1A1}" WorkUnitID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}"/>
+											<ObjectRef Name="Captured" ID="{2CC0FCE6-4FE3-42A1-B20B-EC5B2DF74661}" WorkUnitID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}"/>
 										</Element>
 									</ElementList>
 								</Action>

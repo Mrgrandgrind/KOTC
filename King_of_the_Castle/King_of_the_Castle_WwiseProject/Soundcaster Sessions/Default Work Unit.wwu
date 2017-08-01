@@ -65,14 +65,14 @@
 						</RTPCValue>
 						<RTPCValue>
 							<GameParameterRef Name="Vol_Start" ID="{EF35A9A3-5ADA-4FFF-A678-AA0A4208072E}"/>
-							<Value>50</Value>
+							<Value>100</Value>
 						</RTPCValue>
 					</RTPCValueList>
 					<CurrentStateList ShowAll="true">
-						<CurrentStateRef Name="Level_2" ID="{A7E6AE57-8FEB-4076-9444-F642E4D5B1D9}"/>
+						<CurrentStateRef Name="Level_1" ID="{4BA60DF8-6001-49C4-A920-98ABEBC94510}"/>
 					</CurrentStateList>
 					<CurrentSwitchList ShowAll="true">
-						<CurrentSwitchRef Name="Wood" ID="{824DD01B-3578-4D53-8FA0-36CE99535B3A}"/>
+						<CurrentSwitchRef Name="Paper" ID="{B629996A-82F6-4B56-93EB-F85A9671303D}"/>
 					</CurrentSwitchList>
 				</SoundcasterSession>
 			</ChildrenList>

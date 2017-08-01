@@ -24,7 +24,11 @@
 						<Property Name="InitialValue" Type="Real64" Value="0"/>
 					</PropertyList>
 				</GameParameter>
-				<GameParameter Name="Vol_Start" ID="{EF35A9A3-5ADA-4FFF-A678-AA0A4208072E}"/>
+				<GameParameter Name="Vol_Start" ID="{EF35A9A3-5ADA-4FFF-A678-AA0A4208072E}">
+					<PropertyList>
+						<Property Name="InitialValue" Type="Real64" Value="100"/>
+					</PropertyList>
+				</GameParameter>
 			</ChildrenList>
 		</WorkUnit>
 	</GameParameters>

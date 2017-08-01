@@ -32,6 +32,10 @@
 				<Event Id="1264150374" Name="robot_pain" ObjectPath="\Events\Default Work Unit\SFX\robot_pain"/>
 			</IncludedEvents>
 			<IncludedMemoryFiles>
+				<File Id="10071859" Language="SFX">
+					<ShortName>base_capture_2.wav</ShortName>
+					<Path>SFX\base_capture_2_9E69E797.wem</Path>
+				</File>
 				<File Id="41819352" Language="SFX">
 					<ShortName>robot_whir_1.wav</ShortName>
 					<Path>SFX\robot_whir_1_9E69E797.wem</Path>
@@ -148,10 +152,6 @@
 					<ShortName>fs_plasticlight_toe.17.wav</ShortName>
 					<Path>SFX\fs_plasticlight_toe.17_9E69E797.wem</Path>
 				</File>
-				<File Id="381425980" Language="SFX">
-					<ShortName>Base Capturing.wav</ShortName>
-					<Path>SFX\Base Capturing_9E69E797.wem</Path>
-				</File>
 				<File Id="392339444" Language="SFX">
 					<ShortName>fs_paper_heel.23.wav</ShortName>
 					<Path>SFX\fs_paper_heel.23_9E69E797.wem</Path>
@@ -207,6 +207,14 @@
 				<File Id="512684154" Language="SFX">
 					<ShortName>fs_plasticheavy_toe.7.wav</ShortName>
 					<Path>SFX\fs_plasticheavy_toe.7_9E69E797.wem</Path>
+				</File>
+				<File Id="522366749" Language="SFX">
+					<ShortName>Base Capturing 2.wav</ShortName>
+					<Path>SFX\Base Capturing 2_9E69E797.wem</Path>
+				</File>
+				<File Id="555214362" Language="SFX">
+					<ShortName>base_capture_1.wav</ShortName>
+					<Path>SFX\base_capture_1_9E69E797.wem</Path>
 				</File>
 				<File Id="555378130" Language="SFX">
 					<ShortName>fs_plasticheavy_heel.9.wav</ShortName>
@@ -332,6 +340,10 @@
 					<ShortName>robot_whir_2.wav</ShortName>
 					<Path>SFX\robot_whir_2_9E69E797.wem</Path>
 				</File>
+				<File Id="949918832" Language="SFX">
+					<ShortName>base_capture_3.wav</ShortName>
+					<Path>SFX\base_capture_3_9E69E797.wem</Path>
+				</File>
 				<File Id="957496795" Language="SFX">
 					<ShortName>fs_wood_heel.19.wav</ShortName>
 					<Path>SFX\fs_wood_heel.19_9E69E797.wem</Path>
@@ -340,13 +352,13 @@
 					<ShortName>robot_whir_5.wav</ShortName>
 					<Path>SFX\robot_whir_5_9E69E797.wem</Path>
 				</File>
+				<File Id="964979643" Language="SFX">
+					<ShortName>Base Capturing 1.wav</ShortName>
+					<Path>SFX\Base Capturing 1_9E69E797.wem</Path>
+				</File>
 				<File Id="966534732" Language="SFX">
 					<ShortName>fs_wood_toe.9.wav</ShortName>
 					<Path>SFX\fs_wood_toe.9_9E69E797.wem</Path>
-				</File>
-				<File Id="1006717118" Language="SFX">
-					<ShortName>Base Captured.wav</ShortName>
-					<Path>SFX\Base Captured_9E69E797.wem</Path>
 				</File>
 				<File Id="1022246176" Language="SFX">
 					<ShortName>fs_plasticlight_heel.11.wav</ShortName>
