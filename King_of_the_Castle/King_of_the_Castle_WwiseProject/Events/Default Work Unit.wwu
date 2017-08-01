@@ -136,7 +136,7 @@
 								<Action Name="Play" ID="{5939EFE3-96EE-4690-851C-4680C2909924}" ShortID="711293924" Type="Play" Scope="One" Global="false">
 									<ElementList>
 										<Element ID="{FD12A7F3-500D-4AC5-B98C-84CAB34EE47A}" Global="false">
-											<ObjectRef Name="PainRobot" ID="{D5B33781-630C-489E-B6E9-1F25C3BFF081}" WorkUnitID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}"/>
+											<ObjectRef Name="PainRobots" ID="{A0337FE8-31EA-4FF0-B0B2-968F6A2D2B6B}" WorkUnitID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}"/>
 										</Element>
 									</ElementList>
 								</Action>

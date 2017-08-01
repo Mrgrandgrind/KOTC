@@ -317,6 +317,10 @@
 					<ShortName>jump_land_wood.19.wav</ShortName>
 					<Path>SFX\jump_land_wood.19_9E69E797.wem</Path>
 				</File>
+				<File Id="880077615" Language="SFX">
+					<ShortName>Hit Low.wav</ShortName>
+					<Path>SFX\Hit Low_9E69E797.wem</Path>
+				</File>
 				<File Id="900796214" Language="SFX">
 					<ShortName>fs_plasticlight_heel.13.wav</ShortName>
 					<Path>SFX\fs_plasticlight_heel.13_9E69E797.wem</Path>

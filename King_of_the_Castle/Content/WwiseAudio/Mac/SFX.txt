@@ -34,6 +34,7 @@ Effect plug-ins	ID	Name	Type				Notes
 	728829154	Wwise Parametric EQ (Custom)	Wwise Parametric EQ			
 	747079498	Wwise Parametric EQ (Custom)	Wwise Parametric EQ			
 	796086057	Wwise Parametric EQ (Custom)	Wwise Parametric EQ			
+	1008402193	Low_Pass_20KHz	Wwise Parametric EQ			
 	1051400187	Wwise Parametric EQ (Custom)	Wwise Parametric EQ			
 	3604890626	High_Pass_60Hz	Wwise Parametric EQ			
 
@@ -45,7 +46,7 @@ In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
 	55138160	fs_plasticlight_toe_7	C:\Users\1405188\Github\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\.cache\Mac\SFX\fs_plasticlight_toe.7_9E69E797.wem		\Actor-Mixer Hierarchy\Default Work Unit\Character\Footstep\PlasticLight\Toe\fs_plasticlight_toe_7		18240
 	69752363	fs_wood_toe_3	C:\Users\1405188\Github\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\.cache\Mac\SFX\fs_wood_toe.3_9E69E797.wem		\Actor-Mixer Hierarchy\Default Work Unit\Character\Footstep\Wood\Toe\fs_wood_toe_3		18062
 	73141056	jump_land_paper_13	C:\Users\1405188\Github\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\.cache\Mac\SFX\jump_land_paper.13_9E69E797.wem		\Actor-Mixer Hierarchy\Default Work Unit\Character\JumpLand\Paper\jump_land_paper_13		20062
-	85191755	Punch_hit	C:\Users\1405188\Github\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\.cache\Mac\SFX\Punch_hit_FD4DCE48.wem		\Actor-Mixer Hierarchy\Default Work Unit\Character\Action\PainRobot\Punch_hit		194812
+	85191755	Punch_hit	C:\Users\1405188\Github\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\.cache\Mac\SFX\Punch_hit_FD4DCE48.wem		\Actor-Mixer Hierarchy\Default Work Unit\Character\Action\PainRobots\Punch_hit		194812
 	93362929	block_place_1	C:\Users\1405188\Github\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\.cache\Mac\SFX\block_place_1_9E69E797.wem		\Actor-Mixer Hierarchy\Default Work Unit\Character\Action\BlockPlace\block_place_1		206764
 	102622324	fs_plasticheavy_toe_13	C:\Users\1405188\Github\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\.cache\Mac\SFX\fs_plasticheavy_toe.13_9E69E797.wem		\Actor-Mixer Hierarchy\Default Work Unit\Character\Footstep\PlasticHeavy\Toe\fs_plasticheavy_toe_13		20916
 	104078924	jump_land_paper_15	C:\Users\1405188\Github\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\.cache\Mac\SFX\jump_land_paper.15_9E69E797.wem		\Actor-Mixer Hierarchy\Default Work Unit\Character\JumpLand\Paper\jump_land_paper_15		20062
@@ -109,6 +110,7 @@ In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
 	865230941	robot_whir_4	C:\Users\1405188\Github\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\.cache\Mac\SFX\robot_whir_4_9E69E797.wem		\Actor-Mixer Hierarchy\Default Work Unit\Character\Movement\RobotWhir\robot_whir_4		231568
 	869388708	fs_plasticlight_toe_15	C:\Users\1405188\Github\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\.cache\Mac\SFX\fs_plasticlight_toe.15_9E69E797.wem		\Actor-Mixer Hierarchy\Default Work Unit\Character\Footstep\PlasticLight\Toe\fs_plasticlight_toe_15		18062
 	875707245	jump_land_wood_19	C:\Users\1405188\Github\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\.cache\Mac\SFX\jump_land_wood.19_9E69E797.wem		\Actor-Mixer Hierarchy\Default Work Unit\Character\JumpLand\Wood\jump_land_wood_19		19012
+	880077615	Hit Low	C:\Users\1405188\Github\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\.cache\Mac\SFX\Hit Low_9E69E797.wem		\Actor-Mixer Hierarchy\Default Work Unit\Character\Action\PainRobots\Hit Low		510356
 	900796214	fs_plasticlight_heel_13	C:\Users\1405188\Github\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\.cache\Mac\SFX\fs_plasticlight_heel.13_9E69E797.wem		\Actor-Mixer Hierarchy\Default Work Unit\Character\Footstep\PlasticLight\Heel\fs_plasticlight_heel_13		18062
 	902838732	fs_plasticlight_heel_5	C:\Users\1405188\Github\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\.cache\Mac\SFX\fs_plasticlight_heel.5_9E69E797.wem		\Actor-Mixer Hierarchy\Default Work Unit\Character\Footstep\PlasticLight\Heel\fs_plasticlight_heel_5		18462
 	918211040	fs_plasticheavy_toe_5	C:\Users\1405188\Github\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\.cache\Mac\SFX\fs_plasticheavy_toe.5_9E69E797.wem		\Actor-Mixer Hierarchy\Default Work Unit\Character\Footstep\PlasticHeavy\Toe\fs_plasticheavy_toe_5		20062
