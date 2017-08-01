@@ -30,6 +30,7 @@
 				<Event Id="1171586703" Name="fs_player_sprint" ObjectPath="\Events\Default Work Unit\SFX\fs_player_sprint"/>
 				<Event Id="645565787" Name="punch" ObjectPath="\Events\Default Work Unit\SFX\punch"/>
 				<Event Id="1264150374" Name="robot_pain" ObjectPath="\Events\Default Work Unit\SFX\robot_pain"/>
+				<Event Id="124361234" Name="stunned" ObjectPath="\Events\Default Work Unit\SFX\stunned"/>
 			</IncludedEvents>
 			<IncludedMemoryFiles>
 				<File Id="10071859" Language="SFX">
@@ -62,7 +63,7 @@
 				</File>
 				<File Id="85191755" Language="SFX">
 					<ShortName>Punch_hit.wav</ShortName>
-					<Path>SFX\Punch_hit_9E69E797.wem</Path>
+					<Path>SFX\Punch_hit_3ED3A251.wem</Path>
 				</File>
 				<File Id="93362929" Language="SFX">
 					<ShortName>block_place_1.wav</ShortName>

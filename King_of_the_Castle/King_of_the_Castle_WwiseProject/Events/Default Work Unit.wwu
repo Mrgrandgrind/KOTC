@@ -229,6 +229,17 @@
 								</Action>
 							</ChildrenList>
 						</Event>
+						<Event Name="stunned" ID="{10DF1873-7ECD-4922-9356-982E0DE90B99}">
+							<ChildrenList>
+								<Action Name="Play" ID="{41230DC0-2BE6-437A-89EF-56886855EC93}" ShortID="817024478" Type="Play" Scope="One" Global="false">
+									<ElementList>
+										<Element ID="{AD9EFD2D-5DBE-43C1-BD20-27BBE237913A}" Global="false">
+											<ObjectRef Name="Stunned" ID="{EB1935F1-C0E4-4372-8BE9-8ED88F261EEB}" WorkUnitID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}"/>
+										</Element>
+									</ElementList>
+								</Action>
+							</ChildrenList>
+						</Event>
 					</ChildrenList>
 				</Folder>
 			</ChildrenList>

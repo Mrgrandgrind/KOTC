@@ -2232,6 +2232,10 @@
 											</ReferenceList>
 											<ChildrenList>
 												<AudioFileSource Name="Punch_hit" ID="{A6D78EEA-7E97-464C-9DC2-5892534AE2A1}" ShortID="85191755">
+													<PropertyList>
+														<Property Name="FadeInDuration" Type="Real64" Value="2.9284094590217E-03"/>
+														<Property Name="TrimBegin" Type="Real64" Value="0.207917071590541"/>
+													</PropertyList>
 													<Language>SFX</Language>
 													<AudioFile>Punch_hit.wav</AudioFile>
 												</AudioFileSource>
@@ -2359,6 +2363,16 @@
 											</ActiveSourceList>
 										</Sound>
 									</ChildrenList>
+								</RandomSequenceContainer>
+								<RandomSequenceContainer Name="Stunned" ID="{EB1935F1-C0E4-4372-8BE9-8ED88F261EEB}" ShortID="100243441">
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
+										</Reference>
+									</ReferenceList>
 								</RandomSequenceContainer>
 							</ChildrenList>
 						</ActorMixer>

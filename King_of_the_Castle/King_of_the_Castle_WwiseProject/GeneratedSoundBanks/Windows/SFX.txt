@@ -1,5 +1,6 @@
 Event	ID	Name			Wwise Object Path	Notes
 	51218932	fs_land			\Default Work Unit\SFX\fs_land	
+	124361234	stunned			\Default Work Unit\SFX\stunned	
 	157611648	fs_player			\Default Work Unit\SFX\fs_player	
 	645565787	punch			\Default Work Unit\SFX\punch	
 	721354172	block_place			\Default Work Unit\SFX\block_place	
@@ -44,7 +45,7 @@ In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
 	55138160	fs_plasticlight_toe_7	C:\Users\1405188\Github\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\.cache\Windows\SFX\fs_plasticlight_toe.7_9E69E797.wem		\Actor-Mixer Hierarchy\Default Work Unit\Character\Footstep\PlasticLight\Toe\fs_plasticlight_toe_7		18240
 	69752363	fs_wood_toe_3	C:\Users\1405188\Github\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\.cache\Windows\SFX\fs_wood_toe.3_9E69E797.wem		\Actor-Mixer Hierarchy\Default Work Unit\Character\Footstep\Wood\Toe\fs_wood_toe_3		18062
 	73141056	jump_land_paper_13	C:\Users\1405188\Github\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\.cache\Windows\SFX\jump_land_paper.13_9E69E797.wem		\Actor-Mixer Hierarchy\Default Work Unit\Character\JumpLand\Paper\jump_land_paper_13		20062
-	85191755	Punch_hit	C:\Users\1405188\Github\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\.cache\Windows\SFX\Punch_hit_9E69E797.wem		\Actor-Mixer Hierarchy\Default Work Unit\Character\Action\PainRobot\Punch_hit		231568
+	85191755	Punch_hit	C:\Users\1405188\Github\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\.cache\Windows\SFX\Punch_hit_3ED3A251.wem		\Actor-Mixer Hierarchy\Default Work Unit\Character\Action\PainRobot\Punch_hit		194812
 	93362929	block_place_1	C:\Users\1405188\Github\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\.cache\Windows\SFX\block_place_1_9E69E797.wem		\Actor-Mixer Hierarchy\Default Work Unit\Character\Action\BlockPlace\block_place_1		206764
 	102622324	fs_plasticheavy_toe_13	C:\Users\1405188\Github\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\.cache\Windows\SFX\fs_plasticheavy_toe.13_9E69E797.wem		\Actor-Mixer Hierarchy\Default Work Unit\Character\Footstep\PlasticHeavy\Toe\fs_plasticheavy_toe_13		20916
 	104078924	jump_land_paper_15	C:\Users\1405188\Github\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\.cache\Windows\SFX\jump_land_paper.15_9E69E797.wem		\Actor-Mixer Hierarchy\Default Work Unit\Character\JumpLand\Paper\jump_land_paper_15		20062
