@@ -18,15 +18,15 @@
 	<Platform GUID="{9D197A7E-B189-4C3B-94BC-A6FA7272289F}">
 		<Banks>
 			<Language ID="0">
-				<File Name="Ambience" Hash="149258648" Timestamp="131460599044341207"/>
-				<File Name="Init" Hash="3670365467" Timestamp="131460599044351207"/>
-				<File Name="Music" Hash="2155522381" Timestamp="131460599043901207"/>
-				<File Name="SFX" Hash="1925979857" Timestamp="131460599044301207"/>
+				<File Name="Ambience" Hash="149258648" Timestamp="131460630562281207"/>
+				<File Name="Init" Hash="3670365467" Timestamp="131460630563631207"/>
+				<File Name="Music" Hash="2155522381" Timestamp="131460630563011207"/>
+				<File Name="SFX" Hash="898169255" Timestamp="131460630563591207"/>
 			</Language>
 		</Banks>
 		<XMLInfo>
 			<Language ID="-1">
-				<File Name="" Hash="1895163670" Timestamp="131460599044371207"/>
+				<File Name="" Hash="3059350626" Timestamp="131460630563651207"/>
 			</Language>
 		</XMLInfo>
 	</Platform>

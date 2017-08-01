@@ -69,10 +69,10 @@
 						</RTPCValue>
 					</RTPCValueList>
 					<CurrentStateList ShowAll="true">
-						<CurrentStateRef Name="Level_1" ID="{4BA60DF8-6001-49C4-A920-98ABEBC94510}"/>
+						<CurrentStateRef Name="Level_4" ID="{ECD9E445-AD1B-4E6F-92FE-3537EBC18C2B}"/>
 					</CurrentStateList>
 					<CurrentSwitchList ShowAll="true">
-						<CurrentSwitchRef Name="Paper" ID="{B629996A-82F6-4B56-93EB-F85A9671303D}"/>
+						<CurrentSwitchRef Name="Wood" ID="{824DD01B-3578-4D53-8FA0-36CE99535B3A}"/>
 					</CurrentSwitchList>
 				</SoundcasterSession>
 			</ChildrenList>
