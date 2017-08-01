@@ -11,10 +11,13 @@ State	ID	Name	State Group			Notes
 	2716678721	Victory	Music			
 
 Audio Bus	ID	Name			Wwise Object Path	Notes
+	393239870	SFX			\Default Work Unit\Master Audio Bus\SFX	
 	805203703	Master Secondary Bus			\Default Work Unit\Master Secondary Bus	
 	3803692087	Master Audio Bus			\Default Work Unit\Master Audio Bus	
+	3991942870	Music			\Default Work Unit\Master Audio Bus\Music	
 
 Effect plug-ins	ID	Name	Type				Notes
+	819479732	Wwise Parametric EQ (Custom)	Wwise Parametric EQ			
 	1045742201	Brick_Wall_Minus_6dB_Peak_Fast_Release (Custom)	Wwise Peak Limiter			
 	2998002419	Boost_3dB_10KHz	Wwise Parametric EQ			
 
