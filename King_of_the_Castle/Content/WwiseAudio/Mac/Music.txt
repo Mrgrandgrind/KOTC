@@ -4,8 +4,15 @@ Event	ID	Name			Wwise Object Path	Notes
 Game Parameter	ID	Name			Wwise Object Path	Notes
 	2470328564	Intensity			\Default Work Unit\Intensity	
 
+Audio Bus	ID	Name			Wwise Object Path	Notes
+	3803692087	Master Audio Bus			\Default Work Unit\Master Audio Bus	
+	3991942870	Music			\Default Work Unit\Master Audio Bus\Music	
+
 Effect plug-ins	ID	Name	Type				Notes
 	464579429	Wwise Parametric EQ (Custom)	Wwise Parametric EQ			
+	819479732	Wwise Parametric EQ (Custom)	Wwise Parametric EQ			
+	1045742201	Brick_Wall_Minus_6dB_Peak_Fast_Release (Custom)	Wwise Peak Limiter			
+	2998002419	Boost_3dB_10KHz	Wwise Parametric EQ			
 
 In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
 	6552499	Bass String Staccato 1	C:\Users\1405188\Github\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\.cache\Mac\SFX\Bass String Staccato 1_4B8CC0C5.wem		\Interactive Music Hierarchy\Default Work Unit\Level\Level 1\Level 1\Bass String Staccato 1		2584080
@@ -15,7 +22,6 @@ In Memory Audio	ID	Name	Audio source file		Wwise Object Path	Notes	Data Size
 	55761702	Glock Melody 1	C:\Users\1405188\Github\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\.cache\Mac\SFX\Glock Melody 1_4B8CC0C5.wem		\Interactive Music Hierarchy\Default Work Unit\Level\Level 1\Level 1\Glock Melody 1		2321936
 	56994167	Timpani Roll	C:\Users\1405188\Github\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\.cache\Mac\SFX\Timpani Roll_4B8CC0C5.wem		\Interactive Music Hierarchy\Default Work Unit\Timpani Roll\Timpani Roll		1273360
 	66838259	Strings 3	C:\Users\1405188\Github\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\.cache\Mac\SFX\Strings 3_4B8CC0C5.wem		\Interactive Music Hierarchy\Default Work Unit\Level\Level 4\Level 3_2\Strings 3		6516288
-	228210691	Glock Melody 2	C:\Users\1405188\Github\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\.cache\Mac\SFX\Glock Melody 2_4B8CC0C5.wem		\Interactive Music Hierarchy\Default Work Unit\Level\Level 2\Level 2\Glock Melody 2		3894800
 	250705993	Pluck 1	C:\Users\1405188\Github\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\.cache\Mac\SFX\Pluck 1_4B8CC0C5.wem		\Interactive Music Hierarchy\Default Work Unit\Level\Level 1\Level 1\Pluck 1		3370608
 	270482935	TransHornsUP 2_5	C:\Users\1405188\Github\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\.cache\Mac\SFX\TransHornsUP 2.5_4B8CC0C5.wem		\Interactive Music Hierarchy\Default Work Unit\Level\Level 3\Level 2_5\TransHornsUP 2_5		3894896
 	286038645	Choir 3	C:\Users\1405188\Github\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\.cache\Mac\SFX\Choir 3_4B8CC0C5.wem		\Interactive Music Hierarchy\Default Work Unit\Level\Level 4\Level 3_2\Choir 3		3894848

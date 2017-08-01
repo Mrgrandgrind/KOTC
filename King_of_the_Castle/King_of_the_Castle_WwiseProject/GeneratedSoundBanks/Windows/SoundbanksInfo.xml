@@ -11,11 +11,6 @@
 	<StreamedFiles/>
 	<MediaFilesNotInAnyBank/>
 	<SoundBanks>
-		<SoundBank Id="85412153" Language="SFX">
-			<ObjectPath>\SoundBanks\Default Work Unit\Ambience</ObjectPath>
-			<ShortName>Ambience</ShortName>
-			<Path>Ambience.bnk</Path>
-		</SoundBank>
 		<SoundBank Id="393239870" Language="SFX">
 			<ObjectPath>\SoundBanks\Default Work Unit\SFX</ObjectPath>
 			<ShortName>SFX</ShortName>
@@ -423,10 +418,6 @@
 				<File Id="66838259" Language="SFX">
 					<ShortName>Strings 3.wav</ShortName>
 					<Path>SFX\Strings 3_4B8CC0C5.wem</Path>
-				</File>
-				<File Id="228210691" Language="SFX">
-					<ShortName>Glock Melody 2.wav</ShortName>
-					<Path>SFX\Glock Melody 2_4B8CC0C5.wem</Path>
 				</File>
 				<File Id="250705993" Language="SFX">
 					<ShortName>Pluck 1.wav</ShortName>
