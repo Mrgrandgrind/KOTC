@@ -7,4 +7,6 @@ ADefaultPlayerCharacter::ADefaultPlayerCharacter()
 {
 	this->m_Camera = UObject::CreateDefaultSubobject<UCameraComponent>(TEXT("DefaultCamera"));
 	this->m_Camera->SetupAttachment(Super::RootComponent);
+
+	((UPrimitiveComponent*)Super::GetRootComponent())->SetSimulatePhysics(false);
 }

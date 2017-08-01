@@ -253,16 +253,6 @@ void APlayerCharacter::Tick(float delta)
 	}
 }
 
-//UBuildWheel* APlayerCharacter::GetBuildWheel() const
-//{
-//	if (Super::GetController() == nullptr)
-//	{
-//		return nullptr;
-//	}
-//	AGameHUD *hud = Cast<AGameHUD>(((APlayerController*)Super::GetController())->GetHUD());
-//	return hud == nullptr ? nullptr : hud->GetBuildWheel();
-//}
-
 int APlayerCharacter::GetPlayerIndex() const
 {
 	ULocalPlayer *player = Cast<ULocalPlayer>(((APlayerController*)Super::GetController())->Player);
@@ -561,7 +551,7 @@ void APlayerCharacter::OnStunned_Implementation(const float& duration, bool rege
 	}
 
 	FTimerHandle handle;
-	Super::GetWorldTimerManager().SetTimer(handle, FTimerDelegate::CreateLambda([this, regen, respawn]()
+	Super::GetWorldTimerManager().SetTimer(handle, FTimerDelegate::CreateLambda([&]()
 	{
 		if (regen)
 		{
@@ -573,7 +563,7 @@ void APlayerCharacter::OnStunned_Implementation(const float& duration, bool rege
 			FVector location;
 			FRotator rotation;
 
-			ABaseGameMode *gamemode = Cast<ABaseGameMode>(Super::GetWorld()->GetAuthGameMode());
+			ABaseGameMode *gamemode = GetGameMode(Super::GetWorld());
 			if (gamemode != nullptr && gamemode->GetSpawnPoint(this->GetTeam(), location, rotation))
 			{
 				Super::SetActorLocation(location);
@@ -625,14 +615,14 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *input)
 	//input->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	//input->BindAxis("LookUpRate", this, &APlayerCharacter::LookUpAtRate);
 
-	input->BindAction("Jump", IE_Pressed, this, &APlayerCharacter::Jump);
-	input->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
+	//input->BindAction("Jump", IE_Pressed, this, &APlayerCharacter::Jump);
+	//input->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
 	input->BindAction("Rush", IE_Pressed, this, &APlayerCharacter::InputRushEnable);
 	input->BindAction("Rush", IE_Released, this, &APlayerCharacter::InputRushDisable);
 
-	input->BindAction("Sprint", IE_Pressed, this, &APlayerCharacter::InputSprintEnable);
-	input->BindAction("Sprint", IE_Released, this, &APlayerCharacter::InputSprintDisable);
+	//input->BindAction("Sprint", IE_Pressed, this, &APlayerCharacter::InputSprintEnable);
+	//input->BindAction("Sprint", IE_Released, this, &APlayerCharacter::InputSprintDisable);
 
 	input->BindAction("Dodge", IE_Pressed, this, &APlayerCharacter::Dodge);
 	input->BindAction("Attack", IE_Pressed, this, &APlayerCharacter::Attack);
@@ -643,11 +633,6 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *input)
 	input->BindAction("Place Block", IE_Released, this, &APlayerCharacter::InputBlockPlaceUpEvent);
 	input->BindAction("Destroy Block", IE_Pressed, this, &APlayerCharacter::InputBlockDestroyDownEvent);
 	input->BindAction("Destroy Block", IE_Released, this, &APlayerCharacter::InputBlockDestroyUpEvent);
-
-	//input->BindAction("Build Wheel", IE_Pressed, this, &APlayerCharacter::InputShowBuildWheel);
-	//input->BindAction("Build Wheel", IE_Released, this, &APlayerCharacter::InputHideBuildWheel);
-	//input->BindAction("Build Wheel Back", IE_Pressed, this, &APlayerCharacter::InputBuildWheelBack);
-	//input->BindAction("Build Wheel Select", IE_Pressed, this, &APlayerCharacter::InputBuildWheelSelect);
 
 	input->BindAction("Brush up", IE_Pressed, this, &APlayerCharacter::InputBlockTypeUpEvent);
 	input->BindAction("Brush down", IE_Pressed, this, &APlayerCharacter::InputBlockTypeDownEvent);

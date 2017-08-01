@@ -82,7 +82,6 @@ void ABaseGameMode::BeginPlay()
 	{
 		UE_LOG(LogClass, Error, TEXT("No ABlockStructureManager placed in map!"));
 	}
-
 	// Spawn players
 	this->SpawnPlayers();
 }

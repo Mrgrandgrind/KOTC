@@ -44,4 +44,8 @@ FORCEINLINE static T* GetGameMode(class UWorld *world)
 	return Cast<T>(world->GetAuthGameMode());
 }
 
+FORCEINLINE static class ABaseGameMode* GetGameMode(class UWorld *world)
+{
+	return (ABaseGameMode*)world->GetAuthGameMode();
+}
 #endif
