@@ -13,8 +13,8 @@
 #define CAMERA_PIVOT_POINT FVector(13.0f, -3389.0f, 700.0f)
 
 #define MENU_CAMERA_NAME TEXT("MenuCamera")
-#define MENU_ROTATION FRotator(0.0f, 0.0f, 00.0f)
-#define MENU_POSITION_OFFSET FVector(-1200.0f, -500.0f, -200.0f)
+#define MENU_ROTATION FRotator(0.0f, 35.0f, 0.0f)
+#define MENU_POSITION_OFFSET FVector(-1000.0f, -700.0f, -275.0f)
 
 #define CHARACTER_SELECT_CAMERA_NAME TEXT("CharacterSelectCamera")
 #define CHARACTER_SELECT_POSITION_GAP 100.0f
