@@ -11,6 +11,8 @@ class KING_OF_THE_CASTLE_API UHUDComponent : public UObject
 {
 	GENERATED_BODY()
 
+	friend class AGameHUD;
+
 public:
 	UHUDComponent();
 
@@ -34,4 +36,7 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Component", meta = (DisplayName = "Render"))
 	bool m_bRender;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Component", meta = (DisplayName = "Render when Paused"))
+	bool m_bRenderWhenPaused;
 };

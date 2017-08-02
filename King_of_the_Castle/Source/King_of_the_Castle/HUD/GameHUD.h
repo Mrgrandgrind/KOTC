@@ -35,6 +35,10 @@ public:
 			|| (this->m_PlayerCount == 4 && (this->m_ControllerId == 1 || this->m_ControllerId == 3));
 	}
 
+	FORCEINLINE const bool& IsPaused() const { return this->m_bPaused; }
+
+	FORCEINLINE void SetPaused(const bool& paused) { this->m_bPaused = paused; }
+
 	template<typename T>
 	FORCEINLINE T* FindComponent()
 	{
@@ -86,6 +90,8 @@ protected:
 	TArray<TSubclassOf<class UHUDComponent>> m_ComponentClasses;
 
 private:
+	bool m_bPaused;
+
 	int32 m_ControllerId, m_PlayerCount;
 
 	UPROPERTY()

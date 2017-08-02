@@ -24,6 +24,8 @@ UScoreBarComponent::UScoreBarComponent()
 	this->m_BarMoveSpeed = 1.0f;
 	this->m_BarTextScale = 0.6f;
 	this->m_BarTextColor = IP_BAR_TEXT_COLOR;
+
+	Super::m_bRenderWhenPaused = true;
 }
 
 void UScoreBarComponent::Render(AGameHUD *hud, const FVector2D& origin, const FVector2D& extent, const float& scale)

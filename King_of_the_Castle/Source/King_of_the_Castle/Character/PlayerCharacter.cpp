@@ -165,6 +165,27 @@ ABuildArea* APlayerCharacter::GetActiveBuildArea()
 	return this->m_BuildAreas.Num() == 0 ? nullptr : this->m_BuildAreas.Last();
 }
 
+void APlayerCharacter::TogglePause()
+{
+	AGameHUD *hud = Cast<AGameHUD>(((APlayerController*)Super::GetController())->GetHUD());
+	if (hud != nullptr)
+	{
+		hud->SetPaused(!hud->IsPaused());
+	}
+	ABaseGameMode *gamemode = GetGameMode(Super::GetWorld());
+	if (gamemode != nullptr)
+	{
+		if (hud->IsPaused())
+		{
+			gamemode->AddPausedPlayer(this);
+		}
+		else
+		{
+			gamemode->RemovePausedPlayer(this);
+		}
+	}
+}
+
 // Called every frame
 void APlayerCharacter::Tick(float delta)
 {
@@ -278,12 +299,7 @@ void APlayerCharacter::SetBuildModeEnabled(const bool& enable)
 	}
 	if (Super::GetController() != nullptr)
 	{
-		AGameHUD *hud = Cast<AGameHUD>(((APlayerController*)Super::GetController())->GetHUD());
-		if (hud == nullptr)
-		{
-			return;
-		}
-		UCrosshairComponent *component = hud->FindComponent<UCrosshairComponent>();
+		UCrosshairComponent *component = AGameHUD::FindComponent<UCrosshairComponent>(this);
 		if (component == nullptr)
 		{
 			return;
@@ -632,6 +648,8 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *input)
 
 	input->BindAction("View Scores", IE_Pressed, this, &APlayerCharacter::InputToggleScoresTable);
 	input->BindAction("View Scores", IE_Released, this, &APlayerCharacter::InputToggleScoresTable);
+
+	input->BindAction("Pause", IE_Pressed, this, &APlayerCharacter::TogglePause);
 }
 
 void APlayerCharacter::InputToggleScoresTable()

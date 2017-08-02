@@ -44,6 +44,10 @@ public:
 	UFUNCTION(BlueprintPure, Category = "GameOver")
 	const bool& IsGameOver() const { return this->m_bGameOver; }
 
+	FORCEINLINE void AddPausedPlayer(class APlayerCharacter *player) { this->m_PausedPlayers.Add(player); }
+
+	FORCEINLINE void RemovePausedPlayer(class APlayerCharacter *player) { this->m_PausedPlayers.Remove(player); }
+
 	// Time since the game started
 	FORCEINLINE const float& GetTime() const { return this->m_Timer; }
 
@@ -128,6 +132,9 @@ private:
 	int m_TeamCount;
 
 	bool m_bGameOver;
+
+	UPROPERTY()
+	TArray<class APlayerCharacter*> m_PausedPlayers;
 
 	// How many players should be ingame
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Players", meta = (AllowPrivateAccess = "true", DisplayName = "Player Count"))
