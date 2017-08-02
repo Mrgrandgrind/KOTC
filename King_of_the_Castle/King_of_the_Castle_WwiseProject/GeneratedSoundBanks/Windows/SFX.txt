@@ -25,6 +25,7 @@ Game Parameter	ID	Name			Wwise Object Path	Notes
 	1493153371	PlayerSpeed			\Default Work Unit\PlayerSpeed	
 	2459853229	Vol_Start			\Default Work Unit\Vol_Start	
 	2470328564	Intensity			\Default Work Unit\Intensity	
+	3666825439	Players_Capturing			\Default Work Unit\Players_Capturing	
 
 Audio Bus	ID	Name			Wwise Object Path	Notes
 	393239870	SFX			\Default Work Unit\Master Audio Bus\SFX	
@@ -33,6 +34,7 @@ Audio Bus	ID	Name			Wwise Object Path	Notes
 Effect plug-ins	ID	Name	Type				Notes
 	27550930	Wwise Parametric EQ (Custom)	Wwise Parametric EQ			
 	67353676	Wwise Parametric EQ (Custom)	Wwise Parametric EQ			
+	138557840	Wwise Time Stretch (Custom)	Wwise Time Stretch			
 	175320416	Wwise Parametric EQ (Custom)	Wwise Parametric EQ			
 	186154684	Wwise Parametric EQ (Custom)	Wwise Parametric EQ			
 	226734949	Wwise Parametric EQ (Custom)	Wwise Parametric EQ			
