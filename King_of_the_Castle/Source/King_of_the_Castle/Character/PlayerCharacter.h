@@ -133,7 +133,8 @@ public:
 protected:
 	class ABuildArea* GetActiveBuildArea();
 
-	UFUNCTION()
+	void TogglePause();
+
 	void ToggleBuildMode() { if(!this->m_bBlockMovement) this->SetBuildModeEnabled(!this->m_bBuildingEnabled); }
 
 	//void UpdateMovementSpeed() const;

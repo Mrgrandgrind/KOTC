@@ -29,6 +29,9 @@ public:
 
 	float GetCapturePercentage() const;
 
+	UFUNCTION(BlueprintPure, Category = "Capture Point")
+	const float& GetSpeedMultiplier() const { return this->m_SpeedMultiplier; }
+
 	FORCEINLINE const int& GetOwningTeam() const { return this->m_OwningTeam; }
 
 	FORCEINLINE const FName& GetPointName() const { return this->m_PointName; }
@@ -55,6 +58,8 @@ protected:
 	int m_CapturingTeam;
 
 	float m_CaptureCounter;
+
+	float m_SpeedMultiplier;
 
 	// Players inside this capture point
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Capture Point", meta = (DisplayName = "Name"))

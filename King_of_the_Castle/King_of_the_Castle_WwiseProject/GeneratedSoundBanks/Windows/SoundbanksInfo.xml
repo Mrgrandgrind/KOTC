@@ -16,6 +16,7 @@
 			<ShortName>SFX</ShortName>
 			<Path>SFX.bnk</Path>
 			<IncludedEvents>
+				<Event Id="3941440279" Name="base_capture_end" ObjectPath="\Events\Default Work Unit\SFX\base_capture_end"/>
 				<Event Id="4187503147" Name="base_captured" ObjectPath="\Events\Default Work Unit\SFX\base_captured"/>
 				<Event Id="732840392" Name="base_capturing" ObjectPath="\Events\Default Work Unit\SFX\base_capturing"/>
 				<Event Id="721354172" Name="block_place" ObjectPath="\Events\Default Work Unit\SFX\block_place"/>
@@ -30,7 +31,7 @@
 			<IncludedMemoryFiles>
 				<File Id="10071859" Language="SFX">
 					<ShortName>base_capture_2.wav</ShortName>
-					<Path>SFX\base_capture_2_6C38B208.wem</Path>
+					<Path>SFX\base_capture_2_54C4BF27.wem</Path>
 				</File>
 				<File Id="41819352" Language="SFX">
 					<ShortName>robot_whir_1.wav</ShortName>
@@ -238,7 +239,7 @@
 				</File>
 				<File Id="555214362" Language="SFX">
 					<ShortName>base_capture_1.wav</ShortName>
-					<Path>SFX\base_capture_1_4038FE61.wem</Path>
+					<Path>SFX\base_capture_1_853E68C1.wem</Path>
 				</File>
 				<File Id="555378130" Language="SFX">
 					<ShortName>fs_plasticheavy_heel.9.wav</ShortName>
@@ -346,7 +347,7 @@
 				</File>
 				<File Id="880077615" Language="SFX">
 					<ShortName>Hit Low.wav</ShortName>
-					<Path>SFX\Hit Low_E5601C96.wem</Path>
+					<Path>SFX\Hit Low_21FDD279.wem</Path>
 				</File>
 				<File Id="900796214" Language="SFX">
 					<ShortName>fs_plasticlight_heel.13.wav</ShortName>
@@ -380,9 +381,13 @@
 					<ShortName>block_place2.wav</ShortName>
 					<Path>SFX\block_place2_9E69E797.wem</Path>
 				</File>
+				<File Id="941151962" Language="SFX">
+					<ShortName>PartyTime.wav</ShortName>
+					<Path>SFX\PartyTime_9E69E797.wem</Path>
+				</File>
 				<File Id="949918832" Language="SFX">
 					<ShortName>base_capture_3.wav</ShortName>
-					<Path>SFX\base_capture_3_9A277782.wem</Path>
+					<Path>SFX\base_capture_3_49785351.wem</Path>
 				</File>
 				<File Id="957496795" Language="SFX">
 					<ShortName>fs_wood_heel.19.wav</ShortName>

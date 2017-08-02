@@ -25,6 +25,7 @@
 						<ObjectRef Name="stunned" ID="{10DF1873-7ECD-4922-9356-982E0DE90B99}" WorkUnitID="{8F1EA8B4-C444-40AD-B9D4-72B61B06D617}" Filter="7" Origin="Manual"/>
 						<ObjectRef Name="base_captured" ID="{8D6E05FE-3EAC-4A4E-ABDB-00B1452C386B}" WorkUnitID="{8F1EA8B4-C444-40AD-B9D4-72B61B06D617}" Filter="7" Origin="Manual"/>
 						<ObjectRef Name="base_capturing" ID="{34ED9C97-1934-4B27-9BCE-BC44DF4D8BB6}" WorkUnitID="{8F1EA8B4-C444-40AD-B9D4-72B61B06D617}" Filter="7" Origin="Manual"/>
+						<ObjectRef Name="base_capture_end" ID="{DAC1E148-54C7-4BA4-95E2-C315C99F695A}" WorkUnitID="{8F1EA8B4-C444-40AD-B9D4-72B61B06D617}" Filter="7" Origin="Manual"/>
 						<ObjectRef Name="punch" ID="{23C7FA1C-07D0-4C63-B65B-C4468D220AA1}" WorkUnitID="{8F1EA8B4-C444-40AD-B9D4-72B61B06D617}" Filter="7" Origin="Manual"/>
 						<ObjectRef Name="Default Work Unit" ID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}" WorkUnitID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}" Filter="7" Origin="Manual"/>
 						<ObjectRef Name="fs_player_sprint" ID="{11CE960B-A191-4EFB-8AAC-350280E47806}" WorkUnitID="{8F1EA8B4-C444-40AD-B9D4-72B61B06D617}" Filter="7" Origin="Manual"/>

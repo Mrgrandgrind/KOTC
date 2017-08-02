@@ -130,11 +130,11 @@ void ACapturePoint::Tick(float delta)
 	{
 		return;
 	}
-	float speed = gamemode->IsSpeedDependantOnMembers() ? this->m_Players.Num() : 1.0f;
-	this->m_CaptureCounter += speed * delta;
+	this->m_SpeedMultiplier = gamemode->IsSpeedDependantOnMembers() ? this->m_Players.Num() : 1.0f;
+	this->m_CaptureCounter += this->m_SpeedMultiplier * delta;
 
 	this->OnCaptureTick(this->m_CapturingTeam, this->m_OwningTeam, FMath::Min(1.0f, 
-		this->m_CaptureCounter / gamemode->GetCaptureDuration()), this->m_Players, speed);
+		this->m_CaptureCounter / gamemode->GetCaptureDuration()), this->m_Players, this->m_SpeedMultiplier);
 
 	if (this->m_CaptureCounter >= gamemode->GetCaptureDuration())
 	{

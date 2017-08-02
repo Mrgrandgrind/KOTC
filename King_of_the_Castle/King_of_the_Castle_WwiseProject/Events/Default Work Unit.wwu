@@ -234,6 +234,23 @@
 										</Element>
 									</ElementList>
 								</Action>
+								<Action Name="Play" ID="{BFC785FF-5AFF-4AA0-A708-44661867168B}" ShortID="909633987" Type="Play" Scope="One" Global="false">
+									<PropertyList>
+										<Property Name="Delay" Type="Real64" Value="0.1"/>
+									</PropertyList>
+									<ElementList>
+										<Element ID="{0881893D-73F7-40EC-996B-F99AE1F4926B}" Global="false">
+											<ObjectRef Name="PartyTime" ID="{308C79DA-A6DD-4455-A1F1-9F1D8AD4325D}" WorkUnitID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}"/>
+										</Element>
+									</ElementList>
+								</Action>
+								<Action Name="Stop" ID="{62C0B937-CEE6-4DF6-B8EF-C7FA25765A13}" ShortID="882946263" Type="Stop" Scope="One" Global="false">
+									<ElementList>
+										<Element ID="{E54FC34E-7029-4C9A-9E90-6AAE0AC5633B}" Global="false">
+											<ObjectRef Name="Capturing" ID="{7FC6B43C-81EE-4D6F-9098-69A6468EAB75}" WorkUnitID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}"/>
+										</Element>
+									</ElementList>
+								</Action>
 							</ChildrenList>
 						</Event>
 						<Event Name="stunned" ID="{10DF1873-7ECD-4922-9356-982E0DE90B99}">
@@ -242,6 +259,17 @@
 									<ElementList>
 										<Element ID="{AD9EFD2D-5DBE-43C1-BD20-27BBE237913A}" Global="false">
 											<ObjectRef Name="Stunned" ID="{EB1935F1-C0E4-4372-8BE9-8ED88F261EEB}" WorkUnitID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}"/>
+										</Element>
+									</ElementList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="base_capture_end" ID="{DAC1E148-54C7-4BA4-95E2-C315C99F695A}">
+							<ChildrenList>
+								<Action Name="Stop" ID="{EA5539B5-4211-4BBE-B52D-2C29AA6A679F}" ShortID="108957146" Type="Stop" Scope="One" Global="false">
+									<ElementList>
+										<Element ID="{706542CB-AECE-4B90-B3D1-F0C31FA7FD7C}" Global="false">
+											<ObjectRef Name="Capturing" ID="{7FC6B43C-81EE-4D6F-9098-69A6468EAB75}" WorkUnitID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}"/>
 										</Element>
 									</ElementList>
 								</Action>

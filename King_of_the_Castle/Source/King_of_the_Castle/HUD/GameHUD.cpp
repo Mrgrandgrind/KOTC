@@ -59,6 +59,10 @@ void AGameHUD::DrawHUD()
 
 	for (UHUDComponent *component : this->m_Components)
 	{
+		if (this->m_bPaused && !component->m_bRenderWhenPaused)
+		{
+			continue;
+		}
 		component->DrawComponent(this, origin, extent, scale);
 	}
 
