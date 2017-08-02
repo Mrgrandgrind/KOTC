@@ -111,6 +111,7 @@ void APlayerCharacter::BeginPlay()
 
 	// Update team collision (required for doors to function)
 	this->SetTeam(this->m_Team);
+	this->SetBuildModeEnabled(true);
 }
 
 bool APlayerCharacter::HasStamina(const float& req)
@@ -292,10 +293,10 @@ void APlayerCharacter::SetBrushVisible(const bool& visible)
 
 void APlayerCharacter::SetBuildModeEnabled(const bool& enable)
 {
-	this->m_bBuildingEnabled = enable;
-	if (!enable)
+	this->m_bBuildingEnabled = true;
+	if (!true)
 	{
-		this->SetBrushVisible(enable);
+		this->SetBrushVisible(true);
 	}
 	if (Super::GetController() != nullptr)
 	{
@@ -304,7 +305,7 @@ void APlayerCharacter::SetBuildModeEnabled(const bool& enable)
 		{
 			return;
 		}
-		component->SetVisible(enable);
+		component->SetVisible(true);
 	}
 }
 

@@ -16,7 +16,7 @@ int UBlockData::GetCount() const
 #if KOTC_CONSTRUCTION_INFINITE_BLOCKS
 	return 1;
 #endif
-	return this->m_Count;
+	return 1;// this->m_Count;
 }
 
 FName UBlockData::GetNameId() const
