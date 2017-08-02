@@ -11,6 +11,8 @@ class KING_OF_THE_CASTLE_API UStatBarsComponent : public UHUDComponent
 public:
 	UStatBarsComponent();
 
+	FORCEINLINE void FlashStamina() { this->m_bFlashStamina = true; this->m_FlashStaminaCounter = 0.0f; }
+
 protected:
 	virtual void Render(class AGameHUD *hud, const FVector2D& origin, const FVector2D& extent, const float& scale) override;
 
@@ -47,6 +49,18 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD", meta = (DisplayName = "Bar Move Speed"))
 	float m_MoveSpeed;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD", meta = (DisplayName = "Stamina Flash Speed"))
+	float m_StaminaFlashSpeed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD", meta = (DisplayName = "Stamina Flash Duration"))
+	float m_StaminaFlashDuration;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD", meta = (DisplayName = "Stamina Flash Color"))
+	FLinearColor m_StaminaFlashColor;
+
 private:
+	bool m_bFlashStamina;
+	float m_FlashStaminaCounter;
+
 	float m_HealthPerc, m_StaminaPerc;
 };

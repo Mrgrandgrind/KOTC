@@ -49,6 +49,23 @@ public:
 		return nullptr;
 	}
 
+	template<typename T>
+	FORCEINLINE static T* FindComponent(APlayerController *controller)
+	{
+		AGameHUD *hud = Cast<AGameHUD>(controller->GetHUD());
+		if (hud == nullptr)
+		{
+			return nullptr;
+		}
+		return hud->FindComponent<T>();
+	}
+
+	template<typename T>
+	FORCEINLINE static T* FindComponent(APlayerCharacter *character)
+	{
+		return AGameHUD::FindComponent<T>((APlayerController*)character->GetController());
+	}
+
 private:
 	void RenderScores(const FVector4& screen, const float& scale);
 
