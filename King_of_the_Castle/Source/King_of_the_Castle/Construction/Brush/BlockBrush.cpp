@@ -67,7 +67,7 @@ void UBlockBrush::BeginPlay()
 		text->SetTextRenderColor(FColor::Silver);
 
 		this->m_TextActor->SetOwner(Super::GetAttachmentRootActor());
-		this->m_TextActor->AttachToComponent(this, FAttachmentTransformRules::SnapToTargetIncludingScale);
+		//this->m_TextActor->AttachToComponent(this, FAttachmentTransformRules::SnapToTargetIncludingScale);
 	}
 
 	this->UBlockBrush::SetBrushVisible(false);
