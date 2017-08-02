@@ -41,6 +41,9 @@ public:
 
 	virtual FName GetGameModeName() const { return TEXT("Undefined"); }
 
+	UFUNCTION(BlueprintPure, Category = "GameOver")
+	const bool& IsGameOver() const { return this->m_bGameOver; }
+
 	// Time since the game started
 	FORCEINLINE const float& GetTime() const { return this->m_Timer; }
 
@@ -109,8 +112,6 @@ public:
 #endif
 
 protected:
-	FORCEINLINE const bool& IsGameOver() const { return this->m_bGameOver; }
-
 	FORCEINLINE TMap<int, float>& GetScores() { return this->m_TeamScores; }
 
 private:
