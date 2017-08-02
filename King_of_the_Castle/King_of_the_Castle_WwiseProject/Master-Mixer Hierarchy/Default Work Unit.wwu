@@ -23,6 +23,9 @@
 					</ReferenceList>
 					<ChildrenList>
 						<Bus Name="Music" ID="{C97A455D-34F3-4C2B-B6BF-F897A45BAA3C}">
+							<PropertyList>
+								<Property Name="RecoveryTime" Type="Real64" Value="0"/>
+							</PropertyList>
 							<ReferenceList>
 								<Reference Name="Effect0">
 									<Custom>
@@ -36,10 +39,10 @@
 								<DuckItem>
 									<BusRef Name="Music" ID="{C97A455D-34F3-4C2B-B6BF-F897A45BAA3C}"/>
 									<DuckingParam>
-										<Volume>-2</Volume>
-										<FadeInTime>1</FadeInTime>
-										<FadeOutTime>1</FadeOutTime>
-										<FadeCurve>FadeSCurve</FadeCurve>
+										<Volume>-3</Volume>
+										<FadeInTime>0.300000011920929</FadeInTime>
+										<FadeOutTime>0.300000011920929</FadeOutTime>
+										<FadeCurve>FadeLog1</FadeCurve>
 										<TargetProp>BusVolume</TargetProp>
 									</DuckingParam>
 								</DuckItem>

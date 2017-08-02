@@ -151,6 +151,13 @@
 										</Element>
 									</ElementList>
 								</Action>
+								<Action Name="Play" ID="{7ACD5C5E-DE62-4D36-ABB0-E90746C82BF1}" ShortID="30751951" Type="Play" Scope="One" Global="false">
+									<ElementList>
+										<Element ID="{467539F0-FE9E-4A03-B2D2-EB7C3BA7F19E}" Global="false">
+											<ObjectRef Name="BlockPlace2" ID="{B8BB14C3-6A22-4520-B3A4-D1095E2DD8C6}" WorkUnitID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}"/>
+										</Element>
+									</ElementList>
+								</Action>
 							</ChildrenList>
 						</Event>
 						<Event Name="fs_player_sprint" ID="{11CE960B-A191-4EFB-8AAC-350280E47806}">

@@ -9,6 +9,7 @@
 						<Switch Name="PlasticHeavy" ID="{BA6DE582-6DDC-4BE9-91BD-C814C409070F}"/>
 						<Switch Name="PlasticLight" ID="{656D1CE4-D25C-44A1-8B29-60228D5D55EC}"/>
 						<Switch Name="Wood" ID="{824DD01B-3578-4D53-8FA0-36CE99535B3A}"/>
+						<Switch Name="Cardboard" ID="{4769ACB1-3733-48C8-8D91-B6B8BCD6FC26}"/>
 					</ChildrenList>
 				</SwitchGroup>
 			</ChildrenList>
