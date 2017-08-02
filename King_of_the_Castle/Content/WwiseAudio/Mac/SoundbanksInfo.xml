@@ -16,6 +16,7 @@
 			<ShortName>SFX</ShortName>
 			<Path>SFX.bnk</Path>
 			<IncludedEvents>
+				<Event Id="3941440279" Name="base_capture_end" ObjectPath="\Events\Default Work Unit\SFX\base_capture_end"/>
 				<Event Id="4187503147" Name="base_captured" ObjectPath="\Events\Default Work Unit\SFX\base_captured"/>
 				<Event Id="732840392" Name="base_capturing" ObjectPath="\Events\Default Work Unit\SFX\base_capturing"/>
 				<Event Id="721354172" Name="block_place" ObjectPath="\Events\Default Work Unit\SFX\block_place"/>
@@ -379,6 +380,10 @@
 				<File Id="928409170" Language="SFX">
 					<ShortName>block_place2.wav</ShortName>
 					<Path>SFX\block_place2_9E69E797.wem</Path>
+				</File>
+				<File Id="941151962" Language="SFX">
+					<ShortName>PartyTime.wav</ShortName>
+					<Path>SFX\PartyTime_9E69E797.wem</Path>
 				</File>
 				<File Id="949918832" Language="SFX">
 					<ShortName>base_capture_3.wav</ShortName>

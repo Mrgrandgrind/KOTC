@@ -778,6 +778,17 @@
 							<ChildrenList>
 								<RandomSequenceContainer Name="Capturing" ID="{7FC6B43C-81EE-4D6F-9098-69A6468EAB75}" ShortID="46859912">
 									<PropertyList>
+										<Property Name="IgnoreParentMaxSoundInstance" Type="bool" Value="True"/>
+										<Property Name="MaxSoundPerInstance" Type="int16">
+											<ValueList>
+												<Value>1</Value>
+											</ValueList>
+										</Property>
+										<Property Name="UseMaxSoundPerInstance" Type="bool">
+											<ValueList>
+												<Value>True</Value>
+											</ValueList>
+										</Property>
 										<Property Name="Volume" Type="Real64">
 											<ValueList>
 												<Value>12</Value>
@@ -921,6 +932,44 @@
 										</Sound>
 									</ChildrenList>
 								</RandomSequenceContainer>
+								<Sound Name="PartyTime" ID="{308C79DA-A6DD-4455-A1F1-9F1D8AD4325D}" ShortID="7387306" Type="SoundFX">
+									<PropertyList>
+										<Property Name="Pitch" Type="int32">
+											<ModifierList>
+												<ModifierInfo>
+													<Modifier Name="" ID="{794419F0-E0F3-4B98-B329-82572E25DD92}">
+														<PropertyList>
+															<Property Name="Enabled" Type="bool" Value="True"/>
+															<Property Name="Min" Type="Real64" Value="-404"/>
+														</PropertyList>
+													</Modifier>
+												</ModifierInfo>
+											</ModifierList>
+										</Property>
+										<Property Name="Volume" Type="Real64">
+											<ValueList>
+												<Value>-20</Value>
+											</ValueList>
+										</Property>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="Conversion">
+											<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
+										</Reference>
+										<Reference Name="OutputBus">
+											<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
+										</Reference>
+									</ReferenceList>
+									<ChildrenList>
+										<AudioFileSource Name="PartyTime" ID="{346A5592-811F-40AA-8BA5-FA33BB924CFD}" ShortID="941151962">
+											<Language>SFX</Language>
+											<AudioFile>PartyTime.wav</AudioFile>
+										</AudioFileSource>
+									</ChildrenList>
+									<ActiveSourceList>
+										<ActiveSource Name="PartyTime" ID="{346A5592-811F-40AA-8BA5-FA33BB924CFD}" Platform="Linked"/>
+									</ActiveSourceList>
+								</Sound>
 							</ChildrenList>
 						</ActorMixer>
 						<ActorMixer Name="Feet" ID="{6792846E-B6FE-4504-AB6D-495362CE7F06}" ShortID="513174070">
