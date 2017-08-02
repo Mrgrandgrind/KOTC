@@ -18,6 +18,10 @@ public:
 
 	virtual void DrawHUD() override;
 
+	void ResetGameOver();
+
+	void SetGameOver(const int& winningTeam);
+
 	FORCEINLINE bool IsViewportVertical() const { return this->m_PlayerCount <= 2; }
 
 	FORCEINLINE class UFont* GetFont() const { return this->m_Font; }
@@ -38,6 +42,8 @@ public:
 	FORCEINLINE const bool& IsPaused() const { return this->m_bPaused; }
 
 	FORCEINLINE void SetPaused(const bool& paused) { this->m_bPaused = paused; }
+
+	FORCEINLINE const bool& IsGameOverReady() const { return this->m_bGameOverReady; }
 
 	template<typename T>
 	FORCEINLINE T* FindComponent()
@@ -91,6 +97,8 @@ protected:
 
 private:
 	bool m_bPaused;
+
+	bool m_bGameOver, m_bGameOverReady;
 
 	int32 m_ControllerId, m_PlayerCount;
 

@@ -23,7 +23,7 @@ public:
 
 	void SpawnPlayers();
 
-	void EndGame(FString message);
+	void EndGame(const int& winner = -1);
 
 	UFUNCTION(BlueprintNativeEvent)
 	void OnBlockPlace(class ABlock *block, AActor *source);
@@ -43,6 +43,9 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "GameOver")
 	const bool& IsGameOver() const { return this->m_bGameOver; }
+
+	UFUNCTION(BlueprintPure, Category = "Paused")
+	bool IsPlayerPaused(class APlayerCharacter *player) { return this->m_PausedPlayers.Contains(player); }
 
 	FORCEINLINE void AddPausedPlayer(class APlayerCharacter *player) { this->m_PausedPlayers.Add(player); }
 

@@ -9,7 +9,7 @@
 #define TITLE_COLOR FLinearColor(0.9f, 0.9f, 0.9f, 0.75f)
 #define GOAL_COLOR FLinearColor(0.9f, 0.9f, 0.9f, 0.75f)
 
-UScoresOverlayComponent::UScoresOverlayComponent()
+UScoresOverlayComponent::UScoresOverlayComponent() : m_TitleText(TEXT(""))
 {
 	this->m_TitleBoxScale = 8.0f;
 	this->m_TitleTextScale = 0.8f;
@@ -70,16 +70,32 @@ void UScoresOverlayComponent::Render(class AGameHUD *hud, const FVector2D& origi
 		origin.Y + extent.Y / 2.0f - bkgHeight / 2.0f, bkgWidth, bkgHeight);
 
 	// Title
-	FString name = gamemode->GetGameModeName().ToString();
+	FString name = this->m_TitleText.IsEmpty() ? gamemode->GetGameModeName().ToString() : this->m_TitleText;
 	hud->GetTextSize(name, width, height, hud->GetFont(), this->m_TitleTextScale * scale);
 
 	x = origin.X + extent.X / 2.0f - width / 2.0f;
 	y = origin.Y + extent.Y / 2.0f - bkgHeight / 2.0f - height;
-	
+
 	float titleOffset = this->m_TitleBoxScale * scale;
 	hud->DrawRect(FLinearColor(0.01f, 0.01f, 0.01f, 0.4f), x - titleOffset / 2.0f, y - titleOffset / 4.0f,
 		width + titleOffset, (origin.Y + extent.Y / 2.0f - bkgHeight / 2.0f) - (y - titleOffset / 4.0f));
-	hud->DrawText(name, this->m_TitleTextColor, x, y, hud->GetFont(), this->m_TitleTextScale * scale);
+
+	if (name.StartsWith(TEXT("Player")) && name.Len() >= 8)
+	{
+		FString playerSub = name.Mid(0, 8), restSub = name.Mid(8), teamText = name.Mid(7, 1);
+		FLinearColor color = gamemode->GetTeamColor(FCString::Atoi(*teamText));
+		color.A = this->m_TitleTextColor.A;
+
+		float w2, h2;
+		hud->GetTextSize(playerSub, w2, h2, hud->GetFont(), this->m_TitleTextScale * scale);
+
+		hud->DrawText(playerSub, color, x, y, hud->GetFont(), this->m_TitleTextScale * scale);
+		hud->DrawText(restSub, this->m_TitleTextColor, x + w2, y, hud->GetFont(), this->m_TitleTextScale * scale);
+	}
+	else
+	{
+		hud->DrawText(name, this->m_TitleTextColor, x, y, hud->GetFont(), this->m_TitleTextScale * scale);
+	}
 
 	FLinearColor teamColor = gamemode->GetTeamColor(hud->GetCharacter()->GetTeam());
 	teamColor.A = this->m_BarAlpha;
@@ -147,7 +163,7 @@ void UScoresOverlayComponent::Render(class AGameHUD *hud, const FVector2D& origi
 
 		this->DrawDashedRect(hud, color, gx, y - barHeight, graphWidth + axisSize, FMath::Max(1.0f, goalLineHeight * 0.5f), goalLineGap * 0.5f);
 
-		FString teamText = FString::Printf(TEXT("%d"), i + 1);
+		FString teamText = FString::Printf(TEXT("P%d"), i + 1);
 		hud->GetTextSize(teamText, width, height, hud->GetFont(), 0.38f * scale);
 		hud->DrawText(teamText, this->m_GoalColor, x + barSize / 2.0f - width / 2.0f, y + axisSize * 1.5f, hud->GetFont(), 0.38f * scale);
 	}

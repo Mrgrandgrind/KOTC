@@ -37,7 +37,7 @@ void AGMCapturePoints::Tick(float delta)
 
 		if (score[pair.Key] >= this->m_WinScore)
 		{
-			Super::EndGame(FString::Printf(TEXT("Team %d Wins!"), pair.Key));
+			Super::EndGame(pair.Key);
 			return;
 		}
 	}

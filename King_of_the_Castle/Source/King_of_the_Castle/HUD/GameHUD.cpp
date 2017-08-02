@@ -8,6 +8,7 @@
 #include "Gamemode/BaseGameMode.h"
 #include "Gamemode/GMCapturePoints.h"
 #include "Gamemode/GMCapturePoints/CapturePoint.h"
+#include "HUD/Components/ScoresOverlayComponent.h"
 
 #include "Engine/Canvas.h"
 
@@ -42,6 +43,27 @@ void AGameHUD::BeginPlay()
 	}
 }
 
+void AGameHUD::ResetGameOver()
+{
+	UScoresOverlayComponent *component = this->FindComponent<UScoresOverlayComponent>();
+	if (component != nullptr)
+	{
+		component->SetTitleText(TEXT(""));
+	}
+	this->m_bGameOver = false;
+}
+
+void AGameHUD::SetGameOver(const int& winningTeam)
+{
+	UScoresOverlayComponent *component = this->FindComponent<UScoresOverlayComponent>();
+	if (component != nullptr)
+	{
+		component->SetTitleText(winningTeam == -1 ? TEXT("Times Up!")
+			: FString::Printf(TEXT("Player %d Won!"), winningTeam));
+	}
+	this->m_bGameOver = true;
+}
+
 void AGameHUD::DrawHUD()
 {
 	Super::DrawHUD();
@@ -59,11 +81,37 @@ void AGameHUD::DrawHUD()
 
 	for (UHUDComponent *component : this->m_Components)
 	{
-		if (this->m_bPaused && !component->m_bRenderWhenPaused)
+		if (this->m_bGameOver)
 		{
-			continue;
+			if (!component->IsA(UScoresOverlayComponent::StaticClass()))
+			{
+				continue;
+			}
+			component->DrawComponent(this, origin, extent, scale, true);
 		}
-		component->DrawComponent(this, origin, extent, scale);
+		else
+		{
+			if (this->m_bPaused && !component->m_bRenderWhenPaused)
+			{
+				continue;
+			}
+			component->DrawComponent(this, origin, extent, scale);
+		}
+	}
+	if (this->m_bGameOver)
+	{
+		FString text = TEXT("Hold A to continue");
+
+		APlayerController *controller = (APlayerController*)this->GetCharacter()->GetController();
+		this->m_bGameOverReady = controller->IsInputKeyDown(EKeys::A) || controller->IsInputKeyDown(EKeys::Gamepad_FaceButton_Bottom);
+		if (this->m_bGameOverReady)
+		{
+			text = TEXT("Ready");
+		}
+		float width, height;
+		Super::GetTextSize(text, width, height, this->m_Font, scale * 0.5f);
+		Super::DrawText(text, FLinearColor(0.9f, 0.9f, 0.9f, 0.75f), origin.X + extent.X / 2.0f - width / 2.0f, 
+			origin.Y + extent.Y - height - 15 * scale, this->m_Font, scale * 0.5f);
 	}
 
 	if (this->GetCharacter()->GetHealth() <= 0.0f)

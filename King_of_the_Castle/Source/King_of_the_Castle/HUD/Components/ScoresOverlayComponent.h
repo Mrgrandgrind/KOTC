@@ -18,11 +18,15 @@ public:
 
 	virtual void SetVisible(const bool& visible) override;
 
+	FORCEINLINE void SetTitleText(FString text) { this->m_TitleText = text; }
+
 protected:
 	// Only for horizontal
 	void DrawDashedRect(class AGameHUD *hud, const FLinearColor& color, const float& x, const float& y, const float& width, const float& height, const float& gap);
 
 	virtual void Render(class AGameHUD *hud, const FVector2D& origin, const FVector2D& extent, const float& scale) override;
+
+	FString m_TitleText;
 
 	float m_TitleBoxScale;
 

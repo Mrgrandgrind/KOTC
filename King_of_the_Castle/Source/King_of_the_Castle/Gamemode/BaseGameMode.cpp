@@ -94,6 +94,25 @@ void ABaseGameMode::Tick(float delta)
 
 	if (this->IsGameOver())
 	{
+		// Check to see if we're ready to restart
+		for (FConstPlayerControllerIterator itr = Super::GetWorld()->GetPlayerControllerIterator(); itr; ++itr)
+		{
+			//if ((*itr)->IsInputKeyDown(EKeys::G))
+			//{
+			//	break;
+			//}
+			AGameHUD *hud = Cast<AGameHUD>((*itr)->GetHUD());
+			if (hud != nullptr && !hud->IsGameOverReady())
+			{
+				// Someone isn't ready to restart
+				return;
+			}
+		}
+		for (FConstPlayerControllerIterator itr = Super::GetWorld()->GetPlayerControllerIterator(); itr; ++itr)
+		{
+			Super::GetWorldTimerManager().ClearAllTimersForObject((*itr)->GetPawn());
+		}
+		UGameplayStatics::OpenLevel(Super::GetWorld(), TEXT("Main_Level"));
 		return;
 	}
 
@@ -103,22 +122,32 @@ void ABaseGameMode::Tick(float delta)
 	}
 	if (this->m_Timer >= this->m_GameDuration)
 	{
-		this->EndGame(FString::Printf(TEXT("Time Limit Reached")));
+		int winner = -1;
+		for (int i = 0; i < this->m_TeamCount; i++)
+		{
+			if (this->GetPlace(i + 1) == 1)
+			{
+				winner = i + 1;
+				break;
+			}
+		}
+		this->EndGame(winner);
 	}
 }
 
-void ABaseGameMode::EndGame(FString message)
+void ABaseGameMode::EndGame(const int& winner)
 {
-	this->m_bGameOver = true;
 	for (FConstPlayerControllerIterator itr = Super::GetWorld()->GetPlayerControllerIterator(); itr; ++itr)
 	{
 		AGameHUD *hud = Cast<AGameHUD>((*itr)->GetHUD());
 		if (hud != nullptr)
 		{
-			//hud->SetGameOver(message);
+			hud->SetGameOver(winner);
 		}
-		(*itr)->SetInputMode(FInputModeUIOnly());
+		(*itr)->SetIgnoreMoveInput(true);
+		//(*itr)->SetInputMode(FInputModeUIOnly());
 	}
+	this->m_bGameOver = true;
 }
 
 bool ABaseGameMode::GetSpawnPoint(const int& team, FVector& outLocation, FRotator& outRotation) const
@@ -232,18 +261,18 @@ void ABaseGameMode::SpawnPlayers()
 			this->m_TeamCount = team;
 		}
 
-		APlayerController *controller;
-		if (i == 0)
+		APlayerController *controller = UGameplayStatics::GetPlayerController(Super::GetWorld(), i);
+		if(controller == nullptr)
 		{
-			controller = UGameplayStatics::GetPlayerController(Super::GetWorld(), 0);
-		}
-		else
-		{
-			controller  = UGameplayStatics::CreatePlayer(Super::GetWorld(), -1, true);
+			controller = UGameplayStatics::CreatePlayer(Super::GetWorld(), -1, true);
 		}
 		if (controller == nullptr)
 		{
 			continue;
+		}
+		if (controller->GetPawn() != nullptr)
+		{
+			controller->GetPawn()->Destroy();
 		}
 		controller->Possess(character);
 	}

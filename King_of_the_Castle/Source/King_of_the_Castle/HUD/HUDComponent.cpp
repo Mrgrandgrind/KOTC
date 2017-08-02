@@ -11,9 +11,9 @@ UHUDComponent::UHUDComponent()
 	this->m_bRenderWhenPaused = false;
 }
 
-void UHUDComponent::DrawComponent(class AGameHUD *hud, const FVector2D& origin, const FVector2D& extent, const float& scale)
+void UHUDComponent::DrawComponent(class AGameHUD *hud, const FVector2D& origin, const FVector2D& extent, const float& scale, const bool& forceRender)
 {
-	if (!this->m_bRender)
+	if (!this->m_bRender && !forceRender)
 	{
 		return;
 	}

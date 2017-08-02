@@ -16,7 +16,7 @@ class KING_OF_THE_CASTLE_API UHUDComponent : public UObject
 public:
 	UHUDComponent();
 
-	void DrawComponent(class AGameHUD *hud, const FVector2D& origin, const FVector2D& extent, const float& scale);
+	void DrawComponent(class AGameHUD *hud, const FVector2D& origin, const FVector2D& extent, const float& scale, const bool& forceRender = false);
 
 	FORCEINLINE virtual void SetVisible(const bool& visible) { this->m_bRender = visible; }
 

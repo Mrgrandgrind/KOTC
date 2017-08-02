@@ -72,8 +72,6 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
-		
-	//class UBuildWheel* GetBuildWheel() const;
 
 	UFUNCTION(BlueprintPure, Category = "Combat")
 	const float& GetHealth() const { return this->m_Health; }

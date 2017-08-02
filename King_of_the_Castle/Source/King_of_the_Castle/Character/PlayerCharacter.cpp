@@ -168,7 +168,8 @@ ABuildArea* APlayerCharacter::GetActiveBuildArea()
 
 void APlayerCharacter::TogglePause()
 {
-	AGameHUD *hud = Cast<AGameHUD>(((APlayerController*)Super::GetController())->GetHUD());
+	APlayerController *controller = (APlayerController*)Super::GetController();
+	AGameHUD *hud = Cast<AGameHUD>(controller->GetHUD());
 	if (hud != nullptr)
 	{
 		hud->SetPaused(!hud->IsPaused());
@@ -191,6 +192,15 @@ void APlayerCharacter::TogglePause()
 void APlayerCharacter::Tick(float delta)
 {
 	Super::Tick(delta);
+
+	if (GetGameMode(Super::GetWorld())->IsGameOver())
+	{
+		if (this->IsBrushVisible())
+		{
+			this->SetBrushVisible(false);
+		}
+		return;
+	}
 
 	// Dodge timer. This will allow for double tapping A to dodge and single tap to jump.
 	if (this->m_DodgeCooldownCounter <= this->m_DodgeCooldownTime)
@@ -423,7 +433,7 @@ void APlayerCharacter::Dodge()
 
 void APlayerCharacter::Attack()
 {
-	if (this->m_bAttacking || this->m_bIsStunned)
+	if (this->m_bAttacking || this->m_bIsStunned || GetGameMode(Super::GetWorld())->IsGameOver())
 	{
 		return;
 	}
@@ -450,7 +460,7 @@ void APlayerCharacter::Attack()
 
 void APlayerCharacter::AttackUpper()
 {
-	if (this->m_bAttacking || this->m_bIsStunned)
+	if (this->m_bAttacking || this->m_bIsStunned || GetGameMode(Super::GetWorld())->IsGameOver())
 	{
 		return;
 	}
@@ -473,7 +483,7 @@ void APlayerCharacter::AttackUpper()
 
 void APlayerCharacter::AttackLower()
 {
-	if (this->m_bAttacking || this->m_bIsStunned)
+	if (this->m_bAttacking || this->m_bIsStunned || GetGameMode(Super::GetWorld())->IsGameOver())
 	{
 		return;
 	}
@@ -570,6 +580,7 @@ void APlayerCharacter::OnStunned_Implementation(const float& duration, bool rege
 		return;
 	}
 	this->m_bIsStunned = true;
+	Super::GetController()->SetIgnoreMoveInput(true);
 
 	// Automatically drop the flag block (if carrying) when stunned
 	UBlockData *data = this->m_PrimaryBrush->GetBlockData(this->m_PrimaryBrush->GetIndexOf(ID_FLAG_BLOCK));
@@ -599,6 +610,7 @@ void APlayerCharacter::OnStunned_Implementation(const float& duration, bool rege
 			}
 		}
 		this->m_bIsStunned = false;
+		Super::GetController()->SetIgnoreMoveInput(false);
 	}), duration <= 0.0f ? this->m_StunDelay : duration, false);
 }
 
@@ -641,16 +653,16 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *input)
 	input->BindAction("Destroy Block", IE_Pressed, this, &APlayerCharacter::InputBlockDestroyDownEvent);
 	input->BindAction("Destroy Block", IE_Released, this, &APlayerCharacter::InputBlockDestroyUpEvent);
 
-	input->BindAction("Brush up", IE_Pressed, this, &APlayerCharacter::InputBlockTypeUpEvent);
-	input->BindAction("Brush down", IE_Pressed, this, &APlayerCharacter::InputBlockTypeDownEvent);
-	input->BindAction("Building toggle", IE_Pressed, this, &APlayerCharacter::ToggleBuildMode);
+	//input->BindAction("Brush up", IE_Pressed, this, &APlayerCharacter::InputBlockTypeUpEvent);
+	//input->BindAction("Brush down", IE_Pressed, this, &APlayerCharacter::InputBlockTypeDownEvent);
+	//input->BindAction("Building toggle", IE_Pressed, this, &APlayerCharacter::ToggleBuildMode);
 
 	input->BindAction("Drop Block", IE_Pressed, this, &APlayerCharacter::DropBlock);
 
 	input->BindAction("View Scores", IE_Pressed, this, &APlayerCharacter::InputToggleScoresTable);
 	input->BindAction("View Scores", IE_Released, this, &APlayerCharacter::InputToggleScoresTable);
 
-	input->BindAction("Pause", IE_Pressed, this, &APlayerCharacter::TogglePause);
+	//input->BindAction("Pause", IE_Pressed, this, &APlayerCharacter::TogglePause);
 }
 
 void APlayerCharacter::InputToggleScoresTable()

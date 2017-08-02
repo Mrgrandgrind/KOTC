@@ -22,4 +22,15 @@ void UPauseOverlayComponent::Render(AGameHUD *hud, const FVector2D& origin, cons
 	color.A = 0.8f;
 
 	hud->DrawRect(color, origin.X, origin.Y, extent.X, extent.Y);
+
+	float x = origin.X + 20.0f * scale, y = origin.Y + 20.0f * scale, width, height;
+
+	FString text = FString("Paused");
+	hud->GetTextSize(text, width, height, hud->GetFont(), 2.0f * scale);
+
+	if (hud->IsOpposite())
+	{
+		x = origin.X + extent.X - width - 20.0f * scale;
+	}
+	hud->DrawText(text, FLinearColor(0.9f, 0.9f, 0.9f, 0.75f), x, y, hud->GetFont(), 2.0f * scale);
 }
