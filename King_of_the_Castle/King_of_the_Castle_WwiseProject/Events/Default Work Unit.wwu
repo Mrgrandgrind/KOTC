@@ -236,8 +236,7 @@
 								</Action>
 								<Action Name="Play" ID="{BFC785FF-5AFF-4AA0-A708-44661867168B}" ShortID="909633987" Type="Play" Scope="One" Global="false">
 									<PropertyList>
-										<Property Name="Delay" Type="Real64" Value="0.5"/>
-										<Property Name="Probability" Type="Real64" Value="50"/>
+										<Property Name="Delay" Type="Real64" Value="0.1"/>
 									</PropertyList>
 									<ElementList>
 										<Element ID="{0881893D-73F7-40EC-996B-F99AE1F4926B}" Global="false">

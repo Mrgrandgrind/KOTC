@@ -940,7 +940,7 @@
 													<Modifier Name="" ID="{794419F0-E0F3-4B98-B329-82572E25DD92}">
 														<PropertyList>
 															<Property Name="Enabled" Type="bool" Value="True"/>
-															<Property Name="Min" Type="Real64" Value="-404"/>
+															<Property Name="Min" Type="Real64" Value="-632"/>
 														</PropertyList>
 													</Modifier>
 												</ModifierInfo>
