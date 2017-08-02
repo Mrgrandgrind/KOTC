@@ -16,6 +16,7 @@
 			<ShortName>SFX</ShortName>
 			<Path>SFX.bnk</Path>
 			<IncludedEvents>
+				<Event Id="3941440279" Name="base_capture_end" ObjectPath="\Events\Default Work Unit\SFX\base_capture_end"/>
 				<Event Id="4187503147" Name="base_captured" ObjectPath="\Events\Default Work Unit\SFX\base_captured"/>
 				<Event Id="732840392" Name="base_capturing" ObjectPath="\Events\Default Work Unit\SFX\base_capturing"/>
 				<Event Id="721354172" Name="block_place" ObjectPath="\Events\Default Work Unit\SFX\block_place"/>
@@ -30,7 +31,7 @@
 			<IncludedMemoryFiles>
 				<File Id="10071859" Language="SFX">
 					<ShortName>base_capture_2.wav</ShortName>
-					<Path>SFX\base_capture_2_9E69E797.wem</Path>
+					<Path>SFX\base_capture_2_54C4BF27.wem</Path>
 				</File>
 				<File Id="41819352" Language="SFX">
 					<ShortName>robot_whir_1.wav</ShortName>
@@ -56,6 +57,10 @@
 					<ShortName>jump_land_paper.13.wav</ShortName>
 					<Path>SFX\jump_land_paper.13_9E69E797.wem</Path>
 				</File>
+				<File Id="84931670" Language="SFX">
+					<ShortName>Cardboard1.wav</ShortName>
+					<Path>SFX\Cardboard1_9E69E797.wem</Path>
+				</File>
 				<File Id="85191755" Language="SFX">
 					<ShortName>Punch_hit.wav</ShortName>
 					<Path>SFX\Punch_hit_FD4DCE48.wem</Path>
@@ -79,6 +84,10 @@
 				<File Id="116008375" Language="SFX">
 					<ShortName>fs_paper_heel.19.wav</ShortName>
 					<Path>SFX\fs_paper_heel.19_9E69E797.wem</Path>
+				</File>
+				<File Id="145087852" Language="SFX">
+					<ShortName>Cardboard3.wav</ShortName>
+					<Path>SFX\Cardboard3_9E69E797.wem</Path>
 				</File>
 				<File Id="164525032" Language="SFX">
 					<ShortName>fs_plasticheavy_heel.21.wav</ShortName>
@@ -120,6 +129,10 @@
 					<ShortName>fs_plasticlight_heel.3.wav</ShortName>
 					<Path>SFX\fs_plasticlight_heel.3_9E69E797.wem</Path>
 				</File>
+				<File Id="326277331" Language="SFX">
+					<ShortName>Cardboard6.wav</ShortName>
+					<Path>SFX\Cardboard6_9E69E797.wem</Path>
+				</File>
 				<File Id="333252647" Language="SFX">
 					<ShortName>jump_plasticheavy_up.7.wav</ShortName>
 					<Path>SFX\jump_plasticheavy_up.7_9E69E797.wem</Path>
@@ -160,9 +173,17 @@
 					<ShortName>jump_plasticheavy_land.23.wav</ShortName>
 					<Path>SFX\jump_plasticheavy_land.23_9E69E797.wem</Path>
 				</File>
+				<File Id="421866068" Language="SFX">
+					<ShortName>Cardboard2.wav</ShortName>
+					<Path>SFX\Cardboard2_9E69E797.wem</Path>
+				</File>
 				<File Id="430707675" Language="SFX">
 					<ShortName>fs_paper_heel.29.wav</ShortName>
 					<Path>SFX\fs_paper_heel.29_9E69E797.wem</Path>
+				</File>
+				<File Id="433348732" Language="SFX">
+					<ShortName>block_place2_3.wav</ShortName>
+					<Path>SFX\block_place2_3_9E69E797.wem</Path>
 				</File>
 				<File Id="435676158" Language="SFX">
 					<ShortName>jump_lightplastic_up.7.wav</ShortName>
@@ -204,13 +225,21 @@
 					<ShortName>fs_plasticheavy_toe.7.wav</ShortName>
 					<Path>SFX\fs_plasticheavy_toe.7_9E69E797.wem</Path>
 				</File>
+				<File Id="517105235" Language="SFX">
+					<ShortName>Cardboard4.wav</ShortName>
+					<Path>SFX\Cardboard4_9E69E797.wem</Path>
+				</File>
+				<File Id="518067734" Language="SFX">
+					<ShortName>Cardboard5.wav</ShortName>
+					<Path>SFX\Cardboard5_9E69E797.wem</Path>
+				</File>
 				<File Id="522366749" Language="SFX">
 					<ShortName>Base Capturing 2.wav</ShortName>
 					<Path>SFX\Base Capturing 2_9E69E797.wem</Path>
 				</File>
 				<File Id="555214362" Language="SFX">
 					<ShortName>base_capture_1.wav</ShortName>
-					<Path>SFX\base_capture_1_9E69E797.wem</Path>
+					<Path>SFX\base_capture_1_853E68C1.wem</Path>
 				</File>
 				<File Id="555378130" Language="SFX">
 					<ShortName>fs_plasticheavy_heel.9.wav</ShortName>
@@ -239,6 +268,10 @@
 				<File Id="646575065" Language="SFX">
 					<ShortName>jump_lightplastic_land.5.wav</ShortName>
 					<Path>SFX\jump_lightplastic_land.5_9E69E797.wem</Path>
+				</File>
+				<File Id="660981049" Language="SFX">
+					<ShortName>block_place2_2.wav</ShortName>
+					<Path>SFX\block_place2_2_9E69E797.wem</Path>
 				</File>
 				<File Id="689139830" Language="SFX">
 					<ShortName>fs_plasticlight_heel.7.wav</ShortName>
@@ -314,7 +347,7 @@
 				</File>
 				<File Id="880077615" Language="SFX">
 					<ShortName>Hit Low.wav</ShortName>
-					<Path>SFX\Hit Low_9E69E797.wem</Path>
+					<Path>SFX\Hit Low_21FDD279.wem</Path>
 				</File>
 				<File Id="900796214" Language="SFX">
 					<ShortName>fs_plasticlight_heel.13.wav</ShortName>
@@ -340,9 +373,21 @@
 					<ShortName>robot_whir_2.wav</ShortName>
 					<Path>SFX\robot_whir_2_9E69E797.wem</Path>
 				</File>
+				<File Id="928193508" Language="SFX">
+					<ShortName>block_place2_1.wav</ShortName>
+					<Path>SFX\block_place2_1_9E69E797.wem</Path>
+				</File>
+				<File Id="928409170" Language="SFX">
+					<ShortName>block_place2.wav</ShortName>
+					<Path>SFX\block_place2_9E69E797.wem</Path>
+				</File>
+				<File Id="941151962" Language="SFX">
+					<ShortName>PartyTime.wav</ShortName>
+					<Path>SFX\PartyTime_9E69E797.wem</Path>
+				</File>
 				<File Id="949918832" Language="SFX">
 					<ShortName>base_capture_3.wav</ShortName>
-					<Path>SFX\base_capture_3_9E69E797.wem</Path>
+					<Path>SFX\base_capture_3_49785351.wem</Path>
 				</File>
 				<File Id="957496795" Language="SFX">
 					<ShortName>fs_wood_heel.19.wav</ShortName>

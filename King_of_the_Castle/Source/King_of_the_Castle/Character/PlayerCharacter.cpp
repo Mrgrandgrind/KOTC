@@ -5,6 +5,7 @@
 
 #include "HUD/GameHUD.h"
 #include "HUD/Components/CrosshairComponent.h"
+#include "HUD/Components/StatBarsComponent.h"
 #include "HUD/Components/ScoresOverlayComponent.h"
 #include "Construction/Block.h"
 #include "Construction/BlockData.h"
@@ -31,17 +32,16 @@
 #define LAST_ATTACKER_TIMER 0.1f
 
 #define DAMAGE_TIMER 2.0f // How long the player has to be out of combat for before health starts to regen again
-#define DODGE_DOUBLE_TAP_TIME 0.32f
 
 #define MATERIAL_LOCATION TEXT("Material'/Game/AdvancedLocomotionV2/Characters/Mannequin/lambert2.lambert2'")
 
 // Sets default values
-APlayerCharacter::APlayerCharacter() : m_bPlacePressed(false), m_PlacePressCounter(0.0f), 
-m_DodgePressTimer(DODGE_DOUBLE_TAP_TIME), m_Team(-1), m_BuildReach(KOTC_CONSTRUCTION_BLOCK_REACH)
+APlayerCharacter::APlayerCharacter() : m_Team(-1), m_BuildReach(KOTC_CONSTRUCTION_BLOCK_REACH)
 {
 	static ConstructorHelpers::FObjectFinder<UMaterialInterface> Material(MATERIAL_LOCATION);
 	this->m_Material = Material.Object;
 
+	this->m_MeleeSpeed = 1.0f;
 	this->m_BaseTurnRate = 45.0f;
 	this->m_BaseLookUpRate = 45.0f;
 
@@ -95,7 +95,7 @@ void APlayerCharacter::BeginPlay()
 	// Start with full health and stamina
 	this->m_Health = this->m_MaxHealth;
 	this->m_Stamina = this->m_MaxStamina;
-	this->UpdateMovementSpeed();
+	//this->UpdateMovementSpeed();
 
 	// For some strange reason the primary brush gets unset by unreal. This will ensure that it is set. (Otherwise the game will crash)
 	if (this->m_PrimaryBrush == nullptr)
@@ -111,6 +111,21 @@ void APlayerCharacter::BeginPlay()
 
 	// Update team collision (required for doors to function)
 	this->SetTeam(this->m_Team);
+	this->SetBuildModeEnabled(true);
+}
+
+bool APlayerCharacter::HasStamina(const float& req)
+{
+	if (this->m_Stamina >= req)
+	{
+		return true;
+	}
+	UStatBarsComponent *component = AGameHUD::FindComponent<UStatBarsComponent>(this);
+	if (component != nullptr)
+	{
+		component->FlashStamina();
+	}
+	return false;
 }
 
 UCameraComponent* APlayerCharacter::GetCamera()
@@ -151,16 +166,33 @@ ABuildArea* APlayerCharacter::GetActiveBuildArea()
 	return this->m_BuildAreas.Num() == 0 ? nullptr : this->m_BuildAreas.Last();
 }
 
+void APlayerCharacter::TogglePause()
+{
+	AGameHUD *hud = Cast<AGameHUD>(((APlayerController*)Super::GetController())->GetHUD());
+	if (hud != nullptr)
+	{
+		hud->SetPaused(!hud->IsPaused());
+	}
+	ABaseGameMode *gamemode = GetGameMode(Super::GetWorld());
+	if (gamemode != nullptr)
+	{
+		if (hud->IsPaused())
+		{
+			gamemode->AddPausedPlayer(this);
+		}
+		else
+		{
+			gamemode->RemovePausedPlayer(this);
+		}
+	}
+}
+
 // Called every frame
 void APlayerCharacter::Tick(float delta)
 {
 	Super::Tick(delta);
 
 	// Dodge timer. This will allow for double tapping A to dodge and single tap to jump.
-	if (this->m_DodgePressTimer < DODGE_DOUBLE_TAP_TIME)
-	{
-		this->m_DodgePressTimer += delta;
-	}
 	if (this->m_DodgeCooldownCounter <= this->m_DodgeCooldownTime)
 	{
 		this->m_DodgeCooldownCounter += delta;
@@ -177,7 +209,7 @@ void APlayerCharacter::Tick(float delta)
 	{
 		this->SetHealth(this->m_Health + this->m_HealthRegenSpeed * delta);
 	}
-	if (this->m_Stamina < this->m_MaxStamina && !this->m_bRushing && !this->m_bSprinting)
+	if (this->m_Stamina < this->m_MaxStamina && !this->m_bRushing && !this->m_bSprinting && !this->m_bAttacking && !this->m_bIsStunned)
 	{
 		this->SetStamina(this->m_Stamina + this->m_StaminaRegenSpeed * delta);
 	}
@@ -187,24 +219,9 @@ void APlayerCharacter::Tick(float delta)
 		Super::AddMovementInput(this->GetCamera()->GetForwardVector(), 0.1f);
 	}
 
-	// Subtract cost of stamina if rushing or sprinting
-	if (this->m_bRushing)
-	{
-		this->UpdateMovementSpeed();
-
-		this->SetStamina(this->m_Stamina - this->m_RushStaminaCost * delta);
-		if (this->m_Stamina == 0.0f)
-		{
-			this->InputRushDisable();
-		}
-	}
-	else if (this->m_bSprinting)
+	if (this->m_bSprinting)
 	{
 		this->SetStamina(this->m_Stamina - this->m_SprintStaminaCost * delta);
-		if (this->m_Stamina == 0.0f)
-		{
-			this->InputSprintDisable();
-		}
 	}
 
 	// Updating building mechanics
@@ -276,24 +293,19 @@ void APlayerCharacter::SetBrushVisible(const bool& visible)
 
 void APlayerCharacter::SetBuildModeEnabled(const bool& enable)
 {
-	this->m_bBuildingEnabled = enable;
-	if (!enable)
+	this->m_bBuildingEnabled = true;
+	if (!true)
 	{
-		this->SetBrushVisible(enable);
+		this->SetBrushVisible(true);
 	}
 	if (Super::GetController() != nullptr)
 	{
-		AGameHUD *hud = Cast<AGameHUD>(((APlayerController*)Super::GetController())->GetHUD());
-		if (hud == nullptr)
-		{
-			return;
-		}
-		UCrosshairComponent *component = hud->FindComponent<UCrosshairComponent>();
+		UCrosshairComponent *component = AGameHUD::FindComponent<UCrosshairComponent>(this);
 		if (component == nullptr)
 		{
 			return;
 		}
-		component->SetVisible(enable);
+		component->SetVisible(true);
 	}
 }
 
@@ -329,29 +341,29 @@ void APlayerCharacter::DropBlock()
 	}
 }
 
-void APlayerCharacter::UpdateMovementSpeed() const
-{
-	float speed;
-	if (this->m_bRushing)
-	{
-		// Rush speed is an acceleration process
-		speed = FMath::Min(Super::GetCharacterMovement()->MaxWalkSpeed
-			+ this->m_RushAcceleration * Super::GetWorld()->GetDeltaSeconds(), this->m_RushSpeed);
-	}
-	else if (this->m_bSprinting)
-	{
-		speed = this->m_SprintSpeed;
-	}
-	else
-	{
-		speed = this->m_WalkSpeed;
-	}
-	Super::GetCharacterMovement()->MaxWalkSpeed = speed;
-}
+//void APlayerCharacter::UpdateMovementSpeed() const
+//{
+//	float speed;
+//	if (this->m_bRushing)
+//	{
+//		// Rush speed is an acceleration process
+//		speed = FMath::Min(Super::GetCharacterMovement()->MaxWalkSpeed
+//			+ this->m_RushAcceleration * Super::GetWorld()->GetDeltaSeconds(), this->m_RushSpeed);
+//	}
+//	else if (this->m_bSprinting)
+//	{
+//		speed = this->m_SprintSpeed;
+//	}
+//	else
+//	{
+//		speed = this->m_WalkSpeed;
+//	}
+//	Super::GetCharacterMovement()->MaxWalkSpeed = speed;
+//}
 
 void APlayerCharacter::Dodge()
 {
-	if (this->m_Stamina < this->m_DodgeStaminaCost)
+	if (!this->HasStamina(this->m_DodgeStaminaCost))
 	{
 		return;
 	}
@@ -359,7 +371,28 @@ void APlayerCharacter::Dodge()
 	float x = Super::InputComponent->GetAxisValue(TEXT("LeftThumbX")),
 		y = Super::InputComponent->GetAxisValue(TEXT("LeftThumbY"));
 
-	// If there's no direction do nothing
+	if (x == 0.0f && y == 0.0f)
+	{
+		APlayerController *controller = (APlayerController*)Super::GetController();
+		if (controller->IsInputKeyDown(EKeys::W))
+		{
+			y = 1.0f;
+		}
+		if (controller->IsInputKeyDown(EKeys::A))
+		{
+			x = -1.0f;
+		}
+		if (controller->IsInputKeyDown(EKeys::S))
+		{
+			y = -1.0f;
+		}
+		if (controller->IsInputKeyDown(EKeys::D))
+		{
+			x = 1.0f;
+		}
+	}
+
+	// If there's no direction
 	if (x == 0.0f && y == 0.0f)
 	{
 		return;
@@ -394,21 +427,16 @@ void APlayerCharacter::Attack()
 	{
 		return;
 	}
-	if (this->m_Stamina < this->m_MeleeStaminaCost)
+	if (Super::GetCharacterMovement()->IsFalling())
 	{
 		return;
 	}
-	if (Super::GetCharacterMovement()->IsFalling())
+	if (!this->HasStamina(this->m_MeleeStaminaCost))
 	{
 		return;
 	}
 	this->m_bAttacking = true;
 	this->m_AttackType = EAttackType::Forward;
-
-	//if (Super::GetCharacterMovement()->IsFalling())
-	//{
-	//	Super::LaunchCharacter(FVector(0.0f, 0.0f, -1000.0f), false, true);
-	//}
 
 	FTimerHandle handle;
 	Super::GetWorldTimerManager().SetTimer(handle, FTimerDelegate::CreateLambda([this]()
@@ -417,7 +445,7 @@ void APlayerCharacter::Attack()
 		this->CheckAttackCollision(this->m_ForwardMeleeCapsule);
 
 		this->m_bAttacking = false;
-	}), ATTACK_FORWARD_PREDELAY, false);
+	}), ATTACK_FORWARD_PREDELAY / this->m_MeleeSpeed, false);
 }
 
 void APlayerCharacter::AttackUpper()
@@ -426,7 +454,7 @@ void APlayerCharacter::AttackUpper()
 	{
 		return;
 	}
-	if (this->m_Stamina < this->m_MeleeStaminaCost)
+	if (!this->HasStamina(this->m_MeleeStaminaCost))
 	{
 		return;
 	}
@@ -449,18 +477,18 @@ void APlayerCharacter::AttackLower()
 	{
 		return;
 	}
-	if (this->m_Stamina < this->m_MeleeStaminaCost)
+	if (!Super::GetCharacterMovement()->IsFalling())
 	{
 		return;
 	}
-	if (!Super::GetCharacterMovement()->IsFalling())
+	if (!this->HasStamina(this->m_MeleeStaminaCost))
 	{
 		return;
 	}
 	FVector origin, extent;
 	Super::GetActorBounds(true, origin, extent);
 
-	FVector start = Super::GetActorLocation() - FVector(0.0f, 0.0f, extent.Z / 2.0f), 
+	FVector start = Super::GetActorLocation() - FVector(0.0f, 0.0f, extent.Z / 2.0f),
 		end = start - FVector(0.0f, 0.0f, 500.0f);
 
 	FCollisionQueryParams params;
@@ -529,7 +557,7 @@ void APlayerCharacter::CheckAttackCollision(UCapsuleComponent *capsule, const fl
 				* this->m_MeleeKnockbackForce, false, false);
 
 			// Reset damage timer so they don't regenerate health for a few seconds
-			player->m_DamageTimer = 0.0f; 
+			player->m_DamageTimer = 0.0f;
 		}
 	}
 }
@@ -583,13 +611,8 @@ float APlayerCharacter::TakeDamage(float damageAmount, FDamageEvent const& damag
 {
 	if (!this->m_bIsStunned)
 	{
-		this->SetHealth(this->m_Health - damageAmount);
 		this->OnAttacked(damageCauser, damageAmount);
-
-		if (this->m_Health <= 0.0f)
-		{
-			this->OnStunned(this->m_StunDelay, true, true);
-		}
+		this->SetHealth(this->m_Health - damageAmount);
 	}
 	return damageAmount;
 }
@@ -602,27 +625,11 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *input)
 	input->BindAxis("LeftThumbX");
 	input->BindAxis("LeftThumbY");
 
-	//input->BindAxis("MoveRight", this, &APlayerCharacter::MoveRight);
-	//input->BindAxis("MoveForward", this, &APlayerCharacter::MoveForward);
-
-	//input->BindAxis("Turn", this, &APawn::AddControllerYawInput);
-	//input->BindAxis("TurnRate", this, &APlayerCharacter::TurnAtRate);
-	//input->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
-	//input->BindAxis("LookUpRate", this, &APlayerCharacter::LookUpAtRate);
-
-	//input->BindAxis("Turn", this, &APawn::AddControllerYawInput);
-	//input->BindAxis("TurnRate", this, &APlayerCharacter::TurnAtRate);
-	//input->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
-	//input->BindAxis("LookUpRate", this, &APlayerCharacter::LookUpAtRate);
-
 	//input->BindAction("Jump", IE_Pressed, this, &APlayerCharacter::Jump);
 	//input->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
-	input->BindAction("Rush", IE_Pressed, this, &APlayerCharacter::InputRushEnable);
-	input->BindAction("Rush", IE_Released, this, &APlayerCharacter::InputRushDisable);
-
-	//input->BindAction("Sprint", IE_Pressed, this, &APlayerCharacter::InputSprintEnable);
-	//input->BindAction("Sprint", IE_Released, this, &APlayerCharacter::InputSprintDisable);
+	//input->BindAction("Rush", IE_Pressed, this, &APlayerCharacter::InputRushEnable);
+	//input->BindAction("Rush", IE_Released, this, &APlayerCharacter::InputRushDisable);
 
 	input->BindAction("Dodge", IE_Pressed, this, &APlayerCharacter::Dodge);
 	input->BindAction("Attack", IE_Pressed, this, &APlayerCharacter::Attack);
@@ -642,91 +649,18 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *input)
 
 	input->BindAction("View Scores", IE_Pressed, this, &APlayerCharacter::InputToggleScoresTable);
 	input->BindAction("View Scores", IE_Released, this, &APlayerCharacter::InputToggleScoresTable);
+
+	input->BindAction("Pause", IE_Pressed, this, &APlayerCharacter::TogglePause);
 }
 
 void APlayerCharacter::InputToggleScoresTable()
 {
-	AGameHUD *hud = Cast<AGameHUD>(((APlayerController*)Super::GetController())->GetHUD());
-	if (hud == nullptr)
-	{
-		return;
-	}
-	UScoresOverlayComponent *component = hud->FindComponent<UScoresOverlayComponent>();
+	UScoresOverlayComponent *component = AGameHUD::FindComponent<UScoresOverlayComponent>(this);
 	if (component == nullptr)
 	{
 		return;
 	}
 	component->SetVisible(!component->IsVisible());
-}
-
-void APlayerCharacter::Jump()
-{
-	if (!this->m_bBlockMovement)
-	{
-		Super::Jump();
-
-		//if (this->m_DodgePressTimer < DODGE_DOUBLE_TAP_TIME 
-		//	&& this->m_DodgeCooldownCounter >= this->m_DodgeCooldownTime)
-		//{
-		//	this->Dodge();
-		//	Super::StopJumping();
-
-		//	this->m_DodgePressTimer = DODGE_DOUBLE_TAP_TIME;
-		//}
-		//else
-		//{
-		//	this->m_DodgePressTimer = 0.0f;
-		//}
-	}
-}
-
-void APlayerCharacter::TurnAtRate(float rate)
-{
-	// If rush is active multiply the turn amount by a specified multiplier
-	if (this->m_bRushing)
-	{
-		rate *= this->m_RushTurnMultiplier;
-	}
-	Super::AddControllerYawInput(rate * this->m_BaseTurnRate * Super::GetWorld()->GetDeltaSeconds());
-}
-
-void APlayerCharacter::LookUpAtRate(float rate)
-{
-	Super::AddControllerPitchInput(rate * this->m_BaseLookUpRate * Super::GetWorld()->GetDeltaSeconds());
-}
-
-void APlayerCharacter::MoveForward(float value)
-{
-	if (this->m_bBlockMovement || this->m_bIsStunned)
-	{
-		return;
-	}
-	if (Super::Controller != nullptr && value != 0.0f)
-	{
-		// Find out which way is forward and add the movement
-		const FRotator yaw(0.0f, Super::Controller->GetControlRotation().Yaw, 0.0f);
-		Super::AddMovementInput(FRotationMatrix(yaw).GetUnitAxis(EAxis::X), value);
-	}
-}
-
-void APlayerCharacter::MoveRight(float value)
-{
-	if (this->m_bBlockMovement || this->m_bIsStunned)
-	{
-		return;
-	}
-	if (Super::Controller != nullptr && value != 0.0f)
-	{
-		// If rush is active multiply the turn amount by a specified multiplier
-		if (this->m_bRushing)
-		{
-			value *= this->m_RushTurnMultiplier;
-		}
-
-		// Find out which way is right and add the movement
-		const FRotator yaw(0.0f, Super::Controller->GetControlRotation().Yaw, 0.0f);
-		Super::AddMovementInput(FRotationMatrix(yaw).GetUnitAxis(EAxis::Y), value);
-	}
 }
 
 void APlayerCharacter::InputBlockTypeUpEvent()

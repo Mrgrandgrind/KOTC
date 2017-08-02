@@ -76,7 +76,7 @@
 						<CurrentStateRef Name="Level_4" ID="{ECD9E445-AD1B-4E6F-92FE-3537EBC18C2B}"/>
 					</CurrentStateList>
 					<CurrentSwitchList ShowAll="true">
-						<CurrentSwitchRef Name="Wood" ID="{824DD01B-3578-4D53-8FA0-36CE99535B3A}"/>
+						<CurrentSwitchRef Name="Cardboard" ID="{4769ACB1-3733-48C8-8D91-B6B8BCD6FC26}"/>
 					</CurrentSwitchList>
 				</SoundcasterSession>
 			</ChildrenList>

@@ -48,21 +48,6 @@ public:
 	// Drop the current active block from primary brush
 	virtual void DropBlock();
 
-	// Make the character jump
-	void Jump() override;
-
-	// Move the character forward and backwards
-	void MoveForward(float value);
-
-	// Move the character right and left
-	void MoveRight(float value);
-
-	// Modify camera yaw (left and right)
-	void TurnAtRate(float rate);
-
-	// Modify camera pitch (up and down)
-	void LookUpAtRate(float rate);
-
 	virtual void Dodge();
 
 	virtual void Attack();
@@ -111,11 +96,10 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Combat")
 	const EAttackType& GetAttackType() const { return this->m_AttackType; }
 
+	UFUNCTION(BlueprintPure, Category = "Movement")
+	bool IsMovementBlocked() const { return this->m_bBlockMovement || this->m_bIsStunned; }
+
 	UCameraComponent* GetCamera();
-
-	FORCEINLINE void SetHealth(const float& health) { this->m_Health = FMath::Max(FMath::Min(health, this->m_MaxHealth), 0.0f); }
-
-	FORCEINLINE void SetStamina(const float& stamina) { this->m_Stamina = FMath::Max(FMath::Min(stamina, this->m_MaxStamina), 0.0f); }
 
 	FORCEINLINE const int32& GetTeam() const { return this->m_Team; }
 
@@ -131,6 +115,17 @@ public:
 
 	FORCEINLINE class USecondaryBrush* GetSecondaryBrush() const { return this->m_SecondaryBrush; }
 
+	FORCEINLINE void SetHealth(const float& health)
+	{
+		this->m_Health = FMath::Max(FMath::Min(health, this->m_MaxHealth), 0.0f);
+		if (this->m_Health <= 0.0f) { this->OnStunned(this->m_StunDelay, true, true); }
+	}
+
+	FORCEINLINE void SetStamina(const float& stamina)
+	{
+		this->m_Stamina = FMath::Max(FMath::Min(stamina, this->m_MaxStamina), 0.0f);
+	}
+
 #if WITH_EDITOR
 	void PostEditChangeProperty(struct FPropertyChangedEvent& event) override;
 #endif
@@ -138,10 +133,15 @@ public:
 protected:
 	class ABuildArea* GetActiveBuildArea();
 
-	UFUNCTION()
+	void TogglePause();
+
 	void ToggleBuildMode() { if(!this->m_bBlockMovement) this->SetBuildModeEnabled(!this->m_bBuildingEnabled); }
 
-	void UpdateMovementSpeed() const;
+	//void UpdateMovementSpeed() const;
+
+	// Checks to see if the player has req stamina. If they don't, the stamina hud will flash to indicate
+	UFUNCTION(BlueprintCallable, Category = "Checks")
+	bool HasStamina(const float& req);
 
 	// Input: Show scores
 	UFUNCTION(BlueprintCallable, Category = "Event")
@@ -168,19 +168,15 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Event")
 	void InputBlockDestroyDownEvent();
 
-	// Input: Sprint
-	UFUNCTION(BlueprintCallable, Category = "Event")
-	void InputSprintEnable() { this->m_bSprinting = true; this->UpdateMovementSpeed(); }
-
-	UFUNCTION(BlueprintCallable, Category = "Event")
-	void InputSprintDisable() { this->m_bSprinting = false; this->UpdateMovementSpeed(); }
-
 	// Input: Rush
-	UFUNCTION(BlueprintCallable, Category = "Event")
-	void InputRushEnable() { this->m_bRushing = true; this->UpdateMovementSpeed(); }
+	//UFUNCTION(BlueprintCallable, Category = "Event")
+	//void InputRushEnable() { this->m_bRushing = true; this->UpdateMovementSpeed(); }
 
-	UFUNCTION(BlueprintCallable, Category = "Event")
-	void InputRushDisable() { this->m_bRushing = false; this->UpdateMovementSpeed(); }
+	//UFUNCTION(BlueprintCallable, Category = "Event")
+	//void InputRushDisable() { this->m_bRushing = false; this->UpdateMovementSpeed(); }
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Checks", meta = (AllowPrivateAccess = "true", DisplayName = "Sprinting"))
+	bool m_bSprinting;
 
 private:
 	// Whether or not the build place input has been activated
@@ -191,13 +187,13 @@ private:
 	bool m_bBlockMovement;
 
 	// State booleans
-	bool m_bIsStunned, m_bAttacking, m_bSprinting, m_bRushing;
+	bool m_bIsStunned, m_bAttacking, m_bRushing;
 
 	// Current attack type
 	EAttackType m_AttackType;
 
 	// Timers and counters
-	float m_DamageTimer, m_DodgePressTimer, m_DodgeCooldownCounter;
+	float m_DamageTimer, m_DodgeCooldownCounter;
 
 	// Current players health and stamina
 	float m_Health, m_Stamina;
@@ -258,6 +254,9 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true", DisplayName = "Stun Delay (seconds)"))
 	float m_StunDelay;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true", DisplayName = "Melee Speed"))
+	float m_MeleeSpeed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true", DisplayName = "Melee Block Damage"))
 	float m_MeleeBlockDamage;

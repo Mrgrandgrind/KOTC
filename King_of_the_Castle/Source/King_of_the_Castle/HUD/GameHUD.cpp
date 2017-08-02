@@ -59,9 +59,12 @@ void AGameHUD::DrawHUD()
 
 	for (UHUDComponent *component : this->m_Components)
 	{
+		if (this->m_bPaused && !component->m_bRenderWhenPaused)
+		{
+			continue;
+		}
 		component->DrawComponent(this, origin, extent, scale);
 	}
-	//this->m_BuildWheel->Render(this, screen);
 
 	if (this->GetCharacter()->GetHealth() <= 0.0f)
 	{

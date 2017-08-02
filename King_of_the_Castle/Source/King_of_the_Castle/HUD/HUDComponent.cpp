@@ -8,6 +8,7 @@ UHUDComponent::UHUDComponent()
 	this->m_MasterScale = 1.0f;
 	this->m_OriginOffset = FVector2D(0.0f, 0.0f);
 	this->m_bRender = true;
+	this->m_bRenderWhenPaused = false;
 }
 
 void UHUDComponent::DrawComponent(class AGameHUD *hud, const FVector2D& origin, const FVector2D& extent, const float& scale)

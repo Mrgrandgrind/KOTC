@@ -13,7 +13,7 @@
 #include "Runtime/Engine/Public/EngineUtils.h"
 #include "Runtime/Engine/Classes/Engine/Engine.h"
 
-#define DEFAULT_GAME_DURATION 10.0f * 60.0f //seconds
+#define DEFAULT_GAME_DURATION 5.0f * 60.0f //seconds
 
 #define MAX_BLOCK_ENTITY_COUNT 125
 #define BLOCK_ENTITY_DESTROY_BLOCK_COUNT 5 // How many block entities to destroy once we hit the limit
