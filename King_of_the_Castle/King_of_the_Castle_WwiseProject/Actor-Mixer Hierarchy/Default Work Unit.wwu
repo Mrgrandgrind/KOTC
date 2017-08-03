@@ -995,7 +995,7 @@
 										</Property>
 										<Property Name="Volume" Type="Real64">
 											<ValueList>
-												<Value>-20</Value>
+												<Value>-24</Value>
 											</ValueList>
 										</Property>
 									</PropertyList>
@@ -1009,6 +1009,13 @@
 									</ReferenceList>
 									<ChildrenList>
 										<AudioFileSource Name="PartyTime" ID="{346A5592-811F-40AA-8BA5-FA33BB924CFD}" ShortID="941151962">
+											<PropertyList>
+												<Property Name="VolumeOffset" Type="Real64">
+													<ValueList>
+														<Value>-4.8</Value>
+													</ValueList>
+												</Property>
+											</PropertyList>
 											<Language>SFX</Language>
 											<AudioFile>PartyTime.wav</AudioFile>
 										</AudioFileSource>

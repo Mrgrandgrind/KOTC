@@ -25,6 +25,8 @@
 				<Event Id="157611648" Name="fs_player" ObjectPath="\Events\Default Work Unit\SFX\fs_player"/>
 				<Event Id="1171586703" Name="fs_player_sprint" ObjectPath="\Events\Default Work Unit\SFX\fs_player_sprint"/>
 				<Event Id="645565787" Name="punch" ObjectPath="\Events\Default Work Unit\SFX\punch"/>
+				<Event Id="4135087902" Name="ragdoll" ObjectPath="\Events\Default Work Unit\SFX\ragdoll"/>
+				<Event Id="1901616974" Name="ragdoll_up" ObjectPath="\Events\Default Work Unit\SFX\ragdoll_up"/>
 				<Event Id="1264150374" Name="robot_pain" ObjectPath="\Events\Default Work Unit\SFX\robot_pain"/>
 				<Event Id="124361234" Name="stunned" ObjectPath="\Events\Default Work Unit\SFX\stunned"/>
 			</IncludedEvents>
