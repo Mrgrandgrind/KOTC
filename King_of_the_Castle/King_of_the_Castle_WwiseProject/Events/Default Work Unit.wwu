@@ -275,6 +275,149 @@
 								</Action>
 							</ChildrenList>
 						</Event>
+						<Event Name="ragdoll" ID="{013F12A5-30B1-4B0D-BC66-1C7002BA57AD}">
+							<ChildrenList>
+								<Action Name="Play" ID="{52852E38-29FC-4863-BC78-C2CED427E09E}" ShortID="805410924" Type="Play" Scope="One" Global="false">
+									<ElementList>
+										<Element ID="{9B79261A-B8B3-4C44-9B6E-5A9DB492E9D9}" Global="false">
+											<ObjectRef Name="JumpLand" ID="{3457F1F8-71E4-45FB-A104-18A08FAB13EC}" WorkUnitID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}"/>
+										</Element>
+									</ElementList>
+								</Action>
+								<Action Name="Play" ID="{5C76FD1F-33B3-4C56-8753-6603F9EF4804}" ShortID="637016357" Type="Play" Scope="One" Global="false">
+									<PropertyList>
+										<Property Name="Delay" Type="Real64" Value="0.2"/>
+									</PropertyList>
+									<ElementList>
+										<Element ID="{FAF207E6-BE18-4C4A-839F-614DE166300F}" Global="false">
+											<ObjectRef Name="RobotWhir" ID="{9D897569-AA28-4A0A-A7C2-A645B5AAD565}" WorkUnitID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}"/>
+										</Element>
+									</ElementList>
+								</Action>
+								<Action Name="Play" ID="{80BFF0DC-E139-4C9A-AB5C-474FEEF8BD4C}" ShortID="308994827" Type="Play" Scope="One" Global="false">
+									<PropertyList>
+										<Property Name="FadeCurve" Type="int16" Value="0"/>
+										<Property Name="FadeTime" Type="Real64" Value="0.1"/>
+									</PropertyList>
+									<ElementList>
+										<Element ID="{587EAE81-D243-49DD-B1DA-8925D0EC08F9}" Global="false">
+											<ObjectRef Name="Hit Low" ID="{CAA2FB67-7CB3-486B-B576-FD4A48AA067F}" WorkUnitID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}"/>
+										</Element>
+									</ElementList>
+								</Action>
+								<Action Name="Play" ID="{E8B1D8FC-9ECA-4311-90AA-94223708B2A2}" ShortID="146867156" Type="Play" Scope="One" Global="false">
+									<PropertyList>
+										<Property Name="Delay" Type="Real64" Value="0.2"/>
+									</PropertyList>
+									<ElementList>
+										<Element ID="{CD6EDA92-D331-4860-9BCE-48B177571BB2}" Global="false">
+											<ObjectRef Name="JumpUp" ID="{FB03DD37-04EC-4337-A9D7-C55247002BFA}" WorkUnitID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}"/>
+										</Element>
+									</ElementList>
+								</Action>
+								<Action Name="Play" ID="{23E5A7E8-389E-4D17-AA6F-1981769E8558}" ShortID="405948466" Type="Play" Scope="One" Global="false">
+									<PropertyList>
+										<Property Name="Delay" Type="Real64" Value="1"/>
+										<Property Name="FadeTime" Type="Real64" Value="0.1"/>
+									</PropertyList>
+									<ElementList>
+										<Element ID="{BDBF97F4-D7A2-4B6D-9F46-A2D761397BDB}" Global="false">
+											<ObjectRef Name="Punch_hit" ID="{6194AEA9-9E67-41E9-B56C-3BE9C271BA64}" WorkUnitID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}"/>
+										</Element>
+									</ElementList>
+								</Action>
+								<Action Name="Play" ID="{3C2B174A-CA94-49CB-82C7-0BF5CCBAE4EF}" ShortID="161584038" Type="Play" Scope="One" Global="false">
+									<PropertyList>
+										<Property Name="Delay" Type="Real64" Value="1"/>
+										<Property Name="FadeCurve" Type="int16" Value="0"/>
+										<Property Name="FadeTime" Type="Real64" Value="0.1"/>
+									</PropertyList>
+									<ElementList>
+										<Element ID="{8FFD7B40-BD9A-44C3-80E9-2E1010C094F1}" Global="false">
+											<ObjectRef Name="RobotWhir" ID="{9D897569-AA28-4A0A-A7C2-A645B5AAD565}" WorkUnitID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}"/>
+										</Element>
+									</ElementList>
+								</Action>
+								<Action Name="Play" ID="{04F68147-58D9-4D71-BDC3-DF711130E837}" ShortID="158497365" Type="Play" Scope="One" Global="false">
+									<PropertyList>
+										<Property Name="Delay" Type="Real64" Value="1"/>
+									</PropertyList>
+									<ElementList>
+										<Element ID="{16ED1450-B6B7-4F8E-A180-A48833ABCD5C}" Global="false">
+											<ObjectRef Name="JumpLand" ID="{3457F1F8-71E4-45FB-A104-18A08FAB13EC}" WorkUnitID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}"/>
+										</Element>
+									</ElementList>
+								</Action>
+								<Action Name="Play" ID="{5EA53DEB-7553-4649-B9CE-7CFE347B7BD3}" ShortID="366075771" Type="Play" Scope="One" Global="false">
+									<PropertyList>
+										<Property Name="Delay" Type="Real64" Value="1"/>
+									</PropertyList>
+									<ElementList>
+										<Element ID="{C3339E8D-38CD-4BFE-8525-1C23B9CB55E1}" Global="false">
+											<ObjectRef Name="JumpUp" ID="{FB03DD37-04EC-4337-A9D7-C55247002BFA}" WorkUnitID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}"/>
+										</Element>
+									</ElementList>
+								</Action>
+								<Action Name="Play" ID="{94758B21-477A-4B5E-9B07-FDDC6F66C0DA}" ShortID="526791973" Type="Play" Scope="One" Global="false">
+									<PropertyList>
+										<Property Name="Delay" Type="Real64" Value="2"/>
+									</PropertyList>
+									<ElementList>
+										<Element ID="{2D5A9CC5-BECC-4D00-A539-C85CCD79A458}" Global="false">
+											<ObjectRef Name="JumpLand" ID="{3457F1F8-71E4-45FB-A104-18A08FAB13EC}" WorkUnitID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}"/>
+										</Element>
+									</ElementList>
+								</Action>
+								<Action Name="Play" ID="{FDCAD399-919A-4953-BD60-B056AF609AF5}" ShortID="664615967" Type="Play" Scope="One" Global="false">
+									<ElementList>
+										<Element ID="{69FB6643-3C01-4C70-B90D-B0429A5E8F94}" Global="false">
+											<ObjectRef Name="FeetWhir" ID="{2E720E02-7BFA-4C13-B7F0-359A3300C7D1}" WorkUnitID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}"/>
+										</Element>
+									</ElementList>
+								</Action>
+							</ChildrenList>
+						</Event>
+						<Event Name="ragdoll_up" ID="{AD76259C-AC15-4AD2-BBFD-AB8962B08D9B}">
+							<ChildrenList>
+								<Action Name="Play" ID="{47374E41-0E6A-43F6-8130-F3EFFDBA1143}" ShortID="316432419" Type="Play" Scope="One" Global="false">
+									<ElementList>
+										<Element ID="{BE87AEAF-3F45-4BE0-837F-968EAB793B67}" Global="false">
+											<ObjectRef Name="Footstep" ID="{545CA7A5-5695-48E9-B228-E709D97B1717}" WorkUnitID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}"/>
+										</Element>
+									</ElementList>
+								</Action>
+								<Action Name="Play" ID="{3799442E-C3DA-4F83-8E2F-5424B0FBC0C2}" ShortID="1031728269" Type="Play" Scope="One" Global="false">
+									<PropertyList>
+										<Property Name="Delay" Type="Real64" Value="0.2"/>
+									</PropertyList>
+									<ElementList>
+										<Element ID="{CDD28524-9D00-4A63-AF7B-EBA072B9DC65}" Global="false">
+											<ObjectRef Name="JumpUp" ID="{FB03DD37-04EC-4337-A9D7-C55247002BFA}" WorkUnitID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}"/>
+										</Element>
+									</ElementList>
+								</Action>
+								<Action Name="Play" ID="{2E996302-08D0-44B5-92D6-0A30A508335C}" ShortID="437751958" Type="Play" Scope="One" Global="false">
+									<PropertyList>
+										<Property Name="Delay" Type="Real64" Value="0.2"/>
+									</PropertyList>
+									<ElementList>
+										<Element ID="{5F2F9EFF-E0FF-40E4-93DF-FBD27EE15365}" Global="false">
+											<ObjectRef Name="RobotWhir" ID="{9D897569-AA28-4A0A-A7C2-A645B5AAD565}" WorkUnitID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}"/>
+										</Element>
+									</ElementList>
+								</Action>
+								<Action Name="Play" ID="{3A2710F3-86FB-4585-9B41-4159B8D95722}" ShortID="791845804" Type="Play" Scope="One" Global="false">
+									<PropertyList>
+										<Property Name="Delay" Type="Real64" Value="0.9"/>
+									</PropertyList>
+									<ElementList>
+										<Element ID="{4C2CD614-D54E-437F-804B-CC675C1A239E}" Global="false">
+											<ObjectRef Name="RobotWhir" ID="{9D897569-AA28-4A0A-A7C2-A645B5AAD565}" WorkUnitID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}"/>
+										</Element>
+									</ElementList>
+								</Action>
+							</ChildrenList>
+						</Event>
 					</ChildrenList>
 				</Folder>
 			</ChildrenList>
