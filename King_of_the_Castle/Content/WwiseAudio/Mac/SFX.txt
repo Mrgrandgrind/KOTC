@@ -7,8 +7,10 @@ Event	ID	Name			Wwise Object Path	Notes
 	732840392	base_capturing			\Default Work Unit\SFX\base_capturing	
 	1171586703	fs_player_sprint			\Default Work Unit\SFX\fs_player_sprint	
 	1264150374	robot_pain			\Default Work Unit\SFX\robot_pain	
+	1901616974	ragdoll_up			\Default Work Unit\SFX\ragdoll_up	
 	2372483423	fs_jump			\Default Work Unit\SFX\fs_jump	
 	3941440279	base_capture_end			\Default Work Unit\SFX\base_capture_end	
+	4135087902	ragdoll			\Default Work Unit\SFX\ragdoll	
 	4187503147	base_captured			\Default Work Unit\SFX\base_captured	
 
 Switch Group	ID	Name			Wwise Object Path	Notes

@@ -26,12 +26,20 @@
 							<Position X="1" Y="1"/>
 						</Module>
 						<Module>
+							<ObjectRef Name="ragdoll" ID="{013F12A5-30B1-4B0D-BC66-1C7002BA57AD}" WorkUnitID="{8F1EA8B4-C444-40AD-B9D4-72B61B06D617}"/>
+							<Position X="1" Y="2"/>
+						</Module>
+						<Module>
 							<ObjectRef Name="fs_player_sprint" ID="{11CE960B-A191-4EFB-8AAC-350280E47806}" WorkUnitID="{8F1EA8B4-C444-40AD-B9D4-72B61B06D617}"/>
 							<Position X="2" Y="0"/>
 						</Module>
 						<Module>
 							<ObjectRef Name="block_place" ID="{2E6A9638-AA56-45FE-98AF-972C74958E58}" WorkUnitID="{8F1EA8B4-C444-40AD-B9D4-72B61B06D617}"/>
 							<Position X="2" Y="1"/>
+						</Module>
+						<Module>
+							<ObjectRef Name="ragdoll_up" ID="{AD76259C-AC15-4AD2-BBFD-AB8962B08D9B}" WorkUnitID="{8F1EA8B4-C444-40AD-B9D4-72B61B06D617}"/>
+							<Position X="2" Y="2"/>
 						</Module>
 						<Module>
 							<ObjectRef Name="fs_jump" ID="{AA8E9F86-5BA9-41DE-A340-C3634DB6B769}" WorkUnitID="{8F1EA8B4-C444-40AD-B9D4-72B61B06D617}"/>
@@ -73,10 +81,10 @@
 						</RTPCValue>
 					</RTPCValueList>
 					<CurrentStateList ShowAll="true">
-						<CurrentStateRef Name="Level_4" ID="{ECD9E445-AD1B-4E6F-92FE-3537EBC18C2B}"/>
+						<CurrentStateRef Name="Level_1" ID="{4BA60DF8-6001-49C4-A920-98ABEBC94510}"/>
 					</CurrentStateList>
 					<CurrentSwitchList ShowAll="true">
-						<CurrentSwitchRef Name="Cardboard" ID="{4769ACB1-3733-48C8-8D91-B6B8BCD6FC26}"/>
+						<CurrentSwitchRef Name="Paper" ID="{B629996A-82F6-4B56-93EB-F85A9671303D}"/>
 					</CurrentSwitchList>
 				</SoundcasterSession>
 			</ChildrenList>
