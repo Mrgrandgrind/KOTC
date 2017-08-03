@@ -33,13 +33,13 @@
 
 #define DAMAGE_TIMER 2.0f // How long the player has to be out of combat for before health starts to regen again
 
-//#define MATERIAL_LOCATION TEXT("Material'/Game/AdvancedLocomotionV2/Characters/Mannequin/lambert1.lambert1'")
+#define MATERIAL_LOCATION TEXT("Material'/Game/AdvancedLocomotionV2/Characters/Mannequin/lambert1.lambert1'")
 
 // Sets default values
 APlayerCharacter::APlayerCharacter() : m_Team(-1), m_BuildReach(KOTC_CONSTRUCTION_BLOCK_REACH)
 {
-	//static ConstructorHelpers::FObjectFinder<UMaterialInterface> Material(MATERIAL_LOCATION);
-	this->m_Material = Super::GetMesh()->GetMaterial(0);//Material.Object;
+	static ConstructorHelpers::FObjectFinder<UMaterialInterface> Material(MATERIAL_LOCATION);
+	this->m_Material = Material.Object;
 
 	this->m_MeleeSpeed = 1.0f;
 	this->m_BaseTurnRate = 45.0f;
@@ -340,7 +340,7 @@ void APlayerCharacter::SetTeam(const int32& team)
 		material = UMaterialInstanceDynamic::Create(this->m_Material, Super::GetMesh()->GetOuter());
 		Super::GetMesh()->SetMaterial(0, material);
 	}
-	material->SetVectorParameterValue(TEXT("TeamColor"), gamemode->GetTeamColor(team));
+	gamemode->SetTeamColors(this->GetTeam(), material);
 }
 
 void APlayerCharacter::DropBlock()
