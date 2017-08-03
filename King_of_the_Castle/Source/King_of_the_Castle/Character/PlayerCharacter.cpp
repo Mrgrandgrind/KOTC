@@ -33,7 +33,7 @@
 
 #define DAMAGE_TIMER 2.0f // How long the player has to be out of combat for before health starts to regen again
 
-#define MATERIAL_LOCATION TEXT("Material'/Game/AdvancedLocomotionV2/Characters/Mannequin/lambert2.lambert2'")
+#define MATERIAL_LOCATION TEXT("Material'/Game/AdvancedLocomotionV2/Characters/Mannequin/lambert1.lambert1'")
 
 // Sets default values
 APlayerCharacter::APlayerCharacter() : m_Team(-1), m_BuildReach(KOTC_CONSTRUCTION_BLOCK_REACH)
@@ -193,7 +193,7 @@ void APlayerCharacter::Tick(float delta)
 {
 	Super::Tick(delta);
 
-	if (GetGameMode(Super::GetWorld())->IsGameOver())
+	if (GetGameMode(Super::GetWorld())->IsMovementBlocked(this))
 	{
 		if (this->IsBrushVisible())
 		{
@@ -340,7 +340,7 @@ void APlayerCharacter::SetTeam(const int32& team)
 		material = UMaterialInstanceDynamic::Create(this->m_Material, Super::GetMesh()->GetOuter());
 		Super::GetMesh()->SetMaterial(0, material);
 	}
-	material->SetVectorParameterValue(TEXT("TeamColor"), gamemode->GetTeamColor(team));
+	gamemode->SetTeamColors(this->GetTeam(), material);
 }
 
 void APlayerCharacter::DropBlock()
@@ -373,6 +373,10 @@ void APlayerCharacter::DropBlock()
 
 void APlayerCharacter::Dodge()
 {
+	if (GetGameMode(Super::GetWorld())->IsMovementBlocked(this))
+	{
+		return;
+	}
 	if (!this->HasStamina(this->m_DodgeStaminaCost))
 	{
 		return;
@@ -433,7 +437,7 @@ void APlayerCharacter::Dodge()
 
 void APlayerCharacter::Attack()
 {
-	if (this->m_bAttacking || this->m_bIsStunned || GetGameMode(Super::GetWorld())->IsGameOver())
+	if (this->m_bAttacking || this->m_bIsStunned || GetGameMode(Super::GetWorld())->IsMovementBlocked(this))
 	{
 		return;
 	}
@@ -460,7 +464,7 @@ void APlayerCharacter::Attack()
 
 void APlayerCharacter::AttackUpper()
 {
-	if (this->m_bAttacking || this->m_bIsStunned || GetGameMode(Super::GetWorld())->IsGameOver())
+	if (this->m_bAttacking || this->m_bIsStunned || GetGameMode(Super::GetWorld())->IsMovementBlocked(this))
 	{
 		return;
 	}
@@ -483,7 +487,7 @@ void APlayerCharacter::AttackUpper()
 
 void APlayerCharacter::AttackLower()
 {
-	if (this->m_bAttacking || this->m_bIsStunned || GetGameMode(Super::GetWorld())->IsGameOver())
+	if (this->m_bAttacking || this->m_bIsStunned || GetGameMode(Super::GetWorld())->IsMovementBlocked(this))
 	{
 		return;
 	}

@@ -5,6 +5,21 @@
 #include "GameFramework/GameMode.h"
 #include "BaseGameMode.generated.h"
 
+USTRUCT(BlueprintType)
+struct FTeamColor
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Color", meta = (DisplayName = "Main Color"))
+	FLinearColor main;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Color", meta = (DisplayName = "Eye Color"))
+	FLinearColor eye;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Color", meta = (DisplayName = "Joint Color"))
+	FLinearColor joint;
+};
+
 UCLASS()
 class KING_OF_THE_CASTLE_API ABaseGameMode : public AGameMode
 {
@@ -41,6 +56,8 @@ public:
 
 	virtual FName GetGameModeName() const { return TEXT("Undefined"); }
 
+	virtual void SetTeamColors(const int& team, UMaterialInstanceDynamic *material);
+
 	UFUNCTION(BlueprintPure, Category = "GameOver")
 	const bool& IsGameOver() const { return this->m_bGameOver; }
 
@@ -52,7 +69,7 @@ public:
 	FORCEINLINE void RemovePausedPlayer(class APlayerCharacter *player) { this->m_PausedPlayers.Remove(player); }
 
 	// Time since the game started
-	FORCEINLINE const float& GetTime() const { return this->m_Timer; }
+	FORCEINLINE float GetTime() const { return this->m_Timer; }
 
 	// How long a game should last
 	FORCEINLINE const float& GetGameDuration() const { return this->m_GameDuration; }
@@ -78,7 +95,13 @@ public:
 	// Get team color
 	FORCEINLINE const FLinearColor& GetTeamColor(const int& team) const 
 	{ 
-		return team > 0 && team <= this->m_TeamColors.Num() ? this->m_TeamColors[team - 1] : FLinearColor::White; 
+		return team > 0 && team <= this->m_TeamColors.Num() ? this->m_TeamColors[team - 1].main : FLinearColor::White; 
+	}
+
+	UFUNCTION(BlueprintPure, Category = "GameOver")
+	bool IsMovementBlocked(class APlayerCharacter *character = nullptr) const
+	{
+		return this->m_bGameOver || this->m_CountdownCounter < this->m_Countdown || this->m_PausedPlayers.Contains(character);
 	}
 
 	FORCEINLINE int32 GetPlace(const int& team)
@@ -136,8 +159,16 @@ private:
 
 	bool m_bGameOver;
 
+	float m_CountdownCounter;
+
 	UPROPERTY()
 	TArray<class APlayerCharacter*> m_PausedPlayers;
+
+	UPROPERTY()
+	class UUserWidget* m_CountdownWidget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widget", meta = (AllowPrivateAccess = "true", DisplayName = "Countdown Widget"))
+	TSubclassOf<class UUserWidget> m_CountdownWidgetClass;
 
 	// How many players should be ingame
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Players", meta = (AllowPrivateAccess = "true", DisplayName = "Player Count"))
@@ -149,10 +180,14 @@ private:
 
 	// Team colors
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Players", meta = (AllowPrivateAccess = "true", DisplayName = "Team Colors"))
-	TArray<FLinearColor> m_TeamColors;
+	TArray<FTeamColor> m_TeamColors;
 
 	UPROPERTY()
 	TSubclassOf<class APlayerCharacter> m_CharacterClass;
+
+	// Countdown since 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Game", meta = (AllowPrivateAccess = "true", DisplayName = "Countdown"))
+	float m_Countdown;
 
 	// Time since game started (seconds)
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Game", meta = (AllowPrivateAccess = "true", DisplayName = "Timer"))

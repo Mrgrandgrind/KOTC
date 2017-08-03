@@ -13,6 +13,11 @@
 #include "Runtime/Engine/Public/EngineUtils.h"
 #include "Runtime/Engine/Classes/Engine/Engine.h"
 
+#include "Runtime/UMG/Public/UMG.h"
+#include "Runtime/UMG/Public/Blueprint/UserWidget.h"
+
+#define DEFAULT_COUNTDOWN_OFFSET 1.0f //seconds
+#define DEFAULT_COUNTDOWN 5.0f //seconds
 #define DEFAULT_GAME_DURATION 5.0f * 60.0f //seconds
 
 #define MAX_BLOCK_ENTITY_COUNT 125
@@ -21,42 +26,69 @@
 #define MAX_PLAYER_COUNT 4
 
 #define HUD_LOCATION TEXT("/Game/Blueprints/HUD/BP_GameHUD_CP")
-#define SMASH_CHARACTER_LOCATION TEXT("/Game/Blueprints/Characters/BP_RobotCharacter")
+#define CHARACTER_LOCATION TEXT("/Game/Blueprints/Characters/BP_RobotCharacter")
 
-#define TEAM1_COLOR FLinearColor(0.4f, 0.4f, 1.0f)
-#define TEAM2_COLOR FLinearColor(1.0f, 0.3f, 0.3f)
-#define TEAM3_COLOR FLinearColor(0.0f, 0.4f, 0.0f)
-#define TEAM4_COLOR FLinearColor(0.4f, 0.0f, 0.4f)
+//#define TEAM1_COLOR FLinearColor(0.4f, 0.4f, 1.0f)
+//#define TEAM2_COLOR FLinearColor(1.0f, 0.3f, 0.3f)
+//#define TEAM3_COLOR FLinearColor(0.0f, 0.4f, 0.0f)
+//#define TEAM4_COLOR FLinearColor(0.4f, 0.0f, 0.4f)
+
+#define TEAM1_MAIN_COLOR FLinearColor(0.17f, 0.57f, 0.71f)
+#define TEAM1_EYE_COLOR FLinearColor(0.17f, 0.03f, 0.24f)
+#define TEAM1_JOINT_COLOR FLinearColor(0.9f, 0.86f, 0.36f)
+
+#define TEAM2_MAIN_COLOR FLinearColor(0.75f, 0.18f, 0.4f)
+#define TEAM2_EYE_COLOR FLinearColor(0.24f, 0.23f, 0.03f)
+#define TEAM2_JOINT_COLOR FLinearColor(0.35f, 0.75f, 0.9f)
+
+#define TEAM3_MAIN_COLOR FLinearColor(0.15f, 0.71f, 0.33f)
+#define TEAM3_EYE_COLOR FLinearColor(0.03f, 0.09f, 0.23f)
+#define TEAM3_JOINT_COLOR FLinearColor(0.91f, 0.39f, 0.39f)
+
+#define TEAM4_MAIN_COLOR FLinearColor(0.79f, 0.31f, 0.19f)
+#define TEAM4_EYE_COLOR FLinearColor(0.11f, 0.22f, 0.02f)
+#define TEAM4_JOINT_COLOR FLinearColor(0.31f, 0.38f, 0.87f)
 
 ABaseGameMode::ABaseGameMode() : m_Timer(0.0f), m_GameDuration(DEFAULT_GAME_DURATION), m_MaxEntityCount(MAX_BLOCK_ENTITY_COUNT),
 m_EntityCount(0), m_BlockStructureManager(nullptr), m_PlayerCount(1)
 {
-	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(SMASH_CHARACTER_LOCATION);
-	if (PlayerPawnBPClass.Class != nullptr)
-	{
-		Super::DefaultPawnClass = PlayerPawnBPClass.Class;
-	}
-	static ConstructorHelpers::FClassFinder<AHUD> HUD(HUD_LOCATION);
-	if (HUD.Class != nullptr)
-	{
-		Super::HUDClass = HUD.Class;
-	}
-	Super::PlayerControllerClass = ADefaultPlayerController::StaticClass();
-	
-	Super::PrimaryActorTick.bCanEverTick = true;
+	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(CHARACTER_LOCATION);
+	Super::DefaultPawnClass = PlayerPawnBPClass.Class;
 
+	static ConstructorHelpers::FClassFinder<AHUD> HUD(HUD_LOCATION);
+	Super::HUDClass = HUD.Class;
+
+	Super::PlayerControllerClass = ADefaultPlayerController::StaticClass();
+
+	this->m_Countdown = DEFAULT_COUNTDOWN;
 	this->m_GameDuration = DEFAULT_GAME_DURATION;
 	this->m_CharacterClass = PlayerPawnBPClass.Class;
 
-	this->m_TeamColors.Add(TEAM1_COLOR);
-	this->m_TeamColors.Add(TEAM2_COLOR);
-	this->m_TeamColors.Add(TEAM3_COLOR);
-	this->m_TeamColors.Add(TEAM4_COLOR);
+	//this->m_TeamColors.Add(TEAM1_COLOR);
+	//this->m_TeamColors.Add(TEAM2_COLOR);
+	//this->m_TeamColors.Add(TEAM3_COLOR);
+	//this->m_TeamColors.Add(TEAM4_COLOR);
+
+	this->m_TeamColors.Add({ TEAM1_MAIN_COLOR, TEAM1_EYE_COLOR, TEAM1_JOINT_COLOR });
+	this->m_TeamColors.Add({ TEAM2_MAIN_COLOR, TEAM2_EYE_COLOR, TEAM2_JOINT_COLOR });
+	this->m_TeamColors.Add({ TEAM3_MAIN_COLOR, TEAM3_EYE_COLOR, TEAM3_JOINT_COLOR });
+	this->m_TeamColors.Add({ TEAM4_MAIN_COLOR, TEAM4_EYE_COLOR, TEAM4_JOINT_COLOR });
+
+	Super::PrimaryActorTick.bCanEverTick = true;
 }
 
 void ABaseGameMode::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (this->m_CountdownWidgetClass)
+	{
+		this->m_CountdownWidget = CreateWidget<UUserWidget>(Super::GetWorld(), this->m_CountdownWidgetClass);
+		if (this->m_CountdownWidget != nullptr)
+		{
+			this->m_CountdownWidget->AddToViewport();
+		}
+	}
 
 	TArray<AActor*> out;
 	// Find the event manager
@@ -84,6 +116,19 @@ void ABaseGameMode::BeginPlay()
 	}
 	// Spawn players
 	this->SpawnPlayers();
+}
+
+void ABaseGameMode::SetTeamColors(const int& team, UMaterialInstanceDynamic *material)
+{
+	// If invalid range
+	if (team - 1 < 0 || team - 1 >= this->m_TeamColors.Num()) 
+	{
+		return;
+	}
+	const FTeamColor& color = this->m_TeamColors[team - 1];
+	material->SetVectorParameterValue(TEXT("Team Color"), color.main);
+	material->SetVectorParameterValue(TEXT("Eye Color"), color.eye);
+	material->SetVectorParameterValue(TEXT("Joint Color"), color.joint);
 }
 
 void ABaseGameMode::Tick(float delta)
@@ -116,11 +161,29 @@ void ABaseGameMode::Tick(float delta)
 		return;
 	}
 
+	if (this->m_CountdownCounter < this->m_Countdown + DEFAULT_COUNTDOWN_OFFSET * 1.25f)
+	{
+		this->m_CountdownCounter += delta;
+
+		if (this->m_CountdownCounter >= this->m_Countdown + DEFAULT_COUNTDOWN_OFFSET * 1.25f)
+		{
+			for (FConstPlayerControllerIterator itr = Super::GetWorld()->GetPlayerControllerIterator(); itr; ++itr)
+			{
+				(*itr)->SetIgnoreMoveInput(false);
+			}
+			if (this->m_CountdownWidget != nullptr)
+			{
+				this->m_CountdownWidget->RemoveFromViewport();
+				this->m_CountdownWidget = nullptr;
+			}
+		}
+		return;
+	}
 	if (!this->m_bDisableTimer)
 	{
 		this->m_Timer += delta;
 	}
-	if (this->m_Timer >= this->m_GameDuration)
+	if (this->m_Timer >= this->m_GameDuration + this->m_Countdown)
 	{
 		int winner = -1;
 		for (int i = 0; i < this->m_TeamCount; i++)
@@ -275,6 +338,7 @@ void ABaseGameMode::SpawnPlayers()
 			controller->GetPawn()->Destroy();
 		}
 		controller->Possess(character);
+		controller->SetIgnoreMoveInput(true);
 	}
 }
 

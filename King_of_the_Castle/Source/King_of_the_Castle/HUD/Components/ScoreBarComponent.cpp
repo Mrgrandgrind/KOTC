@@ -42,8 +42,6 @@ void UScoreBarComponent::Render(AGameHUD *hud, const FVector2D& origin, const FV
 	const int& playerCount = hud->GetPlayerCount(), teamCount = gamemode->GetTeamCount();
 
 	float width, height;
-	//float x = (playerCount == 2 || playerCount == 4) ? extent.X : extent.X / 2.0f,
-	//	y = playerCount <= 2 ? 0.0f : extent.Y;
 	float x = playerCount == 1 ? origin.X + extent.X / 2.0f : 0.0f;
 	float y = origin.Y;
 
