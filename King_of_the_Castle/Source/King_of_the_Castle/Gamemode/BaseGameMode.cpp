@@ -170,6 +170,7 @@ void ABaseGameMode::Tick(float delta)
 			for (FConstPlayerControllerIterator itr = Super::GetWorld()->GetPlayerControllerIterator(); itr; ++itr)
 			{
 				(*itr)->SetIgnoreMoveInput(false);
+				//((APlayerCharacter*)((*itr)->GetPawn()))->TakeDamage(1000, FDamageEvent(), nullptr, this);
 			}
 			if (this->m_CountdownWidget != nullptr)
 			{
@@ -183,7 +184,7 @@ void ABaseGameMode::Tick(float delta)
 	{
 		this->m_Timer += delta;
 	}
-	if (this->m_Timer >= this->m_GameDuration + this->m_Countdown)
+	if (this->m_Timer >= this->m_GameDuration)
 	{
 		int winner = -1;
 		for (int i = 0; i < this->m_TeamCount; i++)

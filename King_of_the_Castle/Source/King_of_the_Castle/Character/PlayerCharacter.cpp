@@ -562,13 +562,22 @@ void APlayerCharacter::CheckAttackCollision(UCapsuleComponent *capsule, const fl
 			{
 				continue;
 			}
+
 			// Apply damage to player if they haven't recently been hit
 			player->TakeDamage(this->m_MeleePlayerDamage * damageMultiplier, event, Super::GetController(), this);
 
 			// Apply knockback force
 			FVector direction = (player->GetActorLocation() - Super::GetActorLocation()).GetSafeNormal();
-			player->LaunchCharacter((direction + this->m_MeleeKnockbackOffset)
-				* this->m_MeleeKnockbackForce, false, false);
+			FVector force = (direction + this->m_MeleeKnockbackOffset) * this->m_MeleeKnockbackForce;
+			if (player->IsStunned())
+			{
+				// Launch character doesn't work on ragdoll
+				//((UPrimitiveComponent*)player)->AddImpulse(force, TEXT("head"));
+			}
+			else
+			{
+				player->LaunchCharacter(force, false, false);
+			}
 
 			// Reset damage timer so they don't regenerate health for a few seconds
 			player->m_DamageTimer = 0.0f;
@@ -584,18 +593,21 @@ void APlayerCharacter::OnStunned_Implementation(const float& duration, bool rege
 		return;
 	}
 	this->m_bIsStunned = true;
-	Super::GetController()->SetIgnoreMoveInput(true);
+	this->OnRagdollBegin();
 
 	// Automatically drop the flag block (if carrying) when stunned
-	UBlockData *data = this->m_PrimaryBrush->GetBlockData(this->m_PrimaryBrush->GetIndexOf(ID_FLAG_BLOCK));
-	if (data != nullptr && data->GetCount() > 0)
-	{
-		this->m_PrimaryBrush->DropBlocks(data, data->GetCount());
-	}
+	//UBlockData *data = this->m_PrimaryBrush->GetBlockData(this->m_PrimaryBrush->GetIndexOf(ID_FLAG_BLOCK));
+	//if (data != nullptr && data->GetCount() > 0)
+	//{
+	//	this->m_PrimaryBrush->DropBlocks(data, data->GetCount());
+	//}
 
 	FTimerHandle handle;
-	Super::GetWorldTimerManager().SetTimer(handle, FTimerDelegate::CreateLambda([&]()
+	Super::GetWorldTimerManager().SetTimer(handle, FTimerDelegate::CreateLambda([this, regen, respawn]()
 	{
+		this->m_bIsStunned = false;
+		this->OnRagdollEnd();
+
 		if (regen)
 		{
 			this->m_Health = this->m_MaxHealth;
@@ -613,13 +625,8 @@ void APlayerCharacter::OnStunned_Implementation(const float& duration, bool rege
 				Super::SetActorRotation(rotation);
 			}
 		}
-		this->m_bIsStunned = false;
-		Super::GetController()->SetIgnoreMoveInput(false);
+		//Super::GetController()->SetIgnoreMoveInput(false);
 	}), duration <= 0.0f ? this->m_StunDelay : duration, false);
-}
-
-void APlayerCharacter::OnAttacked_Implementation(AActor *other, const float& damage)
-{
 }
 
 float APlayerCharacter::TakeDamage(float damageAmount, FDamageEvent const& damageEvent,

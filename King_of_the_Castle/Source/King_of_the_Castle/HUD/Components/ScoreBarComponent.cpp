@@ -65,9 +65,9 @@ void UScoreBarComponent::Render(AGameHUD *hud, const FVector2D& origin, const FV
 	if (this->m_bRenderTime && !gamemode->IsTimerDisabled())
 	{
 		float timeScale = scale * this->m_TimeTextScale;
-		int time = int(gamemode->GetGameDuration() - gamemode->GetTime());
+		int time = FMath::Max(int(gamemode->GetGameDuration() - gamemode->GetTime()), 0);
 
-		FString timeText = FString::Printf(TEXT("%02d:%02d"), time / 60, time % 60);
+		FString timeText = FString::Printf(TEXT("%02d:%02d"), time / 60, 0, time % 60);
 		hud->GetTextSize(timeText, width, height, hud->GetFont(), timeScale);
 
 		if (playerCount <= 2)
