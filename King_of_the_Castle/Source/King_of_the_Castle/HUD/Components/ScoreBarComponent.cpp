@@ -25,15 +25,12 @@ UScoreBarComponent::UScoreBarComponent()
 	this->m_BarTextScale = 0.6f;
 	this->m_BarTextColor = IP_BAR_TEXT_COLOR;
 
+	Super::m_bRenderOnLast = true;
 	Super::m_bRenderWhenPaused = true;
 }
 
 void UScoreBarComponent::Render(AGameHUD *hud, const FVector2D& origin, const FVector2D& extent, const float& scale)
 {
-	if (hud->GetControllerId() != hud->GetPlayerCount() - 1)
-	{
-		return;
-	}
 	AGMCapturePoints *gamemode = GetGameMode<AGMCapturePoints>(hud->GetWorld());
 	if (gamemode == nullptr)
 	{
@@ -67,7 +64,7 @@ void UScoreBarComponent::Render(AGameHUD *hud, const FVector2D& origin, const FV
 		float timeScale = scale * this->m_TimeTextScale;
 		int time = FMath::Max(int(gamemode->GetGameDuration() - gamemode->GetTime()), 0);
 
-		FString timeText = FString::Printf(TEXT("%02d:%02d"), time / 60, 0, time % 60);
+		FString timeText = FString::Printf(TEXT("%02d:%02d"), time / 60, time % 60);
 		hud->GetTextSize(timeText, width, height, hud->GetFont(), timeScale);
 
 		if (playerCount <= 2)

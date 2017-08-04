@@ -193,7 +193,7 @@ void APlayerCharacter::Tick(float delta)
 {
 	Super::Tick(delta);
 
-	if (GetGameMode(Super::GetWorld())->IsMovementBlocked(this))
+	if (GetGameMode(Super::GetWorld())->IsMovementBlocked(this) || this->IsStunned())
 	{
 		if (this->IsBrushVisible())
 		{

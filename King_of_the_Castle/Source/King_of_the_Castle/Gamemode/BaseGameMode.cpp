@@ -9,6 +9,7 @@
 #include "Construction/BlockEntity.h"
 #include "Construction/BlockStructureManager.h"
 #include "Character/DefaultPlayerController.h"
+#include "HUD/Components/CountdownComponent.h"
 
 #include "Runtime/Engine/Public/EngineUtils.h"
 #include "Runtime/Engine/Classes/Engine/Engine.h"
@@ -16,8 +17,6 @@
 #include "Runtime/UMG/Public/UMG.h"
 #include "Runtime/UMG/Public/Blueprint/UserWidget.h"
 
-#define DEFAULT_COUNTDOWN_OFFSET 1.0f //seconds
-#define DEFAULT_COUNTDOWN 5.0f //seconds
 #define DEFAULT_GAME_DURATION 5.0f * 60.0f //seconds
 
 #define MAX_BLOCK_ENTITY_COUNT 125
@@ -27,11 +26,6 @@
 
 #define HUD_LOCATION TEXT("/Game/Blueprints/HUD/BP_GameHUD_CP")
 #define CHARACTER_LOCATION TEXT("/Game/Blueprints/Characters/BP_RobotCharacter")
-
-//#define TEAM1_COLOR FLinearColor(0.4f, 0.4f, 1.0f)
-//#define TEAM2_COLOR FLinearColor(1.0f, 0.3f, 0.3f)
-//#define TEAM3_COLOR FLinearColor(0.0f, 0.4f, 0.0f)
-//#define TEAM4_COLOR FLinearColor(0.4f, 0.0f, 0.4f)
 
 #define TEAM1_MAIN_COLOR FLinearColor(0.17f, 0.57f, 0.71f)
 #define TEAM1_EYE_COLOR FLinearColor(0.17f, 0.03f, 0.24f)
@@ -60,14 +54,9 @@ m_EntityCount(0), m_BlockStructureManager(nullptr), m_PlayerCount(1)
 
 	Super::PlayerControllerClass = ADefaultPlayerController::StaticClass();
 
-	this->m_Countdown = DEFAULT_COUNTDOWN;
+	this->m_bCountdown = true;
 	this->m_GameDuration = DEFAULT_GAME_DURATION;
 	this->m_CharacterClass = PlayerPawnBPClass.Class;
-
-	//this->m_TeamColors.Add(TEAM1_COLOR);
-	//this->m_TeamColors.Add(TEAM2_COLOR);
-	//this->m_TeamColors.Add(TEAM3_COLOR);
-	//this->m_TeamColors.Add(TEAM4_COLOR);
 
 	this->m_TeamColors.Add({ TEAM1_MAIN_COLOR, TEAM1_EYE_COLOR, TEAM1_JOINT_COLOR });
 	this->m_TeamColors.Add({ TEAM2_MAIN_COLOR, TEAM2_EYE_COLOR, TEAM2_JOINT_COLOR });
@@ -80,15 +69,6 @@ m_EntityCount(0), m_BlockStructureManager(nullptr), m_PlayerCount(1)
 void ABaseGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-
-	if (this->m_CountdownWidgetClass)
-	{
-		this->m_CountdownWidget = CreateWidget<UUserWidget>(Super::GetWorld(), this->m_CountdownWidgetClass);
-		if (this->m_CountdownWidget != nullptr)
-		{
-			this->m_CountdownWidget->AddToViewport();
-		}
-	}
 
 	TArray<AActor*> out;
 	// Find the event manager
@@ -139,43 +119,50 @@ void ABaseGameMode::Tick(float delta)
 
 	if (this->IsGameOver())
 	{
+		FConstPlayerControllerIterator itr = Super::GetWorld()->GetPlayerControllerIterator();
 		// Check to see if we're ready to restart
-		for (FConstPlayerControllerIterator itr = Super::GetWorld()->GetPlayerControllerIterator(); itr; ++itr)
+		for (; itr; ++itr)
 		{
 			//if ((*itr)->IsInputKeyDown(EKeys::G))
-			//{
 			//	break;
-			//}
-			AGameHUD *hud = Cast<AGameHUD>((*itr)->GetHUD());
+			AGameHUD *hud = Cast<AGameHUD>(itr->Get()->GetHUD());
 			if (hud != nullptr && !hud->IsGameOverReady())
 			{
 				// Someone isn't ready to restart
 				return;
 			}
 		}
-		for (FConstPlayerControllerIterator itr = Super::GetWorld()->GetPlayerControllerIterator(); itr; ++itr)
+		itr.Reset();
+		for (; itr; ++itr)
 		{
-			Super::GetWorldTimerManager().ClearAllTimersForObject((*itr)->GetPawn());
+			Super::GetWorldTimerManager().ClearAllTimersForObject(itr->Get()->GetPawn());
 		}
 		UGameplayStatics::OpenLevel(Super::GetWorld(), TEXT("Main_Level"));
 		return;
 	}
 
-	if (this->m_CountdownCounter < this->m_Countdown + DEFAULT_COUNTDOWN_OFFSET * 1.25f)
+	if (this->m_bCountdown)
 	{
-		this->m_CountdownCounter += delta;
+		FConstPlayerControllerIterator itr = Super::GetWorld()->GetPlayerControllerIterator();
 
-		if (this->m_CountdownCounter >= this->m_Countdown + DEFAULT_COUNTDOWN_OFFSET * 1.25f)
+		bool active = false;
+		for (; itr; ++itr)
 		{
-			for (FConstPlayerControllerIterator itr = Super::GetWorld()->GetPlayerControllerIterator(); itr; ++itr)
+			UCountdownComponent *component = AGameHUD::FindComponent<UCountdownComponent>(itr->Get());
+			if (component != nullptr && !component->IsCountdownComplete())
 			{
-				(*itr)->SetIgnoreMoveInput(false);
-				//((APlayerCharacter*)((*itr)->GetPawn()))->TakeDamage(1000, FDamageEvent(), nullptr, this);
+				active = true;
+				break;
 			}
-			if (this->m_CountdownWidget != nullptr)
+		}
+		if (!active)
+		{
+			this->m_bCountdown = false;
+
+			itr.Reset();
+			for (; itr; ++itr)
 			{
-				this->m_CountdownWidget->RemoveFromViewport();
-				this->m_CountdownWidget = nullptr;
+				itr->Get()->SetIgnoreMoveInput(false);
 			}
 		}
 		return;

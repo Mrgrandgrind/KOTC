@@ -17,6 +17,11 @@ void UHUDComponent::DrawComponent(class AGameHUD *hud, const FVector2D& origin, 
 	{
 		return;
 	}
+	if (this->m_bRenderOnLast && hud->GetControllerId() != hud->GetPlayerCount() - 1)
+	{
+		this->m_bRender = false;
+		return;
+	}
 	FVector2D padding = this->m_Padding * scale;
 	FVector2D eOrigin = origin + this->m_OriginOffset + padding, eExtent = extent - padding * 2.0f;
 	this->Render(hud, eOrigin, eExtent, scale * this->m_MasterScale);
