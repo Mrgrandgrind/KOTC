@@ -101,7 +101,7 @@ public:
 	UFUNCTION(BlueprintPure, Category = "GameOver")
 	bool IsMovementBlocked(class APlayerCharacter *character = nullptr) const
 	{
-		return this->m_bGameOver || this->m_CountdownCounter < this->m_Countdown || this->m_PausedPlayers.Contains(character);
+		return this->m_bGameOver || this->m_bCountdown || this->m_PausedPlayers.Contains(character);
 	}
 
 	FORCEINLINE int32 GetPlace(const int& team)
@@ -159,16 +159,10 @@ private:
 
 	bool m_bGameOver;
 
-	float m_CountdownCounter;
+	bool m_bCountdown;
 
 	UPROPERTY()
 	TArray<class APlayerCharacter*> m_PausedPlayers;
-
-	UPROPERTY()
-	class UUserWidget* m_CountdownWidget;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widget", meta = (AllowPrivateAccess = "true", DisplayName = "Countdown Widget"))
-	TSubclassOf<class UUserWidget> m_CountdownWidgetClass;
 
 	// How many players should be ingame
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Players", meta = (AllowPrivateAccess = "true", DisplayName = "Player Count"))
@@ -184,10 +178,6 @@ private:
 
 	UPROPERTY()
 	TSubclassOf<class APlayerCharacter> m_CharacterClass;
-
-	// Countdown since 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Game", meta = (AllowPrivateAccess = "true", DisplayName = "Countdown"))
-	float m_Countdown;
 
 	// Time since game started (seconds)
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Game", meta = (AllowPrivateAccess = "true", DisplayName = "Timer"))

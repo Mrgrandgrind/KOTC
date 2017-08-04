@@ -116,6 +116,6 @@ void AGameHUD::DrawHUD()
 
 	if (this->GetCharacter()->GetHealth() <= 0.0f)
 	{
-		Super::DrawText(TEXT("DEAD"), FLinearColor::Red, 100, 100, this->m_Font, scale * 2.0f);
+		//Super::DrawText(TEXT("DEAD"), FLinearColor::Red, 100, 100, this->m_Font, scale * 2.0f);
 	}
 }

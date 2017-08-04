@@ -37,6 +37,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Component", meta = (DisplayName = "Render"))
 	bool m_bRender;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Component", meta = (DisplayName = "Render On Last"))
+	bool m_bRenderOnLast;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Component", meta = (DisplayName = "Render when Paused"))
 	bool m_bRenderWhenPaused;
 };

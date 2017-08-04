@@ -59,7 +59,16 @@ public:
 	virtual void CheckAttackCollision(UCapsuleComponent *capsule, const float& damageMultiplier = 1.0f);
 
 	UFUNCTION(BlueprintNativeEvent)
+	void OnRagdollBegin();
+	void OnRagdollBegin_Implementation() { Super::GetController()->SetIgnoreMoveInput(true); }
+
+	UFUNCTION(BlueprintNativeEvent)
+	void OnRagdollEnd();
+	void OnRagdollEnd_Implementation() { Super::GetController()->SetIgnoreMoveInput(false); }
+
+	UFUNCTION(BlueprintNativeEvent)
 	void OnAttacked(AActor *other, const float& damage);
+	void OnAttacked_Implementation(AActor *other, const float& damage) { }
 
 	// Stun the player. You can set the duration (-1 = default) and whether or not to regenerate health to full after stun.
 	UFUNCTION(BlueprintNativeEvent)
