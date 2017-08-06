@@ -40,7 +40,7 @@ public:
 	bool IsBrushVisible() const;
 
 	// Set the visibility of both brushes
-	void SetBrushVisible(const bool& visible);
+	void SetBrushVisible(const bool& visible) const;
 
 	// Toggle the building mechanics
 	void SetBuildModeEnabled(const bool& enable);

@@ -57,9 +57,9 @@ public:
 
 	void Back();
 
-	FORCEINLINE void SetSelected(const int& index) { this->m_SelectData.index = index; this->m_SelectData.updated = false; }
-
 	FORCEINLINE const bool& IsVisible() const { return this->m_bIsVisible; }
+
+	FORCEINLINE void SetSelected(const int& index) { this->m_SelectData.index = index; this->m_SelectData.updated = false; }
 
 	FORCEINLINE void SetVisible(const bool& visible) { this->m_bIsVisible = visible; while (this->m_MenuStack.size() > 1) this->m_MenuStack.pop(); }
 

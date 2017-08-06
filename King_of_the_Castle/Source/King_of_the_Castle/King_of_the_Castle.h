@@ -46,6 +46,6 @@ FORCEINLINE static T* GetGameMode(class UWorld *world)
 
 FORCEINLINE static class ABaseGameMode* GetGameMode(class UWorld *world)
 {
-	return (ABaseGameMode*)world->GetAuthGameMode();
+	return reinterpret_cast<ABaseGameMode*>(world->GetAuthGameMode());
 }
 #endif

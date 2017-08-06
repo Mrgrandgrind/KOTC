@@ -36,11 +36,11 @@ public:
 #endif
 
 protected:
-	void GetSplashTransform(FVector& location, FRotator& rotation);
+	void GetSplashTransform(FVector& location, FRotator& rotation) const;
 
-	void GetMenuTransform(FVector& location, FRotator& rotation);
+	void GetMenuTransform(FVector& location, FRotator& rotation) const;
 
-	void GetCharacterSelectTransform(FVector& location, FRotator& rotation);
+	void GetCharacterSelectTransform(FVector& location, FRotator& rotation) const;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Track", meta = (DisplayName = "Duration"))
 	float m_Duration;

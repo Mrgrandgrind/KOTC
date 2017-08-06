@@ -20,7 +20,7 @@
 #define CHARACTER_SELECT_POSITION_GAP 100.0f
 #define CHARACTER_SELECT_POSITION_OFFSET FVector(0.0f, 250.0f, 0.0f)
 
-AGMMainMenu::AGMMainMenu() : m_Display(EMenuDisplay::Splash), m_Duration(DEFAULT_TRACK_DURATION), m_Pivot(CAMERA_PIVOT_POINT)
+AGMMainMenu::AGMMainMenu() : m_Duration(DEFAULT_TRACK_DURATION), m_Pivot(CAMERA_PIVOT_POINT), m_Display(EMenuDisplay::Splash)
 {
 	this->m_MenuCameraName = MENU_CAMERA_NAME;
 	this->m_MenuRotation = MENU_ROTATION;
@@ -94,7 +94,7 @@ APawn* AGMMainMenu::SpawnDefaultPawnFor_Implementation(AController* NewPlayer, c
 	return pawn;
 }
 
-void AGMMainMenu::GetSplashTransform(FVector& location, FRotator& rotation)
+void AGMMainMenu::GetSplashTransform(FVector& location, FRotator& rotation) const
 {
 	USplineComponent *spline = this->m_Track->GetSpline();
 	location = spline->GetLocationAtTime(FMath::Fmod(this->m_Counter, 
@@ -102,13 +102,13 @@ void AGMMainMenu::GetSplashTransform(FVector& location, FRotator& rotation)
 	rotation = (this->m_Pivot - location).Rotation();
 }
 
-void AGMMainMenu::GetMenuTransform(FVector& location, FRotator& rotation)
+void AGMMainMenu::GetMenuTransform(FVector& location, FRotator& rotation) const
 {
 	location = this->m_MenuCameraTransform.GetLocation();
 	rotation = this->m_MenuCameraTransform.Rotator();
 }
 
-void AGMMainMenu::GetCharacterSelectTransform(FVector& location, FRotator& rotation)
+void AGMMainMenu::GetCharacterSelectTransform(FVector& location, FRotator& rotation) const
 {
 	location = this->m_CSCameraTransform.GetLocation();
 	rotation = this->m_CSCameraTransform.Rotator();

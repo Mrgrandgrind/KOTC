@@ -8,6 +8,7 @@ UHUDComponent::UHUDComponent()
 	this->m_MasterScale = 1.0f;
 	this->m_OriginOffset = FVector2D(0.0f, 0.0f);
 	this->m_bRender = true;
+	this->m_bRenderOnLast = false;
 	this->m_bRenderWhenPaused = false;
 }
 

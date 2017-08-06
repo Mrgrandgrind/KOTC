@@ -6,8 +6,6 @@
 #include "Character/PlayerCharacter.h"
 #include "Gamemode/GMCapturePoints/CapturePoint.h"
 
-#include "Runtime/Engine/Classes/Engine/Engine.h"
-
 #define DEFAULT_CAPTURE_DURATION 6.0f
 
 AGMCapturePoints::AGMCapturePoints() : m_CaptureDuration(DEFAULT_CAPTURE_DURATION), 

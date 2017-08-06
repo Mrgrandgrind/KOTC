@@ -25,6 +25,12 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD", meta = (DisplayName = "Box Unowned Color"))
 	FLinearColor m_UnownedColor;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD", meta = (DisplayName = "On Screen Radius Scale"))
+	float m_PositionRadiusScale;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD", meta = (DisplayName = "Always On Screen"))
+	float m_bAlwaysOnScreen;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD", meta = (DisplayName = "Box Scale"))
 	float m_BoxScale;
 

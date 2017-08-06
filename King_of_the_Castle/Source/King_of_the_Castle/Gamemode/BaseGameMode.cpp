@@ -43,8 +43,8 @@
 #define TEAM4_EYE_COLOR FLinearColor(0.11f, 0.22f, 0.02f)
 #define TEAM4_JOINT_COLOR FLinearColor(0.31f, 0.38f, 0.87f)
 
-ABaseGameMode::ABaseGameMode() : m_Timer(0.0f), m_GameDuration(DEFAULT_GAME_DURATION), m_MaxEntityCount(MAX_BLOCK_ENTITY_COUNT),
-m_EntityCount(0), m_BlockStructureManager(nullptr), m_PlayerCount(1)
+ABaseGameMode::ABaseGameMode() : m_PlayerCount(1), m_Timer(0.0f), m_GameDuration(DEFAULT_GAME_DURATION),
+m_MaxEntityCount(MAX_BLOCK_ENTITY_COUNT), m_EntityCount(0), m_BlockStructureManager(nullptr)
 {
 	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(CHARACTER_LOCATION);
 	Super::DefaultPawnClass = PlayerPawnBPClass.Class;
