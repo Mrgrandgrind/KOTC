@@ -18,9 +18,9 @@ public:
 
 	void DrawComponent(class AGameHUD *hud, const FVector2D& origin, const FVector2D& extent, const float& scale, const bool& forceRender = false);
 
-	FORCEINLINE virtual void SetVisible(const bool& visible) { this->m_bRender = visible; }
-
 	FORCEINLINE const bool& IsVisible() const { return this->m_bRender; }
+
+	FORCEINLINE virtual void SetVisible(const bool& visible) { this->m_bRender = visible; }
 
 protected:
 	virtual void Render(class AGameHUD *hud, const FVector2D& origin, const FVector2D& extent, const float& scale) { }

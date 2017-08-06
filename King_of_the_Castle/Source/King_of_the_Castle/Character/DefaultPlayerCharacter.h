@@ -13,7 +13,7 @@ class KING_OF_THE_CASTLE_API ADefaultPlayerCharacter : public ACharacter
 public:
 	ADefaultPlayerCharacter();
 
-	FORCEINLINE class UCameraComponent* GetCamera() { return this->m_Camera; }
+	FORCEINLINE class UCameraComponent* GetCamera() const { return this->m_Camera; }
 
 private:
 	class UCameraComponent *m_Camera;

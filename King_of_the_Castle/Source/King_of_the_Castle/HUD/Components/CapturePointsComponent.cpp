@@ -19,10 +19,12 @@
 #define CP_MATERIAL_PARAM_CAPTURE_COLOR TEXT("TeamCaptureColor")
 #define CP_MATERIAL_PARAM_FLASH_SPEED TEXT("BoxFlashSpeed")
 
-UCapturePointsComponent::UCapturePointsComponent()
+UCapturePointsComponent::UCapturePointsComponent() : m_Material(nullptr)
 {
 	this->m_OwnedColor = CP_OWNED_COLOR;
 	this->m_UnownedColor = CP_UNOWNED_COLOR;
+	this->m_PositionRadiusScale = 0.8f;
+	this->m_bAlwaysOnScreen = true;
 	this->m_BoxScale = 31.0f;
 	this->m_TeamBoxUVSize = 0.12f;
 	this->m_BoxAlpha = 0.5f;
@@ -38,7 +40,7 @@ void UCapturePointsComponent::Render(AGameHUD *hud, const FVector2D& origin, con
 	{
 		return;
 	}
-	ABaseGameMode *gamemode = GetGameMode<ABaseGameMode>(hud->GetWorld());
+	ABaseGameMode *gamemode = GetGameMode(hud->GetWorld());
 	if (gamemode == nullptr)
 	{
 		return;
@@ -65,12 +67,60 @@ void UCapturePointsComponent::Render(AGameHUD *hud, const FVector2D& origin, con
 		FVector position = hud->Project(points[i]->GetActorLocation() + FVector(0.0f, 0.0f, this->m_TextZOffset));
 
 		float textScale = scale * this->m_TextScale, boxScale = textScale * this->m_BoxScale;
-		if (position.Z <= 0.0f
-			|| position.X < boxScale / 2.0f || position.X > extent.X - boxScale / 2.0f
-			|| position.Y < boxScale / 2.0f || position.Y > extent.Y - boxScale / 2.0f)
+		if(this->m_bAlwaysOnScreen)
 		{
-			continue;
+			if (position.Z <= 0.0f)
+			{
+				position.X = extent.X - position.X;
+				position.Y = extent.Y - position.Y;
+
+				position.X += position.X > extent.X / 2.0f ? extent.X : -extent.X;
+			}
+
+			// TODO Make more efficient calculation checks
+			FVector2D vector = FVector2D(position.X - extent.X * 0.5f, position.Y - extent.Y * 0.5f);
+			FVector2D max = extent * 0.5f * this->m_PositionRadiusScale;
+
+			FVector2D ellipsePos;
+			float theta = FMath::Atan2(vector.Y, vector.X);
+			ellipsePos.X = (max.X * max.Y) / FMath::Sqrt(max.Y * max.Y + max.X * max.X * FMath::Pow(FMath::Tan(theta), 2.0f));
+			if (theta < -PI / 2.0f || theta > PI / 2.0f)
+			{
+				ellipsePos.X = -ellipsePos.X;
+			}
+			ellipsePos.Y = ellipsePos.X * FMath::Tan(theta);
+			ellipsePos += extent * 0.5f;
+
+			if (vector.SizeSquared() > (ellipsePos - extent * 0.5f).SizeSquared())
+			{
+				position.X = ellipsePos.X;
+				position.Y = ellipsePos.Y;
+			}
+
+			//hud->Draw2DLine(extent.X / 2, extent.Y / 2, extent.X / 2 + vector.X, extent.Y / 2 + vector.Y, FColor::Orange);
+			//hud->Draw2DLine(extent.X / 2, extent.Y / 2, ellipsePos.X, ellipsePos.Y, FColor::Purple);
+
+
+			//float dist = FMath::Min(extent.X, extent.Y) * 0.5f * this->m_PositionRadiusScale;
+			//FVector2D vector = FVector2D(position.X - extent.X * 0.5f, position.Y - extent.Y * 0.5f);
+			//if(vector.Size() > dist)
+			//{
+			//	vector = vector.GetSafeNormal();
+
+			//	position.X = extent.X * 0.5f + vector.X * dist;
+			//	position.Y = extent.Y * 0.5f + vector.Y * dist;
+			//}
 		}
+		else
+		{
+			if (position.Z <= 0.0f
+				|| position.X < boxScale / 2.0f || position.X > extent.X - boxScale / 2.0f
+				|| position.Y < boxScale / 2.0f || position.Y > extent.Y - boxScale / 2.0f)
+			{
+				continue;
+			}
+		}
+
 		// Draw background box
 		if (!this->m_Materials.Contains(point))
 		{

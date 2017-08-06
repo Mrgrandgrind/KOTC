@@ -295,7 +295,7 @@ bool APlayerCharacter::IsBrushVisible() const
 	return this->m_PrimaryBrush->IsBrushVisible() || this->m_SecondaryBrush->IsBrushVisible();
 }
 
-void APlayerCharacter::SetBrushVisible(const bool& visible)
+void APlayerCharacter::SetBrushVisible(const bool& visible) const
 {
 	this->m_PrimaryBrush->SetBrushVisible(visible);
 	this->m_SecondaryBrush->SetBrushVisible(visible);

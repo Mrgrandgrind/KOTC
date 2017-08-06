@@ -16,8 +16,6 @@ class KING_OF_THE_CASTLE_API AGMCaptureTheFlag : public ABaseGameMode
 public:
 	AGMCaptureTheFlag();
 
-	//virtual void OnBlockPlace(class ABlock *block, AActor *source) override;
-
 	void OnBlockPlace_Implementation(class ABlock *block, AActor *source) override;
 
 	void OnBlockDestroy_Implementation(class ABlock *block, AActor *source) override;

@@ -13,7 +13,7 @@
 #define IMPULSE_STRENGTH_MIN 400.0f
 #define MAX_ANGLE_XY 90.0f
 
-ABlockSpawner::ABlockSpawner() : m_SpawnRate(SPAWN_RATE), m_EntityLifeTime(SPAWNED_ENTITY_LIFE_TIME),
+ABlockSpawner::ABlockSpawner() : m_SpawnCounter(0.0f), m_SpawnRate(SPAWN_RATE), m_EntityLifeTime(SPAWNED_ENTITY_LIFE_TIME),
 m_ImpulseStrengthMin(IMPULSE_STRENGTH_MIN), m_ImpulseStrengthMax(IMPULSE_STRENGTH_MAX)
 {
 	Super::PrimaryActorTick.bCanEverTick = true;
@@ -35,7 +35,7 @@ void ABlockSpawner::Tick(float delta)
 			entity->SetActorLocation(Super::GetActorLocation());
 			entity->SetActorRotation(FRotator(360.0f * FMath::FRand(),
 				360.0f * FMath::FRand(), 360.0f * FMath::FRand()));
-			
+
 #define ANGLE -MAX_ANGLE_XY / 2.0f + MAX_ANGLE_XY * FMath::FRand()
 #define IMPULSE this->m_ImpulseStrengthMin + (this->m_ImpulseStrengthMax - this->m_ImpulseStrengthMin) * FMath::FRand()
 			FRotator rotation = FRotator(ANGLE, 360.0f * FMath::FRand(), ANGLE);

@@ -14,7 +14,7 @@ class KING_OF_THE_CASTLE_API UCountdownComponent : public UHUDComponent
 public:
 	UCountdownComponent();
 
-	bool IsCountdownComplete() { return !Super::m_bRender || this->m_Counter > this->m_Duration + this->m_WaitDuration; }
+	bool IsCountdownComplete() const { return !Super::m_bRender || this->m_Counter > this->m_Duration + this->m_WaitDuration; }
 
 protected:
 	virtual void Render(class AGameHUD *hud, const FVector2D& origin, const FVector2D& extent, const float& scale) override;

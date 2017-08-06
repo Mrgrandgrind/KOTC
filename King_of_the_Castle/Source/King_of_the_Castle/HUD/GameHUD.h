@@ -32,7 +32,7 @@ public:
 
 	FORCEINLINE class APlayerCharacter* GetCharacter() const { return (APlayerCharacter*)Super::GetOwningPawn(); }
 
-	FORCEINLINE bool IsOpposite()
+	FORCEINLINE bool IsOpposite() const
 	{
 		return (this->m_PlayerCount == 2 && this->m_ControllerId == 1)
 			|| (this->m_PlayerCount == 3 && this->m_ControllerId == 2)
@@ -73,11 +73,8 @@ public:
 	template<typename T>
 	FORCEINLINE static T* FindComponent(APlayerCharacter *character)
 	{
-		return AGameHUD::FindComponent<T>((APlayerController*)character->GetController());
+		return AGameHUD::FindComponent<T>(static_cast<APlayerController*>(character->GetController()));
 	}
-
-private:
-	void RenderScores(const FVector4& screen, const float& scale);
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD", meta = (DisplayName = "Font"))

@@ -11,7 +11,7 @@
 
 #define STAMINA_FLASH_COLOR FLinearColor(1.0f, 0.1f, 0.1f, 0.75f)
 
-UStatBarsComponent::UStatBarsComponent()
+UStatBarsComponent::UStatBarsComponent() : m_bFlashStamina(false), m_FlashStaminaCounter(0.0f), m_HealthPerc(0.0f), m_StaminaPerc(0.0f)
 {
 	this->m_HealthMaxColor = HEALTH_FULL_COLOR;
 	this->m_HealthMinColor = HEALTH_EMPTY_COLOR;
@@ -48,7 +48,7 @@ void UStatBarsComponent::Render(AGameHUD *hud, const FVector2D& origin, const FV
 		widthStamina = -widthStamina;
 	}
 
-	float textWidth, textHeight, offset;
+	float textWidth, textHeight;
 	// Health
 	float healthPerc = character->GetHealth() / character->GetMaxHealth();
 	healthPerc = this->m_HealthPerc = FMath::FInterpTo(this->m_HealthPerc, healthPerc,
@@ -59,7 +59,7 @@ void UStatBarsComponent::Render(AGameHUD *hud, const FVector2D& origin, const FV
 	hud->GetTextSize(this->m_HealthText, textWidth, textHeight, hud->GetFont(), this->m_TextScale * scale);
 	hud->DrawText(this->m_HealthText, FLinearColor::White, opposite ? x - textWidth : x, y + height / 2.0f - textHeight / 2.0f, hud->GetFont(), this->m_TextScale * scale);
 
-	offset = (opposite ? -textWidth : textWidth) * 1.25f;
+	float offset = (opposite ? -textWidth : textWidth) * 1.25f;
 	hud->DrawRect(healthColor, x + offset, y, widthHealth * healthPerc, height * 0.6f);
 	hud->DrawRect(healthColor * 0.8f, x + offset, y + height * 0.6f, widthHealth * healthPerc, height * 0.4f);
 

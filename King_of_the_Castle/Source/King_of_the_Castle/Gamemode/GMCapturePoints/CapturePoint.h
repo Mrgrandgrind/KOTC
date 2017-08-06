@@ -44,7 +44,7 @@ public:
 
 	FORCEINLINE const int& GetCapturingTeam() const { return this->m_CapturingTeam; }
 
-	FORCEINLINE const TArray<class APlayerCharacter*>& GetPlayers() { return this->m_Players; }
+	FORCEINLINE const TArray<class APlayerCharacter*>& GetPlayers() const { return this->m_Players; }
 
 protected:
 	// Set light to represet owning team
