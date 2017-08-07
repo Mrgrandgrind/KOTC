@@ -43,6 +43,24 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD", meta = (DisplayName = "Box Flash Speed"))
 	float m_BoxFlashSpeed;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD", meta = (DisplayName = "Arrow Angle (deg)"))
+	float m_ArrowAngle;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD", meta = (DisplayName = "Arrow Thickness"))
+	float m_ArrowTickness;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD", meta = (DisplayName = "Arrow Dist Offset (0)"))
+	float m_ArrowDistOffset0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD", meta = (DisplayName = "Arrow Dist Offset (1/2)"))
+	float m_ArrowDistOffset12;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD", meta = (DisplayName = "Arrow Color"))
+	FLinearColor m_ArrowColor;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD", meta = (DisplayName = "Render Arrow"))
+	bool m_bRenderArrow;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD", meta = (DisplayName = "Text Color"))
 	FLinearColor m_TextColor;
 
