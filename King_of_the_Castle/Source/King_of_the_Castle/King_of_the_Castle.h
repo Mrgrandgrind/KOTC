@@ -6,6 +6,8 @@
 #include "EngineMinimal.h"
 
 #define PI2 (PI * 2.0f)
+#define DEG_TO_RAD (PI / 180.0f)
+#define RAD_TO_DEG (180.0f / PI)
 
 // Configuration //
 #define KOTC_EVENTS_ENABLED true	// Whether or not events should be triggered (does not disable ability to manually trigger events)

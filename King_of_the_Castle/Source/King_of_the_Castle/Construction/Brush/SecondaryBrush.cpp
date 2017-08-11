@@ -61,7 +61,7 @@ bool USecondaryBrush::OnMainCheck(ABuildArea *area, const FHitResult& result, FG
 		return false;
 	}
 	ABlock *block = Cast<ABlock>(result.GetActor());
-	if (block != nullptr && area->GetGridCell(block->GetActorLocation(), Super::m_ActiveCell))
+	if (block != nullptr && block->GetTeam() == *Super::m_Team && area->GetGridCell(block->GetActorLocation(), Super::m_ActiveCell))
 	{
 		//// Method 1 - Works with a single call but has jitter
 		//FVector diff = Super::GetComponentLocation() - Super::Bounds.Origin;

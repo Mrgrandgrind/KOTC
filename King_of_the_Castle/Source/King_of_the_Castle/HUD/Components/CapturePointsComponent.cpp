@@ -11,6 +11,8 @@
 #define CP_UNOWNED_COLOR  FLinearColor(0.8f, 0.0f, 0.0f, 0.25f)
 #define CP_TEXT_COLOR FLinearColor(1.0f, 1.0f, 1.0f, 0.8f)
 
+#define CP_ARROW_COLOR FLinearColor(0.6f, 0.6f, 0.6f, 0.5f)
+
 #define CP_MATERIAL_PARAM_ALPHA TEXT("Alpha")
 #define CP_MATERIAL_PARAM_BOX_COLOR TEXT("Color")
 #define CP_MATERIAL_PARAM_TEAM_COLOR TEXT("TeamColor")
@@ -25,10 +27,16 @@ UCapturePointsComponent::UCapturePointsComponent() : m_Material(nullptr)
 	this->m_UnownedColor = CP_UNOWNED_COLOR;
 	this->m_PositionRadiusScale = 0.8f;
 	this->m_bAlwaysOnScreen = true;
-	this->m_BoxScale = 31.0f;
+	this->m_BoxScale = 36.0f;
 	this->m_TeamBoxUVSize = 0.12f;
-	this->m_BoxAlpha = 0.5f;
+	this->m_BoxAlpha = 0.75f;
 	this->m_BoxFlashSpeed = 0.65f;
+	this->m_ArrowAngle = 25.0f;
+	this->m_ArrowTickness = 1.25f;
+	this->m_ArrowDistOffset0 = 3.0f;
+	this->m_ArrowDistOffset12 = 1.0f;
+	this->m_ArrowColor = CP_ARROW_COLOR;
+	this->m_bRenderArrow = true;
 	this->m_TextColor = CP_TEXT_COLOR;
 	this->m_TextScale = 0.58f;
 	this->m_TextZOffset = 140.0f;
@@ -67,7 +75,7 @@ void UCapturePointsComponent::Render(AGameHUD *hud, const FVector2D& origin, con
 		FVector position = hud->Project(points[i]->GetActorLocation() + FVector(0.0f, 0.0f, this->m_TextZOffset));
 
 		float textScale = scale * this->m_TextScale, boxScale = textScale * this->m_BoxScale;
-		if(this->m_bAlwaysOnScreen)
+		if (this->m_bAlwaysOnScreen)
 		{
 			if (position.Z <= 0.0f)
 			{
@@ -77,9 +85,8 @@ void UCapturePointsComponent::Render(AGameHUD *hud, const FVector2D& origin, con
 				position.X += position.X > extent.X / 2.0f ? extent.X : -extent.X;
 			}
 
-			// TODO Make more efficient calculation checks
-			FVector2D vector = FVector2D(position.X - extent.X * 0.5f, position.Y - extent.Y * 0.5f);
-			FVector2D max = extent * 0.5f * this->m_PositionRadiusScale;
+			const FVector2D position2d = FVector2D(position), vector = position2d - extent * 0.5f;
+			const FVector2D max = extent * 0.5f * this->m_PositionRadiusScale;
 
 			FVector2D ellipsePos;
 			float theta = FMath::Atan2(vector.Y, vector.X);
@@ -93,23 +100,26 @@ void UCapturePointsComponent::Render(AGameHUD *hud, const FVector2D& origin, con
 
 			if (vector.SizeSquared() > (ellipsePos - extent * 0.5f).SizeSquared())
 			{
+				if(this->m_bRenderArrow)
+				{
+					FVector2D normal = (position2d - ellipsePos).GetSafeNormal();
+
+					float delta = FMath::Atan2(normal.Y, normal.X), deltaOffset = this->m_ArrowAngle * DEG_TO_RAD;
+					FVector2D p1 = FVector2D(FMath::Cos(delta + deltaOffset), FMath::Sin(delta + deltaOffset)),
+						p2 = FVector2D(FMath::Cos(delta - deltaOffset), FMath::Sin(delta - deltaOffset));
+
+					float posOffset = boxScale * 0.5f + this->m_ArrowDistOffset12 * scale;
+					p1 = ellipsePos + p1 * posOffset;
+					p2 = ellipsePos + p2 * posOffset;
+
+					FVector2D p0 = ellipsePos + (boxScale * 0.5f + this->m_ArrowDistOffset0 * scale) * normal;
+					hud->DrawLine(p0.X, p0.Y, p1.X, p1.Y, this->m_ArrowColor, this->m_ArrowTickness * scale);
+					hud->DrawLine(p0.X, p0.Y, p2.X, p2.Y, this->m_ArrowColor, this->m_ArrowTickness * scale);
+				}
+				
 				position.X = ellipsePos.X;
 				position.Y = ellipsePos.Y;
 			}
-
-			//hud->Draw2DLine(extent.X / 2, extent.Y / 2, extent.X / 2 + vector.X, extent.Y / 2 + vector.Y, FColor::Orange);
-			//hud->Draw2DLine(extent.X / 2, extent.Y / 2, ellipsePos.X, ellipsePos.Y, FColor::Purple);
-
-
-			//float dist = FMath::Min(extent.X, extent.Y) * 0.5f * this->m_PositionRadiusScale;
-			//FVector2D vector = FVector2D(position.X - extent.X * 0.5f, position.Y - extent.Y * 0.5f);
-			//if(vector.Size() > dist)
-			//{
-			//	vector = vector.GetSafeNormal();
-
-			//	position.X = extent.X * 0.5f + vector.X * dist;
-			//	position.Y = extent.Y * 0.5f + vector.Y * dist;
-			//}
 		}
 		else
 		{
@@ -131,20 +141,21 @@ void UCapturePointsComponent::Render(AGameHUD *hud, const FVector2D& origin, con
 		{
 			continue;
 		}
+		FLinearColor teamColor = gamemode->GetTeamColor(point->GetOwningTeam());
+		//teamColor.A = this->m_BoxAlpha;
 		material->SetScalarParameterValue(CP_MATERIAL_PARAM_ALPHA, this->m_BoxAlpha);
 		material->SetScalarParameterValue(CP_MATERIAL_PARAM_FLASH_SPEED, this->m_BoxFlashSpeed);
 		material->SetVectorParameterValue(CP_MATERIAL_PARAM_BOX_COLOR, team == point->GetOwningTeam() ? this->m_OwnedColor : this->m_UnownedColor);
-		material->SetVectorParameterValue(CP_MATERIAL_PARAM_TEAM_COLOR, gamemode->GetTeamColor(point->GetOwningTeam()));
+		material->SetVectorParameterValue(CP_MATERIAL_PARAM_TEAM_COLOR, teamColor);
 		material->SetScalarParameterValue(CP_MATERIAL_PARAM_TEAM_SIZE, this->m_TeamBoxUVSize);
 		material->SetScalarParameterValue(CP_MATERIAL_PARAM_CAPTURE_PERC, point->GetCapturePercentage());
 		material->SetVectorParameterValue(CP_MATERIAL_PARAM_CAPTURE_COLOR, gamemode->GetTeamColor(point->GetCapturingTeam()));
 
-		//position.X = FMath::Max(boxScale, FMath::Min(screen.Z - boxScale, position.X));
-		//position.Y = FMath::Max(boxScale, FMath::Min(screen.W - boxScale, position.Y));
-
 		hud->DrawMaterialSimple(material, position.X - boxScale / 2.0f, position.Y - boxScale / 2.0f, boxScale, boxScale);
 
 		// Draw Text
+		//FLinearColor textColor = team == point->GetOwningTeam() ? FLinearColor(0.0f, 1.0f, 0.0f, 0.75f) : FLinearColor(1.0f, 0.0f, 0.0f, 0.75f);
+
 		float width, height;
 		hud->GetTextSize(name, width, height, hud->GetFont(), textScale);
 		hud->DrawText(name, this->m_TextColor, position.X - width / 2.0f,
