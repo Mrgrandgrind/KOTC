@@ -27,14 +27,14 @@ UCapturePointsComponent::UCapturePointsComponent() : m_Material(nullptr)
 	this->m_UnownedColor = CP_UNOWNED_COLOR;
 	this->m_PositionRadiusScale = 0.8f;
 	this->m_bAlwaysOnScreen = true;
-	this->m_BoxScale = 36.0f;
+	this->m_BoxScale = 34.0f;
 	this->m_TeamBoxUVSize = 0.12f;
-	this->m_BoxAlpha = 0.75f;
+	this->m_BoxAlpha = 1.0f;
 	this->m_BoxFlashSpeed = 0.65f;
 	this->m_ArrowAngle = 25.0f;
 	this->m_ArrowTickness = 1.25f;
-	this->m_ArrowDistOffset0 = 3.0f;
-	this->m_ArrowDistOffset12 = 1.0f;
+	this->m_ArrowDistOffset0 = 3.25f;
+	this->m_ArrowDistOffset12 = 1.25f;
 	this->m_ArrowColor = CP_ARROW_COLOR;
 	this->m_bRenderArrow = true;
 	this->m_TextColor = CP_TEXT_COLOR;
@@ -62,14 +62,16 @@ void UCapturePointsComponent::Render(AGameHUD *hud, const FVector2D& origin, con
 	for (int i = 0; i < points.Num(); i++)
 	{
 		ACapturePoint *point = Cast<ACapturePoint>(points[i]);
-		FString name = point->GetPointName().ToString();
-		// Don't render if the point has no name
-		if (name.Len() == 0)
+		if(!point->IsRenderHUDIconEnabled())
 		{
 			continue;
 		}
-		// Set the letter to the uppercase first character
-		name = name.Mid(0, 1).ToUpper();
+		FString name = point->GetPointName().ToString();
+		if (name.Len() != 0)
+		{
+			// Set the letter to the uppercase first character
+			name = name.Mid(0, 1).ToUpper();
+		}
 
 		// Screen position
 		FVector position = hud->Project(points[i]->GetActorLocation() + FVector(0.0f, 0.0f, this->m_TextZOffset));
@@ -154,11 +156,15 @@ void UCapturePointsComponent::Render(AGameHUD *hud, const FVector2D& origin, con
 		hud->DrawMaterialSimple(material, position.X - boxScale / 2.0f, position.Y - boxScale / 2.0f, boxScale, boxScale);
 
 		// Draw Text
-		//FLinearColor textColor = team == point->GetOwningTeam() ? FLinearColor(0.0f, 1.0f, 0.0f, 0.75f) : FLinearColor(1.0f, 0.0f, 0.0f, 0.75f);
+		if(name.Len() != 0)
+		{
+			//FLinearColor textColor = team == point->GetOwningTeam() ? FLinearColor(0.0f, 1.0f, 0.0f, 0.75f) : FLinearColor(1.0f, 0.0f, 0.0f, 0.75f);
+			teamColor.A = 0.9f;
 
-		float width, height;
-		hud->GetTextSize(name, width, height, hud->GetFont(), textScale);
-		hud->DrawText(name, this->m_TextColor, position.X - width / 2.0f,
-			position.Y - height / 2.0f, hud->GetFont(), textScale);
+			float width, height;
+			hud->GetTextSize(name, width, height, hud->GetFont(), textScale);
+			hud->DrawText(name, teamColor, position.X - width / 2.0f,
+				position.Y - height / 2.0f, hud->GetFont(), textScale);
+		}
 	}
 }

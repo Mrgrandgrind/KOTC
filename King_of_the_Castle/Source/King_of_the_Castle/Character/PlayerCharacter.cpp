@@ -10,7 +10,6 @@
 #include "Construction/Block.h"
 #include "Construction/BlockData.h"
 #include "Construction/BuildArea.h"
-#include "Construction/Blocks/FlagBlock.h"
 #include "Construction/Brush/PrimaryBrush.h"
 #include "Construction/Brush/SecondaryBrush.h"
 #include "Gamemode/BaseGameMode.h"
@@ -542,6 +541,7 @@ void APlayerCharacter::CheckAttackCollision(UCapsuleComponent *capsule, const fl
 	TArray<AActor*> overlapping;
 	capsule->GetOverlappingActors(overlapping);
 
+	float damage = 0.0f;
 	for (AActor *next : overlapping)
 	{
 		if (next == this)
@@ -551,7 +551,8 @@ void APlayerCharacter::CheckAttackCollision(UCapsuleComponent *capsule, const fl
 		FDamageEvent event;
 		if (next->IsA(ABlock::StaticClass()))
 		{
-			next->TakeDamage(this->m_MeleeBlockDamage * damageMultiplier, event, Super::GetController(), this);
+			this->OnPlayerAttack(next, damage = this->m_MeleeBlockDamage * damageMultiplier);
+			next->TakeDamage(damage, event, Super::GetController(), this);
 		}
 		if (next->IsA(APlayerCharacter::StaticClass()))
 		{
@@ -563,8 +564,11 @@ void APlayerCharacter::CheckAttackCollision(UCapsuleComponent *capsule, const fl
 				continue;
 			}
 
-			// Apply damage to player if they haven't recently been hit
-			player->TakeDamage(this->m_MeleePlayerDamage * damageMultiplier, event, Super::GetController(), this);
+			// Call attack event for this player
+			this->OnPlayerAttack(next, damage = this->m_MeleePlayerDamage * damageMultiplier);
+
+			// Apply feedback and damage to player if they haven't recently been hit
+			player->TakeDamage(damage, event, Super::GetController(), this);
 
 			// Apply knockback force
 			FVector direction = (player->GetActorLocation() - Super::GetActorLocation()).GetSafeNormal();
@@ -634,7 +638,7 @@ float APlayerCharacter::TakeDamage(float damageAmount, FDamageEvent const& damag
 {
 	if (!this->m_bIsStunned)
 	{
-		this->OnAttacked(damageCauser, damageAmount);
+		this->OnPlayerDamaged(damageCauser, damageAmount);
 		this->SetHealth(this->m_Health - damageAmount);
 	}
 	return damageAmount;
@@ -647,9 +651,6 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *input)
 
 	input->BindAxis("LeftThumbX");
 	input->BindAxis("LeftThumbY");
-
-	//input->BindAction("Jump", IE_Pressed, this, &APlayerCharacter::Jump);
-	//input->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
 	//input->BindAction("Rush", IE_Pressed, this, &APlayerCharacter::InputRushEnable);
 	//input->BindAction("Rush", IE_Released, this, &APlayerCharacter::InputRushDisable);

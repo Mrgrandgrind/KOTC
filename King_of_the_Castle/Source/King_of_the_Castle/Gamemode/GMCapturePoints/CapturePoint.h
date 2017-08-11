@@ -46,6 +46,8 @@ public:
 
 	FORCEINLINE const TArray<class APlayerCharacter*>& GetPlayers() const { return this->m_Players; }
 
+	FORCEINLINE const bool& IsRenderHUDIconEnabled() const { return this->m_bRenderHUDIcon; }
+
 protected:
 	// Set light to represet owning team
 	void UpdateSignalLight();
@@ -72,6 +74,10 @@ protected:
 	// Score multiplier
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Capture Point", meta = (DisplayName = "Score Per Capture"))
 	float m_ScorePerCapture;
+
+	// Checked by the hud when rendering capture points. Will only render if true
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Capture Point", meta = (DisplayName = "Render HUD Icon"))
+	bool m_bRenderHUDIcon;
 
 	// Current owner of this capture point. 0 means neutral
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Capture Point", meta = (DisplayName = "[Debug] Team Owner"))

@@ -67,8 +67,12 @@ public:
 	void OnRagdollEnd_Implementation() { Super::GetController()->SetIgnoreMoveInput(false); }
 
 	UFUNCTION(BlueprintNativeEvent)
-	void OnAttacked(AActor *other, const float& damage);
-	void OnAttacked_Implementation(AActor *other, const float& damage) { }
+	void OnPlayerDamaged(AActor *other, const float& damage);
+	void OnPlayerDamaged_Implementation(AActor *other, const float& damage) { }
+
+	UFUNCTION(BlueprintNativeEvent)
+	void OnPlayerAttack(AActor *other, const float& damage);
+	void OnPlayerAttack_Implementation(AActor *other, const float& damage) { }
 
 	// Stun the player. You can set the duration (-1 = default) and whether or not to regenerate health to full after stun.
 	UFUNCTION(BlueprintNativeEvent)

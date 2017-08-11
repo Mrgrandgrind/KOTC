@@ -40,11 +40,11 @@ protected:
 	float GetFadePercentage() const;
 
 	// Duration of the complete event
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Time", meta = (AllowPrivateAccess = "true", DisplayName = "Duration"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Time", meta = (DisplayName = "Duration"))
 	float m_Duration;
 
 	// Whether or not this event has started
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Event", meta = (AllowPrivateAccess = "true", DisplayName = "Running"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Event", meta = ( DisplayName = "Running"))
 	bool m_bRunning;
 
 	// Variables for derived classes to control the fade in and fade out
