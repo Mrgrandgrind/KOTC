@@ -50,11 +50,13 @@ public:
 
 	virtual void Dodge();
 
-	virtual void Attack();
+	virtual void AttackForward();
 
 	virtual void AttackUpper();
 
 	virtual void AttackLower();
+
+	virtual bool CanAttack();
 
 	virtual void CheckAttackCollision(UCapsuleComponent *capsule, const float& damageMultiplier = 1.0f);
 
@@ -102,7 +104,7 @@ public:
 	const bool& IsStunned() const { return this->m_bIsStunned; }
 
 	UFUNCTION(BlueprintPure, Category = "Combat")
-	bool IsAttacking() const { return this->m_bAttacking;  }
+	const bool& IsAttacking() const { return this->m_bAttacking; }
 
 	UFUNCTION(BlueprintPure, Category = "Combat")
 	const EAttackType& GetAttackType() const { return this->m_AttackType; }
@@ -147,6 +149,8 @@ protected:
 	void TogglePause();
 
 	void ToggleBuildMode() { if(!this->m_bBlockMovement) this->SetBuildModeEnabled(!this->m_bBuildingEnabled); }
+
+	virtual void Attack(const EAttackType& type, const float& predelay, UCapsuleComponent *capsule, const float& damageMultiplier = 1.0f);
 
 	//void UpdateMovementSpeed() const;
 
@@ -195,7 +199,7 @@ private:
 	float m_PlacePressCounter;
 
 	// Stop the player from moving
-	bool m_bBlockMovement;
+	bool m_bBlockMovement, m_bBlockAttack;
 
 	// State booleans
 	bool m_bIsStunned, m_bAttacking, m_bRushing;

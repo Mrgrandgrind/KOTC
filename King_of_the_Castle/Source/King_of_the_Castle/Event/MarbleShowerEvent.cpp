@@ -5,14 +5,17 @@
 
 #include "DrawDebugHelpers.h"
 
+#define SPAWN_OFFSET 50.0f
+#define SPAWN_IMPULSE 250.0f
 #define RAND_RADIUS (-this->m_Radius / 2.0f + this->m_Radius * FMath::FRand())
 
 AMarbleShowerEvent::AMarbleShowerEvent()
 {
 	this->m_Counter = 0.0f;
-	this->m_Radius = 8000.0f;
+	this->m_Radius = 7000.0f;
 	this->m_SpawnDelay = 0.05f;
 	this->m_RayHeight = 2500.0f;
+	this->m_OriginPosition = FVector(415.0f, -3196.0f, 2000.0f);
 
 	Super::m_Duration = 30.0f;
 	Super::PrimaryActorTick.bCanEverTick = true;
@@ -44,17 +47,23 @@ void AMarbleShowerEvent::Tick(float delta)
 			//DrawDebugPoint(Super::GetWorld(), result.ImpactPoint, 10.0f, FColor::Orange, false, 2.0f, 0);
 
 			FVector normal = (end - start).GetSafeNormal();
-			Super::GetWorld()->SpawnActor<AActor>(this->m_MarbleClass, result.ImpactPoint - normal * 100.0f, FRotator(0.0f));
+			AActor *actor = Super::GetWorld()->SpawnActor<AActor>(this->m_MarbleClass, result.ImpactPoint - normal * SPAWN_OFFSET, FRotator(0.0f));
+			if(actor != nullptr)
+			{
+				//((UPrimitiveComponent*)actor->GetRootComponent())->AddImpulse(-normal * SPAWN_IMPULSE, NAME_None, true);
 
-			this->m_Counter -= this->m_SpawnDelay;
+				this->m_Counter -= this->m_SpawnDelay;
+			}
 		}
 	}
 }
 
 void AMarbleShowerEvent::Start()
 {
+	Super::Start();
 }
 
 void AMarbleShowerEvent::Stop()
 {
+	Super::Stop();
 }
