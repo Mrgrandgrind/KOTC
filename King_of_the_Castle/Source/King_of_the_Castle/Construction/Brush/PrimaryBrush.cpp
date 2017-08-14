@@ -295,6 +295,7 @@ TArray<ABlock*> UPrimaryBrush::OnAction(ABuildArea *area, AActor *source)
 
 bool UPrimaryBrush::OnPreCheck(ABuildArea *area, const FHitResult& result, FGridCell& out, bool& show)
 {
+	this->m_bIsPositionBelow = false;
 	if (result.IsValidBlockingHit())
 	{
 		FVector normal = (result.TraceEnd - result.TraceStart).GetSafeNormal();
@@ -327,14 +328,6 @@ bool UPrimaryBrush::OnMainCheck(ABuildArea *area, const FHitResult& result, FGri
 			return Super::IsSupport(location, area->GetCellSize())
 				|| Super::GetNeighbours(location, area->GetCellSize()).Num() > 0;
 		};
-
-		// Check to see if the cell that the trace ends on is in the area and will be supported
-		if (area->GetGridCell(result.TraceEnd, cell) && isSupportedAt(result.TraceEnd))
-		{
-			out = cell;
-			show = true;
-			return true;
-		}
 
 		// If it won't be supported, we can't use it. Lets see if there's a block on the ground that we can use instead.
 		ACharacter *character = Cast<ACharacter>(Super::GetOwner());
@@ -373,6 +366,15 @@ bool UPrimaryBrush::OnMainCheck(ABuildArea *area, const FHitResult& result, FGri
 		{
 			out = cell;
 			show = true;
+			return true;
+		}
+
+		// Check to see if the cell that the trace ends on is in the area and will be supported
+		if (area->GetGridCell(result.TraceEnd, cell) && isSupportedAt(result.TraceEnd))
+		{
+			out = cell;
+			show = true;
+			this->m_bIsPositionBelow = true;
 			return true;
 		}
 	}
@@ -416,208 +418,14 @@ bool UPrimaryBrush::OnPostCheck(ABuildArea *area, const FHitResult& result, FGri
 	{
 		return false;
 	}
+
+	//if(character != nullptr && this->m_bIsPositionBelow)
+	//{
+	//	float dist = (character->GetActorLocation() - location).SizeSquared();
+	//	if(dist < area->GetCellSize().SizeSquared() * 2.0f)
+	//	{
+	//		this->Action(area, character);
+	//	}
+	//}
 	return true;
 }
-
-//// We will use the precheck to prcoess when we have hit something with our ray
-//if (result.IsValidBlockingHit())
-//{
-//	check(result.GetComponent() != nullptr);
-
-//	// If we are looking at a static mesh component or model component
-//	if (this->CanPlaceOn(result))
-//	{
-//		// The position is valid so update the position into our out cell
-//		area->GetGridCell(result.ImpactPoint + result.ImpactNormal * area->GetCellSize() / 2.0f, out);
-
-//		// Check to see if we new position would spawn a support block,
-//		// if it does then we will always show the brush
-//		FVector location;
-//		area->GetGridLocation(out, location);
-
-//		show = Super::IsSupport(location, area->GetCellSize()) || Super::GetNeighbours(location, area->GetCellSize()).Num() > 0;
-
-//		// If we aren't in a support block spawning location but our ray hit something
-//		if (!show && result.GetComponent() != nullptr)
-//		{
-//			// Check to see if there's a block below the cell. If there is, we will still show
-//			FHitResult below;
-//			Super::GetWorld()->LineTraceSingleByChannel(below, location, location
-//				- FVector(0.0f, 0.0f, area->GetCellSize().Z), ECollisionChannel::ECC_WorldDynamic);
-//			show = below.IsValidBlockingHit() && Cast<ABlock>(below.GetActor()) != nullptr;
-
-//			Super::RenderTrace(below.TraceStart, show ? below.ImpactPoint : below.TraceEnd, show ? FColor::Cyan : FColor::Blue);
-//		}
-//		else
-//		{
-//			Super::RenderPoint(location, FColor::Purple);
-//		}
-//		return true;
-//	}
-//}
-//// Check if there's a an empty space at the players feet
-//ACharacter *character = Cast<ACharacter>(Super::GetOwner());
-//check(character != nullptr);
-
-//FVector origin, extent;
-//character->GetActorBounds(true, origin, extent);
-
-//FCollisionQueryParams params;
-//params.AddIgnoredActor(Super::GetOwner());
-
-//FVector loc = character->GetActorLocation(), point = loc - FVector(0.0f, 0.0f, extent.Z / 2.0f + area->GetCellSize().Z / 2.0f);
-
-//FHitResult floorResult;
-//Super::GetWorld()->LineTraceSingleByChannel(floorResult, loc, point, ECollisionChannel::ECC_WorldDynamic, params);
-//Super::RenderTrace(loc, point, FColor::Purple);
-//if (floorResult.IsValidBlockingHit() && Cast<ABlock>(floorResult.GetActor()) != nullptr)
-//{
-//	
-//	FRotator rotation = (result.TraceEnd - result.TraceStart).Rotation();
-//	rotation.Pitch = 0.0f;
-//	FVector normal = rotation.RotateVector(FVector(1.0f, 0.0f, 0.0f));
-//	Super::GetWorld()->LineTraceSingleByChannel(floorResult, point, point
-//		+ normal * area->GetCellSize(), ECollisionChannel::ECC_WorldDynamic);
-//	Super::RenderTrace(point, point + normal * area->GetCellSize(), FColor::Purple);
-
-//	if (!floorResult.IsValidBlockingHit())
-//	{
-//		show = true;
-//		area->GetGridCell(floorResult.TraceEnd, out);
-//		return true;
-//	}
-//}
-
-
-
-
-
-
-//// If we get to here it means that our trace did not hit anything
-//const FVector& start = result.TraceStart, end = result.IsValidBlockingHit() ? result.ImpactPoint : result.TraceEnd;
-//FVector vector = end - start, normal = vector.GetSafeNormal();
-//if (pre && normal.Z > BRUSH_PLACE_FLOOR_NORMAL_Z)
-//{
-//	// We only need to run main if pre failed or we are looking downwards
-//	return true;
-//}
-//const int32 count = 4;
-//float dStep = vector.Size() / count, d = dStep;
-
-////float d = 0.0f, /*dTotal = vector.Size(),*/ dStep = vector.Size() / count;//(area->GetCellSize() * normal).Size() * (1.0f / 1.5f);
-////while (d < dTotal)
-//for (int i = 0; i < count; i++)
-//{
-//	FVector point;
-//	FHitResult trace;
-//	bool found = false;
-
-//	auto FindVertical = [&]() -> bool
-//	{
-//		// Cast a block size trace downward from the original trace
-//		Super::GetWorld()->LineTraceSingleByChannel(trace, point, point
-//			- FVector(0.0f, 0.0f, area->GetCellSize().Z), ECollisionChannel::ECC_WorldDynamic);
-
-//		bool hit = trace.IsValidBlockingHit() && this->CanPlaceOn(trace);
-//		Super::RenderTrace(trace.TraceStart, hit ? trace.ImpactPoint : trace.TraceEnd, hit ? FColor::Cyan : FColor::Blue);
-
-//		return hit;
-//	};
-//	auto FindHorizontal = [&](const float& angle) -> bool
-//	{
-//		// Cast a ray towards the player to see if we can place a block on the floor
-//		//FVector sideDir = FVector(normal.X, normal.Y, 0.0f).GetSafeNormal();
-//		FRotator dirRot = FVector(normal.X, normal.Y, 0.0f).Rotation();
-//		dirRot.Yaw = FMath::GridSnap(dirRot.Yaw, 90.0f) + angle;
-//		FVector dir = dirRot.RotateVector(FVector(1.0f, 0.0f, 0.0f));
-//		Super::GetWorld()->LineTraceSingleByChannel(trace, point, point - dir * area->GetCellSize().Z,
-//			ECollisionChannel::ECC_WorldDynamic, FCollisionQueryParams::DefaultQueryParam);
-
-//		bool hit = trace.IsValidBlockingHit() && this->CanPlaceOn(trace);
-//		hit = hit && (Super::IsSupport(point, area->GetCellSize())
-//			|| Super::GetNeighbours(point, area->GetCellSize()).Num() > 0);
-//		Super::RenderTrace(trace.TraceStart, hit ? trace.ImpactPoint : trace.TraceEnd, hit ? FColor::Cyan : FColor::Blue);
-
-//		return hit;
-//	};
-
-//	// If the player is looking downwards
-//	if (normal.Z <= BRUSH_PLACE_FLOOR_NORMAL_Z)
-//	{
-//		// Trace from start to end
-//		point = start + (d - 6.0f) * normal;
-
-//		ACharacter *character = Cast<ACharacter>(Super::GetOwner());
-//		check(character != nullptr);
-
-//		FVector origin, extent;
-//		character->GetActorBounds(true, origin, extent);
-
-//		FVector loc = character->GetActorLocation();
-//		if (point.Z <= loc.Z - extent.Z / 2)
-//		{
-//			Super::RenderPoint(loc - FVector(0.0f, 0.0f, extent.Z / 2), FColor::Purple);
-//			for (int j = 0; j < 4; j++)
-//			{
-//				found = FindHorizontal(j * 90.0f);
-//				if (found)
-//				{
-//					break;
-//				}
-//			}
-//		}
-//	}
-//	else
-//	{
-//		// Trace from end to start
-//		point = end - (d - dStep) * normal;
-
-//		found = FindVertical();
-//	}
-//	// If this point is a valid place for a block to go
-//	if (found)
-//	{
-//		// Do an additional check so that when placing on a ledge, it will choose the closest
-//		// instead of the furthest. This simply makes sure that we can see the block we hit.
-//		FCollisionQueryParams params;
-//		params.AddIgnoredActor(Super::GetOwner()); // Awkward camera angles can cause us to hit the player, so exclude it
-
-//		FHitResult traceCheck;
-//		Super::GetWorld()->LineTraceSingleByChannel(traceCheck, start,
-//			trace.ImpactPoint - trace.ImpactNormal, ECollisionChannel::ECC_WorldDynamic, params);
-
-//		// If both or rays hit the same thing then we know this position is actually valid
-//		bool valid = (trace.GetActor() != nullptr && traceCheck.GetActor() == trace.GetActor())
-//			|| (trace.GetComponent() != nullptr && traceCheck.GetComponent() == trace.GetComponent());
-
-//		Super::RenderTrace(traceCheck.TraceStart, valid ? traceCheck.ImpactPoint
-//			: traceCheck.TraceEnd, valid ? FColor::Cyan : FColor::Red);
-
-//		if (valid)
-//		{
-//			FVector pointB = trace.ImpactPoint + (trace.TraceEnd - trace.TraceStart)
-//				.GetSafeNormal() * area->GetCellSize() / 2.0f;
-//			FGridCell tempA, tempB;
-//			area->GetGridCell(point, tempA);
-//			area->GetGridCell(pointB, tempB);
-
-//			Super::RenderPoint(pointB, FColor::Purple);
-
-//			if (CELLS_BESIDE(tempA, tempB) || CELLS_EQUAL(tempA, tempB))
-//			{
-//				out = tempA; // This is necessary so we don't override pre check
-//				return show = true;
-//			}
-//			else
-//			{
-//				Super::RenderPoint(point, FColor::Red);
-//			}
-//		}
-//		else
-//		{
-//			Super::RenderPoint(point, FColor::Red);
-//		}
-//	}
-//	d += dStep;
-//}
-//return pre;

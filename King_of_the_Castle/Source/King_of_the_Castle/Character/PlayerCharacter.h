@@ -62,11 +62,11 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent)
 	void OnRagdollBegin();
-	void OnRagdollBegin_Implementation() { Super::GetController()->SetIgnoreMoveInput(true); }
+	void OnRagdollBegin_Implementation() { if(Super::GetController() != nullptr) Super::GetController()->SetIgnoreMoveInput(true); }
 
 	UFUNCTION(BlueprintNativeEvent)
 	void OnRagdollEnd();
-	void OnRagdollEnd_Implementation() { Super::GetController()->SetIgnoreMoveInput(false); }
+	void OnRagdollEnd_Implementation() { if (Super::GetController() != nullptr) Super::GetController()->SetIgnoreMoveInput(false); }
 
 	UFUNCTION(BlueprintNativeEvent)
 	void OnPlayerDamaged(AActor *other, const float& damage);
@@ -105,6 +105,12 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "Combat")
 	const bool& IsAttacking() const { return this->m_bAttacking; }
+
+	UFUNCTION(BlueprintPure, Category = "Movement")
+	const bool& IsSprinting() const { return this->m_bSprinting; }
+
+	UFUNCTION(BlueprintCallable, Category = "Movement")
+	void SetSprinting(const bool& sprinting) { this->m_bSprinting = sprinting; }
 
 	UFUNCTION(BlueprintPure, Category = "Combat")
 	const EAttackType& GetAttackType() const { return this->m_AttackType; }

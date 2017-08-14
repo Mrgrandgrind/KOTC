@@ -454,7 +454,7 @@ void APlayerCharacter::AttackUpper()
 
 void APlayerCharacter::AttackLower()
 {
-	if(!this->CanAttack())
+	if (!this->CanAttack())
 	{
 		return;
 	}
@@ -631,6 +631,12 @@ float APlayerCharacter::TakeDamage(float damageAmount, FDamageEvent const& damag
 		float damage = Super::TakeDamage(damageAmount, damageEvent, eventInstigator, damageCauser);
 		this->OnPlayerDamaged(damageCauser, damage);
 		this->SetHealth(this->m_Health - damage);
+
+		if (damageCauser != nullptr && !this->IsStunned() && Cast<APlayerCharacter>(damageCauser) == nullptr)
+		{
+			FVector direction = (Super::GetActorLocation() - damageCauser->GetActorLocation()).GetSafeNormal();
+			Super::LaunchCharacter((direction + FVector(0.0f, 0.0f, 0.2f)) * 1000.0f, false, false);
+		}
 
 		return damage;
 	}

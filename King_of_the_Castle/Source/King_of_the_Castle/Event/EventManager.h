@@ -59,6 +59,9 @@ protected:
 
 public:
 // DEBUG VARIABLES //
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Event", meta = (DisplayName = "[Debug] Start Event"))
+	int m_DebugStartEvent;
+
 	// Force the active event to stop. Does nothing if there's no active event.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Event", meta = (DisplayName = "[Debug] Stop Event"))
 	bool m_bDebugStopEvent;

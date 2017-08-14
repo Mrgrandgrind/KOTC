@@ -263,7 +263,7 @@ TArray<ABlockEntity*> ABlockEntity::SpawnBlockEntity(ABlock *block, UWorld* worl
 
 			blocks.Add(entity);
 
-			if (source == nullptr)
+			if (source == nullptr || Cast<APlayerCharacter>(source) == nullptr)
 			{
 				continue;
 			}

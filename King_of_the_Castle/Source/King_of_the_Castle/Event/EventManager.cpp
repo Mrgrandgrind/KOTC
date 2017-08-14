@@ -2,6 +2,7 @@
 #include "EventManager.h"
 
 #include "GameEvent.h"
+#include "Gamemode/BaseGameMode.h"
 
 AEventManager::AEventManager() : m_Event(nullptr)
 {
@@ -11,6 +12,7 @@ AEventManager::AEventManager() : m_Event(nullptr)
 	this->m_EventTriggerChance = DEFAULT_EVENT_TRIGGER_CHANCE;
 
 #if WITH_EDITOR
+	this->m_DebugStartEvent = -1;
 	this->m_bDebugStopEvent = false;
 #endif
 
@@ -66,7 +68,9 @@ void AEventManager::TriggerEvent(const int& gameEvent)
 		this->m_Event->Stop();
 		this->m_Event->Destroy();
 	}
-	if (gameEvent >= 0 && gameEvent < this->m_EventList.Num() && this->m_EventList[gameEvent] != nullptr)
+	ABaseGameMode *gamemode = GetGameMode(Super::GetWorld());
+	if (gameEvent >= 0 && gameEvent < this->m_EventList.Num() && this->m_EventList[gameEvent] != nullptr
+		 && (gamemode == nullptr || !gamemode->IsGameOver()))
 	{
 		this->m_Event = Super::GetWorld()->SpawnActor<AGameEvent>(this->m_EventList[gameEvent]);
 	}
@@ -99,6 +103,12 @@ void AEventManager::PostEditChangeProperty(FPropertyChangedEvent& PropertyChange
 		return;
 	}
 	FName name = PropertyChangedEvent.MemberProperty->GetFName();
+	if (name == GET_MEMBER_NAME_CHECKED(AEventManager, m_DebugStartEvent))
+	{
+		this->TriggerEvent(this->m_DebugStartEvent);
+		this->m_NextEventId = -1;
+		this->m_DebugStartEvent = -1;
+	}
 	if (name == GET_MEMBER_NAME_CHECKED(AEventManager, m_bDebugStopEvent)
 		|| name == GET_MEMBER_NAME_CHECKED(AEventManager, m_NextEventId))
 	{

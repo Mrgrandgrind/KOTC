@@ -22,7 +22,7 @@ USecondaryBrush::USecondaryBrush()
 
 void USecondaryBrush::BeginPlay()
 {
-	Super::BeginPlay(); 
+	Super::BeginPlay();
 
 	UMaterialInstanceDynamic *material = Super::GetMaterialDynamic();
 	if (material != nullptr)
@@ -79,7 +79,7 @@ bool USecondaryBrush::OnMainCheck(ABuildArea *area, const FHitResult& result, FG
 
 		// Only show block count if primary brush isn't showing it
 		APlayerCharacter *character = Cast<APlayerCharacter>(Super::GetOwner());
-		if (character != nullptr)
+		if (character != nullptr && Super::m_TextActor != nullptr)
 		{
 			UPrimaryBrush *brush = character->GetPrimaryBrush();
 			Super::UpdateCountText(brush->GetBlockData(brush->GetSelectedIndex()));
