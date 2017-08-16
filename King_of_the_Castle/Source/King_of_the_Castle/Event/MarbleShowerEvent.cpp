@@ -46,17 +46,10 @@ void AMarbleShowerEvent::Tick(float delta)
 		{
 			//DrawDebugPoint(Super::GetWorld(), result.ImpactPoint, 10.0f, FColor::Orange, false, 2.0f, 0);
 
-			FVector normal = (end - start).GetSafeNormal();
-			AActor *actor = Super::GetWorld()->SpawnActor<AActor>(this->m_MarbleClass, result.ImpactPoint - normal * SPAWN_OFFSET, FRotator(0.0f));
+			AActor *actor = Super::GetWorld()->SpawnActor<AActor>(this->m_MarbleClass, 
+				result.ImpactPoint - (end - start).GetSafeNormal() * SPAWN_OFFSET, FRotator(0.0f));
 			if(actor != nullptr)
 			{
-				//UPrimitiveComponent *root = Cast<UPrimitiveComponent>(actor->GetRootComponent());
-				//if(root != nullptr)
-				//{
-				//	const float& range = 0.5f;
-				//	FVector dir = (FVector(-range + range * 2.0f * FMath::FRand(), -range + range * 2.0f * FMath::FRand(), 0.0f) + normal).GetSafeNormal();
-				//	root->AddImpulse(-dir * SPAWN_IMPULSE, NAME_None, true);
-				//}
 				this->m_Counter -= this->m_SpawnDelay;
 			}
 		}

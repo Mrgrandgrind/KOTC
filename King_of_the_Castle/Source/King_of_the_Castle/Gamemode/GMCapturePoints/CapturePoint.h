@@ -18,6 +18,8 @@ public:
 	UFUNCTION(BlueprintNativeEvent)
 	void OnCaptureTick(const int& capturingTeam, const int& owningTeam, const float& capturePercentage,
 		const TArray<class APlayerCharacter*>& players, const float& speedMultiplier);
+	void OnCaptureTick_Implementation(const int& capturingTeam, const int& owningTeam, const float& capturePercentage,
+		const TArray<class APlayerCharacter*>& players, const float& speedMultiplier) { }
 
 	UFUNCTION()
 	void OnBeginOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor,

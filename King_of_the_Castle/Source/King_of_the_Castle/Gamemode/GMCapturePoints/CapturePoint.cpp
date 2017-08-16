@@ -103,11 +103,6 @@ void ACapturePoint::UpdateSignalLight()
 	this->m_SignalLight->SetLightColor(gamemode->GetTeamColor(this->m_OwningTeam));
 }
 
-void ACapturePoint::OnCaptureTick_Implementation(const int& capturingTeam, const int& owningTeam, const float& capturePercentage,
-	const TArray<class APlayerCharacter*>& players, const float& speedMultiplier)
-{
-}
-
 void ACapturePoint::Tick(float delta)
 {
 	Super::Tick(delta);

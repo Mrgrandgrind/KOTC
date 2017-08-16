@@ -18,14 +18,17 @@ class KING_OF_THE_CASTLE_API AGameEvent : public AActor
 public:
 	AGameEvent();
 
-	UFUNCTION(BlueprintPure, Category = "Name")
-	virtual FName GetEventName() const { return NAME_None; }
+	UFUNCTION(BlueprintPure, Category = "Event")
+	const float& GetRunTime() const { return *this->m_Timer; }
 
 	UFUNCTION(BlueprintPure, Category = "Time")
 	const float& GetDuration() const { return this->m_Duration; }
 
 	UFUNCTION(BlueprintPure, Category = "Event")
 	const bool& IsRunning() const { return this->m_bRunning; }
+
+	UFUNCTION(BlueprintPure, Category = "Name")
+	virtual FName GetEventName() const { return NAME_None; }
 
 	FORCEINLINE virtual void Start() { this->m_bRunning = true; }
 
