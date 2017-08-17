@@ -148,6 +148,10 @@ bool ABlockStructureManager::IsSupport(const FVector& position, const FVector& e
 
 void ABlockStructureManager::DropBlock(ABlock *block)
 {
+	if(block->GetHealth() <= 0.0f)
+	{
+		return;
+	}
 	for (ABlockEntity *entity : block->DropBlock(nullptr, true))
 	{
 		if (entity == nullptr)

@@ -53,6 +53,8 @@ protected:
 private:
 	FRotator m_Rotation;
 
+	bool m_bIsPositionBelow;
+
 	UPROPERTY()
 	TArray<ABlock*> m_ChildBlocks;
 

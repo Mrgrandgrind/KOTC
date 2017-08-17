@@ -10,7 +10,6 @@
 #include "Construction/Block.h"
 #include "Construction/BlockData.h"
 #include "Construction/BuildArea.h"
-#include "Construction/Blocks/FlagBlock.h"
 #include "Construction/Brush/PrimaryBrush.h"
 #include "Construction/Brush/SecondaryBrush.h"
 #include "Gamemode/BaseGameMode.h"
@@ -25,7 +24,7 @@
 #define ATTACK_UPPER_PREDELAY 0.14f
 #define ATTACK_LOWER_PREDELAY 0.14f
 #define ATTACK_FORWARD_PREDELAY 0.6f
-#define ATTACK_DURATION 1.8f
+#define ATTACK_DURATION 1.1f
 
 #define CHARGE_ATTACK_ANIMATION_DURATION 2.0f
 
@@ -236,7 +235,7 @@ void APlayerCharacter::Tick(float delta)
 
 	// Updating building mechanics
 	ABuildArea *area = this->GetActiveBuildArea();
-	if (area == nullptr)
+	if (area == nullptr || this->m_bAttacking || this->m_bBlockAttack)
 	{
 		if (this->IsBrushVisible())
 		{
@@ -435,67 +434,31 @@ void APlayerCharacter::Dodge()
 	}), CHARGE_ATTACK_ANIMATION_DURATION, false);
 }
 
-void APlayerCharacter::Attack()
+void APlayerCharacter::AttackForward()
 {
-	if (this->m_bAttacking || this->m_bIsStunned || GetGameMode(Super::GetWorld())->IsMovementBlocked(this))
+	if (!this->CanAttack())
 	{
 		return;
 	}
-	if (Super::GetCharacterMovement()->IsFalling())
-	{
-		return;
-	}
-	if (!this->HasStamina(this->m_MeleeStaminaCost))
-	{
-		return;
-	}
-	this->m_bAttacking = true;
-	this->m_AttackType = EAttackType::Forward;
-
-	FTimerHandle handle;
-	Super::GetWorldTimerManager().SetTimer(handle, FTimerDelegate::CreateLambda([this]()
-	{
-		this->SetStamina(this->m_Stamina - this->m_MeleeStaminaCost);
-		this->CheckAttackCollision(this->m_ForwardMeleeCapsule);
-
-		this->m_bAttacking = false;
-	}), ATTACK_FORWARD_PREDELAY / this->m_MeleeSpeed, false);
+	this->Attack(EAttackType::Forward, ATTACK_FORWARD_PREDELAY, this->m_ForwardMeleeCapsule);
 }
 
 void APlayerCharacter::AttackUpper()
 {
-	if (this->m_bAttacking || this->m_bIsStunned || GetGameMode(Super::GetWorld())->IsMovementBlocked(this))
+	if (!this->CanAttack())
 	{
 		return;
 	}
-	if (!this->HasStamina(this->m_MeleeStaminaCost))
-	{
-		return;
-	}
-	this->m_bAttacking = true;
-	this->m_AttackType = EAttackType::Upper;
-
-	FTimerHandle handle;
-	Super::GetWorldTimerManager().SetTimer(handle, FTimerDelegate::CreateLambda([this]()
-	{
-		this->SetStamina(this->m_Stamina - this->m_MeleeStaminaCost);
-		this->CheckAttackCollision(this->m_UpperMeleeCapsule);
-
-		this->m_bAttacking = false;
-	}), ATTACK_UPPER_PREDELAY, false);
+	this->Attack(EAttackType::Upper, ATTACK_UPPER_PREDELAY, this->m_UpperMeleeCapsule);
 }
 
 void APlayerCharacter::AttackLower()
 {
-	if (this->m_bAttacking || this->m_bIsStunned || GetGameMode(Super::GetWorld())->IsMovementBlocked(this))
+	if (!this->CanAttack())
 	{
 		return;
 	}
 	if (!Super::GetCharacterMovement()->IsFalling())
-	{
-		return;
-	}
-	if (!this->HasStamina(this->m_MeleeStaminaCost))
 	{
 		return;
 	}
@@ -513,24 +476,50 @@ void APlayerCharacter::AttackLower()
 
 	if (!result.IsValidBlockingHit())
 	{
-		this->Attack();
+		this->AttackForward();
 		return;
 	}
-
-	this->m_bAttacking = true;
-	this->m_AttackType = EAttackType::Lower;
-
-	float height = Super::GetActorLocation().Z;
 	Super::LaunchCharacter(FVector(0.0f, 0.0f, -800.0f), false, true);
 
-	FTimerHandle handle;
-	Super::GetWorldTimerManager().SetTimer(handle, FTimerDelegate::CreateLambda([this]()
+	this->Attack(EAttackType::Lower, ATTACK_LOWER_PREDELAY, this->m_LowerMeleeCapsule);
+}
+
+bool APlayerCharacter::CanAttack()
+{
+	if (this->m_bAttacking || this->m_bBlockAttack || this->m_bIsStunned)
+	{
+		return false;
+	}
+	if (GetGameMode(Super::GetWorld())->IsMovementBlocked(this))
+	{
+		return false;
+	}
+	if (!this->HasStamina(this->m_MeleeStaminaCost))
+	{
+		return false;
+	}
+	return true;
+}
+
+void APlayerCharacter::Attack(const EAttackType& type, const float& predelay, UCapsuleComponent *capsule, const float& damageMultiplier)
+{
+	this->m_AttackType = type;
+	this->m_bAttacking = this->m_bBlockAttack = true;
+
+	FTimerHandle attackHandle;
+	Super::GetWorldTimerManager().SetTimer(attackHandle, FTimerDelegate::CreateLambda([this, capsule, damageMultiplier]()
 	{
 		this->SetStamina(this->m_Stamina - this->m_MeleeStaminaCost);
-		this->CheckAttackCollision(this->m_LowerMeleeCapsule);
+		this->CheckAttackCollision(capsule, damageMultiplier);
 
 		this->m_bAttacking = false;
-	}), ATTACK_LOWER_PREDELAY, false);
+	}), predelay / this->m_MeleeSpeed, false);
+
+	FTimerHandle endHandle;
+	Super::GetWorldTimerManager().SetTimer(endHandle, FTimerDelegate::CreateLambda([this]()
+	{
+		this->m_bBlockAttack = false;
+	}), ATTACK_DURATION / this->m_MeleeSpeed, false);
 }
 
 void APlayerCharacter::CheckAttackCollision(UCapsuleComponent *capsule, const float& damageMultiplier)
@@ -542,6 +531,7 @@ void APlayerCharacter::CheckAttackCollision(UCapsuleComponent *capsule, const fl
 	TArray<AActor*> overlapping;
 	capsule->GetOverlappingActors(overlapping);
 
+	float damage = 0.0f;
 	for (AActor *next : overlapping)
 	{
 		if (next == this)
@@ -549,9 +539,10 @@ void APlayerCharacter::CheckAttackCollision(UCapsuleComponent *capsule, const fl
 			continue;
 		}
 		FDamageEvent event;
-		if (next->IsA(ABlock::StaticClass()))
+		if (next->IsA(ABlock::StaticClass()) && Cast<ABlock>(next)->IsDestructable())
 		{
-			next->TakeDamage(this->m_MeleeBlockDamage * damageMultiplier, event, Super::GetController(), this);
+			this->OnPlayerAttack(next, damage = this->m_MeleeBlockDamage * damageMultiplier);
+			next->TakeDamage(damage, event, Super::GetController(), this);
 		}
 		if (next->IsA(APlayerCharacter::StaticClass()))
 		{
@@ -563,8 +554,11 @@ void APlayerCharacter::CheckAttackCollision(UCapsuleComponent *capsule, const fl
 				continue;
 			}
 
-			// Apply damage to player if they haven't recently been hit
-			player->TakeDamage(this->m_MeleePlayerDamage * damageMultiplier, event, Super::GetController(), this);
+			// Call attack event for this player
+			this->OnPlayerAttack(next, damage = this->m_MeleePlayerDamage * damageMultiplier);
+
+			// Apply feedback and damage to player if they haven't recently been hit
+			player->TakeDamage(damage, event, Super::GetController(), this);
 
 			// Apply knockback force
 			FVector direction = (player->GetActorLocation() - Super::GetActorLocation()).GetSafeNormal();
@@ -634,10 +628,19 @@ float APlayerCharacter::TakeDamage(float damageAmount, FDamageEvent const& damag
 {
 	if (!this->m_bIsStunned)
 	{
-		this->OnAttacked(damageCauser, damageAmount);
-		this->SetHealth(this->m_Health - damageAmount);
+		float damage = Super::TakeDamage(damageAmount, damageEvent, eventInstigator, damageCauser);
+		this->OnPlayerDamaged(damageCauser, damage);
+		this->SetHealth(this->m_Health - damage);
+
+		if (damageCauser != nullptr && !this->IsStunned() && Cast<APlayerCharacter>(damageCauser) == nullptr)
+		{
+			FVector direction = (Super::GetActorLocation() - damageCauser->GetActorLocation()).GetSafeNormal();
+			Super::LaunchCharacter((direction + FVector(0.0f, 0.0f, 0.2f)) * 1000.0f, false, false);
+		}
+
+		return damage;
 	}
-	return damageAmount;
+	return 0.0f;
 }
 
 // Called to bind functionality to input
@@ -648,14 +651,11 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent *input)
 	input->BindAxis("LeftThumbX");
 	input->BindAxis("LeftThumbY");
 
-	//input->BindAction("Jump", IE_Pressed, this, &APlayerCharacter::Jump);
-	//input->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
-
 	//input->BindAction("Rush", IE_Pressed, this, &APlayerCharacter::InputRushEnable);
 	//input->BindAction("Rush", IE_Released, this, &APlayerCharacter::InputRushDisable);
 
 	input->BindAction("Dodge", IE_Pressed, this, &APlayerCharacter::Dodge);
-	input->BindAction("Attack", IE_Pressed, this, &APlayerCharacter::Attack);
+	input->BindAction("Attack", IE_Pressed, this, &APlayerCharacter::AttackForward);
 	input->BindAction("Attack High", IE_Pressed, this, &APlayerCharacter::AttackUpper);
 	input->BindAction("Attack Low", IE_Pressed, this, &APlayerCharacter::AttackLower);
 

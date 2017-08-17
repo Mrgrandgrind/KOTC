@@ -77,6 +77,7 @@ void ABaseGameMode::BeginPlay()
 	if (out.Num() > 0)
 	{
 		this->m_EventManager = Cast<AEventManager>(out[0]);
+		this->m_EventManager->SetActive(true);
 	}
 	else
 	{

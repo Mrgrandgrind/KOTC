@@ -187,37 +187,37 @@ WheelMenu UBuildWheel::CreateWheelMenu()
 {
 	WheelMenu root(TEXT("menu"));
 	{
-		root.AddSegment({ TEXT("Events"), [this](APlayerCharacter *character)
-		{
-			WheelMenu eventMenu(TEXT("events"));
-			{
-				std::function<bool(EGameEvent, FName, const int&)> trigger =
-					[this, character](EGameEvent type, FName id, const int& cost)
-				{
-					UBlockData *data = character->GetPrimaryBrush()->GetBlockData(id);
-					if (data == nullptr || data->GetCount() < cost)
-					{
-						return true;
-					}
-					data->SetCount(character->GetPrimaryBrush(), data->GetCount() - cost);
-					ABaseGameMode *gamemode = Cast<ABaseGameMode>(character->GetWorld()->GetAuthGameMode());
-					if (gamemode != nullptr && gamemode->GetEventManager())
-					{
-						gamemode->GetEventManager()->TriggerEvent(type);
-					}
-					return false;
-				};
-				eventMenu.AddSegment({ TEXT("Enable Low Gravity"), [this, trigger](APlayerCharacter *character)
-				{
-					return trigger(EGameEvent::LowGravity, ID_BASIC_BLOCK, 1);
-				} });
-				eventMenu.AddSegment({ TEXT("Enable Lava"), [this, trigger](APlayerCharacter *character)
-				{
-					return trigger(EGameEvent::FloorIsLava, ID_BASIC_BLOCK, 1);
-				} });
-			}
-			return this->OpenMenu(eventMenu);
-		} });
+		//root.AddSegment({ TEXT("Events"), [this](APlayerCharacter *character)
+		//{
+		//	WheelMenu eventMenu(TEXT("events"));
+		//	{
+		//		std::function<bool(EGameEvent, FName, const int&)> trigger =
+		//			[this, character](EGameEvent type, FName id, const int& cost)
+		//		{
+		//			UBlockData *data = character->GetPrimaryBrush()->GetBlockData(id);
+		//			if (data == nullptr || data->GetCount() < cost)
+		//			{
+		//				return true;
+		//			}
+		//			data->SetCount(character->GetPrimaryBrush(), data->GetCount() - cost);
+		//			ABaseGameMode *gamemode = Cast<ABaseGameMode>(character->GetWorld()->GetAuthGameMode());
+		//			if (gamemode != nullptr && gamemode->GetEventManager())
+		//			{
+		//				gamemode->GetEventManager()->TriggerEvent(type);
+		//			}
+		//			return false;
+		//		};
+		//		eventMenu.AddSegment({ TEXT("Enable Low Gravity"), [this, trigger](APlayerCharacter *character)
+		//		{
+		//			return trigger(EGameEvent::LowGravity, ID_BASIC_BLOCK, 1);
+		//		} });
+		//		eventMenu.AddSegment({ TEXT("Enable Lava"), [this, trigger](APlayerCharacter *character)
+		//		{
+		//			return trigger(EGameEvent::FloorIsLava, ID_BASIC_BLOCK, 1);
+		//		} });
+		//	}
+		//	return this->OpenMenu(eventMenu);
+		//} });
 
 		root.AddSegment({ TEXT("Power-up"), [this](APlayerCharacter *character)
 		{

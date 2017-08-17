@@ -3,6 +3,8 @@
 #include "Event/GameEvent.h"
 #include "FloorIsLavaEvent.generated.h"
 
+#define FLOOR_IS_LAVA_NAME TEXT("Floor is Lava")
+
 UCLASS()
 class KING_OF_THE_CASTLE_API AFloorIsLavaEvent : public AGameEvent
 {
@@ -17,8 +19,7 @@ public:
 
 	virtual void Stop() override;
 
-	UFUNCTION(BlueprintPure, Category = "Name")
-	virtual FName GetEventName() const override { return TEXT("Floor is Lava"); }
+	virtual FName GetEventName() const override { return FLOOR_IS_LAVA_NAME; }
 
 	UFUNCTION()
 	void BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, 

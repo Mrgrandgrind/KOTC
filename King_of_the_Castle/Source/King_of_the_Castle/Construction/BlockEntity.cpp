@@ -13,7 +13,7 @@
 #define SCALE_DURATION 0.128f // used for spawn and despawn
 #define SCALE_MULTIPLIER 0.5f // target scale (multiplier of the block this is an instance of)
 
-#define ENTITY_LIFE_TIME (2.0f * 60.0f) //seconds
+#define ENTITY_LIFE_TIME (1.0f * 60.0f) //seconds
 #define ENTITY_LIFE_TIME_OFFSET 0.1f //10% +-
 
 #define ATTRACTION_FORCE 50.0f
@@ -26,11 +26,11 @@ ABlockEntity::ABlockEntity() : m_CreateCounter(0.0f), m_bIgnoreOwner(false), m_b
 {
 	TScriptDelegate<FWeakObjectPtr> sdb;
 	sdb.BindUFunction(this, "BeginOverlap");
-	Super::m_Mesh->OnComponentBeginOverlap.Add(sdb);
+	//Super::m_Mesh->OnComponentBeginOverlap.Add(sdb);
 
 	TScriptDelegate<FWeakObjectPtr> sde;
 	sde.BindUFunction(this, "EndOverlap");
-	Super::m_Mesh->OnComponentEndOverlap.Add(sde);
+	//Super::m_Mesh->OnComponentEndOverlap.Add(sde);
 
 	this->SetLifeTime(ENTITY_LIFE_TIME);
 
@@ -179,6 +179,10 @@ void ABlockEntity::Tick(float delta)
 		this->m_bRestrictedPickup = true;
 	}
 
+	if (true)
+	{
+		return;
+	}
 	// Get the closest player within ATTRACTION_DISTANCE
 	APlayerCharacter *closest = nullptr;
 	float closestDistance = 0.0f;
@@ -259,7 +263,7 @@ TArray<ABlockEntity*> ABlockEntity::SpawnBlockEntity(ABlock *block, UWorld* worl
 
 			blocks.Add(entity);
 
-			if (source == nullptr)
+			if (source == nullptr || Cast<APlayerCharacter>(source) == nullptr)
 			{
 				continue;
 			}

@@ -39,12 +39,35 @@ struct FBlockStructure
 
 	// The location of the last support to be destroyed.
 	// Also set when a block causes one structures to split into two or more.
-	//FVector lastSupport;
 	class ABlock *lastSupport = nullptr;
 
 	// An array containing all the blocks in the structure
 	UPROPERTY()
 	TArray<class ABlock*> blocks;
+
+	FBlockStructure() { }
+
+	FBlockStructure(const FBlockStructure& copy) : lastSupport(copy.lastSupport), blocks(copy.blocks)
+	{
+	}
+
+	FBlockStructure(FBlockStructure&& copy) noexcept : lastSupport(std::move(copy.lastSupport)), blocks(std::move(copy.blocks))
+	{
+	}
+
+	FBlockStructure& operator=(const FBlockStructure& other)
+	{
+		this->lastSupport = other.lastSupport;
+		this->blocks = other.blocks;
+		return *this;
+	}
+
+	FBlockStructure& operator=(FBlockStructure&& other) noexcept
+	{
+		this->lastSupport = std::move(other.lastSupport);
+		this->blocks = std::move(other.blocks);
+		return *this;
+	}
 };
 
 UCLASS()
@@ -76,25 +99,34 @@ public:
 
 	FORCEINLINE FBlockStructure& GetStructure(const int& index) { return this->m_Structures[index]; }
 
-	FORCEINLINE int AddStructure(FBlockStructure&& structure) 
+	FORCEINLINE int AddStructure(const FBlockStructure& structure)
 	{
-		FBlockStructure newStructure;
-		newStructure.blocks.Append(structure.blocks);
-		return this->AddStructure(newStructure);
-	}
-
-	FORCEINLINE int AddStructure(FBlockStructure& structure)
-	{
-		if(this->m_StructureFreeIndex.Num() > 0)
+		int index = this->FindFreeStructureIndex();
+		if(index != -1)
 		{
-			int index = this->m_StructureFreeIndex.Pop();
-			this->m_Structures[index] = structure;
+			this->m_Structures[index] = std::move(structure);
 			return index;
 		}
 		return this->m_Structures.Add(structure);
 	}
 
+	FORCEINLINE int AddStructure(FBlockStructure&& structure)
+	{
+		int index = this->FindFreeStructureIndex();
+		if (index != -1)
+		{
+			this->m_Structures[index] = std::move(structure);
+			return index;
+		}
+		return this->m_Structures.Add(FBlockStructure(structure));
+	}
+
 protected:
+	FORCEINLINE int FindFreeStructureIndex()
+	{
+		return this->m_StructureFreeIndex.Num() > 0 ? this->m_StructureFreeIndex.Pop() : -1;
+	}
+
 	void DropBlock(class ABlock *block);
 
 	bool CheckStructureSupport(FBlockStructure& structure);

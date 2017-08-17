@@ -29,7 +29,7 @@ float AGameEvent::GetFadePercentage() const
 	if (time <= this->m_FadeInDuration)
 	{
 		//checkf(this->m_FadeInDuration <= 0.0f, TEXT("[GameEvent] Somehow we got here with fade in duration <= 0?"));
-		return FMath::Sin((3.14159f / 2.0f) * time / this->m_FadeInDuration);
+		return FMath::Sin(HALF_PI * time / this->m_FadeInDuration);
 	}
 	if (time >= this->m_Duration - this->m_FadeOutDuration)
 	{
@@ -37,7 +37,7 @@ float AGameEvent::GetFadePercentage() const
 		{
 			return 0.0f;
 		}
-		return FMath::Cos((3.14159f / 2.0f) * (time - (this->m_Duration - this->m_FadeOutDuration)) / this->m_FadeOutDuration);
+		return FMath::Cos(HALF_PI * (time - (this->m_Duration - this->m_FadeOutDuration)) / this->m_FadeOutDuration);
 	}
 	return 1.0f;
 }

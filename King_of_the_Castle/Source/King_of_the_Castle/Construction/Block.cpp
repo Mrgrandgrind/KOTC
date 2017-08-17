@@ -41,19 +41,19 @@ void ABlock::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	this->m_Mesh->SetMassOverrideInKg(NAME_None, BLOCK_DEFAULT_MASS);
+	//this->m_Mesh->SetMassOverrideInKg(NAME_None, BLOCK_DEFAULT_MASS);
 
-	FBodyInstance *body = this->GetMesh()->GetBodyInstance();
-	if (body != nullptr)
-	{
-		body->bLockXRotation = true;
-		body->bLockYRotation = true;
-		body->bLockZRotation = true;
-		body->bLockXTranslation = true;
-		body->bLockYTranslation = true;
-		body->bLockZTranslation = false;
-		body->SetDOFLock(EDOFMode::SixDOF);
-	}
+	//FBodyInstance *body = this->GetMesh()->GetBodyInstance();
+	//if (body != nullptr)
+	//{
+	//	body->bLockXRotation = true;
+	//	body->bLockYRotation = true;
+	//	body->bLockZRotation = true;
+	//	body->bLockXTranslation = true;
+	//	body->bLockYTranslation = true;
+	//	body->bLockZTranslation = false;
+	//	body->SetDOFLock(EDOFMode::SixDOF);
+	//}
 }
 
 // Drop block
@@ -67,7 +67,7 @@ TArray<ABlockEntity*> ABlock::DropBlock(AActor *source, const bool& restrictPick
 // Destroy block
 void ABlock::DestroyBlock(AActor *source)
 {
-	ABaseGameMode *gamemode = GetGameMode<ABaseGameMode>(Super::GetWorld());
+	ABaseGameMode *gamemode = GetGameMode(Super::GetWorld());
 	if (gamemode != nullptr)
 	{
 		gamemode->OnBlockDestroy(this, source);
@@ -134,12 +134,13 @@ float ABlock::TakeDamage(float damage, FDamageEvent const& damageEvent, AControl
 	{
 		return 0.0f;
 	}
-	this->SetHealth(this->GetHealth() - damage);
+	float actualDamage = Super::TakeDamage(damage, damageEvent, eventInstigator, damageCauser);
+	this->SetHealth(this->GetHealth() - actualDamage);
 	if (this->m_Health <= 0.0f) // if dead
 	{
 		this->DropBlock(damageCauser, true);
 	}
-	return damage;
+	return actualDamage;
 }
 
 #if WITH_EDITOR

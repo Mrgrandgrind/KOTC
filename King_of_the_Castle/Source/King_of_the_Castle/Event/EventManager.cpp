@@ -2,19 +2,22 @@
 #include "EventManager.h"
 
 #include "GameEvent.h"
-#include "LowGravityEvent.h"
-#include "FloorIsLavaEvent.h"
+#include "Gamemode/BaseGameMode.h"
 
-AEventManager::AEventManager()
+AEventManager::AEventManager() : m_Event(nullptr)
 {
 	this->m_EventTimer = 0.0f;
-	this->m_EventId = EGameEvent::None;
-	this->m_NextEventId = EGameEvent::None;
+	this->m_EventCooldown = 25.0f;
+	this->m_EventNameId = NAME_None;
+	this->m_NextEventId = -1;
 	this->m_EventTriggerChance = DEFAULT_EVENT_TRIGGER_CHANCE;
 
+	this->m_bActive = false;
+	this->m_bCooldown = true;
+
 #if WITH_EDITOR
+	this->m_DebugStartEvent = -1;
 	this->m_bDebugStopEvent = false;
-	this->m_DebugTriggerEvent = EGameEvent::None;
 #endif
 
 	Super::PrimaryActorTick.bCanEverTick = true;
@@ -24,26 +27,40 @@ void AEventManager::Tick(float delta)
 {
 	Super::Tick(delta);
 
+	if(!this->m_bActive)
+	{
+		return;
+	}
+
 	this->m_EventTimer += delta;
 	if (this->m_Event != nullptr)
 	{
 		// Game will tick the actor for us
 
-		if (this->m_EventTimer > this->m_Event->GetDuration())
+		if (this->m_EventTimer >= this->m_Event->GetDuration())
 		{
-			this->TriggerEvent(EGameEvent::None);
+			this->TriggerEvent(-1);
+			this->m_bCooldown = true;
 		}
 	}
-	else if (this->m_NextEventId == EGameEvent::None) // If there is no event has been triggered yet
+	else if (this->m_NextEventId < 0) // If there is no event has been triggered yet
 	{
-		if (this->m_EventTimer >= DEFAULT_EVENT_TRIGGER_DELAY)
+		if (this->m_bCooldown)
+		{
+			if(this->m_EventTimer >= this->m_EventCooldown)
+			{
+				this->m_bCooldown = false;
+				this->m_EventTimer -= this->m_EventCooldown;
+			}
+		}
+		else if (this->m_EventTimer >= DEFAULT_EVENT_TRIGGER_DELAY)
 		{
 #if KOTC_EVENTS_ENABLED
 			if (FMath::FRand() < this->m_EventTriggerChance)
 			{
 				// If trigger was successful and we want an event to happen. 
 				// We will just pick a completely random event from our enum. (This can technically be 'None', in which case nothing will happen)
-				this->m_NextEventId = static_cast<EGameEvent>(FMath::RandRange(0, GAME_EVENT_COUNT - 1));
+				this->m_NextEventId = FMath::RandRange(0, this->m_EventList.Num() - 1);
 			}
 #endif
 			this->m_EventTimer = 0.0f;
@@ -54,34 +71,14 @@ void AEventManager::Tick(float delta)
 		if (this->m_EventTimer >= DEFAULT_EVENT_ACTIVATE_DELAY)
 		{
 			this->TriggerEvent(this->m_NextEventId);
-			this->m_NextEventId = EGameEvent::None;
+			this->m_NextEventId = -1;
 
 			this->m_EventTimer = 0.0f;
 		}
 	}
 }
 
-FString AEventManager::GetEventText() const
-{
-	if (this->IsEventTriggered())
-	{
-		auto name = TEXT("Event");
-		switch (this->m_NextEventId)
-		{
-			case EGameEvent::FloorIsLava:
-				name = TEXT("Floor will be lava in");
-				break;
-			case EGameEvent::LowGravity:
-				name = TEXT("Low gravity in");
-				break;
-			default: break;
-		}
-		return FString::Printf(TEXT("%s %d"), name, FMath::RoundToInt(5.0f - this->GetEventTime()));
-	}
-	return TEXT("");
-}
-
-void AEventManager::TriggerEvent(const EGameEvent& gameEvent)
+void AEventManager::TriggerEvent(const int& gameEvent)
 {
 	if (this->m_Event != nullptr)
 	{
@@ -89,27 +86,27 @@ void AEventManager::TriggerEvent(const EGameEvent& gameEvent)
 		this->m_Event->Stop();
 		this->m_Event->Destroy();
 	}
-	switch (gameEvent)
+	ABaseGameMode *gamemode = GetGameMode(Super::GetWorld());
+	if (gameEvent >= 0 && gameEvent < this->m_EventList.Num() && this->m_EventList[gameEvent] != nullptr
+		 && (gamemode == nullptr || !gamemode->IsGameOver()))
 	{
-		case EGameEvent::None:
-			this->m_Event = nullptr;
-			break;
-		case EGameEvent::FloorIsLava:
-			this->m_Event = Super::GetWorld()->SpawnActor<AFloorIsLavaEvent>();
-			break;
-		case EGameEvent::LowGravity:
-			this->m_Event = Super::GetWorld()->SpawnActor<ALowGravityEvent>();
-			break;
-		default:
-			this->m_Event = nullptr;
-			UE_LOG(LogClass, Error, TEXT("[DefaultGameMode] Undefined GameEvent: %d"), (int)gameEvent);
-			return;
+		this->m_Event = Super::GetWorld()->SpawnActor<AGameEvent>(this->m_EventList[gameEvent]);
 	}
-	this->m_EventId = gameEvent;
-	if (this->m_Event != nullptr)
+	else
+	{
+		this->m_Event = nullptr;
+	}
+	if (this->m_Event == nullptr)
+	{
+		this->m_EventNameId = NAME_None;
+	}
+	else
 	{
 		UE_LOG(LogClass, Log, TEXT("[DefaultGameMode] Starting event: %s"), *this->m_Event->GetEventName().ToString());
+
+		this->m_EventNameId = this->m_Event->GetEventName();
 		this->m_EventTimer = 0.0f;
+		this->m_bCooldown = false;
 		this->m_Event->SetTimer(&this->m_EventTimer);
 		this->m_Event->Start();
 	}
@@ -125,11 +122,11 @@ void AEventManager::PostEditChangeProperty(FPropertyChangedEvent& PropertyChange
 		return;
 	}
 	FName name = PropertyChangedEvent.MemberProperty->GetFName();
-	if (name == GET_MEMBER_NAME_CHECKED(AEventManager, m_DebugTriggerEvent))
+	if (name == GET_MEMBER_NAME_CHECKED(AEventManager, m_DebugStartEvent))
 	{
-		this->TriggerEvent(this->m_DebugTriggerEvent);
-		this->m_NextEventId = EGameEvent::None;
-		this->m_DebugTriggerEvent = EGameEvent::None;
+		this->TriggerEvent(this->m_DebugStartEvent);
+		this->m_NextEventId = -1;
+		this->m_DebugStartEvent = -1;
 	}
 	if (name == GET_MEMBER_NAME_CHECKED(AEventManager, m_bDebugStopEvent)
 		|| name == GET_MEMBER_NAME_CHECKED(AEventManager, m_NextEventId))
@@ -139,7 +136,7 @@ void AEventManager::PostEditChangeProperty(FPropertyChangedEvent& PropertyChange
 			this->m_Event->Stop();
 			this->m_Event->Destroy();
 			this->m_Event = nullptr;
-			this->m_EventId = EGameEvent::None;
+			this->m_EventNameId = NAME_None;
 		}
 		this->m_EventTimer = 0.0f;
 		this->m_bDebugStopEvent = false;

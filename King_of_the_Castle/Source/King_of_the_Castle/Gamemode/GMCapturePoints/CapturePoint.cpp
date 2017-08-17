@@ -6,7 +6,7 @@
 
 #define TEAM_NEUTRAL 0
 
-ACapturePoint::ACapturePoint() : m_PointName(TEXT("Capture Point")), m_ScoreMultiplier(1.0f), m_ScorePerCapture(1.5f), m_OwningTeam(TEAM_NEUTRAL)
+ACapturePoint::ACapturePoint() : m_PointName(TEXT("Capture Point")), m_ScoreMultiplier(1.0f), m_ScorePerCapture(1.5f), m_OwningTeam(TEAM_NEUTRAL), m_bRenderHUDIcon(true)
 {
 	UBoxComponent *box = UObject::CreateDefaultSubobject<UBoxComponent>(TEXT("CaptureArea"));
 	Super::RootComponent = box;
@@ -101,11 +101,6 @@ void ACapturePoint::UpdateSignalLight()
 		checkf(this->m_SignalLight != nullptr, TEXT("[CapturePoint] Team Light not found!"));
 	}
 	this->m_SignalLight->SetLightColor(gamemode->GetTeamColor(this->m_OwningTeam));
-}
-
-void ACapturePoint::OnCaptureTick_Implementation(const int& capturingTeam, const int& owningTeam, const float& capturePercentage,
-	const TArray<class APlayerCharacter*>& players, const float& speedMultiplier)
-{
 }
 
 void ACapturePoint::Tick(float delta)

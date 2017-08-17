@@ -50,25 +50,31 @@ public:
 
 	virtual void Dodge();
 
-	virtual void Attack();
+	virtual void AttackForward();
 
 	virtual void AttackUpper();
 
 	virtual void AttackLower();
 
+	virtual bool CanAttack();
+
 	virtual void CheckAttackCollision(UCapsuleComponent *capsule, const float& damageMultiplier = 1.0f);
 
 	UFUNCTION(BlueprintNativeEvent)
 	void OnRagdollBegin();
-	void OnRagdollBegin_Implementation() { Super::GetController()->SetIgnoreMoveInput(true); }
+	void OnRagdollBegin_Implementation() { if(Super::GetController() != nullptr) Super::GetController()->SetIgnoreMoveInput(true); }
 
 	UFUNCTION(BlueprintNativeEvent)
 	void OnRagdollEnd();
-	void OnRagdollEnd_Implementation() { Super::GetController()->SetIgnoreMoveInput(false); }
+	void OnRagdollEnd_Implementation() { if (Super::GetController() != nullptr) Super::GetController()->SetIgnoreMoveInput(false); }
 
 	UFUNCTION(BlueprintNativeEvent)
-	void OnAttacked(AActor *other, const float& damage);
-	void OnAttacked_Implementation(AActor *other, const float& damage) { }
+	void OnPlayerDamaged(AActor *other, const float& damage);
+	void OnPlayerDamaged_Implementation(AActor *other, const float& damage) { }
+
+	UFUNCTION(BlueprintNativeEvent)
+	void OnPlayerAttack(AActor *other, const float& damage);
+	void OnPlayerAttack_Implementation(AActor *other, const float& damage) { }
 
 	// Stun the player. You can set the duration (-1 = default) and whether or not to regenerate health to full after stun.
 	UFUNCTION(BlueprintNativeEvent)
@@ -98,7 +104,13 @@ public:
 	const bool& IsStunned() const { return this->m_bIsStunned; }
 
 	UFUNCTION(BlueprintPure, Category = "Combat")
-	bool IsAttacking() const { return this->m_bAttacking;  }
+	const bool& IsAttacking() const { return this->m_bAttacking; }
+
+	UFUNCTION(BlueprintPure, Category = "Movement")
+	const bool& IsSprinting() const { return this->m_bSprinting; }
+
+	UFUNCTION(BlueprintCallable, Category = "Movement")
+	void SetSprinting(const bool& sprinting) { this->m_bSprinting = sprinting; }
 
 	UFUNCTION(BlueprintPure, Category = "Combat")
 	const EAttackType& GetAttackType() const { return this->m_AttackType; }
@@ -143,6 +155,8 @@ protected:
 	void TogglePause();
 
 	void ToggleBuildMode() { if(!this->m_bBlockMovement) this->SetBuildModeEnabled(!this->m_bBuildingEnabled); }
+
+	virtual void Attack(const EAttackType& type, const float& predelay, UCapsuleComponent *capsule, const float& damageMultiplier = 1.0f);
 
 	//void UpdateMovementSpeed() const;
 
@@ -191,7 +205,7 @@ private:
 	float m_PlacePressCounter;
 
 	// Stop the player from moving
-	bool m_bBlockMovement;
+	bool m_bBlockMovement, m_bBlockAttack;
 
 	// State booleans
 	bool m_bIsStunned, m_bAttacking, m_bRushing;

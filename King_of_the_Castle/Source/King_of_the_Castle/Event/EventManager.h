@@ -5,16 +5,6 @@
 #include "GameFramework/Actor.h"
 #include "EventManager.generated.h"
 
-#define GAME_EVENT_COUNT 3 //should match how many events there are below. must be > 0
-
-UENUM()
-enum class EGameEvent : uint8
-{
-	None, //None should stay at index 0
-	FloorIsLava,
-	LowGravity
-};
-
 UCLASS()
 class KING_OF_THE_CASTLE_API AEventManager : public AActor
 {
@@ -27,64 +17,64 @@ public:
 	virtual void Tick(float delta) override;
 
 	// Force an event to happen. There is no count down if you manually trigger it.
-	void TriggerEvent(const EGameEvent& gameEvent);
+	void TriggerEvent(const int& idx);
 
-	// True if there is currently an event active. (does not account for triggered events)
-	UFUNCTION(BlueprintPure, Category = "Event")
-	bool IsEventActive() const { return this->m_Event != nullptr; }
+	FORCEINLINE bool IsEventActive() const { return this->m_Event != nullptr; }
 
-	// Get the user interface text that should be displayed
-	UFUNCTION(BlueprintPure, Category = "Event")
-	FString GetEventText() const;
+	FORCEINLINE bool IsEventTriggered() const { return this->m_NextEventId >= 0; }
 
-	// True if an event is about to happen. The event activates after a period of time.
-	UFUNCTION(BlueprintPure, Category = "Event")
-	bool IsEventTriggered() const { return this->m_NextEventId != EGameEvent::None; }
+	FORCEINLINE const float& GetEventTime() const { return this->m_EventTimer; }
 
-	// Time since the current event started, or since it was triggered
-	UFUNCTION(BlueprintPure, Category = "Event")
-	const float& GetEventTime() const { return this->m_EventTimer; }
+	FORCEINLINE class AGameEvent* GetEvent() const { return this->m_Event; }
 
-	// Get the active event (nullptr if there is no event running)
-	UFUNCTION(BlueprintPure, Category = "Event")
-	class AGameEvent* GetEvent() const { return this->m_Event; }
+	FORCEINLINE const FName& GetEventNameId() const { return this->m_EventNameId; }
 
-	// Get the enum for the active event (EGameEvent::None if no event is active)
-	UFUNCTION(BlueprintPure, Category = "Event")
-	const EGameEvent& GetEventId() const { return this->m_EventId; }
+	FORCEINLINE void SetActive(const bool& active) { this->m_bActive = active; }
 
 #if WITH_EDITOR
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 #endif
 
-private:
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Event", meta = (DisplayName = "Event List"))
+	TArray<TSubclassOf<class AGameEvent>> m_EventList;
+
 	// Timer used for several things; duration event has been active, duration since last trigger roll, duration since successful roll
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Event", meta = (AllowPrivateAccess = "true", DisplayName = "Event Timer"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Event", meta = (DisplayName = "Event Timer"))
 	float m_EventTimer;
 
+	// Grace period after an event before another event can occur. This period is also set when the game starts.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Event", meta = (DisplayName = "Event Cooldown"))
+	float m_EventCooldown;
+
 	// The percentage chance (0.0f - 1.0f) that an event will occur. This chance is rolled every second.
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Event", meta = (AllowPrivateAccess = "true", DisplayName = "Event Trigger Chance"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Event", meta = (DisplayName = "Event Trigger Chance"))
 	float m_EventTriggerChance;
 
 	// Actor of the current game event that's running
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Event", meta = (AllowPrivateAccess = "true", DisplayName = "Current Event"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Event", meta = (DisplayName = "Current Event"))
 	AGameEvent *m_Event;
 
 	// Id of the current game event that's running
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Event", meta = (AllowPrivateAccess = "true", DisplayName = "Current Event Id"))
-	EGameEvent m_EventId;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Event", meta = (DisplayName = "Current Event Id"))
+	FName m_EventNameId;
 
 	// The next game event which will begin within a specified time
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Event", meta = (AllowPrivateAccess = "true", DisplayName = "Next Event"))
-	EGameEvent m_NextEventId;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Event", meta = (DisplayName = "Next Event Idx"))
+	int m_NextEventId;
 
+private:
+	bool m_bActive;
+
+	bool m_bCooldown;
+
+public:
 // DEBUG VARIABLES //
-	// Force an event to be triggered. There is no count down.
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Event", meta = (AllowPrivateAccess = "true", DisplayName = "[Debug] Trigger Event"))
-	EGameEvent m_DebugTriggerEvent;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Event", meta = (DisplayName = "[Debug] Start Event"))
+	int m_DebugStartEvent;
 
 	// Force the active event to stop. Does nothing if there's no active event.
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Event", meta = (AllowPrivateAccess = "true", DisplayName = "[Debug] Stop Event"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Event", meta = (DisplayName = "[Debug] Stop Event"))
 	bool m_bDebugStopEvent;
 /////////////////////
 };

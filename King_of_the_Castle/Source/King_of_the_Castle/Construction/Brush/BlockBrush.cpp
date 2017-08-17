@@ -49,26 +49,26 @@ void UBlockBrush::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (Super::GetWorld() != nullptr)
-	{
-		this->m_TextActor = Super::GetWorld()->SpawnActor<ATextRenderActor>();
-#if WITH_EDITOR
-		this->m_TextActor->SetActorLabel(TEXT("BlockCountText"));
-		this->m_TextActor->GetSpriteComponent()->bVisible = false;
-#endif
-
-		UTextRenderComponent *text = this->m_TextActor->GetTextRender();
-		text->SetText(NSLOCTEXT("", "", ""));
-		text->HorizontalAlignment = EHorizTextAligment::EHTA_Center;
-		text->VerticalAlignment = EVerticalTextAligment::EVRTA_TextCenter;
-		text->XScale = 4.0f;
-		text->YScale = 4.0f;
-		text->bOnlyOwnerSee = true;
-		text->SetTextRenderColor(FColor::Silver);
-
-		this->m_TextActor->SetOwner(Super::GetAttachmentRootActor());
-		//this->m_TextActor->AttachToComponent(this, FAttachmentTransformRules::SnapToTargetIncludingScale);
-	}
+//	if (Super::GetWorld() != nullptr)
+//	{
+//		this->m_TextActor = Super::GetWorld()->SpawnActor<ATextRenderActor>();
+//#if WITH_EDITOR
+//		this->m_TextActor->SetActorLabel(TEXT("BlockCountText"));
+//		this->m_TextActor->GetSpriteComponent()->bVisible = false;
+//#endif
+//
+//		UTextRenderComponent *text = this->m_TextActor->GetTextRender();
+//		text->SetText(NSLOCTEXT("", "", ""));
+//		text->HorizontalAlignment = EHorizTextAligment::EHTA_Center;
+//		text->VerticalAlignment = EVerticalTextAligment::EVRTA_TextCenter;
+//		text->XScale = 4.0f;
+//		text->YScale = 4.0f;
+//		text->bOnlyOwnerSee = true;
+//		text->SetTextRenderColor(FColor::Silver);
+//
+//		this->m_TextActor->SetOwner(Super::GetAttachmentRootActor());
+//		//this->m_TextActor->AttachToComponent(this, FAttachmentTransformRules::SnapToTargetIncludingScale);
+//	}
 
 	this->UBlockBrush::SetBrushVisible(false);
 }
