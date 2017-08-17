@@ -7,9 +7,13 @@
 AEventManager::AEventManager() : m_Event(nullptr)
 {
 	this->m_EventTimer = 0.0f;
+	this->m_EventCooldown = 25.0f;
 	this->m_EventNameId = NAME_None;
 	this->m_NextEventId = -1;
 	this->m_EventTriggerChance = DEFAULT_EVENT_TRIGGER_CHANCE;
+
+	this->m_bActive = false;
+	this->m_bCooldown = true;
 
 #if WITH_EDITOR
 	this->m_DebugStartEvent = -1;
@@ -23,19 +27,33 @@ void AEventManager::Tick(float delta)
 {
 	Super::Tick(delta);
 
+	if(!this->m_bActive)
+	{
+		return;
+	}
+
 	this->m_EventTimer += delta;
 	if (this->m_Event != nullptr)
 	{
 		// Game will tick the actor for us
 
-		if (this->m_EventTimer > this->m_Event->GetDuration())
+		if (this->m_EventTimer >= this->m_Event->GetDuration())
 		{
 			this->TriggerEvent(-1);
+			this->m_bCooldown = true;
 		}
 	}
 	else if (this->m_NextEventId < 0) // If there is no event has been triggered yet
 	{
-		if (this->m_EventTimer >= DEFAULT_EVENT_TRIGGER_DELAY)
+		if (this->m_bCooldown)
+		{
+			if(this->m_EventTimer >= this->m_EventCooldown)
+			{
+				this->m_bCooldown = false;
+				this->m_EventTimer -= this->m_EventCooldown;
+			}
+		}
+		else if (this->m_EventTimer >= DEFAULT_EVENT_TRIGGER_DELAY)
 		{
 #if KOTC_EVENTS_ENABLED
 			if (FMath::FRand() < this->m_EventTriggerChance)
@@ -88,6 +106,7 @@ void AEventManager::TriggerEvent(const int& gameEvent)
 
 		this->m_EventNameId = this->m_Event->GetEventName();
 		this->m_EventTimer = 0.0f;
+		this->m_bCooldown = false;
 		this->m_Event->SetTimer(&this->m_EventTimer);
 		this->m_Event->Start();
 	}

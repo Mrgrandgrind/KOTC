@@ -29,6 +29,8 @@ public:
 
 	FORCEINLINE const FName& GetEventNameId() const { return this->m_EventNameId; }
 
+	FORCEINLINE void SetActive(const bool& active) { this->m_bActive = active; }
+
 #if WITH_EDITOR
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 #endif
@@ -40,6 +42,10 @@ protected:
 	// Timer used for several things; duration event has been active, duration since last trigger roll, duration since successful roll
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Event", meta = (DisplayName = "Event Timer"))
 	float m_EventTimer;
+
+	// Grace period after an event before another event can occur. This period is also set when the game starts.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Event", meta = (DisplayName = "Event Cooldown"))
+	float m_EventCooldown;
 
 	// The percentage chance (0.0f - 1.0f) that an event will occur. This chance is rolled every second.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Event", meta = (DisplayName = "Event Trigger Chance"))
@@ -56,6 +62,11 @@ protected:
 	// The next game event which will begin within a specified time
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Event", meta = (DisplayName = "Next Event Idx"))
 	int m_NextEventId;
+
+private:
+	bool m_bActive;
+
+	bool m_bCooldown;
 
 public:
 // DEBUG VARIABLES //
