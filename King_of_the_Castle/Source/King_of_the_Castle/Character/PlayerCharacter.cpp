@@ -528,34 +528,35 @@ void APlayerCharacter::CheckAttackCollision(UCapsuleComponent *capsule, const fl
 	{
 		return;
 	}
-	TArray<AActor*> overlapping;
-	capsule->GetOverlappingActors(overlapping);
+	TArray<UPrimitiveComponent*> overlapping;
+	capsule->GetOverlappingComponents(overlapping);
 
 	float damage = 0.0f;
-	for (AActor *next : overlapping)
+	for (UPrimitiveComponent *next : overlapping)
 	{
-		if (next == this)
+		AActor *actor = Cast<AActor>(next->GetOwner());
+		if (actor == nullptr || actor == this)
 		{
 			continue;
 		}
 		FDamageEvent event;
-		if (next->IsA(ABlock::StaticClass()) && Cast<ABlock>(next)->IsDestructable())
+		if (actor->IsA(ABlock::StaticClass()) && Cast<ABlock>(actor)->IsDestructable())
 		{
-			this->OnPlayerAttack(next, damage = this->m_MeleeBlockDamage * damageMultiplier);
-			next->TakeDamage(damage, event, Super::GetController(), this);
+			this->OnPlayerAttack(actor, damage = this->m_MeleeBlockDamage * damageMultiplier);
+			actor->TakeDamage(damage, event, Super::GetController(), this);
 		}
-		if (next->IsA(APlayerCharacter::StaticClass()))
+		else if (actor->IsA(APlayerCharacter::StaticClass()))
 		{
-			APlayerCharacter *player = Cast<APlayerCharacter>(next);
+			APlayerCharacter *player = Cast<APlayerCharacter>(actor);
 
-			// Do not hurt this player if they are on the same team
-			if (player->GetTeam() == this->GetTeam())
+			// Do not hurt this player if they are on the same team or we never hit their capsule
+			if (player->GetTeam() == this->GetTeam() || next != player->GetCapsuleComponent())
 			{
 				continue;
 			}
 
 			// Call attack event for this player
-			this->OnPlayerAttack(next, damage = this->m_MeleePlayerDamage * damageMultiplier);
+			this->OnPlayerAttack(player, damage = this->m_MeleePlayerDamage * damageMultiplier);
 
 			// Apply feedback and damage to player if they haven't recently been hit
 			player->TakeDamage(damage, event, Super::GetController(), this);
