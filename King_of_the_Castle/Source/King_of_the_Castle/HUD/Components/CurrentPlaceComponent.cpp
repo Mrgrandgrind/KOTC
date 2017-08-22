@@ -35,5 +35,5 @@ void UCurrentPlaceComponent::Render(AGameHUD *hud, const FVector2D& origin, cons
 
 	hud->DrawText(placeStr, this->m_PlaceTextColor, x, y, hud->GetFont(), this->m_PlaceTextScale * scale);
 
-	hud->DrawText(subStr, this->m_PlaceTextColor, x + numWidth, y, hud->GetFont(), this->m_PlaceSubTextScale * scale);
+	hud->DrawText(subStr, this->m_PlaceTextColor, x + numWidth, y + subHeight / 4.0f, hud->GetFont(), this->m_PlaceSubTextScale * scale);
 }

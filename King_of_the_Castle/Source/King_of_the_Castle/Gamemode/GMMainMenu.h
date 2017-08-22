@@ -45,9 +45,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Track", meta = (DisplayName = "Duration"))
 	float m_Duration;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Track", meta = (DisplayName = "Look At Pivot"))
-	FVector m_Pivot;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Menu", meta = (DisplayName = "Camera Name"))
 	FName m_MenuCameraName;
 

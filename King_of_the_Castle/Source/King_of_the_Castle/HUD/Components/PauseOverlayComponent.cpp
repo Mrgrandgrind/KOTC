@@ -25,7 +25,7 @@ void UPauseOverlayComponent::Render(AGameHUD *hud, const FVector2D& origin, cons
 
 	float x = origin.X + 20.0f * scale, y = origin.Y + 20.0f * scale, width, height;
 
-	FString text = FString("Paused");
+	FString text = TEXT("Paused");
 	hud->GetTextSize(text, width, height, hud->GetFont(), 2.0f * scale);
 
 	if (hud->IsOpposite())

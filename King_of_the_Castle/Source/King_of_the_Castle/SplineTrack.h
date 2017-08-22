@@ -15,7 +15,12 @@ public:
 
 	FORCEINLINE class USplineComponent* GetSpline() const { return this->m_Spline; }
 
-private:
-	UPROPERTY(EditAnywhere, Category = "Spline", meta = (AllowPrivateAccess = "true", DisplayName = "Spline Component"))
+	FORCEINLINE FVector GetPivot() const { return this->m_Pivot == nullptr ? FVector() : this->m_Pivot->GetActorLocation(); }
+
+protected:
+	UPROPERTY(EditAnywhere, Category = "Spline", meta = (DisplayName = "Spline Component"))
 	class USplineComponent *m_Spline;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera", meta = (DisplayName = "Look At Pivot"))
+	AActor *m_Pivot;
 };

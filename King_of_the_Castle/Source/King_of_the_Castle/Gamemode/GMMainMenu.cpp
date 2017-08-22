@@ -20,7 +20,7 @@
 #define CHARACTER_SELECT_POSITION_GAP 100.0f
 #define CHARACTER_SELECT_POSITION_OFFSET FVector(0.0f, 250.0f, 0.0f)
 
-AGMMainMenu::AGMMainMenu() : m_Duration(DEFAULT_TRACK_DURATION), m_Pivot(CAMERA_PIVOT_POINT), m_Display(EMenuDisplay::Splash)
+AGMMainMenu::AGMMainMenu() : m_Duration(DEFAULT_TRACK_DURATION), /*m_Pivot(CAMERA_PIVOT_POINT),*/ m_Display(EMenuDisplay::Splash)
 {
 	this->m_MenuCameraName = MENU_CAMERA_NAME;
 	this->m_MenuRotation = MENU_ROTATION;
@@ -99,7 +99,7 @@ void AGMMainMenu::GetSplashTransform(FVector& location, FRotator& rotation) cons
 	USplineComponent *spline = this->m_Track->GetSpline();
 	location = spline->GetLocationAtTime(FMath::Fmod(this->m_Counter, 
 		spline->Duration), ESplineCoordinateSpace::World, false);
-	rotation = (this->m_Pivot - location).Rotation();
+	rotation = (this->m_Track->GetPivot() - location).Rotation();
 }
 
 void AGMMainMenu::GetMenuTransform(FVector& location, FRotator& rotation) const
