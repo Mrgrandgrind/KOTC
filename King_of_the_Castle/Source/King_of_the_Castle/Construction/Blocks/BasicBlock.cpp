@@ -28,7 +28,7 @@ void ABasicBlock::SetTeam(const int& team)
 	{
 		return;
 	}
-	ABaseGameMode *gamemode = GetGameMode<ABaseGameMode>(Super::GetWorld());
+	ABaseGameMode *gamemode = GetGameMode(Super::GetWorld());
 	if (gamemode == nullptr)
 	{
 		return;

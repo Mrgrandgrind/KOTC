@@ -42,14 +42,17 @@ protected:
 
 	void GetCharacterSelectTransform(FVector& location, FRotator& rotation) const;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Track", meta = (DisplayName = "Duration"))
-	float m_Duration;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Splash", meta = (DisplayName = "Track Name"))
+	FName m_SPTrackName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Splash", meta = (DisplayName = "Track Duration"))
+	float m_SPTrackDuration;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Menu", meta = (DisplayName = "Camera Name"))
 	FName m_MenuCameraName;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Menu", meta = (DisplayName = "Menu Rotation"))
-	FRotator m_MenuRotation;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Menu", meta = (DisplayName = "Menu Rotation Offset"))
+	FRotator m_MenuRotationOffset;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Menu", meta = (DisplayName = "Menu Position Offset"))
 	FVector m_MenuPositionOffset;
@@ -66,6 +69,12 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character Select", meta = (DisplayName = "Character Position Offset"))
 	FVector m_CSPositionOffset;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character Select", meta = (DisplayName = "Track Name"))
+	FName m_CSTrackName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character Select", meta = (DisplayName = "Track Duration"))
+	float m_CSTrackDuration;
+
 private:
 	float m_Counter;
 
@@ -75,7 +84,10 @@ private:
 	AActor *m_MenuActor;
 
 	UPROPERTY()
-	class ASplineTrack *m_Track;
+	class ASplineTrack *m_SPTrack;
+
+	UPROPERTY()
+	class ASplineTrack *m_CSTrack;
 
 	UPROPERTY()
 	class ADefaultPlayerCharacter *m_Character;

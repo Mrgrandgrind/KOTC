@@ -40,6 +40,7 @@ UCapturePointsComponent::UCapturePointsComponent() : m_Material(nullptr)
 	this->m_TextColor = CP_TEXT_COLOR;
 	this->m_TextScale = 0.58f;
 	this->m_TextZOffset = 140.0f;
+	this->m_TextShadowOffset = FVector2D(0.5f, 0.5f);
 }
 
 void UCapturePointsComponent::Render(AGameHUD *hud, const FVector2D& origin, const FVector2D& extent, const float& scale)
@@ -159,16 +160,14 @@ void UCapturePointsComponent::Render(AGameHUD *hud, const FVector2D& origin, con
 		if(name.Len() != 0)
 		{
 			//FLinearColor textColor = team == point->GetOwningTeam() ? FLinearColor(0.0f, 1.0f, 0.0f, 0.75f) : FLinearColor(1.0f, 0.0f, 0.0f, 0.75f);
-			teamColor.A = 0.9f;
-
-			FVector2D shadowOffset = FVector2D(0.5f, 0.5f) * scale;
 			FLinearColor shadowColor = teamColor * 0.01f;
+			FVector2D shadowOffset = this->m_TextShadowOffset * scale;
+
+			teamColor.A = 0.9f;
 			shadowColor.A = teamColor.A * 0.75f;
 
 			float width, height;
 			hud->GetTextSize(name, width, height, hud->GetFont(), textScale);
-			//hud->DrawText(name, shadowColor, position.X - width / 2.0f - shadowOffset.X,
-			//	position.Y - height / 2.0f - shadowOffset.Y, hud->GetFont(), textScale);
 			hud->DrawText(name, shadowColor, position.X - width / 2.0f + shadowOffset.X,
 				position.Y - height / 2.0f + shadowOffset.Y, hud->GetFont(), textScale);
 			hud->DrawText(name, teamColor, position.X - width / 2.0f,

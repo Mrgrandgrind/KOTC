@@ -70,6 +70,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD", meta = (DisplayName = "Text Y Offset"))
 	float m_TextZOffset;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD", meta = (DisplayName = "Text Shadow Offset"))
+	FVector2D m_TextShadowOffset;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD", meta = (DisplayName = "Capture Point Material"))
 	UMaterialInterface *m_Material;
 

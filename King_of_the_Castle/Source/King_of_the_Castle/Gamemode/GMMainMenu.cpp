@@ -9,26 +9,37 @@
 #include "Runtime/Engine/Classes/Camera/CameraActor.h"
 #include "Runtime/Engine/Classes/Components/SplineComponent.h"
 
-#define DEFAULT_TRACK_DURATION 40.0f
-#define CAMERA_PIVOT_POINT FVector(13.0f, -3389.0f, 700.0f)
+#define DEFAULT_SP_TRACK_DURATION 40.0f
+#define DEFAULT_CS_TRACK_DURATION 2.0f
 
 #define MENU_CAMERA_NAME TEXT("MenuCamera")
-#define MENU_ROTATION FRotator(0.0f, 35.0f, 0.0f)
-#define MENU_POSITION_OFFSET FVector(-1000.0f, -700.0f, -275.0f)
+#define MENU_ROTATION_OFFSET FRotator(-20.0f, -10.0f, 3.0f) 
+#define MENU_POSITION_OFFSET FVector(1000.0f, -200.0f, -650.0f) 
 
 #define CHARACTER_SELECT_CAMERA_NAME TEXT("CharacterSelectCamera")
 #define CHARACTER_SELECT_POSITION_GAP 100.0f
 #define CHARACTER_SELECT_POSITION_OFFSET FVector(0.0f, 250.0f, 0.0f)
-
-AGMMainMenu::AGMMainMenu() : m_Duration(DEFAULT_TRACK_DURATION), /*m_Pivot(CAMERA_PIVOT_POINT),*/ m_Display(EMenuDisplay::Splash)
+ 
+AGMMainMenu::AGMMainMenu() : m_Display(EMenuDisplay::Splash)
 {
+	this->m_Counter = 0.0f;
+	this->m_MenuActor = nullptr;
+	this->m_Character = nullptr;
+	this->m_SPTrack = nullptr;
+	this->m_CSTrack = nullptr;
+
+	this->m_SPTrackName = TEXT("SplashTrack");
+	this->m_SPTrackDuration = DEFAULT_SP_TRACK_DURATION;
+
 	this->m_MenuCameraName = MENU_CAMERA_NAME;
-	this->m_MenuRotation = MENU_ROTATION;
+	this->m_MenuRotationOffset = MENU_ROTATION_OFFSET;
 	this->m_MenuPositionOffset = MENU_POSITION_OFFSET;
 
 	this->m_CSCameraName = CHARACTER_SELECT_CAMERA_NAME;
 	this->m_CSPositionGap = CHARACTER_SELECT_POSITION_GAP;
 	this->m_CSPositionOffset = CHARACTER_SELECT_POSITION_OFFSET;
+	this->m_CSTrackName = TEXT("CharacterSelectTrack");
+	this->m_CSTrackDuration = DEFAULT_CS_TRACK_DURATION;
 
 	Super::DefaultPawnClass = ADefaultPlayerCharacter::StaticClass();
 }
@@ -45,22 +56,30 @@ void AGMMainMenu::BeginPlay()
 
 	// Locate the camera track
 	UGameplayStatics::GetAllActorsOfClass(Super::GetWorld(), ASplineTrack::StaticClass(), out);
-	if (out.Num() == 0)
+	for(int i = 0; i < out.Num(); i++)
 	{
-		UE_LOG(LogClass, Error, TEXT("[GMMainMenu] No ASplineTrack in map!"));
-	}
-	else
-	{
-		if (out.Num() > 1)
+		if(out[i]->GetName() == this->m_SPTrackName.ToString())
 		{
-			UE_LOG(LogClass, Error, TEXT("[GMMainMenu] Too many ASplineTrack's in map! Expected 1, found %d"), out.Num());
-		}
-		this->m_Track = Cast<ASplineTrack>(out[0]);
-		this->m_Track->GetSpline()->Duration = this->m_Duration;
-	}
+			this->m_SPTrack = Cast<ASplineTrack>(out[0]);
+			this->m_SPTrack->GetSpline()->Duration = this->m_SPTrackDuration;
 
-	// Start at random point on track by manipulating the time
-	this->m_Counter += this->m_Duration * FMath::FRand();
+			// Start at random point on track by manipulating the time
+			this->m_Counter += this->m_SPTrackDuration * FMath::FRand();
+		}
+		if(out[i]->GetName() == this->m_CSTrackName.ToString())
+		{
+			this->m_CSTrack = Cast<ASplineTrack>(out[0]);
+			this->m_CSTrack->GetSpline()->Duration = this->m_CSTrackDuration;
+		}
+	}
+	if(this->m_SPTrack == nullptr)
+	{
+		UE_LOG(LogClass, Error, TEXT("[GMMainMenu] Unable to find splash track in map"));
+	}
+	if(this->m_CSTrack == nullptr)
+	{
+		UE_LOG(LogClass, Error, TEXT("[GMMainMenu] Unable to find camera select track in map"))
+	}
 
 	// Locate camera
 	UGameplayStatics::GetAllActorsOfClass(Super::GetWorld(), ACameraActor::StaticClass(), out);
@@ -96,10 +115,10 @@ APawn* AGMMainMenu::SpawnDefaultPawnFor_Implementation(AController* NewPlayer, c
 
 void AGMMainMenu::GetSplashTransform(FVector& location, FRotator& rotation) const
 {
-	USplineComponent *spline = this->m_Track->GetSpline();
+	USplineComponent *spline = this->m_SPTrack->GetSpline();
 	location = spline->GetLocationAtTime(FMath::Fmod(this->m_Counter, 
 		spline->Duration), ESplineCoordinateSpace::World, false);
-	rotation = (this->m_Track->GetPivot() - location).Rotation();
+	rotation = (this->m_SPTrack->GetPivot() - location).Rotation();
 }
 
 void AGMMainMenu::GetMenuTransform(FVector& location, FRotator& rotation) const
@@ -124,8 +143,10 @@ void AGMMainMenu::SetDisplay(EMenuDisplay display)
 	if (display == EMenuDisplay::Menu && this->m_MenuActorClass != nullptr)
 	{
 		check(this->m_MenuActor == nullptr);
-		this->m_MenuActor = Super::GetWorld()->SpawnActor<AActor>(this->m_MenuActorClass, 
-			this->m_MenuCameraTransform.GetLocation() + this->m_MenuPositionOffset, this->m_MenuRotation);
+
+		FVector loc = this->m_MenuCameraTransform.GetLocation() + this->m_MenuCameraTransform.GetRotation().RotateVector(this->m_MenuPositionOffset);
+		FRotator rot = this->m_MenuCameraTransform.GetRotation().Rotator() + this->m_MenuRotationOffset + FRotator(0.0f, 180.0f, 0.0f);
+		this->m_MenuActor = Super::GetWorld()->SpawnActor<AActor>(this->m_MenuActorClass, loc, rot);
 	}
 	else if (this->m_MenuActor != nullptr)
 	{
@@ -138,7 +159,7 @@ void AGMMainMenu::Tick(float delta)
 {
 	Super::Tick(delta);
 
-	if (this->m_Character == nullptr || this->m_Track == nullptr)
+	if (this->m_Character == nullptr || this->m_SPTrack == nullptr)
 	{
 		return;
 	}
@@ -147,7 +168,6 @@ void AGMMainMenu::Tick(float delta)
 	FVector location;
 	FRotator rotation;
 
-	USplineComponent *spline = this->m_Track->GetSpline();
 	if (this->m_Display == EMenuDisplay::Splash)
 	{
 		this->GetSplashTransform(location, rotation);
@@ -172,9 +192,9 @@ void AGMMainMenu::PostEditChangeProperty(FPropertyChangedEvent& event)
 
 	FName name = event.MemberProperty != nullptr ? event.MemberProperty->GetFName() : NAME_None;
 
-	if (name == GET_MEMBER_NAME_CHECKED(AGMMainMenu, m_Duration) && this->m_Track != nullptr)
+	if (name == GET_MEMBER_NAME_CHECKED(AGMMainMenu, m_SPTrackDuration) && this->m_SPTrack != nullptr)
 	{
-		this->m_Track->GetSpline()->Duration = this->m_Duration;
+		this->m_SPTrack->GetSpline()->Duration = this->m_SPTrackDuration;
 	}
 }
 #endif
