@@ -25,3 +25,4 @@ TempDefinitionFile.txt
 *.*.wsettings
 
 King_of_the_Castle/King_of_the_Castle_WwiseProject/IncrementalSoundBankData.xml
+King_of_the_Castle/Content/Blueprints/GameModes/BP_GMCapturePoints.uasset
