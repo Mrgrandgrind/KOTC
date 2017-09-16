@@ -22,6 +22,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD", meta = (DisplayName = "Crosshair Size"))
 	float m_CrosshairSize;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD", meta = (DisplayName = "Crosshair Color"))
-	FLinearColor m_CrosshairColor;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD", meta = (DisplayName = "Crosshair Alpha"))
+	float m_CrosshairAlpha;
 };

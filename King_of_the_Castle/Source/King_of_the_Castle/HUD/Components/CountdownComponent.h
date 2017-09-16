@@ -34,6 +34,12 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD", meta = (DisplayName = "Text Color"))
 	FLinearColor m_TextColor;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD", meta = (DisplayName = "Background Scale"))
+	float m_BkgScale;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD", meta = (DisplayName = "Background Material"))
+	UMaterialInterface *m_BkgMaterial;
+
 private:
 	float m_Counter;
 };

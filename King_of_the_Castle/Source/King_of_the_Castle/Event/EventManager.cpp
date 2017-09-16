@@ -7,7 +7,7 @@
 AEventManager::AEventManager() : m_Event(nullptr)
 {
 	this->m_EventTimer = 0.0f;
-	this->m_EventCooldown = 25.0f;
+	this->m_EventCooldown = 120.0f;
 	this->m_EventNameId = NAME_None;
 	this->m_NextEventId = -1;
 	this->m_EventTriggerChance = DEFAULT_EVENT_TRIGGER_CHANCE;

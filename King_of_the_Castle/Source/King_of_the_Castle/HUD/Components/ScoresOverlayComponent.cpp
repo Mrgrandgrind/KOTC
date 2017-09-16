@@ -3,11 +3,13 @@
 #include "King_of_the_Castle.h"
 #include "ScoresOverlayComponent.h"
 
-#include "Character/PlayerCharacter.h"
 #include "Gamemode/GMCapturePoints.h"
+#include "Character/PlayerCharacter.h"
 
 #define TITLE_COLOR FLinearColor(0.9f, 0.9f, 0.9f, 0.75f)
 #define GOAL_COLOR FLinearColor(0.9f, 0.9f, 0.9f, 0.75f)
+
+#define SCORE_BACKGROUND_COLOR FLinearColor(0.01f, 0.02f, 0.04f, 0.5f)
 
 UScoresOverlayComponent::UScoresOverlayComponent() : m_TitleText(TEXT(""))
 {
@@ -15,8 +17,12 @@ UScoresOverlayComponent::UScoresOverlayComponent() : m_TitleText(TEXT(""))
 	this->m_TitleTextScale = 0.8f;
 	this->m_TitleTextColor = TITLE_COLOR;
 
+	this->m_BkgColor = SCORE_BACKGROUND_COLOR;
+
 	this->m_BarAlpha = 0.75f;
-	this->m_BarMoveSpeed = 125.0f;
+	this->m_BarMoveSpeed = 150.0f;
+
+	this->m_ScoreTextScale = 0.45f;
 
 	this->m_GoalLineHeight = 1.3f;
 	this->m_GoalHeightOffset = 20.0f;
@@ -42,7 +48,7 @@ void UScoresOverlayComponent::SetVisible(const bool& visible)
 }
 
 void UScoresOverlayComponent::DrawDashedRect(class AGameHUD *hud, const FLinearColor& color, 
-	const float& x, const float& y, const float& width, const float& height, const float& gap)
+	const float& x, const float& y, const float& width, const float& height, const float& gap) const
 {
 	for (float x2 = x; x2 < x + width; x2 += gap * 2.0f)
 	{
@@ -65,7 +71,7 @@ void UScoresOverlayComponent::Render(class AGameHUD *hud, const FVector2D& origi
 	float goalHeight = graphHeight - this->m_GoalHeightOffset * scale;
 
 	float bkgWidth = graphWidth * 1.3f, bkgHeight = graphHeight * 1.3f;
-	hud->DrawRect(FLinearColor(0.01f, 0.01f, 0.01f, 0.4f), 
+	hud->DrawRect(this->m_BkgColor, 
 		origin.X + extent.X / 2.0f - bkgWidth / 2.0f, 
 		origin.Y + extent.Y / 2.0f - bkgHeight / 2.0f, bkgWidth, bkgHeight);
 
@@ -77,7 +83,7 @@ void UScoresOverlayComponent::Render(class AGameHUD *hud, const FVector2D& origi
 	y = origin.Y + extent.Y / 2.0f - bkgHeight / 2.0f - height;
 
 	float titleOffset = this->m_TitleBoxScale * scale;
-	hud->DrawRect(FLinearColor(0.01f, 0.01f, 0.01f, 0.4f), x - titleOffset / 2.0f, y - titleOffset / 4.0f,
+	hud->DrawRect(this->m_BkgColor, x - titleOffset / 2.0f, y - titleOffset / 4.0f,
 		width + titleOffset, (origin.Y + extent.Y / 2.0f - bkgHeight / 2.0f) - (y - titleOffset / 4.0f));
 
 	if (name.StartsWith(TEXT("Player")) && name.Len() >= 8)
@@ -152,14 +158,20 @@ void UScoresOverlayComponent::Render(class AGameHUD *hud, const FVector2D& origi
 		FLinearColor color = gamemode->GetTeamColor(i + 1);
 		color.A = this->m_BarAlpha;
 
-		//int score = (1.0f - float(i) / gamemode->GetTeamCount()) * gamemode->GetWinScore(); // (gamemode->GetScore(i + 1) / gamemode->GetWinScore());
-		float score = float(gamemode->GetScore(i + 1));
-		score = FMath::FInterpConstantTo(this->m_Scores[i], score, hud->GetWorld()->GetDeltaSeconds(), this->m_BarMoveSpeed);
-		this->m_Scores[i] = score;
+		int score = gamemode->GetScore(i + 1);
 
-		float barHeight = goalHeight * score / gamemode->GetWinScore();
+		float scoreInterp = float(score);
+		scoreInterp = FMath::FInterpConstantTo(this->m_Scores[i], scoreInterp, hud->GetWorld()->GetDeltaSeconds(), this->m_BarMoveSpeed);
+		this->m_Scores[i] = scoreInterp;
+
+		float barHeight = goalHeight * scoreInterp / gamemode->GetWinScore();
 		x = origin.X + extent.X / 2.0f - graphWidth / 2.0f + axisSize + barGap / 2.0f + barSize * i + barGap * i;
 		hud->DrawRect(color, x, y, barSize, -barHeight);
+
+		FString scoreText = FString::Printf(TEXT("%d"), score);
+		float scoreWidth, scoreHeight;
+		hud->GetTextSize(scoreText, scoreWidth, scoreHeight, hud->GetFont(), this->m_ScoreTextScale * scale);
+		hud->DrawText(scoreText, color * 1.25f, x + barSize / 2.0f - scoreWidth / 2.0f, y - barHeight - scoreHeight, hud->GetFont(), this->m_ScoreTextScale * scale);
 
 		this->DrawDashedRect(hud, color, gx, y - barHeight, graphWidth + axisSize, FMath::Max(1.0f, goalLineHeight * 0.5f), goalLineGap * 0.5f);
 

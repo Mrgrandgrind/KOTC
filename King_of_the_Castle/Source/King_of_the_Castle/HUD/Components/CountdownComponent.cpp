@@ -14,6 +14,8 @@ UCountdownComponent::UCountdownComponent()
 	this->m_WaitDuration = 1.0f;
 	this->m_TextScale = 4.0f;
 	this->m_TextColor = DEFAULT_TEXT_COLOR;
+	this->m_BkgScale = 1.2f;
+	this->m_BkgMaterial = nullptr;
 
 	Super::m_bRenderOnLast = true;
 }
@@ -27,20 +29,24 @@ void UCountdownComponent::Render(AGameHUD *hud, const FVector2D& origin, const F
 		return;
 	}
 
+	bool bkg = true;
+	FString text;
 	float x = origin.X, y = origin.Y, width, height;
 	if (this->m_Counter <= this->m_Duration + this->m_WaitDuration - this->m_GoDuration + 1.0f)
 	{
-		FString text = FString::Printf(TEXT("%d"), FMath::Min(int(this->m_Duration),
+		text = FString::Printf(TEXT("%d"), FMath::Min(int(this->m_Duration),
 			int(this->m_Duration - (this->m_Counter - this->m_WaitDuration)) + 1));
-
-		hud->GetTextSize(text, width, height, hud->GetFont(), this->m_TextScale * scale);
-		hud->DrawText(text, this->m_TextColor, x - width / 2.0f, y - height / 2.0f, hud->GetFont(), this->m_TextScale * scale);
 	}
 	else
 	{
-		FString text = TEXT("GO!");
-
-		hud->GetTextSize(text, width, height, hud->GetFont(), this->m_TextScale * scale);
-		hud->DrawText(text, this->m_TextColor, x - width / 2.0f, y - height / 2.0f, hud->GetFont(), this->m_TextScale * scale);
+		bkg = false;
+		text = TEXT("GO!");
 	}
+	hud->GetTextSize(text, width, height, hud->GetFont(), this->m_TextScale * scale);
+	if(bkg && this->m_BkgMaterial != nullptr)
+	{
+		float size = FMath::Max(width, height) * this->m_BkgScale;
+		hud->DrawMaterialSimple(this->m_BkgMaterial, x - size / 2.0f, y - size / 2.0f - 6, size, size);
+	}
+	hud->DrawText(text, this->m_TextColor, x - width / 2.0f, y - height / 2.0f, hud->GetFont(), this->m_TextScale * scale);
 }

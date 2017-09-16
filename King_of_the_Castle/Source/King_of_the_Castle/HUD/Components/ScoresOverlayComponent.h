@@ -22,7 +22,7 @@ public:
 
 protected:
 	// Only for horizontal
-	void DrawDashedRect(class AGameHUD *hud, const FLinearColor& color, const float& x, const float& y, const float& width, const float& height, const float& gap);
+	void DrawDashedRect(class AGameHUD *hud, const FLinearColor& color, const float& x, const float& y, const float& width, const float& height, const float& gap) const;
 
 	virtual void Render(class AGameHUD *hud, const FVector2D& origin, const FVector2D& extent, const float& scale) override;
 
@@ -38,11 +38,17 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD", meta = (DisplayName = "Title Text Color"))
 	FLinearColor m_TitleTextColor;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD", meta = (DisplayName = "Background Color"))
+	FLinearColor m_BkgColor;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD", meta = (DisplayName = "Bar Alpha"))
 	float m_BarAlpha;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD", meta = (DisplayName = "Bar Move Speed"))
 	float m_BarMoveSpeed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD", meta = (DisplayName = "Score Text Scale"))
+	float m_ScoreTextScale;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GameHUD", meta = (DisplayName = "Goal Height Offset"))
 	float m_GoalHeightOffset;
