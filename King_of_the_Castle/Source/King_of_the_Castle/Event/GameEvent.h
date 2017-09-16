@@ -30,9 +30,17 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Name")
 	virtual FName GetEventName() const { return NAME_None; }
 
-	FORCEINLINE virtual void Start() { this->m_bRunning = true; }
+	UFUNCTION(BlueprintNativeEvent)
+	void OnStart();
+	void OnStart_Implementation() { }
 
-	FORCEINLINE virtual void Stop() { this->m_bRunning = false; }
+	UFUNCTION(BlueprintNativeEvent)
+	void OnEnd();
+	void OnEnd_Implementation() {}
+
+	FORCEINLINE virtual void Start() { this->m_bRunning = true; this->OnStart(); }
+
+	FORCEINLINE virtual void Stop() { this->m_bRunning = false; this->OnEnd(); }
 
 	FORCEINLINE void SetTimer(float *timer) { this->m_Timer = timer; }
 
