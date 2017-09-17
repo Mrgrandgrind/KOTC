@@ -16,6 +16,10 @@ public:
 	void SetCapturing(const bool& capturing, const int& team);
 
 	UFUNCTION(BlueprintNativeEvent)
+	void OnCapture();
+	void OnCapture_Implementation() { }
+
+	UFUNCTION(BlueprintNativeEvent)
 	void OnCaptureTick(const int& capturingTeam, const int& owningTeam, const float& capturePercentage,
 		const TArray<class APlayerCharacter*>& players, const float& speedMultiplier);
 	void OnCaptureTick_Implementation(const int& capturingTeam, const int& owningTeam, const float& capturePercentage,
@@ -82,7 +86,7 @@ protected:
 	bool m_bRenderHUDIcon;
 
 	// Current owner of this capture point. 0 means neutral
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Capture Point", meta = (DisplayName = "[Debug] Team Owner"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Capture Point", meta = (DisplayName = "Team Owner"))
 	int m_OwningTeam;
 
 	// All players in this capture point

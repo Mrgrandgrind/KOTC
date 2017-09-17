@@ -147,6 +147,7 @@ void ACapturePoint::Tick(float delta)
 			this->m_bCapturing = false;
 			this->m_OwningTeam = this->m_CapturingTeam;
 
+			this->OnCapture();
 			gamemode->OnCapturePointCaptured(this);
 		}
 

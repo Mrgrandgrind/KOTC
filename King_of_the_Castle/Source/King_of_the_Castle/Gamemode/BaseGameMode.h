@@ -93,7 +93,8 @@ public:
 	FORCEINLINE class ABlockStructureManager* GetStructureManager() const { return this->m_BlockStructureManager; }
 
 	// Get team color
-	FORCEINLINE const FLinearColor& GetTeamColor(const int& team) const 
+	UFUNCTION(BlueprintPure, Category = "Team")
+	const FLinearColor& GetTeamColor(const int& team) const 
 	{ 
 		return team > 0 && team <= this->m_TeamColors.Num() ? this->m_TeamColors[team - 1].main : FLinearColor::White; 
 	}
