@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<WwiseDocument Type="WorkUnit" ID="{D95552AD-D6B8-423B-9D2F-FE9BFFD19B41}" SchemaVersion="75">
+<WwiseDocument Type="WorkUnit" ID="{D95552AD-D6B8-423B-9D2F-FE9BFFD19B41}" SchemaVersion="80">
 	<SoundBanks>
 		<WorkUnit Name="Default Work Unit" ID="{D95552AD-D6B8-423B-9D2F-FE9BFFD19B41}" PersistMode="Standalone">
 			<ChildrenList>
@@ -21,6 +21,7 @@
 						<ObjectRef Name="robot_pain" ID="{C1BB66E4-57F6-4446-9E9F-DF2EE8FC6F70}" WorkUnitID="{8F1EA8B4-C444-40AD-B9D4-72B61B06D617}" Filter="7" Origin="Manual"/>
 						<ObjectRef Name="JumpLand" ID="{3457F1F8-71E4-45FB-A104-18A08FAB13EC}" WorkUnitID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}" Filter="7" Origin="Manual"/>
 						<ObjectRef Name="block_place" ID="{2E6A9638-AA56-45FE-98AF-972C74958E58}" WorkUnitID="{8F1EA8B4-C444-40AD-B9D4-72B61B06D617}" Filter="7" Origin="Manual"/>
+						<ObjectRef Name="Menu" ID="{0D0D3759-23F9-4708-9576-AE544075C0A7}" WorkUnitID="{8F1EA8B4-C444-40AD-B9D4-72B61B06D617}" Filter="7" Origin="Manual"/>
 						<ObjectRef Name="Footstep" ID="{545CA7A5-5695-48E9-B228-E709D97B1717}" WorkUnitID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}" Filter="7" Origin="Manual"/>
 						<ObjectRef Name="stunned" ID="{10DF1873-7ECD-4922-9356-982E0DE90B99}" WorkUnitID="{8F1EA8B4-C444-40AD-B9D4-72B61B06D617}" Filter="7" Origin="Manual"/>
 						<ObjectRef Name="base_captured" ID="{8D6E05FE-3EAC-4A4E-ABDB-00B1452C386B}" WorkUnitID="{8F1EA8B4-C444-40AD-B9D4-72B61B06D617}" Filter="7" Origin="Manual"/>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<WwiseDocument Type="WorkUnit" ID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}" SchemaVersion="75">
+<WwiseDocument Type="WorkUnit" ID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}" SchemaVersion="80">
 	<AudioObjects>
 		<WorkUnit Name="Default Work Unit" ID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}" PersistMode="Standalone">
 			<ChildrenList>
@@ -186,7 +186,7 @@
 										</Reference>
 									</ReferenceList>
 									<ChildrenList>
-										<Sound Name="robot_whir_1" ID="{9A470746-BE2C-486E-8067-C9D387AA7E8A}" ShortID="541609946" Type="SoundFX">
+										<Sound Name="robot_whir_1" ID="{9A470746-BE2C-486E-8067-C9D387AA7E8A}" ShortID="541609946">
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -208,7 +208,7 @@
 												<ActiveSource Name="robot_whir_1" ID="{DC0B761D-6BAA-45E0-9AD4-DC593F033FA9}" Platform="Linked"/>
 											</ActiveSourceList>
 										</Sound>
-										<Sound Name="robot_whir_2" ID="{BAF4994F-439F-4067-8B0C-B39FFF80DAB5}" ShortID="682186387" Type="SoundFX">
+										<Sound Name="robot_whir_2" ID="{BAF4994F-439F-4067-8B0C-B39FFF80DAB5}" ShortID="682186387">
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -230,7 +230,7 @@
 												<ActiveSource Name="robot_whir_2" ID="{A9D0838C-17D1-48E1-A7C4-B8AA7E941C61}" Platform="Linked"/>
 											</ActiveSourceList>
 										</Sound>
-										<Sound Name="robot_whir_3" ID="{1A842F98-5E6B-4472-84CB-075F6DD76EA0}" ShortID="1057319164" Type="SoundFX">
+										<Sound Name="robot_whir_3" ID="{1A842F98-5E6B-4472-84CB-075F6DD76EA0}" ShortID="1057319164">
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -252,7 +252,7 @@
 												<ActiveSource Name="robot_whir_3" ID="{6499E97E-FC0D-456E-91D3-2F7697EF3E73}" Platform="Linked"/>
 											</ActiveSourceList>
 										</Sound>
-										<Sound Name="robot_whir_4" ID="{2BB5230D-CFCE-4125-9965-3C35DD8A91F7}" ShortID="999039644" Type="SoundFX">
+										<Sound Name="robot_whir_4" ID="{2BB5230D-CFCE-4125-9965-3C35DD8A91F7}" ShortID="999039644">
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -274,7 +274,7 @@
 												<ActiveSource Name="robot_whir_4" ID="{E9087E1B-3CD1-41DF-8F8C-ACA34BCA9B52}" Platform="Linked"/>
 											</ActiveSourceList>
 										</Sound>
-										<Sound Name="robot_whir_5" ID="{A27C7453-E3A4-4E5B-8A59-A9D584BCC025}" ShortID="483184668" Type="SoundFX">
+										<Sound Name="robot_whir_5" ID="{A27C7453-E3A4-4E5B-8A59-A9D584BCC025}" ShortID="483184668">
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -296,7 +296,7 @@
 												<ActiveSource Name="robot_whir_5" ID="{1F5AEEB6-AD95-46B6-BE0C-0ADDA8221B61}" Platform="Linked"/>
 											</ActiveSourceList>
 										</Sound>
-										<Sound Name="robot_whir_6" ID="{6008EE50-209B-4D84-B614-73136C965BE3}" ShortID="491600692" Type="SoundFX">
+										<Sound Name="robot_whir_6" ID="{6008EE50-209B-4D84-B614-73136C965BE3}" ShortID="491600692">
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -351,7 +351,7 @@
 										</Reference>
 									</ReferenceList>
 									<ChildrenList>
-										<Sound Name="Punch_air" ID="{3817EDC0-B9B7-480D-B172-72130250D888}" ShortID="843047592" Type="SoundFX">
+										<Sound Name="Punch_air" ID="{3817EDC0-B9B7-480D-B172-72130250D888}" ShortID="843047592">
 											<PropertyList>
 												<Property Name="Pitch" Type="int32">
 													<ModifierList>
@@ -432,7 +432,7 @@
 										</Reference>
 									</ReferenceList>
 									<ChildrenList>
-										<Sound Name="block_place_1" ID="{E24A8A56-F74F-4DD7-9FDE-832CF9692684}" ShortID="845795496" Type="SoundFX">
+										<Sound Name="block_place_1" ID="{E24A8A56-F74F-4DD7-9FDE-832CF9692684}" ShortID="845795496">
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -451,7 +451,7 @@
 												<ActiveSource Name="block_place_1" ID="{7D1654C9-C6C2-4A15-A665-3FC17BBA149B}" Platform="Linked"/>
 											</ActiveSourceList>
 										</Sound>
-										<Sound Name="block_place_2" ID="{A911A9B3-BBF4-4DE3-9379-DF1336EA1582}" ShortID="876216158" Type="SoundFX">
+										<Sound Name="block_place_2" ID="{A911A9B3-BBF4-4DE3-9379-DF1336EA1582}" ShortID="876216158">
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -470,7 +470,7 @@
 												<ActiveSource Name="block_place_2" ID="{3A4813C8-74A0-48CF-8E00-3D54F06E01A8}" Platform="Linked"/>
 											</ActiveSourceList>
 										</Sound>
-										<Sound Name="block_place_3" ID="{0E57FE5B-CA10-4E04-BA17-AFF4F2121843}" ShortID="295625010" Type="SoundFX">
+										<Sound Name="block_place_3" ID="{0E57FE5B-CA10-4E04-BA17-AFF4F2121843}" ShortID="295625010">
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -489,7 +489,7 @@
 												<ActiveSource Name="block_place_3" ID="{BCA997A6-C265-4E96-BA84-3FBC9CBC5CEC}" Platform="Linked"/>
 											</ActiveSourceList>
 										</Sound>
-										<Sound Name="block_place_4" ID="{82E04372-487A-4F49-9055-7C6781139532}" ShortID="989175678" Type="SoundFX">
+										<Sound Name="block_place_4" ID="{82E04372-487A-4F49-9055-7C6781139532}" ShortID="989175678">
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -545,7 +545,7 @@
 										</Reference>
 									</ReferenceList>
 									<ChildrenList>
-										<Sound Name="Punch_hit" ID="{6194AEA9-9E67-41E9-B56C-3BE9C271BA64}" ShortID="328305699" Type="SoundFX">
+										<Sound Name="Punch_hit" ID="{6194AEA9-9E67-41E9-B56C-3BE9C271BA64}" ShortID="328305699">
 											<PropertyList>
 												<Property Name="OverrideEffect" Type="bool" Value="True"/>
 												<Property Name="Pitch" Type="int32">
@@ -590,7 +590,7 @@
 												<ActiveSource Name="Punch_hit" ID="{A6D78EEA-7E97-464C-9DC2-5892534AE2A1}" Platform="Linked"/>
 											</ActiveSourceList>
 										</Sound>
-										<Sound Name="Hit Low" ID="{CAA2FB67-7CB3-486B-B576-FD4A48AA067F}" ShortID="603912222" Type="SoundFX">
+										<Sound Name="Hit Low" ID="{CAA2FB67-7CB3-486B-B576-FD4A48AA067F}" ShortID="603912222">
 											<PropertyList>
 												<Property Name="OverrideEffect" Type="bool" Value="True"/>
 												<Property Name="Pitch" Type="int32">
@@ -666,7 +666,7 @@
 										</Reference>
 									</ReferenceList>
 									<ChildrenList>
-										<Sound Name="block_place2" ID="{0C0632C6-6DED-4C25-AD07-C19339E838E3}" ShortID="874348003" Type="SoundFX">
+										<Sound Name="block_place2" ID="{0C0632C6-6DED-4C25-AD07-C19339E838E3}" ShortID="874348003">
 											<PropertyList>
 												<Property Name="PositioningType" Type="int16" Value="1"/>
 											</PropertyList>
@@ -688,7 +688,7 @@
 												<ActiveSource Name="block_place2" ID="{70871C7B-AB8F-45A1-A548-3B88EFDA512A}" Platform="Linked"/>
 											</ActiveSourceList>
 										</Sound>
-										<Sound Name="block_place2_1" ID="{829B23FC-1069-421F-902B-D51955E20EF5}" ShortID="740007102" Type="SoundFX">
+										<Sound Name="block_place2_1" ID="{829B23FC-1069-421F-902B-D51955E20EF5}" ShortID="740007102">
 											<PropertyList>
 												<Property Name="PositioningType" Type="int16" Value="1"/>
 											</PropertyList>
@@ -710,7 +710,7 @@
 												<ActiveSource Name="block_place2_1" ID="{6FE86D84-9520-40D0-90AF-B9B5C092621C}" Platform="Linked"/>
 											</ActiveSourceList>
 										</Sound>
-										<Sound Name="block_place2_2" ID="{03A8BC84-3757-4706-B445-850E9E36C413}" ShortID="416728017" Type="SoundFX">
+										<Sound Name="block_place2_2" ID="{03A8BC84-3757-4706-B445-850E9E36C413}" ShortID="416728017">
 											<PropertyList>
 												<Property Name="PositioningType" Type="int16" Value="1"/>
 											</PropertyList>
@@ -732,7 +732,7 @@
 												<ActiveSource Name="block_place2_2" ID="{EDD3D86A-38B9-4843-B91F-BAC5D083FFBC}" Platform="Linked"/>
 											</ActiveSourceList>
 										</Sound>
-										<Sound Name="block_place2_3" ID="{313E14DC-A08E-4758-80A7-908459648A50}" ShortID="24995523" Type="SoundFX">
+										<Sound Name="block_place2_3" ID="{313E14DC-A08E-4758-80A7-908459648A50}" ShortID="24995523">
 											<PropertyList>
 												<Property Name="PositioningType" Type="int16" Value="1"/>
 											</PropertyList>
@@ -851,7 +851,7 @@
 										</Reference>
 									</ReferenceList>
 									<ChildrenList>
-										<Sound Name="Base Capturing 1" ID="{D57D9E54-06C7-4C1B-A1B4-05C858CCC1AD}" ShortID="1054100095" Type="SoundFX">
+										<Sound Name="Base Capturing 1" ID="{D57D9E54-06C7-4C1B-A1B4-05C858CCC1AD}" ShortID="1054100095">
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -870,7 +870,7 @@
 												<ActiveSource Name="Base Capturing 1" ID="{93A7EC38-6CBD-4A6D-A5EA-A674BF8C5230}" Platform="Linked"/>
 											</ActiveSourceList>
 										</Sound>
-										<Sound Name="Base Capturing 2" ID="{B66E8A90-1661-4D1B-99FF-DA7060C26A53}" ShortID="135267288" Type="SoundFX">
+										<Sound Name="Base Capturing 2" ID="{B66E8A90-1661-4D1B-99FF-DA7060C26A53}" ShortID="135267288">
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -908,7 +908,7 @@
 										</Reference>
 									</ReferenceList>
 									<ChildrenList>
-										<Sound Name="base_capture_1" ID="{EEFE4296-F1B5-4FAE-9AC5-4FAF1D53B093}" ShortID="149078852" Type="SoundFX">
+										<Sound Name="base_capture_1" ID="{EEFE4296-F1B5-4FAE-9AC5-4FAF1D53B093}" ShortID="149078852">
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -931,7 +931,7 @@
 												<ActiveSource Name="base_capture_1" ID="{EAF0D86D-4D95-4306-8160-681E0E5CF563}" Platform="Linked"/>
 											</ActiveSourceList>
 										</Sound>
-										<Sound Name="base_capture_2" ID="{C13A47C9-2675-459C-85CD-151B8437528F}" ShortID="308318677" Type="SoundFX">
+										<Sound Name="base_capture_2" ID="{C13A47C9-2675-459C-85CD-151B8437528F}" ShortID="308318677">
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -954,7 +954,7 @@
 												<ActiveSource Name="base_capture_2" ID="{FB7ACCB9-F6C8-4BE0-A705-92C87C6F0AB7}" Platform="Linked"/>
 											</ActiveSourceList>
 										</Sound>
-										<Sound Name="base_capture_3" ID="{DBFFAA49-8941-4E08-821D-FD27EC0E1664}" ShortID="717557288" Type="SoundFX">
+										<Sound Name="base_capture_3" ID="{DBFFAA49-8941-4E08-821D-FD27EC0E1664}" ShortID="717557288">
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -979,7 +979,7 @@
 										</Sound>
 									</ChildrenList>
 								</RandomSequenceContainer>
-								<Sound Name="PartyTime" ID="{308C79DA-A6DD-4455-A1F1-9F1D8AD4325D}" ShortID="7387306" Type="SoundFX">
+								<Sound Name="PartyTime" ID="{308C79DA-A6DD-4455-A1F1-9F1D8AD4325D}" ShortID="7387306">
 									<PropertyList>
 										<Property Name="Pitch" Type="int32">
 											<ModifierList>
@@ -1191,7 +1191,7 @@
 														</Reference>
 													</ReferenceList>
 													<ChildrenList>
-														<Sound Name="fs_wood_toe_3" ID="{FBABD8FB-9C21-46CB-AC32-36ABC75F5FFC}" ShortID="463643003" Type="SoundFX">
+														<Sound Name="fs_wood_toe_3" ID="{FBABD8FB-9C21-46CB-AC32-36ABC75F5FFC}" ShortID="463643003">
 															<ReferenceList>
 																<Reference Name="Conversion">
 																	<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -1210,7 +1210,7 @@
 																<ActiveSource Name="fs_wood_toe_3" ID="{4660318A-9213-454E-AC6C-8F0696B4577D}" Platform="Linked"/>
 															</ActiveSourceList>
 														</Sound>
-														<Sound Name="fs_wood_toe_5" ID="{03E1308D-FC4F-43C5-AA2B-138DDFD1E6C0}" ShortID="233162275" Type="SoundFX">
+														<Sound Name="fs_wood_toe_5" ID="{03E1308D-FC4F-43C5-AA2B-138DDFD1E6C0}" ShortID="233162275">
 															<ReferenceList>
 																<Reference Name="Conversion">
 																	<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -1229,7 +1229,7 @@
 																<ActiveSource Name="fs_wood_toe_5" ID="{7D67B86D-FEDF-4BC8-AADB-94DD06EC7050}" Platform="Linked"/>
 															</ActiveSourceList>
 														</Sound>
-														<Sound Name="fs_wood_toe_7" ID="{0711BA58-8B57-4A3A-AFC3-0AAA4924E7BB}" ShortID="893496174" Type="SoundFX">
+														<Sound Name="fs_wood_toe_7" ID="{0711BA58-8B57-4A3A-AFC3-0AAA4924E7BB}" ShortID="893496174">
 															<ReferenceList>
 																<Reference Name="Conversion">
 																	<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -1248,7 +1248,7 @@
 																<ActiveSource Name="fs_wood_toe_7" ID="{0AAB0125-C4E3-4278-899F-4F352535007A}" Platform="Linked"/>
 															</ActiveSourceList>
 														</Sound>
-														<Sound Name="fs_wood_toe_9" ID="{1932963A-7578-4F3A-AA5F-DF3B5B5B2845}" ShortID="303745727" Type="SoundFX">
+														<Sound Name="fs_wood_toe_9" ID="{1932963A-7578-4F3A-AA5F-DF3B5B5B2845}" ShortID="303745727">
 															<ReferenceList>
 																<Reference Name="Conversion">
 																	<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -1267,7 +1267,7 @@
 																<ActiveSource Name="fs_wood_toe_9" ID="{06DFAF21-8004-4B04-A39F-A78AB9117D17}" Platform="Linked"/>
 															</ActiveSourceList>
 														</Sound>
-														<Sound Name="fs_wood_toe_11" ID="{87C8D5CF-6366-4B56-8D77-60E8C9C874FB}" ShortID="195729691" Type="SoundFX">
+														<Sound Name="fs_wood_toe_11" ID="{87C8D5CF-6366-4B56-8D77-60E8C9C874FB}" ShortID="195729691">
 															<ReferenceList>
 																<Reference Name="Conversion">
 																	<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -1286,7 +1286,7 @@
 																<ActiveSource Name="fs_wood_toe_11" ID="{9F09D758-AF72-4056-94CC-4ACB6794BC7D}" Platform="Linked"/>
 															</ActiveSourceList>
 														</Sound>
-														<Sound Name="fs_wood_toe_13" ID="{7D6BEE1A-1CA2-4211-B19D-C0D5A8F3EFE0}" ShortID="373740655" Type="SoundFX">
+														<Sound Name="fs_wood_toe_13" ID="{7D6BEE1A-1CA2-4211-B19D-C0D5A8F3EFE0}" ShortID="373740655">
 															<ReferenceList>
 																<Reference Name="Conversion">
 																	<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -1326,7 +1326,7 @@
 														</Reference>
 													</ReferenceList>
 													<ChildrenList>
-														<Sound Name="fs_wood_heel_7" ID="{E0E2AEBB-2D83-4290-B15B-7EF910C6F3B8}" ShortID="467773733" Type="SoundFX">
+														<Sound Name="fs_wood_heel_7" ID="{E0E2AEBB-2D83-4290-B15B-7EF910C6F3B8}" ShortID="467773733">
 															<ReferenceList>
 																<Reference Name="Conversion">
 																	<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -1345,7 +1345,7 @@
 																<ActiveSource Name="fs_wood_heel_7" ID="{89CD6FF0-3466-4BD1-BBE4-3D725E85CB80}" Platform="Linked"/>
 															</ActiveSourceList>
 														</Sound>
-														<Sound Name="fs_wood_heel_11" ID="{188701B2-010C-4362-B080-84024DD286CE}" ShortID="53125534" Type="SoundFX">
+														<Sound Name="fs_wood_heel_11" ID="{188701B2-010C-4362-B080-84024DD286CE}" ShortID="53125534">
 															<ReferenceList>
 																<Reference Name="Conversion">
 																	<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -1364,7 +1364,7 @@
 																<ActiveSource Name="fs_wood_heel_11" ID="{E54AF1CC-BD0F-401A-A5DE-2B9DBD9B13A8}" Platform="Linked"/>
 															</ActiveSourceList>
 														</Sound>
-														<Sound Name="fs_wood_heel_13" ID="{E46FD062-76DA-4AAF-A206-F95C25F34D16}" ShortID="1073341497" Type="SoundFX">
+														<Sound Name="fs_wood_heel_13" ID="{E46FD062-76DA-4AAF-A206-F95C25F34D16}" ShortID="1073341497">
 															<ReferenceList>
 																<Reference Name="Conversion">
 																	<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -1383,7 +1383,7 @@
 																<ActiveSource Name="fs_wood_heel_13" ID="{6C9EB173-6298-4B8B-ABA5-1D85C68DE682}" Platform="Linked"/>
 															</ActiveSourceList>
 														</Sound>
-														<Sound Name="fs_wood_heel_17" ID="{33E3A639-3DE5-4F55-AFD3-7B752EE123B4}" ShortID="321456944" Type="SoundFX">
+														<Sound Name="fs_wood_heel_17" ID="{33E3A639-3DE5-4F55-AFD3-7B752EE123B4}" ShortID="321456944">
 															<ReferenceList>
 																<Reference Name="Conversion">
 																	<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -1402,7 +1402,7 @@
 																<ActiveSource Name="fs_wood_heel_17" ID="{EF0AEC12-E73D-4A38-A651-53D35ED3EC07}" Platform="Linked"/>
 															</ActiveSourceList>
 														</Sound>
-														<Sound Name="fs_wood_heel_19" ID="{5CB048B4-0981-48D9-9BC1-8B9812ECE8C1}" ShortID="681846359" Type="SoundFX">
+														<Sound Name="fs_wood_heel_19" ID="{5CB048B4-0981-48D9-9BC1-8B9812ECE8C1}" ShortID="681846359">
 															<ReferenceList>
 																<Reference Name="Conversion">
 																	<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -1421,7 +1421,7 @@
 																<ActiveSource Name="fs_wood_heel_19" ID="{049D4315-1D97-40E9-A6D3-E4CB4007DBED}" Platform="Linked"/>
 															</ActiveSourceList>
 														</Sound>
-														<Sound Name="fs_wood_heel_21" ID="{0A4C3B84-A0DF-49E8-86A9-E3345C6DC120}" ShortID="647323955" Type="SoundFX">
+														<Sound Name="fs_wood_heel_21" ID="{0A4C3B84-A0DF-49E8-86A9-E3345C6DC120}" ShortID="647323955">
 															<ReferenceList>
 																<Reference Name="Conversion">
 																	<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -1511,7 +1511,7 @@
 														</Reference>
 													</ReferenceList>
 													<ChildrenList>
-														<Sound Name="fs_plasticlight_heel_3" ID="{E48A82DF-4989-442B-BA98-D45ECF599B7F}" ShortID="56328440" Type="SoundFX">
+														<Sound Name="fs_plasticlight_heel_3" ID="{E48A82DF-4989-442B-BA98-D45ECF599B7F}" ShortID="56328440">
 															<ReferenceList>
 																<Reference Name="Conversion">
 																	<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -1530,7 +1530,7 @@
 																<ActiveSource Name="fs_plasticlight_heel_3" ID="{782C880B-610E-432F-A47D-E39066754960}" Platform="Linked"/>
 															</ActiveSourceList>
 														</Sound>
-														<Sound Name="fs_plasticlight_heel_5" ID="{7BC04D02-CEC5-4708-90F8-8AEF235E4F80}" ShortID="557379466" Type="SoundFX">
+														<Sound Name="fs_plasticlight_heel_5" ID="{7BC04D02-CEC5-4708-90F8-8AEF235E4F80}" ShortID="557379466">
 															<ReferenceList>
 																<Reference Name="Conversion">
 																	<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -1549,7 +1549,7 @@
 																<ActiveSource Name="fs_plasticlight_heel_5" ID="{7647F338-39C3-4978-909D-ED5418F8E814}" Platform="Linked"/>
 															</ActiveSourceList>
 														</Sound>
-														<Sound Name="fs_plasticlight_heel_7" ID="{143BF29A-A6E6-42D9-B846-424594945BB8}" ShortID="125191231" Type="SoundFX">
+														<Sound Name="fs_plasticlight_heel_7" ID="{143BF29A-A6E6-42D9-B846-424594945BB8}" ShortID="125191231">
 															<ReferenceList>
 																<Reference Name="Conversion">
 																	<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -1568,7 +1568,7 @@
 																<ActiveSource Name="fs_plasticlight_heel_7" ID="{FB4A43FB-3B70-4642-A899-5158AB6900B2}" Platform="Linked"/>
 															</ActiveSourceList>
 														</Sound>
-														<Sound Name="fs_plasticlight_heel_9" ID="{58F6F282-DF39-4F33-9783-73A9F8786A8A}" ShortID="400854708" Type="SoundFX">
+														<Sound Name="fs_plasticlight_heel_9" ID="{58F6F282-DF39-4F33-9783-73A9F8786A8A}" ShortID="400854708">
 															<ReferenceList>
 																<Reference Name="Conversion">
 																	<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -1587,7 +1587,7 @@
 																<ActiveSource Name="fs_plasticlight_heel_9" ID="{B4819D71-6F41-45AD-B257-19C154F8A264}" Platform="Linked"/>
 															</ActiveSourceList>
 														</Sound>
-														<Sound Name="fs_plasticlight_heel_11" ID="{F25C74E2-9E2D-4450-AD0F-881B2FFD0D04}" ShortID="304580514" Type="SoundFX">
+														<Sound Name="fs_plasticlight_heel_11" ID="{F25C74E2-9E2D-4450-AD0F-881B2FFD0D04}" ShortID="304580514">
 															<ReferenceList>
 																<Reference Name="Conversion">
 																	<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -1606,7 +1606,7 @@
 																<ActiveSource Name="fs_plasticlight_heel_11" ID="{7EF30D0A-27D4-4561-A1E4-C3234BB93D6B}" Platform="Linked"/>
 															</ActiveSourceList>
 														</Sound>
-														<Sound Name="fs_plasticlight_heel_13" ID="{EDA930FA-12CC-450F-82D0-F97A34B837B7}" ShortID="944701585" Type="SoundFX">
+														<Sound Name="fs_plasticlight_heel_13" ID="{EDA930FA-12CC-450F-82D0-F97A34B837B7}" ShortID="944701585">
 															<ReferenceList>
 																<Reference Name="Conversion">
 																	<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -1637,7 +1637,7 @@
 														</Reference>
 													</ReferenceList>
 													<ChildrenList>
-														<Sound Name="fs_plasticlight_toe_5" ID="{C2AD21B1-3DDA-4CE4-8D8F-DA8EE81ECA89}" ShortID="144597243" Type="SoundFX">
+														<Sound Name="fs_plasticlight_toe_5" ID="{C2AD21B1-3DDA-4CE4-8D8F-DA8EE81ECA89}" ShortID="144597243">
 															<ReferenceList>
 																<Reference Name="Conversion">
 																	<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -1656,7 +1656,7 @@
 																<ActiveSource Name="fs_plasticlight_toe_5" ID="{93428DB7-8809-44F8-9C20-0EF1527557E6}" Platform="Linked"/>
 															</ActiveSourceList>
 														</Sound>
-														<Sound Name="fs_plasticlight_toe_7" ID="{92095CC0-9539-4B80-A789-1A8D510D1DB6}" ShortID="998211440" Type="SoundFX">
+														<Sound Name="fs_plasticlight_toe_7" ID="{92095CC0-9539-4B80-A789-1A8D510D1DB6}" ShortID="998211440">
 															<ReferenceList>
 																<Reference Name="Conversion">
 																	<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -1675,7 +1675,7 @@
 																<ActiveSource Name="fs_plasticlight_toe_7" ID="{70F76531-39FC-4843-83C9-BE29BA2709E7}" Platform="Linked"/>
 															</ActiveSourceList>
 														</Sound>
-														<Sound Name="fs_plasticlight_toe_11" ID="{D7541C95-0947-46A8-AE61-32BA19C68A47}" ShortID="346718882" Type="SoundFX">
+														<Sound Name="fs_plasticlight_toe_11" ID="{D7541C95-0947-46A8-AE61-32BA19C68A47}" ShortID="346718882">
 															<ReferenceList>
 																<Reference Name="Conversion">
 																	<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -1694,7 +1694,7 @@
 																<ActiveSource Name="fs_plasticlight_toe_11" ID="{41A89CAA-0097-48E6-9C1D-97ACDC75C576}" Platform="Linked"/>
 															</ActiveSourceList>
 														</Sound>
-														<Sound Name="fs_plasticlight_toe_15" ID="{BDAD8C9A-FC35-4AD5-9FDC-B284995644F2}" ShortID="374783584" Type="SoundFX">
+														<Sound Name="fs_plasticlight_toe_15" ID="{BDAD8C9A-FC35-4AD5-9FDC-B284995644F2}" ShortID="374783584">
 															<ReferenceList>
 																<Reference Name="Conversion">
 																	<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -1713,7 +1713,7 @@
 																<ActiveSource Name="fs_plasticlight_toe_15" ID="{D36156F4-6994-4664-93DD-0C0D70710C15}" Platform="Linked"/>
 															</ActiveSourceList>
 														</Sound>
-														<Sound Name="fs_plasticlight_toe_17" ID="{E72AABD3-B1FF-400A-BDE5-160FC1416C85}" ShortID="40132185" Type="SoundFX">
+														<Sound Name="fs_plasticlight_toe_17" ID="{E72AABD3-B1FF-400A-BDE5-160FC1416C85}" ShortID="40132185">
 															<ReferenceList>
 																<Reference Name="Conversion">
 																	<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -1732,7 +1732,7 @@
 																<ActiveSource Name="fs_plasticlight_toe_17" ID="{68BD158C-FF89-40D1-8CCC-026725891C84}" Platform="Linked"/>
 															</ActiveSourceList>
 														</Sound>
-														<Sound Name="fs_plasticlight_toe_19" ID="{BB5E377E-D068-4208-BE4E-33C544E057B6}" ShortID="611603023" Type="SoundFX">
+														<Sound Name="fs_plasticlight_toe_19" ID="{BB5E377E-D068-4208-BE4E-33C544E057B6}" ShortID="611603023">
 															<ReferenceList>
 																<Reference Name="Conversion">
 																	<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -1832,7 +1832,7 @@
 														</Reference>
 													</ReferenceList>
 													<ChildrenList>
-														<Sound Name="fs_plasticheavy_heel_7" ID="{97A77FB8-5930-4D35-B253-287AB0CC8A5D}" ShortID="622656596" Type="SoundFX">
+														<Sound Name="fs_plasticheavy_heel_7" ID="{97A77FB8-5930-4D35-B253-287AB0CC8A5D}" ShortID="622656596">
 															<ReferenceList>
 																<Reference Name="Conversion">
 																	<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -1851,7 +1851,7 @@
 																<ActiveSource Name="fs_plasticheavy_heel_7" ID="{AB7915BF-4A02-413D-87BF-17112BCF1FB0}" Platform="Linked"/>
 															</ActiveSourceList>
 														</Sound>
-														<Sound Name="fs_plasticheavy_heel_9" ID="{817E5E77-1E0C-4EF5-9DFE-DA2A13CA617B}" ShortID="1033786197" Type="SoundFX">
+														<Sound Name="fs_plasticheavy_heel_9" ID="{817E5E77-1E0C-4EF5-9DFE-DA2A13CA617B}" ShortID="1033786197">
 															<ReferenceList>
 																<Reference Name="Conversion">
 																	<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -1870,7 +1870,7 @@
 																<ActiveSource Name="fs_plasticheavy_heel_9" ID="{7A90114F-7023-43DD-B700-5D2E61E14CD4}" Platform="Linked"/>
 															</ActiveSourceList>
 														</Sound>
-														<Sound Name="fs_plasticheavy_heel_13" ID="{55C62C6D-4E11-4493-A9CD-641E837760E7}" ShortID="796148947" Type="SoundFX">
+														<Sound Name="fs_plasticheavy_heel_13" ID="{55C62C6D-4E11-4493-A9CD-641E837760E7}" ShortID="796148947">
 															<ReferenceList>
 																<Reference Name="Conversion">
 																	<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -1889,7 +1889,7 @@
 																<ActiveSource Name="fs_plasticheavy_heel_13" ID="{F018AE3E-626B-4150-A7B1-DD3768AC229B}" Platform="Linked"/>
 															</ActiveSourceList>
 														</Sound>
-														<Sound Name="fs_plasticheavy_heel_17" ID="{DB708709-33E9-4420-804A-7CB236E8F96A}" ShortID="414389600" Type="SoundFX">
+														<Sound Name="fs_plasticheavy_heel_17" ID="{DB708709-33E9-4420-804A-7CB236E8F96A}" ShortID="414389600">
 															<ReferenceList>
 																<Reference Name="Conversion">
 																	<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -1908,7 +1908,7 @@
 																<ActiveSource Name="fs_plasticheavy_heel_17" ID="{260AC478-4D9E-4BB2-8F4B-9B7081FF6E5A}" Platform="Linked"/>
 															</ActiveSourceList>
 														</Sound>
-														<Sound Name="fs_plasticheavy_heel_19" ID="{5FE7598A-C6C1-4E12-AB5C-C86F84A7BEE8}" ShortID="1033755720" Type="SoundFX">
+														<Sound Name="fs_plasticheavy_heel_19" ID="{5FE7598A-C6C1-4E12-AB5C-C86F84A7BEE8}" ShortID="1033755720">
 															<ReferenceList>
 																<Reference Name="Conversion">
 																	<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -1927,7 +1927,7 @@
 																<ActiveSource Name="fs_plasticheavy_heel_19" ID="{872CFAC7-63AA-42C4-AC33-A8E64CDF555C}" Platform="Linked"/>
 															</ActiveSourceList>
 														</Sound>
-														<Sound Name="fs_plasticheavy_heel_21" ID="{6F14A3F5-DCC2-44CE-B522-77182E6934A7}" ShortID="62512611" Type="SoundFX">
+														<Sound Name="fs_plasticheavy_heel_21" ID="{6F14A3F5-DCC2-44CE-B522-77182E6934A7}" ShortID="62512611">
 															<ReferenceList>
 																<Reference Name="Conversion">
 																	<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -1958,7 +1958,7 @@
 														</Reference>
 													</ReferenceList>
 													<ChildrenList>
-														<Sound Name="fs_plasticheavy_toe_5" ID="{674A2473-81F6-4D5E-958A-54C075303E6C}" ShortID="245881032" Type="SoundFX">
+														<Sound Name="fs_plasticheavy_toe_5" ID="{674A2473-81F6-4D5E-958A-54C075303E6C}" ShortID="245881032">
 															<ReferenceList>
 																<Reference Name="Conversion">
 																	<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -1977,7 +1977,7 @@
 																<ActiveSource Name="fs_plasticheavy_toe_5" ID="{8056D2CE-C683-42DF-B321-8281E048FD23}" Platform="Linked"/>
 															</ActiveSourceList>
 														</Sound>
-														<Sound Name="fs_plasticheavy_toe_7" ID="{C3DA40C8-B828-408F-AE85-12BB33D38C42}" ShortID="344611870" Type="SoundFX">
+														<Sound Name="fs_plasticheavy_toe_7" ID="{C3DA40C8-B828-408F-AE85-12BB33D38C42}" ShortID="344611870">
 															<ReferenceList>
 																<Reference Name="Conversion">
 																	<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -1996,7 +1996,7 @@
 																<ActiveSource Name="fs_plasticheavy_toe_7" ID="{0997AD8D-019E-4A87-83F9-06436B9C9722}" Platform="Linked"/>
 															</ActiveSourceList>
 														</Sound>
-														<Sound Name="fs_plasticheavy_toe_9" ID="{08BA1A14-2F58-4E57-94F8-A082F6F2863D}" ShortID="40552442" Type="SoundFX">
+														<Sound Name="fs_plasticheavy_toe_9" ID="{08BA1A14-2F58-4E57-94F8-A082F6F2863D}" ShortID="40552442">
 															<ReferenceList>
 																<Reference Name="Conversion">
 																	<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -2015,7 +2015,7 @@
 																<ActiveSource Name="fs_plasticheavy_toe_9" ID="{B874F383-AB0C-4A64-A4B1-FA51548BB222}" Platform="Linked"/>
 															</ActiveSourceList>
 														</Sound>
-														<Sound Name="fs_plasticheavy_toe_11" ID="{953A2F6B-DA18-48EB-87D2-70144BBE042C}" ShortID="203532098" Type="SoundFX">
+														<Sound Name="fs_plasticheavy_toe_11" ID="{953A2F6B-DA18-48EB-87D2-70144BBE042C}" ShortID="203532098">
 															<ReferenceList>
 																<Reference Name="Conversion">
 																	<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -2034,7 +2034,7 @@
 																<ActiveSource Name="fs_plasticheavy_toe_11" ID="{5EBE5FE2-42B8-4795-9186-9B21CF023C40}" Platform="Linked"/>
 															</ActiveSourceList>
 														</Sound>
-														<Sound Name="fs_plasticheavy_toe_13" ID="{F22D369D-D89D-440E-A933-646FF5B38481}" ShortID="609995056" Type="SoundFX">
+														<Sound Name="fs_plasticheavy_toe_13" ID="{F22D369D-D89D-440E-A933-646FF5B38481}" ShortID="609995056">
 															<ReferenceList>
 																<Reference Name="Conversion">
 																	<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -2053,7 +2053,7 @@
 																<ActiveSource Name="fs_plasticheavy_toe_13" ID="{AF0073CD-27E9-4485-AF87-D25B7465431E}" Platform="Linked"/>
 															</ActiveSourceList>
 														</Sound>
-														<Sound Name="fs_plasticheavy_toe_15" ID="{DBC0F384-6539-40E6-98DF-653B127C45C3}" ShortID="155559806" Type="SoundFX">
+														<Sound Name="fs_plasticheavy_toe_15" ID="{DBC0F384-6539-40E6-98DF-653B127C45C3}" ShortID="155559806">
 															<ReferenceList>
 																<Reference Name="Conversion">
 																	<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -2153,7 +2153,7 @@
 														</Reference>
 													</ReferenceList>
 													<ChildrenList>
-														<Sound Name="fs_paper_heel_19" ID="{C5B49F75-A414-4ED1-8F7C-CE58DA8AF3CA}" ShortID="699392967" Type="SoundFX">
+														<Sound Name="fs_paper_heel_19" ID="{C5B49F75-A414-4ED1-8F7C-CE58DA8AF3CA}" ShortID="699392967">
 															<ReferenceList>
 																<Reference Name="Conversion">
 																	<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -2172,7 +2172,7 @@
 																<ActiveSource Name="fs_paper_heel_19" ID="{159471A9-6B8A-4F9C-9A7E-F7A5E71D4F86}" Platform="Linked"/>
 															</ActiveSourceList>
 														</Sound>
-														<Sound Name="fs_paper_heel_21" ID="{B715D2B9-D387-4A2E-A037-0CE579383FCC}" ShortID="625720359" Type="SoundFX">
+														<Sound Name="fs_paper_heel_21" ID="{B715D2B9-D387-4A2E-A037-0CE579383FCC}" ShortID="625720359">
 															<ReferenceList>
 																<Reference Name="Conversion">
 																	<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -2191,7 +2191,7 @@
 																<ActiveSource Name="fs_paper_heel_21" ID="{A81BB123-F8CB-4ED3-82EF-9530ECF50F6B}" Platform="Linked"/>
 															</ActiveSourceList>
 														</Sound>
-														<Sound Name="fs_paper_heel_23" ID="{28E7B3F6-0DC8-4910-A1B3-3FF613A2519A}" ShortID="402410606" Type="SoundFX">
+														<Sound Name="fs_paper_heel_23" ID="{28E7B3F6-0DC8-4910-A1B3-3FF613A2519A}" ShortID="402410606">
 															<ReferenceList>
 																<Reference Name="Conversion">
 																	<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -2210,7 +2210,7 @@
 																<ActiveSource Name="fs_paper_heel_23" ID="{9319E91D-480F-4EFF-A924-56D68BCA224C}" Platform="Linked"/>
 															</ActiveSourceList>
 														</Sound>
-														<Sound Name="fs_paper_heel_25" ID="{A3C55538-68A4-4545-96B1-925AFA37CC16}" ShortID="654166630" Type="SoundFX">
+														<Sound Name="fs_paper_heel_25" ID="{A3C55538-68A4-4545-96B1-925AFA37CC16}" ShortID="654166630">
 															<ReferenceList>
 																<Reference Name="Conversion">
 																	<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -2229,7 +2229,7 @@
 																<ActiveSource Name="fs_paper_heel_25" ID="{5157C72F-74EB-4A00-BEBE-A94FCC168516}" Platform="Linked"/>
 															</ActiveSourceList>
 														</Sound>
-														<Sound Name="fs_paper_heel_29" ID="{60431640-1C23-4C73-8EFD-DB1EE923EC27}" ShortID="464262035" Type="SoundFX">
+														<Sound Name="fs_paper_heel_29" ID="{60431640-1C23-4C73-8EFD-DB1EE923EC27}" ShortID="464262035">
 															<ReferenceList>
 																<Reference Name="Conversion">
 																	<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -2248,7 +2248,7 @@
 																<ActiveSource Name="fs_paper_heel_29" ID="{04886110-F71C-4B42-9D42-A00D5FE18567}" Platform="Linked"/>
 															</ActiveSourceList>
 														</Sound>
-														<Sound Name="fs_paper_heel_32" ID="{C1D2B1FF-58FD-470A-8081-FA42E3CFA99E}" ShortID="823102572" Type="SoundFX">
+														<Sound Name="fs_paper_heel_32" ID="{C1D2B1FF-58FD-470A-8081-FA42E3CFA99E}" ShortID="823102572">
 															<ReferenceList>
 																<Reference Name="Conversion">
 																	<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -2279,7 +2279,7 @@
 														</Reference>
 													</ReferenceList>
 													<ChildrenList>
-														<Sound Name="fs_paper_toe_5" ID="{18B066A2-BFE0-4477-8AA7-33A3F37D75E4}" ShortID="617128671" Type="SoundFX">
+														<Sound Name="fs_paper_toe_5" ID="{18B066A2-BFE0-4477-8AA7-33A3F37D75E4}" ShortID="617128671">
 															<ReferenceList>
 																<Reference Name="Conversion">
 																	<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -2298,7 +2298,7 @@
 																<ActiveSource Name="fs_paper_toe_5" ID="{454B91F4-195E-4DE2-BCD6-ECAF6B620C37}" Platform="Linked"/>
 															</ActiveSourceList>
 														</Sound>
-														<Sound Name="fs_paper_toe_7" ID="{52DAF1FE-6A62-40F5-B975-DEAE18E5835B}" ShortID="597418203" Type="SoundFX">
+														<Sound Name="fs_paper_toe_7" ID="{52DAF1FE-6A62-40F5-B975-DEAE18E5835B}" ShortID="597418203">
 															<ReferenceList>
 																<Reference Name="Conversion">
 																	<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -2317,7 +2317,7 @@
 																<ActiveSource Name="fs_paper_toe_7" ID="{8E494F00-5832-4C40-8CC8-E42028C7E8AD}" Platform="Linked"/>
 															</ActiveSourceList>
 														</Sound>
-														<Sound Name="fs_paper_toe_9" ID="{4010D4C5-D5E6-4764-A9B6-509342D42D5A}" ShortID="610759086" Type="SoundFX">
+														<Sound Name="fs_paper_toe_9" ID="{4010D4C5-D5E6-4764-A9B6-509342D42D5A}" ShortID="610759086">
 															<ReferenceList>
 																<Reference Name="Conversion">
 																	<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -2336,7 +2336,7 @@
 																<ActiveSource Name="fs_paper_toe_9" ID="{BAF05D8C-81C0-4761-BD97-B842B15CD2D5}" Platform="Linked"/>
 															</ActiveSourceList>
 														</Sound>
-														<Sound Name="fs_paper_toe_11" ID="{4F88B6D7-9277-4006-A617-6E037A268E76}" ShortID="378591888" Type="SoundFX">
+														<Sound Name="fs_paper_toe_11" ID="{4F88B6D7-9277-4006-A617-6E037A268E76}" ShortID="378591888">
 															<ReferenceList>
 																<Reference Name="Conversion">
 																	<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -2355,7 +2355,7 @@
 																<ActiveSource Name="fs_paper_toe_11" ID="{7C7E211F-49B0-4AE8-9DF7-9AE11D1F0D0A}" Platform="Linked"/>
 															</ActiveSourceList>
 														</Sound>
-														<Sound Name="fs_paper_toe_15" ID="{B807DF0A-D4DD-42EA-921F-E3DC6E4C613B}" ShortID="587808779" Type="SoundFX">
+														<Sound Name="fs_paper_toe_15" ID="{B807DF0A-D4DD-42EA-921F-E3DC6E4C613B}" ShortID="587808779">
 															<ReferenceList>
 																<Reference Name="Conversion">
 																	<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -2374,7 +2374,7 @@
 																<ActiveSource Name="fs_paper_toe_15" ID="{3A8FDA1C-CC94-4C9C-8BDC-7522F06545B2}" Platform="Linked"/>
 															</ActiveSourceList>
 														</Sound>
-														<Sound Name="fs_paper_toe_19" ID="{868EDA05-3B32-4569-A5A9-6929E10A8542}" ShortID="1037180501" Type="SoundFX">
+														<Sound Name="fs_paper_toe_19" ID="{868EDA05-3B32-4569-A5A9-6929E10A8542}" ShortID="1037180501">
 															<ReferenceList>
 																<Reference Name="Conversion">
 																	<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -2474,7 +2474,7 @@
 														</Reference>
 													</ReferenceList>
 													<ChildrenList>
-														<Sound Name="fs_paper_toe_5" ID="{111A232A-5EDA-4148-9F07-7CAE2DBBA9F7}" ShortID="266410466" Type="SoundFX">
+														<Sound Name="fs_paper_toe_5" ID="{111A232A-5EDA-4148-9F07-7CAE2DBBA9F7}" ShortID="266410466">
 															<ReferenceList>
 																<Reference Name="Conversion">
 																	<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -2496,7 +2496,7 @@
 																<ActiveSource Name="fs_paper_toe_5" ID="{EB1C3FD4-AC37-4B15-93D0-604CA12F46A7}" Platform="Linked"/>
 															</ActiveSourceList>
 														</Sound>
-														<Sound Name="fs_paper_toe_7" ID="{2EA41E52-3BB4-4DBB-B0CA-7A5E175176B3}" ShortID="461514208" Type="SoundFX">
+														<Sound Name="fs_paper_toe_7" ID="{2EA41E52-3BB4-4DBB-B0CA-7A5E175176B3}" ShortID="461514208">
 															<ReferenceList>
 																<Reference Name="Conversion">
 																	<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -2518,7 +2518,7 @@
 																<ActiveSource Name="fs_paper_toe_7" ID="{E2C68C53-4174-45A3-98EF-41DC08FAD7CC}" Platform="Linked"/>
 															</ActiveSourceList>
 														</Sound>
-														<Sound Name="fs_paper_toe_9" ID="{1928B5BD-7260-417B-9ADB-1B37BB177610}" ShortID="868176876" Type="SoundFX">
+														<Sound Name="fs_paper_toe_9" ID="{1928B5BD-7260-417B-9ADB-1B37BB177610}" ShortID="868176876">
 															<ReferenceList>
 																<Reference Name="Conversion">
 																	<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -2540,7 +2540,7 @@
 																<ActiveSource Name="fs_paper_toe_9" ID="{17EE5444-A176-48FD-B2C0-D5D2D26B3437}" Platform="Linked"/>
 															</ActiveSourceList>
 														</Sound>
-														<Sound Name="fs_paper_toe_11" ID="{A83D7530-F5EE-401E-91D8-F56AF8234457}" ShortID="301143970" Type="SoundFX">
+														<Sound Name="fs_paper_toe_11" ID="{A83D7530-F5EE-401E-91D8-F56AF8234457}" ShortID="301143970">
 															<ReferenceList>
 																<Reference Name="Conversion">
 																	<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -2562,7 +2562,7 @@
 																<ActiveSource Name="fs_paper_toe_11" ID="{E1B285F3-D5BF-4FB6-A0E3-A3E47AAB7D74}" Platform="Linked"/>
 															</ActiveSourceList>
 														</Sound>
-														<Sound Name="fs_paper_toe_15" ID="{B15D796A-15DC-4DCA-AC19-37DC9DB024B5}" ShortID="598590163" Type="SoundFX">
+														<Sound Name="fs_paper_toe_15" ID="{B15D796A-15DC-4DCA-AC19-37DC9DB024B5}" ShortID="598590163">
 															<ReferenceList>
 																<Reference Name="Conversion">
 																	<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -2584,7 +2584,7 @@
 																<ActiveSource Name="fs_paper_toe_15" ID="{7FBC49EB-525A-4074-8CF0-EFA7D2491341}" Platform="Linked"/>
 															</ActiveSourceList>
 														</Sound>
-														<Sound Name="fs_paper_toe_19" ID="{4293F2E2-2766-4600-964D-62A08085A0FB}" ShortID="1036123111" Type="SoundFX">
+														<Sound Name="fs_paper_toe_19" ID="{4293F2E2-2766-4600-964D-62A08085A0FB}" ShortID="1036123111">
 															<ReferenceList>
 																<Reference Name="Conversion">
 																	<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -2644,7 +2644,7 @@
 																</Reference>
 															</ReferenceList>
 															<ChildrenList>
-																<Sound Name="fs_paper_heel_19" ID="{BB6BDCFB-DADC-478A-9F95-AAA74929DBD0}" ShortID="677072693" Type="SoundFX">
+																<Sound Name="fs_paper_heel_19" ID="{BB6BDCFB-DADC-478A-9F95-AAA74929DBD0}" ShortID="677072693">
 																	<ReferenceList>
 																		<Reference Name="Conversion">
 																			<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -2666,7 +2666,7 @@
 																		<ActiveSource Name="fs_paper_heel_19" ID="{C5DA9A05-D557-4FC6-883A-BFEDA13A196F}" Platform="Linked"/>
 																	</ActiveSourceList>
 																</Sound>
-																<Sound Name="fs_paper_heel_21" ID="{ED6E6601-075C-44AB-AD8E-18F1CEE4632A}" ShortID="972778382" Type="SoundFX">
+																<Sound Name="fs_paper_heel_21" ID="{ED6E6601-075C-44AB-AD8E-18F1CEE4632A}" ShortID="972778382">
 																	<ReferenceList>
 																		<Reference Name="Conversion">
 																			<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -2688,7 +2688,7 @@
 																		<ActiveSource Name="fs_paper_heel_21" ID="{DFDD0B18-2531-4663-93D4-589AC4907A61}" Platform="Linked"/>
 																	</ActiveSourceList>
 																</Sound>
-																<Sound Name="fs_paper_heel_23" ID="{26DA1DCD-76F3-4412-AEF7-9BA4B8AC2150}" ShortID="721022240" Type="SoundFX">
+																<Sound Name="fs_paper_heel_23" ID="{26DA1DCD-76F3-4412-AEF7-9BA4B8AC2150}" ShortID="721022240">
 																	<ReferenceList>
 																		<Reference Name="Conversion">
 																			<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -2710,7 +2710,7 @@
 																		<ActiveSource Name="fs_paper_heel_23" ID="{2586F780-4EA3-448C-A7FD-FF1C765604EF}" Platform="Linked"/>
 																	</ActiveSourceList>
 																</Sound>
-																<Sound Name="fs_paper_heel_25" ID="{3862EB28-1BDC-4776-9137-98E5F896D6AD}" ShortID="371085780" Type="SoundFX">
+																<Sound Name="fs_paper_heel_25" ID="{3862EB28-1BDC-4776-9137-98E5F896D6AD}" ShortID="371085780">
 																	<ReferenceList>
 																		<Reference Name="Conversion">
 																			<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -2732,7 +2732,7 @@
 																		<ActiveSource Name="fs_paper_heel_25" ID="{7384A022-0D04-4A92-BD6B-252B04D58BB9}" Platform="Linked"/>
 																	</ActiveSourceList>
 																</Sound>
-																<Sound Name="fs_paper_heel_29" ID="{11744411-00E2-4CD6-B8DC-23741441F839}" ShortID="762518314" Type="SoundFX">
+																<Sound Name="fs_paper_heel_29" ID="{11744411-00E2-4CD6-B8DC-23741441F839}" ShortID="762518314">
 																	<ReferenceList>
 																		<Reference Name="Conversion">
 																			<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -2754,7 +2754,7 @@
 																		<ActiveSource Name="fs_paper_heel_29" ID="{41B8F4EC-2EA8-4545-8101-F1523F648695}" Platform="Linked"/>
 																	</ActiveSourceList>
 																</Sound>
-																<Sound Name="fs_paper_heel_32" ID="{452A6434-AC84-47B1-B5EB-2BB2D182AAB1}" ShortID="554686566" Type="SoundFX">
+																<Sound Name="fs_paper_heel_32" ID="{452A6434-AC84-47B1-B5EB-2BB2D182AAB1}" ShortID="554686566">
 																	<ReferenceList>
 																		<Reference Name="Conversion">
 																			<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -2788,7 +2788,7 @@
 																</Reference>
 															</ReferenceList>
 															<ChildrenList>
-																<Sound Name="Cardboard1" ID="{16258BC1-FB2E-420D-8128-07C7FB3C93AD}" ShortID="413832096" Type="SoundFX">
+																<Sound Name="Cardboard1" ID="{16258BC1-FB2E-420D-8128-07C7FB3C93AD}" ShortID="413832096">
 																	<ReferenceList>
 																		<Reference Name="Conversion">
 																			<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -2810,7 +2810,7 @@
 																		<ActiveSource Name="Cardboard1" ID="{E7C3E1E1-EACB-47B1-BBF0-178865D9C4BE}" Platform="Linked"/>
 																	</ActiveSourceList>
 																</Sound>
-																<Sound Name="Cardboard2" ID="{281B1FBA-D2DC-42A9-9CBC-2C0207780074}" ShortID="792874443" Type="SoundFX">
+																<Sound Name="Cardboard2" ID="{281B1FBA-D2DC-42A9-9CBC-2C0207780074}" ShortID="792874443">
 																	<ReferenceList>
 																		<Reference Name="Conversion">
 																			<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -2832,7 +2832,7 @@
 																		<ActiveSource Name="Cardboard2" ID="{1282F23C-654B-417F-97AD-BD1434C2420F}" Platform="Linked"/>
 																	</ActiveSourceList>
 																</Sound>
-																<Sound Name="Cardboard3" ID="{49B88218-92C5-4675-B9E1-F3503295AFB4}" ShortID="917106083" Type="SoundFX">
+																<Sound Name="Cardboard3" ID="{49B88218-92C5-4675-B9E1-F3503295AFB4}" ShortID="917106083">
 																	<ReferenceList>
 																		<Reference Name="Conversion">
 																			<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -2854,7 +2854,7 @@
 																		<ActiveSource Name="Cardboard3" ID="{5BC15FB0-0768-44E5-BBB8-6E7DB3D5D189}" Platform="Linked"/>
 																	</ActiveSourceList>
 																</Sound>
-																<Sound Name="Cardboard4" ID="{8E2C76B0-15DE-439F-8C37-D6B74F6AECB8}" ShortID="1058314351" Type="SoundFX">
+																<Sound Name="Cardboard4" ID="{8E2C76B0-15DE-439F-8C37-D6B74F6AECB8}" ShortID="1058314351">
 																	<ReferenceList>
 																		<Reference Name="Conversion">
 																			<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -2876,7 +2876,7 @@
 																		<ActiveSource Name="Cardboard4" ID="{58EB1A1E-19C5-4DE8-A344-378652A4EB01}" Platform="Linked"/>
 																	</ActiveSourceList>
 																</Sound>
-																<Sound Name="Cardboard5" ID="{5D154C5B-A146-4A0A-A78D-C30F375B5A1B}" ShortID="391417063" Type="SoundFX">
+																<Sound Name="Cardboard5" ID="{5D154C5B-A146-4A0A-A78D-C30F375B5A1B}" ShortID="391417063">
 																	<ReferenceList>
 																		<Reference Name="Conversion">
 																			<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -2898,7 +2898,7 @@
 																		<ActiveSource Name="Cardboard5" ID="{6FA43F04-FBD3-433F-B696-2333550F82A5}" Platform="Linked"/>
 																	</ActiveSourceList>
 																</Sound>
-																<Sound Name="Cardboard6" ID="{5D5D5E1B-FE87-4618-ACCC-214F50C4A8DF}" ShortID="759522107" Type="SoundFX">
+																<Sound Name="Cardboard6" ID="{5D5D5E1B-FE87-4618-ACCC-214F50C4A8DF}" ShortID="759522107">
 																	<ReferenceList>
 																		<Reference Name="Conversion">
 																			<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -3040,7 +3040,7 @@
 												</Reference>
 											</ReferenceList>
 											<ChildrenList>
-												<Sound Name="jump_up_wood_11" ID="{75CE27F8-F0DB-462F-A5CF-7BA8CC4852C1}" ShortID="674631936" Type="SoundFX">
+												<Sound Name="jump_up_wood_11" ID="{75CE27F8-F0DB-462F-A5CF-7BA8CC4852C1}" ShortID="674631936">
 													<ReferenceList>
 														<Reference Name="Conversion">
 															<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -3059,7 +3059,7 @@
 														<ActiveSource Name="jump_up_wood_11" ID="{D0BCF51E-B6E9-4B45-8441-1FA2C350193F}" Platform="Linked"/>
 													</ActiveSourceList>
 												</Sound>
-												<Sound Name="jump_up_wood_13" ID="{066F9B54-EE4F-499B-B40F-13CB2B669E84}" ShortID="333332182" Type="SoundFX">
+												<Sound Name="jump_up_wood_13" ID="{066F9B54-EE4F-499B-B40F-13CB2B669E84}" ShortID="333332182">
 													<ReferenceList>
 														<Reference Name="Conversion">
 															<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -3078,7 +3078,7 @@
 														<ActiveSource Name="jump_up_wood_13" ID="{E4886B41-023C-4BA9-A5B2-5CE9DB0BCFAA}" Platform="Linked"/>
 													</ActiveSourceList>
 												</Sound>
-												<Sound Name="jump_up_wood_15" ID="{5B35881B-3878-420C-A6F1-F1B8A5FE6914}" ShortID="656779" Type="SoundFX">
+												<Sound Name="jump_up_wood_15" ID="{5B35881B-3878-420C-A6F1-F1B8A5FE6914}" ShortID="656779">
 													<ReferenceList>
 														<Reference Name="Conversion">
 															<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -3129,7 +3129,7 @@
 												</Reference>
 											</ReferenceList>
 											<ChildrenList>
-												<Sound Name="jump_lightplastic_up_7" ID="{8FE9ADAE-E216-45CF-8982-A741F936D533}" ShortID="38003785" Type="SoundFX">
+												<Sound Name="jump_lightplastic_up_7" ID="{8FE9ADAE-E216-45CF-8982-A741F936D533}" ShortID="38003785">
 													<ReferenceList>
 														<Reference Name="Conversion">
 															<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -3148,7 +3148,7 @@
 														<ActiveSource Name="jump_lightplastic_up_7" ID="{63AB347D-EFCE-4534-BBB0-DE31E742630A}" Platform="Linked"/>
 													</ActiveSourceList>
 												</Sound>
-												<Sound Name="jump_lightplastic_up_9" ID="{E3A8A1C5-F8E5-48DF-9642-2D464C7D6CAA}" ShortID="7113442" Type="SoundFX">
+												<Sound Name="jump_lightplastic_up_9" ID="{E3A8A1C5-F8E5-48DF-9642-2D464C7D6CAA}" ShortID="7113442">
 													<ReferenceList>
 														<Reference Name="Conversion">
 															<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -3167,7 +3167,7 @@
 														<ActiveSource Name="jump_lightplastic_up_9" ID="{AD0E1519-21D9-49ED-8187-D92A1E2EC094}" Platform="Linked"/>
 													</ActiveSourceList>
 												</Sound>
-												<Sound Name="jump_lightplastic_up_11" ID="{62A0C8C3-69B8-490E-B22A-8DCBFD4DE682}" ShortID="121313209" Type="SoundFX">
+												<Sound Name="jump_lightplastic_up_11" ID="{62A0C8C3-69B8-490E-B22A-8DCBFD4DE682}" ShortID="121313209">
 													<ReferenceList>
 														<Reference Name="Conversion">
 															<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -3198,7 +3198,7 @@
 												</Reference>
 											</ReferenceList>
 											<ChildrenList>
-												<Sound Name="jump_up_wood_11" ID="{A5961144-04D6-4EFA-8AC8-235E2B5DD1EF}" ShortID="842545195" Type="SoundFX">
+												<Sound Name="jump_up_wood_11" ID="{A5961144-04D6-4EFA-8AC8-235E2B5DD1EF}" ShortID="842545195">
 													<ReferenceList>
 														<Reference Name="Conversion">
 															<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -3220,7 +3220,7 @@
 														<ActiveSource Name="jump_up_wood_11" ID="{5C8257EF-D4CA-4745-9EC1-0B8DDC459B0F}" Platform="Linked"/>
 													</ActiveSourceList>
 												</Sound>
-												<Sound Name="jump_up_wood_13" ID="{4CB90FDB-AA8F-403B-93C3-9AE808F95924}" ShortID="402968264" Type="SoundFX">
+												<Sound Name="jump_up_wood_13" ID="{4CB90FDB-AA8F-403B-93C3-9AE808F95924}" ShortID="402968264">
 													<ReferenceList>
 														<Reference Name="Conversion">
 															<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -3242,7 +3242,7 @@
 														<ActiveSource Name="jump_up_wood_13" ID="{D0FE650B-2B00-411C-B289-B1B1CC2DC2B0}" Platform="Linked"/>
 													</ActiveSourceList>
 												</Sound>
-												<Sound Name="jump_up_wood_15" ID="{20C5D8E3-C0CE-48C0-A089-081BB3067965}" ShortID="502996792" Type="SoundFX">
+												<Sound Name="jump_up_wood_15" ID="{20C5D8E3-C0CE-48C0-A089-081BB3067965}" ShortID="502996792">
 													<ReferenceList>
 														<Reference Name="Conversion">
 															<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -3296,7 +3296,7 @@
 												</Reference>
 											</ReferenceList>
 											<ChildrenList>
-												<Sound Name="jump_plasticheavy_up merged" ID="{D63F2ACD-C027-466E-A410-51A819D74B10}" ShortID="710179968" Type="SoundFX">
+												<Sound Name="jump_plasticheavy_up merged" ID="{D63F2ACD-C027-466E-A410-51A819D74B10}" ShortID="710179968">
 													<ReferenceList>
 														<Reference Name="Conversion">
 															<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -3315,7 +3315,7 @@
 														<ActiveSource Name="jump_plasticheavy_up merged" ID="{A0EFDF90-9929-4E03-8EA1-F6D1BB9CEEA9}" Platform="Linked"/>
 													</ActiveSourceList>
 												</Sound>
-												<Sound Name="jump_plasticheavy_up_3" ID="{3DBBA355-E62A-46D8-9194-48A6A9BA232C}" ShortID="481622764" Type="SoundFX">
+												<Sound Name="jump_plasticheavy_up_3" ID="{3DBBA355-E62A-46D8-9194-48A6A9BA232C}" ShortID="481622764">
 													<ReferenceList>
 														<Reference Name="Conversion">
 															<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -3334,7 +3334,7 @@
 														<ActiveSource Name="jump_plasticheavy_up_3" ID="{F757B791-AEFF-4E6F-8213-41EA2896E7D8}" Platform="Linked"/>
 													</ActiveSourceList>
 												</Sound>
-												<Sound Name="jump_plasticheavy_up_7" ID="{4E52218F-22AF-4801-9468-E5D06506CF28}" ShortID="290516597" Type="SoundFX">
+												<Sound Name="jump_plasticheavy_up_7" ID="{4E52218F-22AF-4801-9468-E5D06506CF28}" ShortID="290516597">
 													<ReferenceList>
 														<Reference Name="Conversion">
 															<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -3456,7 +3456,7 @@
 												</Reference>
 											</ReferenceList>
 											<ChildrenList>
-												<Sound Name="jump_land_wood_17" ID="{4033B1B1-140A-4430-B79D-25659B727D93}" ShortID="1055904589" Type="SoundFX">
+												<Sound Name="jump_land_wood_17" ID="{4033B1B1-140A-4430-B79D-25659B727D93}" ShortID="1055904589">
 													<ReferenceList>
 														<Reference Name="Conversion">
 															<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -3475,7 +3475,7 @@
 														<ActiveSource Name="jump_land_wood_17" ID="{089F0B45-ADD9-47B2-AD76-D1839E20068D}" Platform="Linked"/>
 													</ActiveSourceList>
 												</Sound>
-												<Sound Name="jump_land_wood_19" ID="{F2BEDB43-B114-4C82-8E15-FF588E83B220}" ShortID="523284704" Type="SoundFX">
+												<Sound Name="jump_land_wood_19" ID="{F2BEDB43-B114-4C82-8E15-FF588E83B220}" ShortID="523284704">
 													<ReferenceList>
 														<Reference Name="Conversion">
 															<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -3494,7 +3494,7 @@
 														<ActiveSource Name="jump_land_wood_19" ID="{4E4775C6-1317-4107-A6B1-8B7B5DD048DE}" Platform="Linked"/>
 													</ActiveSourceList>
 												</Sound>
-												<Sound Name="jump_land_wood_21" ID="{A77085A8-B8E7-4958-8A5B-7FA2E8D07332}" ShortID="236823916" Type="SoundFX">
+												<Sound Name="jump_land_wood_21" ID="{A77085A8-B8E7-4958-8A5B-7FA2E8D07332}" ShortID="236823916">
 													<ReferenceList>
 														<Reference Name="Conversion">
 															<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -3540,7 +3540,7 @@
 												</Reference>
 											</ReferenceList>
 											<ChildrenList>
-												<Sound Name="jump_lightplastic_land_5" ID="{EA3ACC08-5A1D-4D8E-B076-DEACAB4FF6EF}" ShortID="83595968" Type="SoundFX">
+												<Sound Name="jump_lightplastic_land_5" ID="{EA3ACC08-5A1D-4D8E-B076-DEACAB4FF6EF}" ShortID="83595968">
 													<ReferenceList>
 														<Reference Name="Conversion">
 															<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -3559,7 +3559,7 @@
 														<ActiveSource Name="jump_lightplastic_land_5" ID="{E4787B83-78B5-4194-BC9F-D1C5961DD7EC}" Platform="Linked"/>
 													</ActiveSourceList>
 												</Sound>
-												<Sound Name="jump_lightplastic_land_7" ID="{E0C8AD75-4B0B-478C-89A7-C0B92EF19458}" ShortID="866465838" Type="SoundFX">
+												<Sound Name="jump_lightplastic_land_7" ID="{E0C8AD75-4B0B-478C-89A7-C0B92EF19458}" ShortID="866465838">
 													<ReferenceList>
 														<Reference Name="Conversion">
 															<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -3578,7 +3578,7 @@
 														<ActiveSource Name="jump_lightplastic_land_7" ID="{EB46C118-FFB0-45E9-8587-7572BEE524E1}" Platform="Linked"/>
 													</ActiveSourceList>
 												</Sound>
-												<Sound Name="jump_lightplastic_land_11" ID="{FD8110F6-54BC-40B8-8327-662134B21E24}" ShortID="804996878" Type="SoundFX">
+												<Sound Name="jump_lightplastic_land_11" ID="{FD8110F6-54BC-40B8-8327-662134B21E24}" ShortID="804996878">
 													<ReferenceList>
 														<Reference Name="Conversion">
 															<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -3628,7 +3628,7 @@
 												</Reference>
 											</ReferenceList>
 											<ChildrenList>
-												<Sound Name="jump_land_paper_3" ID="{81FCFBBB-28CF-426B-BADD-F724A21370E4}" ShortID="377452528" Type="SoundFX">
+												<Sound Name="jump_land_paper_3" ID="{81FCFBBB-28CF-426B-BADD-F724A21370E4}" ShortID="377452528">
 													<ReferenceList>
 														<Reference Name="Conversion">
 															<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -3647,7 +3647,7 @@
 														<ActiveSource Name="jump_land_paper_3" ID="{9CDF226B-457E-40E3-B925-AF4CE235B053}" Platform="Linked"/>
 													</ActiveSourceList>
 												</Sound>
-												<Sound Name="jump_land_paper_13" ID="{069A1433-8FB5-495A-ABB5-A856EDDEF8EB}" ShortID="442295846" Type="SoundFX">
+												<Sound Name="jump_land_paper_13" ID="{069A1433-8FB5-495A-ABB5-A856EDDEF8EB}" ShortID="442295846">
 													<ReferenceList>
 														<Reference Name="Conversion">
 															<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -3666,7 +3666,7 @@
 														<ActiveSource Name="jump_land_paper_13" ID="{180C62B3-9699-499A-98AE-1A576EF64CEB}" Platform="Linked"/>
 													</ActiveSourceList>
 												</Sound>
-												<Sound Name="jump_land_paper_15" ID="{36A25815-F939-401C-A1EB-69F53208E987}" ShortID="561859521" Type="SoundFX">
+												<Sound Name="jump_land_paper_15" ID="{36A25815-F939-401C-A1EB-69F53208E987}" ShortID="561859521">
 													<ReferenceList>
 														<Reference Name="Conversion">
 															<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -3711,7 +3711,7 @@
 												</Reference>
 											</ReferenceList>
 											<ChildrenList>
-												<Sound Name="jump_plasticheavy_land_19" ID="{CC972B31-6E4E-4726-84CC-47EE15164103}" ShortID="780752148" Type="SoundFX">
+												<Sound Name="jump_plasticheavy_land_19" ID="{CC972B31-6E4E-4726-84CC-47EE15164103}" ShortID="780752148">
 													<ReferenceList>
 														<Reference Name="Conversion">
 															<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -3730,7 +3730,7 @@
 														<ActiveSource Name="jump_plasticheavy_land_19" ID="{70A3D30E-86BD-4181-B17F-1728C04250D2}" Platform="Linked"/>
 													</ActiveSourceList>
 												</Sound>
-												<Sound Name="jump_plasticheavy_land_21" ID="{8F2740F3-9CA1-406E-819A-D6CA3B237C24}" ShortID="344491716" Type="SoundFX">
+												<Sound Name="jump_plasticheavy_land_21" ID="{8F2740F3-9CA1-406E-819A-D6CA3B237C24}" ShortID="344491716">
 													<ReferenceList>
 														<Reference Name="Conversion">
 															<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -3749,7 +3749,7 @@
 														<ActiveSource Name="jump_plasticheavy_land_21" ID="{8859ED63-9D3B-4B67-8849-762A6CBB61B2}" Platform="Linked"/>
 													</ActiveSourceList>
 												</Sound>
-												<Sound Name="jump_plasticheavy_land_23" ID="{D8E31A59-AE47-43D7-BD55-D011CA5A9A91}" ShortID="817102578" Type="SoundFX">
+												<Sound Name="jump_plasticheavy_land_23" ID="{D8E31A59-AE47-43D7-BD55-D011CA5A9A91}" ShortID="817102578">
 													<ReferenceList>
 														<Reference Name="Conversion">
 															<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -3974,7 +3974,7 @@
 										</Reference>
 									</ReferenceList>
 									<ChildrenList>
-										<Sound Name="robot_whir_1" ID="{DBD9B41C-6B44-4EA4-8D33-ECB68BF592D5}" ShortID="259431354" Type="SoundFX">
+										<Sound Name="robot_whir_1" ID="{DBD9B41C-6B44-4EA4-8D33-ECB68BF592D5}" ShortID="259431354">
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -3993,7 +3993,7 @@
 												<ActiveSource Name="robot_whir_1" ID="{72B537B6-3D56-4916-805A-7FBBB8B4E641}" Platform="Linked"/>
 											</ActiveSourceList>
 										</Sound>
-										<Sound Name="robot_whir_2" ID="{674609B2-A80B-4222-89DE-4DBCCE807324}" ShortID="145280600" Type="SoundFX">
+										<Sound Name="robot_whir_2" ID="{674609B2-A80B-4222-89DE-4DBCCE807324}" ShortID="145280600">
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -4012,7 +4012,7 @@
 												<ActiveSource Name="robot_whir_2" ID="{95233197-F570-4010-BC55-E310F5BA694E}" Platform="Linked"/>
 											</ActiveSourceList>
 										</Sound>
-										<Sound Name="robot_whir_3" ID="{76F43F1B-D278-40CC-8B3E-E5C9F86963F1}" ShortID="750440103" Type="SoundFX">
+										<Sound Name="robot_whir_3" ID="{76F43F1B-D278-40CC-8B3E-E5C9F86963F1}" ShortID="750440103">
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -4031,7 +4031,7 @@
 												<ActiveSource Name="robot_whir_3" ID="{CE955FF1-B391-4CBF-8224-1E95452A9615}" Platform="Linked"/>
 											</ActiveSourceList>
 										</Sound>
-										<Sound Name="robot_whir_4" ID="{7F128C33-571B-48BB-90D6-4D03FE03FBBA}" ShortID="972158035" Type="SoundFX">
+										<Sound Name="robot_whir_4" ID="{7F128C33-571B-48BB-90D6-4D03FE03FBBA}" ShortID="972158035">
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -4050,7 +4050,7 @@
 												<ActiveSource Name="robot_whir_4" ID="{AE749143-019C-4710-8069-81C89EF75904}" Platform="Linked"/>
 											</ActiveSourceList>
 										</Sound>
-										<Sound Name="robot_whir_5" ID="{F42505ED-D9B5-4757-BF8C-9FB042B0783A}" ShortID="247459952" Type="SoundFX">
+										<Sound Name="robot_whir_5" ID="{F42505ED-D9B5-4757-BF8C-9FB042B0783A}" ShortID="247459952">
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -4069,7 +4069,7 @@
 												<ActiveSource Name="robot_whir_5" ID="{0D22F532-8C07-429F-8FFC-32AC2035E19A}" Platform="Linked"/>
 											</ActiveSourceList>
 										</Sound>
-										<Sound Name="robot_whir_6" ID="{015DFFCB-2533-4A92-AF05-550ACB590A92}" ShortID="281477900" Type="SoundFX">
+										<Sound Name="robot_whir_6" ID="{015DFFCB-2533-4A92-AF05-550ACB590A92}" ShortID="281477900">
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -4100,7 +4100,7 @@
 										</Reference>
 									</ReferenceList>
 									<ChildrenList>
-										<Sound Name="Cardboard1" ID="{70C4F8EB-7D8D-4D01-83ED-EB954918460D}" ShortID="257704120" Type="SoundFX">
+										<Sound Name="Cardboard1" ID="{70C4F8EB-7D8D-4D01-83ED-EB954918460D}" ShortID="257704120">
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -4119,7 +4119,7 @@
 												<ActiveSource Name="Cardboard1" ID="{20398B33-6C2E-416F-B562-F0C4B5A5E510}" Platform="Linked"/>
 											</ActiveSourceList>
 										</Sound>
-										<Sound Name="Cardboard2" ID="{38CA156A-1549-4178-BCB8-5B371AE0C079}" ShortID="608588086" Type="SoundFX">
+										<Sound Name="Cardboard2" ID="{38CA156A-1549-4178-BCB8-5B371AE0C079}" ShortID="608588086">
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -4138,7 +4138,7 @@
 												<ActiveSource Name="Cardboard2" ID="{BCBE8C66-F972-4C05-9B18-7444D0B20CFB}" Platform="Linked"/>
 											</ActiveSourceList>
 										</Sound>
-										<Sound Name="Cardboard3" ID="{4ED50193-EE27-498C-A811-1F0264FF7314}" ShortID="334097836" Type="SoundFX">
+										<Sound Name="Cardboard3" ID="{4ED50193-EE27-498C-A811-1F0264FF7314}" ShortID="334097836">
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -4157,7 +4157,7 @@
 												<ActiveSource Name="Cardboard3" ID="{91E96017-C41F-4FA4-B5D9-1A5C90D328F7}" Platform="Linked"/>
 											</ActiveSourceList>
 										</Sound>
-										<Sound Name="Cardboard4" ID="{FC1789D0-6E96-46FA-927E-5E12378D7BFF}" ShortID="985585228" Type="SoundFX">
+										<Sound Name="Cardboard4" ID="{FC1789D0-6E96-46FA-927E-5E12378D7BFF}" ShortID="985585228">
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -4176,7 +4176,7 @@
 												<ActiveSource Name="Cardboard4" ID="{CCABBE86-3AAC-4560-8002-278B6C648F84}" Platform="Linked"/>
 											</ActiveSourceList>
 										</Sound>
-										<Sound Name="Cardboard5" ID="{3F045B7A-36F6-4230-9FC1-0CE915397F1F}" ShortID="888910436" Type="SoundFX">
+										<Sound Name="Cardboard5" ID="{3F045B7A-36F6-4230-9FC1-0CE915397F1F}" ShortID="888910436">
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -4195,7 +4195,7 @@
 												<ActiveSource Name="Cardboard5" ID="{C2C56D5F-5F6D-4C88-9FF7-077376B2DC33}" Platform="Linked"/>
 											</ActiveSourceList>
 										</Sound>
-										<Sound Name="Cardboard6" ID="{CC29B568-F643-4838-A530-B3D81F15B031}" ShortID="861356379" Type="SoundFX">
+										<Sound Name="Cardboard6" ID="{CC29B568-F643-4838-A530-B3D81F15B031}" ShortID="861356379">
 											<ReferenceList>
 												<Reference Name="Conversion">
 													<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
@@ -4220,6 +4220,236 @@
 						</ActorMixer>
 					</ChildrenList>
 				</ActorMixer>
+				<Sound Name="194364__dave-welsh__thunder-clap-owb-ky-441x16" ID="{104A5BBB-CA5C-42A3-9A74-404BAEAE976E}" ShortID="168337015">
+					<ReferenceList>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
+						</Reference>
+					</ReferenceList>
+					<ChildrenList>
+						<AudioFileSource Name="194364__dave-welsh__thunder-clap-owb-ky-441x16" ID="{D3C269AE-227E-4040-A156-57737D926C06}" ShortID="42275120">
+							<Language>SFX</Language>
+							<AudioFile>194364__dave-welsh__thunder-clap-owb-ky-441x16.wav</AudioFile>
+						</AudioFileSource>
+					</ChildrenList>
+					<ActiveSourceList>
+						<ActiveSource Name="194364__dave-welsh__thunder-clap-owb-ky-441x16" ID="{D3C269AE-227E-4040-A156-57737D926C06}" Platform="Linked"/>
+					</ActiveSourceList>
+				</Sound>
+				<Sound Name="rain" ID="{3C88C81A-A291-45CE-95E0-B62102F95FDC}" ShortID="972337785">
+					<PropertyList>
+						<Property Name="Volume" Type="Real64">
+							<ValueList>
+								<Value>-8</Value>
+							</ValueList>
+						</Property>
+					</PropertyList>
+					<ReferenceList>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
+						</Reference>
+						<Reference Name="Effect0">
+							<Custom>
+								<Effect Name="Wwise Parametric EQ (Custom)" ID="{449F26B4-0014-4F2B-92FC-FB9BB88D34DE}" ShortID="197281204" PluginName="Wwise Parametric EQ" CompanyID="0" PluginID="105" PluginType="3">
+									<PropertyList>
+										<Property Name="FilterTypeBand1" Type="int32" Value="1"/>
+										<Property Name="FrequencyBand1" Type="Real32" Value="160"/>
+									</PropertyList>
+								</Effect>
+							</Custom>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
+						</Reference>
+					</ReferenceList>
+					<ChildrenList>
+						<AudioFileSource Name="rain" ID="{94693334-8574-44E9-BB7C-29D8582EA49A}" ShortID="624135576">
+							<PropertyList>
+								<Property Name="CrossfadeDuration" Type="Real64" Value="0.2"/>
+								<Property Name="LoopBegin" Type="Real64" Value="25.6583025483631"/>
+								<Property Name="OverrideWavLoop" Type="bool" Value="True"/>
+								<Property Name="TrimEnd" Type="Real64" Value="31.0696507161459"/>
+							</PropertyList>
+							<Language>SFX</Language>
+							<AudioFile>rain.wav</AudioFile>
+						</AudioFileSource>
+					</ChildrenList>
+					<ActiveSourceList>
+						<ActiveSource Name="rain" ID="{94693334-8574-44E9-BB7C-29D8582EA49A}" Platform="Linked"/>
+					</ActiveSourceList>
+				</Sound>
+				<Sound Name="stacc violin" ID="{78F81ECF-E6C3-4879-AC7C-772C28C5730C}" ShortID="262653080">
+					<ReferenceList>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
+						</Reference>
+					</ReferenceList>
+					<ChildrenList>
+						<AudioFileSource Name="stacc violin" ID="{DCB2F82B-18B0-448D-B247-5F6D63413F5F}" ShortID="11101039">
+							<Language>SFX</Language>
+							<AudioFile>stacc violin.wav</AudioFile>
+						</AudioFileSource>
+					</ChildrenList>
+					<ActiveSourceList>
+						<ActiveSource Name="stacc violin" ID="{DCB2F82B-18B0-448D-B247-5F6D63413F5F}" Platform="Linked"/>
+					</ActiveSourceList>
+				</Sound>
+				<Sound Name="stacc violin2" ID="{49773133-6337-42AD-BC30-569D726FA193}" ShortID="973378869">
+					<ReferenceList>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
+						</Reference>
+					</ReferenceList>
+					<ChildrenList>
+						<AudioFileSource Name="stacc violin2" ID="{38DEE68D-DEC2-4F00-8781-435E02F9B7AD}" ShortID="709163361">
+							<Language>SFX</Language>
+							<AudioFile>stacc violin2.wav</AudioFile>
+						</AudioFileSource>
+					</ChildrenList>
+					<ActiveSourceList>
+						<ActiveSource Name="stacc violin2" ID="{38DEE68D-DEC2-4F00-8781-435E02F9B7AD}" Platform="Linked"/>
+					</ActiveSourceList>
+				</Sound>
+				<Sound Name="storm hit" ID="{44412BC9-497C-46B1-B791-1A6DF12E182C}" ShortID="502788404">
+					<PropertyList>
+						<Property Name="Volume" Type="Real64">
+							<ValueList>
+								<Value>-10</Value>
+							</ValueList>
+						</Property>
+					</PropertyList>
+					<ReferenceList>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
+						</Reference>
+						<Reference Name="Effect0">
+							<Custom>
+								<Effect Name="Wwise Parametric EQ (Custom)" ID="{F8CF3FCD-2C8E-43A9-92B1-28089935C457}" ShortID="440414914" PluginName="Wwise Parametric EQ" CompanyID="0" PluginID="105" PluginType="3">
+									<PropertyList>
+										<Property Name="FilterTypeBand3" Type="int32" Value="0"/>
+										<Property Name="FrequencyBand3" Type="Real32" Value="749"/>
+									</PropertyList>
+								</Effect>
+							</Custom>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
+						</Reference>
+					</ReferenceList>
+					<ChildrenList>
+						<AudioFileSource Name="storm hit" ID="{8110D0F1-ABCF-4753-9A49-904369469FDF}" ShortID="757681398">
+							<Language>SFX</Language>
+							<AudioFile>storm hit.wav</AudioFile>
+						</AudioFileSource>
+					</ChildrenList>
+					<ActiveSourceList>
+						<ActiveSource Name="storm hit" ID="{8110D0F1-ABCF-4753-9A49-904369469FDF}" Platform="Linked"/>
+					</ActiveSourceList>
+				</Sound>
+				<Sound Name="UI1" ID="{F2642A84-7AA0-4586-A027-AE16048B5AAB}" ShortID="292816448">
+					<ReferenceList>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
+						</Reference>
+					</ReferenceList>
+					<ChildrenList>
+						<AudioFileSource Name="UI1" ID="{BFB45F4C-6AA6-4A39-A0BC-D317CBC976A9}" ShortID="85670912">
+							<Language>SFX</Language>
+							<AudioFile>UI1.wav</AudioFile>
+						</AudioFileSource>
+					</ChildrenList>
+					<ActiveSourceList>
+						<ActiveSource Name="UI1" ID="{BFB45F4C-6AA6-4A39-A0BC-D317CBC976A9}" Platform="Linked"/>
+					</ActiveSourceList>
+				</Sound>
+				<Sound Name="UI2" ID="{0AC88C29-77FF-4991-9B39-888B1E12C44D}" ShortID="459439286">
+					<ReferenceList>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
+						</Reference>
+					</ReferenceList>
+					<ChildrenList>
+						<AudioFileSource Name="UI2" ID="{127ACFEB-DE94-4A2A-B6A4-5A711523546B}" ShortID="856910762">
+							<Language>SFX</Language>
+							<AudioFile>UI2.wav</AudioFile>
+						</AudioFileSource>
+					</ChildrenList>
+					<ActiveSourceList>
+						<ActiveSource Name="UI2" ID="{127ACFEB-DE94-4A2A-B6A4-5A711523546B}" Platform="Linked"/>
+					</ActiveSourceList>
+				</Sound>
+				<Sound Name="UI3" ID="{136F5C44-2755-41F8-AE58-E15B1F9A0D91}" ShortID="574499162">
+					<ReferenceList>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
+						</Reference>
+					</ReferenceList>
+					<ChildrenList>
+						<AudioFileSource Name="UI3" ID="{1194CA0D-9C1B-4CA6-84D9-EF193CB5B64B}" ShortID="636859540">
+							<Language>SFX</Language>
+							<AudioFile>UI3.wav</AudioFile>
+						</AudioFileSource>
+					</ChildrenList>
+					<ActiveSourceList>
+						<ActiveSource Name="UI3" ID="{1194CA0D-9C1B-4CA6-84D9-EF193CB5B64B}" Platform="Linked"/>
+					</ActiveSourceList>
+				</Sound>
+				<Sound Name="UI4" ID="{8B7E4500-1BDC-4702-AB53-6CEB93BBB45D}" ShortID="432223305">
+					<ReferenceList>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
+						</Reference>
+					</ReferenceList>
+					<ChildrenList>
+						<AudioFileSource Name="UI4" ID="{F78C37C4-FA57-4900-9879-CDEFC5C55C7D}" ShortID="34617256">
+							<Language>SFX</Language>
+							<AudioFile>UI4.wav</AudioFile>
+						</AudioFileSource>
+					</ChildrenList>
+					<ActiveSourceList>
+						<ActiveSource Name="UI4" ID="{F78C37C4-FA57-4900-9879-CDEFC5C55C7D}" Platform="Linked"/>
+					</ActiveSourceList>
+				</Sound>
+				<Sound Name="UI5" ID="{075FB2FF-4F4E-43C6-87FD-73A2D7A11CCC}" ShortID="249048541">
+					<ReferenceList>
+						<Reference Name="Conversion">
+							<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
+						</Reference>
+						<Reference Name="OutputBus">
+							<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
+						</Reference>
+					</ReferenceList>
+					<ChildrenList>
+						<AudioFileSource Name="UI5" ID="{2139F485-F17E-475F-83E1-251E70DBFFF5}" ShortID="305220544">
+							<Language>SFX</Language>
+							<AudioFile>UI5.wav</AudioFile>
+						</AudioFileSource>
+					</ChildrenList>
+					<ActiveSourceList>
+						<ActiveSource Name="UI5" ID="{2139F485-F17E-475F-83E1-251E70DBFFF5}" Platform="Linked"/>
+					</ActiveSourceList>
+				</Sound>
 			</ChildrenList>
 		</WorkUnit>
 	</AudioObjects>

@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<WwiseDocument Type="WorkUnit" ID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}" SchemaVersion="75">
+<WwiseDocument Type="WorkUnit" ID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}" SchemaVersion="80">
 	<Busses>
 		<WorkUnit Name="Default Work Unit" ID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}" PersistMode="Standalone">
 			<ChildrenList>
 				<Bus Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}">
+					<PropertyList>
+						<Property Name="DivergenceCenter" Type="int32">
+							<ValueList>
+								<Value>100</Value>
+							</ValueList>
+						</Property>
+					</PropertyList>
 					<ReferenceList>
 						<Reference Name="Effect0" PluginName="Wwise Parametric EQ" CompanyID="0" PluginID="105" PluginType="3">
 							<ObjectRef Name="Boost_3dB_10KHz" ID="{59632554-9396-4E15-889E-7A2F5458DEC3}" WorkUnitID="{E8613F7D-BAD3-45CD-A3ED-505576F31277}"/>
@@ -24,6 +31,11 @@
 					<ChildrenList>
 						<Bus Name="Music" ID="{C97A455D-34F3-4C2B-B6BF-F897A45BAA3C}">
 							<PropertyList>
+								<Property Name="DivergenceCenter" Type="int32">
+									<ValueList>
+										<Value>100</Value>
+									</ValueList>
+								</Property>
 								<Property Name="RecoveryTime" Type="Real64" Value="0"/>
 							</PropertyList>
 							<ReferenceList>
@@ -35,6 +47,13 @@
 							</ReferenceList>
 						</Bus>
 						<Bus Name="SFX" ID="{9B323A1D-E04E-423D-B860-45B488185BAC}">
+							<PropertyList>
+								<Property Name="DivergenceCenter" Type="int32">
+									<ValueList>
+										<Value>100</Value>
+									</ValueList>
+								</Property>
+							</PropertyList>
 							<DuckingList>
 								<DuckItem>
 									<BusRef Name="Music" ID="{C97A455D-34F3-4C2B-B6BF-F897A45BAA3C}"/>
@@ -50,7 +69,15 @@
 						</Bus>
 					</ChildrenList>
 				</Bus>
-				<Bus Name="Master Secondary Bus" ID="{D2E0BC7E-7B3F-4FFE-A670-FAE02761B631}"/>
+				<Bus Name="Master Secondary Bus" ID="{D2E0BC7E-7B3F-4FFE-A670-FAE02761B631}">
+					<PropertyList>
+						<Property Name="DivergenceCenter" Type="int32">
+							<ValueList>
+								<Value>100</Value>
+							</ValueList>
+						</Property>
+					</PropertyList>
+				</Bus>
 				<MotionBus Name="Master Motion Bus" ID="{20A630BA-3398-4676-B927-1004DFE41FD8}"/>
 			</ChildrenList>
 		</WorkUnit>

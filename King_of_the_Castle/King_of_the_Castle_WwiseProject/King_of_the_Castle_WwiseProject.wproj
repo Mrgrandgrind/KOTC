@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<WwiseDocument Type="Project" SchemaVersion="75" WwiseVersion="v2016.2.4" WwiseBuild="6098">
+<WwiseDocument Type="Project" SchemaVersion="80" WwiseVersion="v2017.1.1" WwiseBuild="6340">
 	<ProjectInfo>
 		<Project Name="King_of_the_Castle_WwiseProject" ID="{0E25A84A-8935-4D7E-8408-F37F37605D0B}">
 			<Platforms>
 				<Platform Name="Mac" ReferencePlatform="Mac" ID="{DCB62F65-A43E-4423-93F4-47665F361544}"/>
 				<Platform Name="Windows" ReferencePlatform="Windows" ID="{9D197A7E-B189-4C3B-94BC-A6FA7272289F}"/>
 			</Platforms>
+			<LanguageList>
+				<Language Name="English(US)" ID="{48858981-4DBB-4873-97B1-1FA84853C96B}"/>
+				<Language Name="External" ID="{C959C2DA-8BB1-4303-A369-6D3D59B012D3}"/>
+				<Language Name="Mixed" ID="{C64D9A6D-65B4-4656-A5E5-F61CFCCDFC97}"/>
+				<Language Name="SFX" ID="{4BB4B6E9-A141-42F5-B1F7-7C6A5932FE5D}"/>
+			</LanguageList>
 			<PropertyList>
-				<Property Name="DefaultLanguage" Type="int32" Value="12"/>
 				<Property Name="ExternalSourcesInputPath" Type="string">
 					<ValueList>
 						<Value Platform="Mac"></Value>
@@ -56,6 +61,11 @@
 			<SharedValues>
 				<SharedPropertyList ClassName="AudioSource" PluginType="0" CompanyID="1" PluginID="0">
 					<PropertyList>
+						<Property Name="ChannelConfigOverride" Type="int64">
+							<ValueList>
+								<Value>0</Value>
+							</ValueList>
+						</Property>
 						<Property Name="CrossfadeDuration" Type="Real64">
 							<ValueList>
 								<Value>0</Value>
@@ -191,6 +201,11 @@
 								<Value>False</Value>
 							</ValueList>
 						</Property>
+						<Property Name="EnablePositioning" Type="bool">
+							<ValueList>
+								<Value>True</Value>
+							</ValueList>
+						</Property>
 						<Property Name="FollowListenerOrientation" Type="bool">
 							<ValueList>
 								<Value>True</Value>
@@ -256,12 +271,12 @@
 								<Value>False</Value>
 							</ValueList>
 						</Property>
-						<Property Name="IsRSXStreamingEnabled" Type="bool">
+						<Property Name="IsStreamingEnabled" Type="bool">
 							<ValueList>
 								<Value>False</Value>
 							</ValueList>
 						</Property>
-						<Property Name="IsStreamingEnabled" Type="bool">
+						<Property Name="IsVoice" Type="bool">
 							<ValueList>
 								<Value>False</Value>
 							</ValueList>
@@ -269,11 +284,6 @@
 						<Property Name="IsZeroLantency" Type="bool">
 							<ValueList>
 								<Value>False</Value>
-							</ValueList>
-						</Property>
-						<Property Name="LanguageExclusion" Type="int64">
-							<ValueList>
-								<Value>0</Value>
 							</ValueList>
 						</Property>
 						<Property Name="LoopCount" Type="int32">
@@ -553,7 +563,7 @@
 						</Property>
 					</PropertyList>
 				</SharedPropertyList>
-				<SharedPropertyList ClassName="IOSONO Proximity" PluginType="6" CompanyID="262" PluginID="1">
+				<SharedPropertyList ClassName="" PluginType="6" CompanyID="262" PluginID="1">
 					<PropertyList>
 						<Property Name="Bypass" Type="bool">
 							<ValueList>
@@ -581,7 +591,7 @@
 						</Property>
 					</PropertyList>
 				</SharedPropertyList>
-				<SharedPropertyList ClassName="VirtualFolder" PluginType="0" CompanyID="1" PluginID="2">
+				<SharedPropertyList ClassName="Folder" PluginType="0" CompanyID="1" PluginID="2">
 					<PropertyList>
 						<Property Name="Inclusion" Type="bool">
 							<ValueList>
@@ -679,7 +689,7 @@
 						</Property>
 					</PropertyList>
 				</SharedPropertyList>
-				<SharedPropertyList ClassName="AttachableMixerInput" PluginType="3" CompanyID="262" PluginID="2">
+				<SharedPropertyList ClassName="" PluginType="3" CompanyID="262" PluginID="2">
 					<PropertyList>
 						<Property Name="ProximityGain" Type="Real32">
 							<ValueList>
@@ -730,9 +740,9 @@
 								<Value>8</Value>
 							</ValueList>
 						</Property>
-						<Property Name="DefaultLanguage" Type="int32">
+						<Property Name="DefaultLanguage" Type="string">
 							<ValueList>
-								<Value>0</Value>
+								<Value>English(US)</Value>
 							</ValueList>
 						</Property>
 						<Property Name="EventActionNamePosition" Type="int16">
@@ -1097,7 +1107,22 @@
 				</SharedPropertyList>
 				<SharedPropertyList ClassName="Action" PluginType="0" CompanyID="1" PluginID="5">
 					<PropertyList>
-						<Property Name="Absolute" Type="bool">
+						<Property Name="AbsoluteOrRelative" Type="int16">
+							<ValueList>
+								<Value>0</Value>
+							</ValueList>
+						</Property>
+						<Property Name="ActionType" Type="int16">
+							<ValueList>
+								<Value>0</Value>
+							</ValueList>
+						</Property>
+						<Property Name="ApplyToDynamicSequence" Type="bool">
+							<ValueList>
+								<Value>True</Value>
+							</ValueList>
+						</Property>
+						<Property Name="ApplyToStateTransition" Type="bool">
 							<ValueList>
 								<Value>True</Value>
 							</ValueList>
@@ -1187,6 +1212,16 @@
 								<Value>100</Value>
 							</ValueList>
 						</Property>
+						<Property Name="ResumeStateTransition" Type="bool">
+							<ValueList>
+								<Value>True</Value>
+							</ValueList>
+						</Property>
+						<Property Name="Scope" Type="int16">
+							<ValueList>
+								<Value>0</Value>
+							</ValueList>
+						</Property>
 						<Property Name="SeekPercent" Type="Real64">
 							<ValueList>
 								<Value>0</Value>
@@ -1273,40 +1308,7 @@
 						</Property>
 					</PropertyList>
 				</SharedPropertyList>
-				<SharedPropertyList ClassName="State" PluginType="0" CompanyID="1" PluginID="6">
-					<PropertyList>
-						<Property Name="BusVolume" Type="Real64">
-							<ValueList>
-								<Value>0</Value>
-							</ValueList>
-						</Property>
-						<Property Name="Highpass" Type="int16">
-							<ValueList>
-								<Value>0</Value>
-							</ValueList>
-						</Property>
-						<Property Name="Lowpass" Type="int16">
-							<ValueList>
-								<Value>0</Value>
-							</ValueList>
-						</Property>
-						<Property Name="MakeUpGain" Type="Real64">
-							<ValueList>
-								<Value>0</Value>
-							</ValueList>
-						</Property>
-						<Property Name="Pitch" Type="int32">
-							<ValueList>
-								<Value>0</Value>
-							</ValueList>
-						</Property>
-						<Property Name="Volume" Type="Real64">
-							<ValueList>
-								<Value>0</Value>
-							</ValueList>
-						</Property>
-					</PropertyList>
-				</SharedPropertyList>
+				<SharedPropertyList ClassName="State" PluginType="0" CompanyID="1" PluginID="6"/>
 				<SharedPropertyList ClassName="iZotope Trash Filters" PluginType="3" CompanyID="259" PluginID="6">
 					<PropertyList>
 						<Property Name="Filter1Frequency" Type="Real32">
@@ -1609,6 +1611,11 @@
 						<Property Name="EnablePanner" Type="bool">
 							<ValueList>
 								<Value>False</Value>
+							</ValueList>
+						</Property>
+						<Property Name="EnablePositioning" Type="bool">
+							<ValueList>
+								<Value>True</Value>
 							</ValueList>
 						</Property>
 						<Property Name="FollowListenerOrientation" Type="bool">
@@ -1918,7 +1925,7 @@
 						</Property>
 					</PropertyList>
 				</SharedPropertyList>
-				<SharedPropertyList ClassName="RndSeqContainer" PluginType="0" CompanyID="1" PluginID="9">
+				<SharedPropertyList ClassName="RandomSequenceContainer" PluginType="0" CompanyID="1" PluginID="9">
 					<PropertyList>
 						<Property Name="3DPositionSource" Type="int16">
 							<ValueList>
@@ -1978,6 +1985,11 @@
 						<Property Name="EnablePanner" Type="bool">
 							<ValueList>
 								<Value>False</Value>
+							</ValueList>
+						</Property>
+						<Property Name="EnablePositioning" Type="bool">
+							<ValueList>
+								<Value>True</Value>
 							</ValueList>
 						</Property>
 						<Property Name="FollowListenerOrientation" Type="bool">
@@ -2652,6 +2664,11 @@
 								<Value>False</Value>
 							</ValueList>
 						</Property>
+						<Property Name="EnablePositioning" Type="bool">
+							<ValueList>
+								<Value>True</Value>
+							</ValueList>
+						</Property>
 						<Property Name="FollowListenerOrientation" Type="bool">
 							<ValueList>
 								<Value>True</Value>
@@ -3122,8 +3139,14 @@
 						</Property>
 					</PropertyList>
 				</SharedPropertyList>
+				<SharedPropertyList ClassName="Switch" PluginType="0" CompanyID="1" PluginID="20"/>
 				<SharedPropertyList ClassName="Bus" PluginType="0" CompanyID="1" PluginID="21">
 					<PropertyList>
+						<Property Name="3DPositionSource" Type="int16">
+							<ValueList>
+								<Value>1</Value>
+							</ValueList>
+						</Property>
 						<Property Name="BusChannelConfig" Type="int32">
 							<ValueList>
 								<Value>0</Value>
@@ -3164,6 +3187,11 @@
 								<Value>0</Value>
 							</ValueList>
 						</Property>
+						<Property Name="DynamicPositioning" Type="bool">
+							<ValueList>
+								<Value>True</Value>
+							</ValueList>
+						</Property>
 						<Property Name="EnablePanner" Type="bool">
 							<ValueList>
 								<Value>False</Value>
@@ -3174,9 +3202,14 @@
 								<Value>False</Value>
 							</ValueList>
 						</Property>
-						<Property Name="EnableWiiCompressor" Type="bool">
+						<Property Name="FollowListenerOrientation" Type="bool">
 							<ValueList>
-								<Value>False</Value>
+								<Value>True</Value>
+							</ValueList>
+						</Property>
+						<Property Name="GameAuxSendVolume" Type="Real64">
+							<ValueList>
+								<Value>0</Value>
 							</ValueList>
 						</Property>
 						<Property Name="HdrEnable" Type="bool">
@@ -3229,6 +3262,11 @@
 								<Value>0</Value>
 							</ValueList>
 						</Property>
+						<Property Name="MakeUpGain" Type="Real64">
+							<ValueList>
+								<Value>0</Value>
+							</ValueList>
+						</Property>
 						<Property Name="MaxDuckVolume" Type="Real64">
 							<ValueList>
 								<Value>-96</Value>
@@ -3269,6 +3307,16 @@
 								<Value>1</Value>
 							</ValueList>
 						</Property>
+						<Property Name="Spatialization" Type="bool">
+							<ValueList>
+								<Value>True</Value>
+							</ValueList>
+						</Property>
+						<Property Name="UseGameAuxSends" Type="bool">
+							<ValueList>
+								<Value>False</Value>
+							</ValueList>
+						</Property>
 						<Property Name="UseMaxSoundPerInstance" Type="bool">
 							<ValueList>
 								<Value>False</Value>
@@ -3277,6 +3325,26 @@
 						<Property Name="UsedForBackgroundMusic" Type="bool">
 							<ValueList>
 								<Value>False</Value>
+							</ValueList>
+						</Property>
+						<Property Name="UserAuxSendVolume0" Type="Real64">
+							<ValueList>
+								<Value>0</Value>
+							</ValueList>
+						</Property>
+						<Property Name="UserAuxSendVolume1" Type="Real64">
+							<ValueList>
+								<Value>0</Value>
+							</ValueList>
+						</Property>
+						<Property Name="UserAuxSendVolume2" Type="Real64">
+							<ValueList>
+								<Value>0</Value>
+							</ValueList>
+						</Property>
+						<Property Name="UserAuxSendVolume3" Type="Real64">
+							<ValueList>
+								<Value>0</Value>
 							</ValueList>
 						</Property>
 						<Property Name="Volume" Type="Real64">
@@ -3434,6 +3502,11 @@
 						<Property Name="EnablePanner" Type="bool">
 							<ValueList>
 								<Value>False</Value>
+							</ValueList>
+						</Property>
+						<Property Name="EnablePositioning" Type="bool">
+							<ValueList>
+								<Value>True</Value>
 							</ValueList>
 						</Property>
 						<Property Name="EndPosition" Type="Real64">
@@ -3795,6 +3868,11 @@
 								<Value>False</Value>
 							</ValueList>
 						</Property>
+						<Property Name="EnablePositioning" Type="bool">
+							<ValueList>
+								<Value>True</Value>
+							</ValueList>
+						</Property>
 						<Property Name="FollowListenerOrientation" Type="bool">
 							<ValueList>
 								<Value>True</Value>
@@ -3841,11 +3919,6 @@
 							</ValueList>
 						</Property>
 						<Property Name="IsNonCachable" Type="bool">
-							<ValueList>
-								<Value>False</Value>
-							</ValueList>
-						</Property>
-						<Property Name="IsRSXStreamingEnabled" Type="bool">
 							<ValueList>
 								<Value>False</Value>
 							</ValueList>
@@ -4152,6 +4225,11 @@
 						<Property Name="EnablePanner" Type="bool">
 							<ValueList>
 								<Value>False</Value>
+							</ValueList>
+						</Property>
+						<Property Name="EnablePositioning" Type="bool">
+							<ValueList>
+								<Value>True</Value>
 							</ValueList>
 						</Property>
 						<Property Name="FollowListenerOrientation" Type="bool">
@@ -4488,6 +4566,11 @@
 								<Value>0</Value>
 							</ValueList>
 						</Property>
+						<Property Name="MakeUpGain" Type="Real64">
+							<ValueList>
+								<Value>0</Value>
+							</ValueList>
+						</Property>
 						<Property Name="Pitch" Type="int32">
 							<ValueList>
 								<Value>0</Value>
@@ -4579,6 +4662,11 @@
 						<Property Name="HasEmptyAssignation" Type="bool">
 							<ValueList>
 								<Value>True</Value>
+							</ValueList>
+						</Property>
+						<Property Name="Inclusion" Type="bool">
+							<ValueList>
+								<Value>False</Value>
 							</ValueList>
 						</Property>
 						<Property Name="IsChecked" Type="bool">
@@ -4758,7 +4846,7 @@
 						</Property>
 					</PropertyList>
 				</SharedPropertyList>
-				<SharedPropertyList ClassName="MusicRndSeqContainer" PluginType="0" CompanyID="1" PluginID="34">
+				<SharedPropertyList ClassName="MusicPlaylistContainer" PluginType="0" CompanyID="1" PluginID="34">
 					<PropertyList>
 						<Property Name="3DPositionSource" Type="int16">
 							<ValueList>
@@ -4813,6 +4901,11 @@
 						<Property Name="EnablePanner" Type="bool">
 							<ValueList>
 								<Value>False</Value>
+							</ValueList>
+						</Property>
+						<Property Name="EnablePositioning" Type="bool">
+							<ValueList>
+								<Value>True</Value>
 							</ValueList>
 						</Property>
 						<Property Name="FollowListenerOrientation" Type="bool">
@@ -5172,6 +5265,11 @@
 						<Property Name="EnablePanner" Type="bool">
 							<ValueList>
 								<Value>False</Value>
+							</ValueList>
+						</Property>
+						<Property Name="EnablePositioning" Type="bool">
+							<ValueList>
+								<Value>True</Value>
 							</ValueList>
 						</Property>
 						<Property Name="FollowListenerOrientation" Type="bool">
@@ -5742,9 +5840,9 @@
 								<Value>False</Value>
 							</ValueList>
 						</Property>
-						<Property Name="EnableWiiCompressor" Type="bool">
+						<Property Name="GameAuxSendVolume" Type="Real64">
 							<ValueList>
-								<Value>False</Value>
+								<Value>0</Value>
 							</ValueList>
 						</Property>
 						<Property Name="IgnoreParentMaxSoundInstance" Type="bool">
@@ -5782,6 +5880,11 @@
 								<Value>1</Value>
 							</ValueList>
 						</Property>
+						<Property Name="UseGameAuxSends" Type="bool">
+							<ValueList>
+								<Value>False</Value>
+							</ValueList>
+						</Property>
 						<Property Name="UseMaxSoundPerInstance" Type="bool">
 							<ValueList>
 								<Value>False</Value>
@@ -5790,6 +5893,26 @@
 						<Property Name="UsedForBackgroundMusic" Type="bool">
 							<ValueList>
 								<Value>False</Value>
+							</ValueList>
+						</Property>
+						<Property Name="UserAuxSendVolume0" Type="Real64">
+							<ValueList>
+								<Value>0</Value>
+							</ValueList>
+						</Property>
+						<Property Name="UserAuxSendVolume1" Type="Real64">
+							<ValueList>
+								<Value>0</Value>
+							</ValueList>
+						</Property>
+						<Property Name="UserAuxSendVolume2" Type="Real64">
+							<ValueList>
+								<Value>0</Value>
+							</ValueList>
+						</Property>
+						<Property Name="UserAuxSendVolume3" Type="Real64">
+							<ValueList>
+								<Value>0</Value>
 							</ValueList>
 						</Property>
 						<Property Name="Volume" Type="Real64">
@@ -5849,6 +5972,11 @@
 						<Property Name="EnablePanner" Type="bool">
 							<ValueList>
 								<Value>False</Value>
+							</ValueList>
+						</Property>
+						<Property Name="EnablePositioning" Type="bool">
+							<ValueList>
+								<Value>True</Value>
 							</ValueList>
 						</Property>
 						<Property Name="FollowListenerOrientation" Type="bool">
@@ -6353,6 +6481,11 @@
 				</SharedPropertyList>
 				<SharedPropertyList ClassName="AuxBus" PluginType="0" CompanyID="1" PluginID="61">
 					<PropertyList>
+						<Property Name="3DPositionSource" Type="int16">
+							<ValueList>
+								<Value>1</Value>
+							</ValueList>
+						</Property>
 						<Property Name="BusChannelConfig" Type="int32">
 							<ValueList>
 								<Value>0</Value>
@@ -6393,6 +6526,11 @@
 								<Value>0</Value>
 							</ValueList>
 						</Property>
+						<Property Name="DynamicPositioning" Type="bool">
+							<ValueList>
+								<Value>True</Value>
+							</ValueList>
+						</Property>
 						<Property Name="EnablePanner" Type="bool">
 							<ValueList>
 								<Value>False</Value>
@@ -6401,6 +6539,16 @@
 						<Property Name="EnablePositioning" Type="bool">
 							<ValueList>
 								<Value>False</Value>
+							</ValueList>
+						</Property>
+						<Property Name="FollowListenerOrientation" Type="bool">
+							<ValueList>
+								<Value>True</Value>
+							</ValueList>
+						</Property>
+						<Property Name="GameAuxSendVolume" Type="Real64">
+							<ValueList>
+								<Value>0</Value>
 							</ValueList>
 						</Property>
 						<Property Name="Highpass" Type="int16">
@@ -6419,6 +6567,36 @@
 							</ValueList>
 						</Property>
 						<Property Name="PositioningType" Type="int16">
+							<ValueList>
+								<Value>0</Value>
+							</ValueList>
+						</Property>
+						<Property Name="Spatialization" Type="bool">
+							<ValueList>
+								<Value>True</Value>
+							</ValueList>
+						</Property>
+						<Property Name="UseGameAuxSends" Type="bool">
+							<ValueList>
+								<Value>False</Value>
+							</ValueList>
+						</Property>
+						<Property Name="UserAuxSendVolume0" Type="Real64">
+							<ValueList>
+								<Value>0</Value>
+							</ValueList>
+						</Property>
+						<Property Name="UserAuxSendVolume1" Type="Real64">
+							<ValueList>
+								<Value>0</Value>
+							</ValueList>
+						</Property>
+						<Property Name="UserAuxSendVolume2" Type="Real64">
+							<ValueList>
+								<Value>0</Value>
+							</ValueList>
+						</Property>
+						<Property Name="UserAuxSendVolume3" Type="Real64">
 							<ValueList>
 								<Value>0</Value>
 							</ValueList>
@@ -6637,94 +6815,39 @@
 				</SharedPropertyList>
 				<SharedPropertyList ClassName="AcousticTexture" PluginType="0" CompanyID="1" PluginID="72">
 					<PropertyList>
-						<Property Name="AbsorptionCoefficient" Type="Real32">
-							<ValueList>
-								<Value>1</Value>
-							</ValueList>
-						</Property>
-						<Property Name="FilterTypeBand1" Type="int32">
-							<ValueList>
-								<Value>4</Value>
-							</ValueList>
-						</Property>
-						<Property Name="FilterTypeBand2" Type="int32">
-							<ValueList>
-								<Value>6</Value>
-							</ValueList>
-						</Property>
-						<Property Name="FilterTypeBand3" Type="int32">
-							<ValueList>
-								<Value>5</Value>
-							</ValueList>
-						</Property>
-						<Property Name="FrequencyBand1" Type="Real32">
-							<ValueList>
-								<Value>100</Value>
-							</ValueList>
-						</Property>
-						<Property Name="FrequencyBand2" Type="Real32">
-							<ValueList>
-								<Value>1000</Value>
-							</ValueList>
-						</Property>
-						<Property Name="FrequencyBand3" Type="Real32">
-							<ValueList>
-								<Value>12000</Value>
-							</ValueList>
-						</Property>
-						<Property Name="GainBand1" Type="Real32">
+						<Property Name="AbsorptionHigh" Type="Real32">
 							<ValueList>
 								<Value>0</Value>
 							</ValueList>
 						</Property>
-						<Property Name="GainBand2" Type="Real32">
+						<Property Name="AbsorptionLow" Type="Real32">
 							<ValueList>
 								<Value>0</Value>
 							</ValueList>
 						</Property>
-						<Property Name="GainBand3" Type="Real32">
+						<Property Name="AbsorptionMidHigh" Type="Real32">
 							<ValueList>
 								<Value>0</Value>
 							</ValueList>
 						</Property>
-						<Property Name="OnOffBand1" Type="bool">
-							<ValueList>
-								<Value>True</Value>
-							</ValueList>
-						</Property>
-						<Property Name="OnOffBand2" Type="bool">
-							<ValueList>
-								<Value>True</Value>
-							</ValueList>
-						</Property>
-						<Property Name="OnOffBand3" Type="bool">
-							<ValueList>
-								<Value>True</Value>
-							</ValueList>
-						</Property>
-						<Property Name="OutputGain" Type="Real32">
+						<Property Name="AbsorptionMidLow" Type="Real32">
 							<ValueList>
 								<Value>0</Value>
 							</ValueList>
 						</Property>
-						<Property Name="QFactorBand1" Type="Real32">
+						<Property Name="AbsorptionOffset" Type="Real32">
 							<ValueList>
-								<Value>1</Value>
+								<Value>0</Value>
 							</ValueList>
 						</Property>
-						<Property Name="QFactorBand2" Type="Real32">
+						<Property Name="Scattering" Type="Real32">
 							<ValueList>
-								<Value>1</Value>
-							</ValueList>
-						</Property>
-						<Property Name="QFactorBand3" Type="Real32">
-							<ValueList>
-								<Value>1</Value>
+								<Value>0</Value>
 							</ValueList>
 						</Property>
 					</PropertyList>
 				</SharedPropertyList>
-				<SharedPropertyList ClassName="DiffuseReverberator" PluginType="0" CompanyID="1" PluginID="73">
+				<SharedPropertyList ClassName="" PluginType="0" CompanyID="1" PluginID="73">
 					<PropertyList>
 						<Property Name="DecayTime" Type="Real32">
 							<ValueList>
@@ -6773,6 +6896,16 @@
 						</Property>
 					</PropertyList>
 				</SharedPropertyList>
+				<SharedPropertyList ClassName="Language" PluginType="0" CompanyID="1" PluginID="75">
+					<PropertyList>
+						<Property Name="VolumeOffset" Type="Real64">
+							<ValueList>
+								<Value>0</Value>
+							</ValueList>
+						</Property>
+					</PropertyList>
+				</SharedPropertyList>
+				<SharedPropertyList ClassName="ActionException" PluginType="0" CompanyID="1" PluginID="76"/>
 				<SharedPropertyList ClassName="Wwise Sine" PluginType="2" CompanyID="0" PluginID="100">
 					<PropertyList>
 						<Property Name="ChannelMask" Type="int32">
@@ -8486,6 +8619,11 @@
 								<Value>0</Value>
 							</ValueList>
 						</Property>
+						<Property Name="ChannelConfigOverride" Type="int64">
+							<ValueList>
+								<Value>0</Value>
+							</ValueList>
+						</Property>
 						<Property Name="DryLevel" Type="Real32">
 							<ValueList>
 								<Value>0</Value>
@@ -8616,11 +8754,6 @@
 								<Value>48000</Value>
 							</ValueList>
 						</Property>
-						<Property Name="SoundEngineSampleRateWiiUSW" Type="int32">
-							<ValueList>
-								<Value>32000</Value>
-							</ValueList>
-						</Property>
 						<Property Name="SoundEngineSampleRateiOS" Type="int32">
 							<ValueList>
 								<Value>48000</Value>
@@ -8666,6 +8799,11 @@
 							</ValueList>
 						</Property>
 						<Property Name="MeterMode" Type="int32">
+							<ValueList>
+								<Value>0</Value>
+							</ValueList>
+						</Property>
+						<Property Name="MeterScope" Type="int32">
 							<ValueList>
 								<Value>0</Value>
 							</ValueList>
@@ -9214,6 +9352,60 @@
 						</Property>
 					</PropertyList>
 				</SharedPropertyList>
+				<SharedPropertyList ClassName="Wwise Reflect" PluginType="3" CompanyID="0" PluginID="171">
+					<PropertyList>
+						<Property Name="BaseTextureFrequency" Type="Real32">
+							<ValueList>
+								<Value>250</Value>
+							</ValueList>
+						</Property>
+						<Property Name="CenterPerc" Type="Real32">
+							<ValueList>
+								<Value>100</Value>
+							</ValueList>
+						</Property>
+						<Property Name="CursorNameCategory" Type="int32">
+							<ValueList>
+								<Value>0</Value>
+							</ValueList>
+						</Property>
+						<Property Name="Dry" Type="Real32">
+							<ValueList>
+								<Value>-96</Value>
+							</ValueList>
+						</Property>
+						<Property Name="FadeOutNbFrames" Type="int32">
+							<ValueList>
+								<Value>3</Value>
+							</ValueList>
+						</Property>
+						<Property Name="Inclusion" Type="bool">
+							<ValueList>
+								<Value>True</Value>
+							</ValueList>
+						</Property>
+						<Property Name="MaxDistance" Type="Real32">
+							<ValueList>
+								<Value>100</Value>
+							</ValueList>
+						</Property>
+						<Property Name="MaxReflections" Type="Real32">
+							<ValueList>
+								<Value>0</Value>
+							</ValueList>
+						</Property>
+						<Property Name="SpeedOfSound" Type="Real32">
+							<ValueList>
+								<Value>345</Value>
+							</ValueList>
+						</Property>
+						<Property Name="Wet" Type="Real32">
+							<ValueList>
+								<Value>0</Value>
+							</ValueList>
+						</Property>
+					</PropertyList>
+				</SharedPropertyList>
 				<SharedPropertyList ClassName="Wwise Audio Input" PluginType="2" CompanyID="0" PluginID="200">
 					<PropertyList>
 						<Property Name="AudioInputGain" Type="Real32">
@@ -9692,9 +9884,6 @@
 					</PropertyList>
 				</SharedPropertyList>
 			</SharedValues>
-			<UsedLanguageList>
-				<Language VolumeOffset="0">English(US)</Language>
-			</UsedLanguageList>
 			<EnvironmentalSettings>
 				<ObsOccCurves>
 					<Comment></Comment>
@@ -9888,6 +10077,9 @@
 				</PhysicalFolder>
 				<PhysicalFolder Path="Triggers">
 					<WorkUnit Name="Triggers" ID="{6C7657FC-4758-4D41-BD4C-68B09F91DB29}" PersistMode="Standalone"/>
+				</PhysicalFolder>
+				<PhysicalFolder Path="Virtual Acoustics">
+					<WorkUnit Name="Virtual Acoustics" ID="{32CD8547-A946-4547-BBB1-69F44E796139}" PersistMode="Standalone"/>
 				</PhysicalFolder>
 			</PhysicalFolderList>
 		</Project>

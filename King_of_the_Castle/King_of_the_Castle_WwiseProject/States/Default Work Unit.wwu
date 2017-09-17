@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<WwiseDocument Type="WorkUnit" ID="{1BAE81D8-FEAD-4D2A-AB6C-ACE7A4A75D88}" SchemaVersion="75">
+<WwiseDocument Type="WorkUnit" ID="{1BAE81D8-FEAD-4D2A-AB6C-ACE7A4A75D88}" SchemaVersion="80">
 	<States>
 		<WorkUnit Name="Default Work Unit" ID="{1BAE81D8-FEAD-4D2A-AB6C-ACE7A4A75D88}" PersistMode="Standalone">
 			<ChildrenList>
@@ -12,6 +12,8 @@
 						<State Name="Bridge" ID="{4E066043-D312-4102-A709-A81DC576BCD7}"/>
 						<State Name="Victory" ID="{7A03866F-2D48-4D33-9A1C-E5641D10776E}"/>
 						<State Name="Level_4" ID="{ECD9E445-AD1B-4E6F-92FE-3537EBC18C2B}"/>
+						<State Name="Storm" ID="{3FA59924-4522-4EF2-B024-6A09EC6BEF79}"/>
+						<State Name="Menu" ID="{B6DF969F-2DAD-4D71-B4E9-EE81D6BA8F02}"/>
 					</ChildrenList>
 				</StateGroup>
 			</ChildrenList>

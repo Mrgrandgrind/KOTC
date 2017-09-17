@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<WwiseDocument Type="WorkUnit" ID="{4FA284F4-2848-44DB-A6DA-158BADA214DD}" SchemaVersion="75">
+<WwiseDocument Type="WorkUnit" ID="{4FA284F4-2848-44DB-A6DA-158BADA214DD}" SchemaVersion="80">
 	<SoundcasterSessions>
 		<WorkUnit Name="Default Work Unit" ID="{4FA284F4-2848-44DB-A6DA-158BADA214DD}" PersistMode="Standalone">
 			<ChildrenList>
@@ -53,6 +53,22 @@
 							<ObjectRef Name="base_captured" ID="{8D6E05FE-3EAC-4A4E-ABDB-00B1452C386B}" WorkUnitID="{8F1EA8B4-C444-40AD-B9D4-72B61B06D617}"/>
 							<Position X="3" Y="2"/>
 						</Module>
+						<Module>
+							<ObjectRef Name="storm hit" ID="{44412BC9-497C-46B1-B791-1A6DF12E182C}" WorkUnitID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}"/>
+							<Position X="4" Y="0"/>
+						</Module>
+						<Module>
+							<ObjectRef Name="rain" ID="{3C88C81A-A291-45CE-95E0-B62102F95FDC}" WorkUnitID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}"/>
+							<Position X="4" Y="1"/>
+						</Module>
+						<Module>
+							<ObjectRef Name="storm trump" ID="{74867CC2-355B-4478-A923-30970F7C09BE}" WorkUnitID="{246E0727-97E6-4A22-B039-2F4E93924145}"/>
+							<Position X="4" Y="2"/>
+						</Module>
+						<Module>
+							<ObjectRef Name="Thunder" ID="{ABC916CA-4A8C-4E63-9FEF-34940069AC96}" WorkUnitID="{8F1EA8B4-C444-40AD-B9D4-72B61B06D617}"/>
+							<Position X="4" Y="3"/>
+						</Module>
 					</ModuleList>
 					<RTPCValueList ShowAll="true">
 						<RTPCValue>
@@ -81,10 +97,10 @@
 						</RTPCValue>
 					</RTPCValueList>
 					<CurrentStateList ShowAll="true">
-						<CurrentStateRef Name="Level_1" ID="{4BA60DF8-6001-49C4-A920-98ABEBC94510}"/>
+						<CurrentStateRef Name="Storm" ID="{3FA59924-4522-4EF2-B024-6A09EC6BEF79}"/>
 					</CurrentStateList>
 					<CurrentSwitchList ShowAll="true">
-						<CurrentSwitchRef Name="Paper" ID="{B629996A-82F6-4B56-93EB-F85A9671303D}"/>
+						<CurrentSwitchRef Name="Cardboard" ID="{4769ACB1-3733-48C8-8D91-B6B8BCD6FC26}"/>
 					</CurrentSwitchList>
 				</SoundcasterSession>
 			</ChildrenList>
