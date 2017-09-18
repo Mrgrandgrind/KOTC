@@ -14,7 +14,7 @@ UCountdownComponent::UCountdownComponent()
 	this->m_WaitDuration = 1.0f;
 	this->m_TextScale = 4.0f;
 	this->m_TextColor = DEFAULT_TEXT_COLOR;
-	this->m_BkgScale = 1.2f;
+	this->m_BkgScale = 1.18f;
 	this->m_BkgMaterial = nullptr;
 
 	Super::m_bRenderOnLast = true;

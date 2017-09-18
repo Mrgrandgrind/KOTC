@@ -329,6 +329,7 @@ void ABaseGameMode::SpawnPlayers()
 		controller->Possess(character);
 		controller->SetIgnoreMoveInput(true);
 	}
+	Super::GetWorld()->GetGameViewport()->SetDisableSplitscreenOverride(false);
 }
 
 void ABaseGameMode::OnBlockPlace_Implementation(ABlock *block, AActor *source)
