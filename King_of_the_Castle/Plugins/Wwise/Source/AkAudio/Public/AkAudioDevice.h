@@ -15,7 +15,6 @@
 #include "Engine/EngineBaseTypes.h"
 #include "Engine/EngineTypes.h"
 
-
 #define GET_AK_EVENT_NAME(AkEvent, EventName) ((AkEvent) ? ((AkEvent)->GetName()) : (EventName))
 
 #ifndef AK_SUPPORT_WCHAR
@@ -38,12 +37,17 @@ DECLARE_LOG_CATEGORY_EXTERN(LogAkAudio, Log, All);
 ------------------------------------------------------------------------------------*/
 
 class UAkComponent;
+class UAkLateReverbComponent;
 class FAkComponentCallbackManager;
 class CAkUnrealIOHookDeferred;
+class AkFileCustomParamPolicy;
+class AAkAcousticPortal;
 class CAkDiskPackage;
 
-template <class T_LLIOHOOK_FILELOC, class T_PACKAGE>
+template <class T_LLIOHOOK_FILELOC, class T_PACKAGE, class U_CUSTOMPARAM_POLICY>
 class CAkFilePackageLowLevelIO;
+
+typedef TSet<UAkComponent*> UAkComponentSet;
 
 #define DUMMY_GAMEOBJ ((AkGameObjectID)0x2)
 #define SOUNDATLOCATION_GAMEOBJ ((AkGameObjectID)0x3)
@@ -56,6 +60,24 @@ namespace AK {
 	}
 }
 #endif
+
+/** Define hashing for AkGameObjectID. */
+template<typename ValueType, bool bInAllowDuplicateKeys>
+struct AkGameObjectIdKeyFuncs : TDefaultMapKeyFuncs<AkGameObjectID, ValueType, bInAllowDuplicateKeys>
+{
+	static FORCEINLINE uint32 GetKeyHash(AkGameObjectID Key)
+	{
+		if (sizeof(Key) <= 4)
+		{
+			return (uint32)Key;
+		}
+		else
+		{
+			// Copied from GetTypeHash( const uint64 A ) found in ...\Engine\Source\Runtime\Core\Public\Templates\TypeHash.h
+			return (uint32)Key + ((uint32)(Key >> 32) * 23);
+		}
+	}
+};
 
 
 /*------------------------------------------------------------------------------------
@@ -101,37 +123,6 @@ public:
 	 * @param bShouldStopUISounds If true, this function will stop UI sounds as well
 	 */
 	virtual void StopAllSounds( bool bShouldStopUISounds = false );
-
-	/**
-	 * Sets all listeners
-	 */
-	void UpdateListeners();
-
-	/**
-	 * Sets the listener's location and orientation for the viewport
-	 *
-	 * @param ViewportIndex		Current listener
-	 * @param Location			Listener location
-	 * @param Up				Listeners up vector
-	 * @param Front				Listeners front vector
-	 */
-	virtual void SetListener( int32 PlayerCharacterIndex, const FVector& Location, const FVector& Up, const FVector& Front );
-	
-	
-	/**
-	 * Gets the listener's position
-	 *
-	 * @param ViewportIndex		Wanted listener
-	 * @return The wanted listener's position
-	 */
-	FVector GetListenerPosition( int32 ViewportIndex );
-
-	/**
-	 * Gets the current number of listeners
-	 *
-	 * @return The current number of listeners
-	 */
-	int32 GetNumListeners() { return m_listenerPositions.Num(); }
 
 	/**
 	 * Stop all audio associated with a scene
@@ -270,6 +261,11 @@ public:
 	void ReloadAllReferencedBanks(void);
 
 	/**
+	 * FString-friendly GetIDFromString
+	 */
+	AkUniqueID GetIDFromString(const FString& in_string);
+
+	/**
 	 * Post an event to ak soundengine
 	 *
 	 * @param in_pEvent			Name of the event to post
@@ -357,12 +353,14 @@ public:
 
 	/** Spawn an AkComponent at a location. Allows, for example, to set a switch on a fire and forget sound.
 	 * @param AkEvent - Wwise Event to post.
+	 * @param EarlyReflectionsBus - Use the provided auxiliary bus to process early reflections.  If NULL, EarlyReflectionsBus will be used.
 	 * @param Location - Location from which to post the Wwise Event.
 	 * @param Orientation - Orientation of the event.
 	 * @param AutoPost - Automatically post the event once the AkComponent is created.
+	 * @param EarlyReflectionsBusName - Use the provided auxiliary bus to process early reflections.  If empty, no early reflections will be processed.
 	 * @param AutoDestroy - Automatically destroy the AkComponent once the event is finished.
 	 */
-	class UAkComponent* SpawnAkComponentAtLocation( class UAkAudioEvent* in_pAkEvent, FVector Location, FRotator Orientation, bool AutoPost, const FString& EventName, bool AutoDestroy, class UWorld* in_World );
+	class UAkComponent* SpawnAkComponentAtLocation( class UAkAudioEvent* in_pAkEvent, class UAkAuxBus* EarlyReflectionsBus, FVector Location, FRotator Orientation, bool AutoPost, const FString& EventName, const FString& EarlyReflectionsBusName, bool AutoDestroy, class UWorld* in_World );
 
 	/**
 	 * Post a trigger to ak soundengine
@@ -428,8 +426,8 @@ public:
 	 * @return Result from ak sound engine
 	 */
 	AKRESULT SetOcclusionObstruction(
-		const UAkComponent * const in_pAkComponent,
-		const int32 in_ListenerIndex,
+		const UAkComponent * const in_pEmitter,
+		const UAkComponent * const in_pListener,
 		const float in_Obstruction,
 		const float in_Occlusion
 		);
@@ -447,6 +445,43 @@ public:
 		);
 
 	/**
+	* Set spatial audio room
+	*
+	* @param in_GameObjId		Wwise Game Object ID
+	* @param in_RoomID	ID of the room that the game object is inside.
+	* @return Result from ak sound engine
+	*/
+	AKRESULT SetInSpatialAudioRoom(
+		const AkGameObjectID in_GameObjId,
+		AkRoomID in_RoomID
+	);
+
+	/**
+	 * Force channel configuration for the specified bus.
+	 * This function has unspecified behavior when changing the configuration of a bus that 
+	 * is currently playing.
+	 * You cannot change the configuration of the master bus.
+	 *
+	 * @param in_BusName	Bus Name
+	 * @param in_Config		Desired channel configuration. An invalid configuration (from default constructor) means "as parent".
+	 * @return Always returns AK_Success
+	 */
+	AKRESULT SetBusConfig(
+		const FString&	in_BusName,
+		AkChannelConfig	in_Config
+		);
+
+	/**
+	 *  Set the panning rule of the specified output.
+	 *  This may be changed anytime once the sound engine is initialized.
+	 *  \warning This function posts a message through the sound engine's internal message queue, whereas GetPanningRule() queries the current panning rule directly.
+	 */
+	AKRESULT SetPanningRule(
+		AkPanningRule		in_ePanningRule			///< Panning rule.
+		);
+
+
+	/**
 	 * Set the output bus volume (direct) to be used for the specified game object.
 	 * The control value is a number ranging from 0.0f to 1.0f.
 	 *
@@ -455,7 +490,8 @@ public:
 	 * @return	Always returns Ak_Success
 	 */
 	AKRESULT SetGameObjectOutputBusVolume(
-		const UAkComponent* in_pAkComponent,
+		const UAkComponent* in_pEmitter,
+		const UAkComponent* in_pListener,
 		float in_fControlValue
 		);
 
@@ -494,6 +530,31 @@ public:
 	 */
 	void UnregisterComponent(UAkComponent * in_pComponent);
 	
+	/**
+	* Register an ak audio component with ak spatial audio
+	*
+	* @param in_pComponent		Pointer to the component to register
+	*/
+	void RegisterSpatialAudioEmitter(UAkComponent * in_pComponent);
+
+	/**
+	* Unregister an ak audio component with ak spatial audio
+	*
+	* @param in_pComponent		Pointer to the component to unregister
+	*/
+	void UnregisterSpatialAudioEmitter(UAkComponent * in_pComponent);
+
+	/**
+	* Send a set of triangles to the Spatial Audio Engine
+	*/
+	AKRESULT AddGeometrySet(AkGeometrySetID AcousticZoneID, AkTriangle* Triangles, AkUInt32 NumTriangles);
+
+	/**
+	* Remove a set of triangles from the Spatial Audio Engine
+	*/
+	AKRESULT RemoveGeometrySet(AkGeometrySetID AcousticZoneID);
+
+
 	/**
 	 * Get an ak audio component, or create it if none exists that fit the attachment criteria.
 	 */
@@ -725,18 +786,27 @@ public:
 		out_vect.Z = in_vect.Y;
 	}
 
+	static inline AkVector FVectorToAKVector(const FVector & in_vect)
+	{
+		return AkVector{ -in_vect.X, in_vect.Z, in_vect.Y };
+	}
+
 	static inline void FVectorsToAKTransform(const FVector& in_Position, const FVector& in_Front, const FVector& in_Up, AkTransform& out_AkTransform)
 	{
-		AkVector Position;
-		AkVector Front;
-		AkVector Up;
-
-		FVectorToAKVector(in_Position, Position);
-		FVectorToAKVector(in_Front, Front);
-		FVectorToAKVector(in_Up, Up);
-
 		// Convert from the UE axis system to the Wwise axis system
-		out_AkTransform.Set(Position, Front, Up);
+		out_AkTransform.Set(FVectorToAKVector(in_Position), FVectorToAKVector(in_Front), FVectorToAKVector(in_Up));
+	}
+
+	static inline void AKVectorToFVector(const AkVector & in_vect, FVector & out_vect)
+	{
+		out_vect.X = -in_vect.X;
+		out_vect.Y = in_vect.Z;
+		out_vect.Z = in_vect.Y;
+	}
+
+	static inline FVector AKVectorToFVector(const AkVector& in_vect)
+	{
+		return FVector(-in_vect.X, in_vect.Z, in_vect.Y);
 	}
 
 	FAkBankManager * GetAkBankManager()
@@ -758,16 +828,52 @@ public:
 	}
 #endif
 
-	/** We keep a linked list of ReverbVolumes sorted by priority for faster finding of reverb volumes at a specific location.
-	 *	This points to the highest volume in the list.
-	 */
-	TMap<UWorld*, class AAkReverbVolume*> HighestPriorityAkReverbVolumeMap;
+	static const int32 FIND_COMPONENTS_DEPTH_INFINITE = -1;
 
-	/** Add a AkReverbVolume in the active volumes linked list. */
-	void AddAkReverbVolumeInList(class AAkReverbVolume* in_VolumeToAdd);
+	/** Find UAkLateReverbComponents at a given location. */
+	TArray<class UAkLateReverbComponent*> FindLateReverbComponentsAtLocation(const FVector& Loc, const UWorld* in_World, int32 depth = FIND_COMPONENTS_DEPTH_INFINITE);
 
-	/** Remove a AkReverbVolume from the active volumes linked list. */
-	void RemoveAkReverbVolumeFromList(class AAkReverbVolume* in_VolumeToRemove);
+	/** Add a UAkLateReverbComponent to the linked list. */
+	void AddLateReverbComponentToPrioritizedList(class UAkLateReverbComponent* in_ComponentToAdd);
+
+	/** Remove a UAkLateReverbComponent from the linked list. */
+	void RemoveLateReverbComponentFromPrioritizedList(class UAkLateReverbComponent* in_ComponentToRemove);
+
+	/** Get whether the given world has room registered in it. */
+	bool WorldHasActiveRooms(UWorld* in_World);
+
+	/** Find UAkRoomComponents at a given location. */
+	TArray<class UAkRoomComponent*> FindRoomComponentsAtLocation(const FVector& Loc, const UWorld* in_World, int32 depth = FIND_COMPONENTS_DEPTH_INFINITE);
+
+	/** Add a UAkRoomComponent to the linked list. */
+	void AddRoomComponentToPrioritizedList(class UAkRoomComponent* in_ComponentToAdd);
+
+	/** Remove a UAkRoomComponent from the linked list. */
+	void RemoveRoomComponentFromPrioritizedList(class UAkRoomComponent* in_ComponentToRemove);
+
+	/** Return true if any UAkRoomComponents have been added to the prioritized list of rooms for the in_World**/
+	bool UsingSpatialAudioRooms(const UWorld* in_World);
+
+	/** Get the aux send values corresponding to a point in the world.**/
+	void GetAuxSendValuesAtLocation(FVector Loc, TArray<AkAuxSendValue>& AkAuxSendValues, const UWorld* in_World);
+
+	/** Update all rooms. */
+	void UpdateAllSpatialAudioRooms(UWorld* InWorld);
+
+	/** Register a Portal in AK Spatial Audio.  Can be called again to update the portal parameters.	*/
+	void AddSpatialAudioPortal(const AAkAcousticPortal* in_Portal);
+	
+	/** Remove a Portal from AK Spatial Audio	*/
+	void RemoveSpatialAudioPortal(const AAkAcousticPortal* in_Portal);
+	
+	void OnActorSpawned(AActor* SpawnedActor);
+
+	UAkComponentSet& GetDefaultListeners() { return m_defaultListeners; }
+	UAkComponentSet& GetDefaultEmitters() { return m_defaultEmitters; }
+
+	void SetListeners(UAkComponent* in_pEmitter, const TArray<UAkComponent*>& in_listenerSet);
+	void AddDefaultListener(UAkComponent* in_pListener);
+	void UpdateDefaultActiveListeners();
 
 private:
 	bool EnsureInitialized();
@@ -781,8 +887,31 @@ private:
 	// Overload allowing to modify StopWhenOwnerDestroyed after getting the AkComponent
 	AKRESULT GetGameObjectID(AActor * in_pActor, AkGameObjectID& io_GameObject, bool in_bStopWhenOwnerDestroyed );
 
+	/** We keep a linked list of UAkLateReverbComponents sorted by priority for faster finding of reverb volumes at a specific location.
+	 *	This points to the highest volume in the list.
+	 */
+	TMap<UWorld*, class UAkLateReverbComponent*> HighestPriorityLateReverbComponentMap;
+
+	/** We keep a linked list of Spatial audio Rooms sorted by priority for faster finding of reverb volumes at a specific location.
+	 *	This points to the highest volume in the list.
+	 */
+	TMap<UWorld*, class UAkRoomComponent*> HighestPriorityRoomComponentMap;
+
+	/** Add a Component that is prioritized (either UAkLateReverbComponent or UAkRoomComponent) in the active linked list. */
+	template<class COMPONENT_TYPE>
+	void AddPrioritizedComponentInList(COMPONENT_TYPE* in_ComponentToAdd, TMap<UWorld*, COMPONENT_TYPE*>& HighestPriorityComponentMap);
+
+	/** Remove a Component that is prioritized (either UAkLateReverbComponent or UAkRoomComponent) from the linked list. */
+	template<class COMPONENT_TYPE>
+	void RemovePrioritizedComponentFromList(COMPONENT_TYPE* in_ComponentToRemove, TMap<UWorld*, COMPONENT_TYPE*>& HighestPriorityComponentMap);
+
+	/** Find Components that are prioritized (either UAkLateReverbComponent or UAkRoomComponent) at a given location.**/
+	template<class COMPONENT_TYPE>
+	TArray<COMPONENT_TYPE*> FindPrioritizedComponentsAtLocation(const FVector& Loc, const UWorld* in_World, TMap<UWorld*, COMPONENT_TYPE*>& HighestPriorityComponentMap, int32 depth = FIND_COMPONENTS_DEPTH_INFINITE);
+
 	static bool m_bSoundEngineInitialized;
-	TArray< FVector > m_listenerPositions;
+	UAkComponentSet m_defaultListeners;
+	UAkComponentSet m_defaultEmitters;
 
 	// OCULUS_START - vhamm - suspend audio when not in focus
 	bool m_isSuspended;
@@ -792,7 +921,7 @@ private:
 
 	FAkComponentCallbackManager* CallbackManager;
 	FAkBankManager* AkBankManager;
-	CAkFilePackageLowLevelIO<CAkUnrealIOHookDeferred, CAkDiskPackage>* LowLevelIOHook;
+	CAkFilePackageLowLevelIO<CAkUnrealIOHookDeferred, CAkDiskPackage, AkFileCustomParamPolicy>* LowLevelIOHook;
 
 	static bool m_EngineExiting;
 

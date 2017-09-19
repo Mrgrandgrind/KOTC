@@ -12,10 +12,55 @@
 #pragma once
 
 #include "AkInclude.h"
-
-#if UE_4_13_OR_LATER
 #include "Async/AsyncFileHandle.h"
+
+struct AkFileCustomParam
+{
+	union
+	{
+		IAsyncReadFileHandle* IORequestHandle; // Used for Reads in EDL
+
+#if AK_FIOSYSTEM_AVAILABLE
+		FString* Filename; // Used for reads with FIOSystem
 #endif
+		IFileHandle* FileHandle; // Used for Writes
+	};
+
+	AkOpenMode	OpenMode;
+	bool IsInPackage = false;
+};
+
+class AkFileCustomParamPolicy
+{
+public:
+	// Returns true if file described by in_fileDesc is in a package.
+	static inline bool IsInPackage(const AkFileDesc& in_fileDesc)
+	{
+		AkFileCustomParam* FileCustomParam = (AkFileCustomParam*)in_fileDesc.pCustomParam;
+		return FileCustomParam && in_fileDesc.uCustomParamSize == sizeof(AkFileCustomParam) && FileCustomParam->IsInPackage;
+	}
+
+	static AkUInt32 GetBlockSize(AkFileDesc& in_fileDesc)
+	{
+		return 1;
+	}
+
+	template<class T_PACKAGE, class T_ENTRY>
+	static void SetInPackageFileDesc(AkFileDesc& out_fileDesc, T_PACKAGE* in_pPackage, const T_ENTRY* in_pEntry)
+	{
+		AkFileDesc* FileDesc = in_pPackage->GetFileDesc();
+		if (!FileDesc)
+			return;
+
+		AkFileCustomParam* FileCustomParam = (AkFileCustomParam*)FileDesc->pCustomParam;
+		if (!FileCustomParam)
+			return;
+
+		FileCustomParam->IsInPackage = true;
+		out_fileDesc.pCustomParam = FileCustomParam;
+		out_fileDesc.uCustomParamSize = sizeof(AkFileCustomParam);
+	}
+};
 
 //-----------------------------------------------------------------------------
 // Name: class CAkUnrealIOHookDeferred.
@@ -216,11 +261,7 @@ protected:
 		AkDeferredReadInfo()
 			: State(IOState_ReadyFor_Requests)
 		{
-#if AK_SUPPORTS_EVENT_DRIVEN_LOADING
 			AsyncReadRequest = nullptr;
-#else
-			RequestIndex = 0;
-#endif
 		}
 
 		AkAsyncIOTransferInfo AkTransferInfo;
@@ -232,60 +273,12 @@ protected:
 		union
 		{
 			uint64 RequestIndex;
-
-#if AK_SUPPORTS_EVENT_DRIVEN_LOADING
 			IAsyncReadRequest* AsyncReadRequest;
-#endif
 		};
 
-#if AK_SUPPORTS_EVENT_DRIVEN_LOADING
 		IAsyncReadFileHandle* IORequestHandle = nullptr;
 		FAsyncFileCallBack AsyncFileCallBack;
-#endif
 	};
-
-	struct AkFileCustomParam
-	{
-		union
-		{
-#if AK_SUPPORTS_EVENT_DRIVEN_LOADING
-			IAsyncReadFileHandle* IORequestHandle; // Used for Reads in EDL
-#endif
-#if AK_FIOSYSTEM_AVAILABLE
-			FString* Filename; // Used for reads with FIOSystem
-#endif
-			IFileHandle* FileHandle; // Used for Writes
-		};
-
-		AkOpenMode	OpenMode;
-		bool IsInPackage = false;
-	};
-
-	// Returns true if file described by in_fileDesc is in a package.
-	inline bool IsInPackage(
-		const AkFileDesc & in_fileDesc		// File descriptor.
-		)
-	{
-		AkFileCustomParam* FileCustomParam = (AkFileCustomParam*)in_fileDesc.pCustomParam;
-		if (FileCustomParam && in_fileDesc.uCustomParamSize == sizeof(AkFileCustomParam))
-		{
-			return FileCustomParam->IsInPackage;
-		}
-
-		return false;
-	}
-
-	void SetFileInPackage(CAkDiskPackage * in_pPackage, bool IsInPackage, AkFileDesc &out_fileDesc)
-	{
-		AkFileDesc * FileDesc  = in_pPackage->GetFileDesc();
-		if (FileDesc && FileDesc->pCustomParam)
-		{
-			out_fileDesc.pCustomParam = FileDesc->pCustomParam;
-			out_fileDesc.uCustomParamSize = sizeof(AkFileCustomParam);
-			((AkFileCustomParam*)out_fileDesc.pCustomParam)->IsInPackage = true;
-		}
-	}
-
 
 	/** Get a free index in the pending transfer arrays
 	 *
@@ -300,9 +293,7 @@ protected:
 	 */
 	AkDeferredReadInfo* FindTransfer(void* pBuffer);
 
-#if AK_SUPPORTS_EVENT_DRIVEN_LOADING
 	void CloseAllPendingRequestsForFileHandle(IAsyncReadFileHandle* IORequestHandle);
-#endif
 
 	/** Array for pending transfers. */
 	AkDeferredReadInfo aPendingTransfers[AK_UNREAL_MAX_CONCURRENT_IO];

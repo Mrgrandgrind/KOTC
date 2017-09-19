@@ -3,13 +3,8 @@
 #include "AkAudioDevice.h"
 #include "AkInclude.h"
 #include "AkAudioClasses.h"
-
 #include "AkComponentCallbackManager.h"
-
-
-#if ENGINE_MAJOR_VERSION == 4 && ENGINE_MINOR_VERSION >= 14
 #include "Misc/ScopeLock.h"
-#endif
 
 struct FAkComponentCallbackManager_Constants
 {
@@ -124,23 +119,17 @@ void FAkComponentCallbackManager::RegisterGameObject(AkGameObjectID in_gameObjID
 
 void FAkComponentCallbackManager::UnregisterGameObject(AkGameObjectID in_gameObjID)
 {
-	CriticalSection.Lock();
+	// after the following function call, all callbacks associated with this gameObjID will be completed
+	AK::SoundEngine::CancelEventCallbackGameObject(in_gameObjID);
+
+	FScopeLock Lock(&CriticalSection);
 	auto pPackageSet = GameObjectToPackagesMap.Find(in_gameObjID);
 	if (pPackageSet)
 	{
-		PackageSet CopyPackageSet = *pPackageSet;
-		GameObjectToPackagesMap.Remove(in_gameObjID);
-		CriticalSection.Unlock();
-
-		for (auto pPackage : CopyPackageSet)
-		{
-			AK::SoundEngine::CancelEventCallbackCookie(pPackage);
+		for (auto pPackage : *pPackageSet)
 			delete pPackage;
-		}
-	}
-	else
-	{
-		CriticalSection.Unlock();
+
+		GameObjectToPackagesMap.Remove(in_gameObjID);
 	}
 }
 

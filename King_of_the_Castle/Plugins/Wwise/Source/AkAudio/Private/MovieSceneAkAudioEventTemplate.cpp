@@ -4,9 +4,6 @@
 #include "MovieSceneAkAudioEventTemplate.h"
 #include "MovieSceneAkAudioEventSection.h"
 
-
-#if AK_SUPPORTS_LEVEL_SEQUENCER_TEMPLATES
-
 #include "MovieSceneExecutionToken.h"
 #include "IMovieScenePlayer.h"
 
@@ -173,4 +170,3 @@ void FMovieSceneAkAudioEventTemplate::TearDown(FPersistentEvaluationData& Persis
 		SectionData->StopAllPlayingIDs(AudioDevice);
 	}
 }
-#endif // AK_SUPPORTS_LEVEL_SEQUENCER_TEMPLATES

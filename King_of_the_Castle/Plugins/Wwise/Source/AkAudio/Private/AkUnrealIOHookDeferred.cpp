@@ -41,18 +41,14 @@
 #include "AkUnrealIOHookDeferred.h"
 #include "HAL/FileManager.h"
 
-#if ENGINE_MAJOR_VERSION == 4 && ENGINE_MINOR_VERSION >= 14
 #include "Misc/ScopeLock.h"
-#endif
 #include "Misc/Paths.h"
 
 #if AK_FIOSYSTEM_AVAILABLE
 #include "HAL/IOBase.h"
 #endif
 
-#if AK_SUPPORTS_EVENT_DRIVEN_LOADING
 #include "HAL/PlatformFilemanager.h"
-#endif
 
 // Device info.
 #define DEFERRED_DEVICE_NAME		("UnrealIODevice")	// Default deferred device name.
@@ -132,7 +128,6 @@ AKRESULT CAkUnrealIOHookDeferred::PerformOpen(
 		FileCustomParam->OpenMode = AK_OpenModeRead;
 		if (out_fileDesc.iFileSize > 0)
 		{
-#if AK_SUPPORTS_EVENT_DRIVEN_LOADING
 #if AK_FIOSYSTEM_AVAILABLE
 			if (GNewAsyncIO)
 #endif
@@ -142,19 +137,16 @@ AKRESULT CAkUnrealIOHookDeferred::PerformOpen(
 					return AK_Fail;
 
 				FileCustomParam->IORequestHandle = IORequestHandle;
-				out_fileDesc.pCustomParam = (void*)FileCustomParam;
+				out_fileDesc.pCustomParam = FileCustomParam;
 				out_fileDesc.uCustomParamSize = sizeof(AkFileCustomParam);
 				return AK_Success;
 			}
-#endif // AK_SUPPORTS_EVENT_DRIVEN_LOADING
 
 #if AK_FIOSYSTEM_AVAILABLE
-#if AK_SUPPORTS_EVENT_DRIVEN_LOADING
 			if (!GNewAsyncIO)
-#endif
 			{
 				FileCustomParam->Filename = new FString(FilePath);
-				out_fileDesc.pCustomParam = (void*)FileCustomParam;
+				out_fileDesc.pCustomParam = FileCustomParam;
 				out_fileDesc.uCustomParamSize = sizeof(AkFileCustomParam);
 				return AK_Success;
 			}
@@ -169,7 +161,7 @@ AKRESULT CAkUnrealIOHookDeferred::PerformOpen(
 			io_bSyncOpen = true;
 			FileCustomParam->FileHandle = FileHandle;
 			FileCustomParam->OpenMode = AK_OpenModeWrite;
-			out_fileDesc.pCustomParam = (void*)FileCustomParam;
+			out_fileDesc.pCustomParam = FileCustomParam;
 			out_fileDesc.uCustomParamSize = sizeof(AkFileCustomParam);
 			return AK_Success;
 		}
@@ -247,14 +239,11 @@ AKRESULT CAkUnrealIOHookDeferred::Read(
 		return AK_NotImplemented;
 
 	AkDeferredReadInfo* PendingTransfer = nullptr;
-#if AK_SUPPORTS_EVENT_DRIVEN_LOADING
 	IAsyncReadRequest* PreviousAsyncReadRequest = nullptr;
-#endif
 
 	{
 		FScopeLock ScopeLock(&CriticalSection);
 		PendingTransfer = GetFreeTransfer();
-#if AK_SUPPORTS_EVENT_DRIVEN_LOADING
 #if AK_FIOSYSTEM_AVAILABLE
 		if (GNewAsyncIO)
 #endif
@@ -264,7 +253,6 @@ AKRESULT CAkUnrealIOHookDeferred::Read(
 				Exchange(PreviousAsyncReadRequest, PendingTransfer->AsyncReadRequest);
 			}
 		}
-#endif
 	}
 
 	AKASSERT(PendingTransfer);
@@ -273,7 +261,6 @@ AKRESULT CAkUnrealIOHookDeferred::Read(
 
 	PendingTransfer->AkTransferInfo = io_transferInfo;
 
-#if AK_SUPPORTS_EVENT_DRIVEN_LOADING
 #if AK_FIOSYSTEM_AVAILABLE
 	if (GNewAsyncIO)
 #endif
@@ -313,12 +300,9 @@ AKRESULT CAkUnrealIOHookDeferred::Read(
 
 		return AK_Success;
 	}
-#endif // AK_SUPPORTS_EVENT_DRIVEN_LOADING
 
 #if AK_FIOSYSTEM_AVAILABLE
-#if AK_SUPPORTS_EVENT_DRIVEN_LOADING
 	if (!GNewAsyncIO)
-#endif
 	{
 		// Register the global callback, if not already done
 		if (!m_bCallbackRegistered && FAkAudioDevice::Get())
@@ -383,18 +367,8 @@ void CAkUnrealIOHookDeferred::Cancel(
 {
 	if (in_fileDesc.uCustomParamSize == AK_OpenModeRead)
 	{
-#if AK_SUPPORTS_EVENT_DRIVEN_LOADING
 #if AK_FIOSYSTEM_AVAILABLE
 		if (!GNewAsyncIO)
-#endif
-			return;
-#endif
-
-
-#if AK_FIOSYSTEM_AVAILABLE
-#if AK_SUPPORTS_EVENT_DRIVEN_LOADING
-		if (!GNewAsyncIO)
-#endif
 		{
 			FScopeLock ScopeLock(&CriticalSection);
 			auto PendingTransfer = FindTransfer(io_transferInfo.pBuffer);
@@ -408,14 +382,11 @@ void CAkUnrealIOHookDeferred::Cancel(
 				// We only canceled one request, and not all of them.
 				io_bCancelAllTransfersForThisFile = false;
 			}
-
-			return;
 		}
 #endif // AK_FIOSYSTEM_AVAILABLE
 	}
 }
 
-#if AK_SUPPORTS_EVENT_DRIVEN_LOADING
 void CAkUnrealIOHookDeferred::CloseAllPendingRequestsForFileHandle(IAsyncReadFileHandle* IORequestHandle)
 {
 	enum { NUMBER_OF_REQUESTS = (sizeof (aPendingTransfers) / sizeof (*aPendingTransfers)), };
@@ -436,12 +407,11 @@ void CAkUnrealIOHookDeferred::CloseAllPendingRequestsForFileHandle(IAsyncReadFil
 	for (uint32 ii = 0; ii < slot; ++ii)
 	{
 		auto AsyncReadRequest = AsyncReadRequests[ii];
-		AsyncReadRequest->Cancel();
+		//AsyncReadRequest->Cancel();
 		AsyncReadRequest->WaitCompletion();
 		delete AsyncReadRequest;
 	}
 }
-#endif // AK_SUPPORTS_EVENT_DRIVEN_LOADING
 
 // Close a file.
 AKRESULT CAkUnrealIOHookDeferred::Close(
@@ -454,7 +424,6 @@ AKRESULT CAkUnrealIOHookDeferred::Close(
 
 	if (FileCustomParam->OpenMode == AK_OpenModeRead)
 	{
-#if AK_SUPPORTS_EVENT_DRIVEN_LOADING
 #if AK_FIOSYSTEM_AVAILABLE
 		if (GNewAsyncIO)
 #endif
@@ -463,11 +432,9 @@ AKRESULT CAkUnrealIOHookDeferred::Close(
 			CloseAllPendingRequestsForFileHandle(AsyncReadFileHandle);
 			delete AsyncReadFileHandle;
 		}
-#endif // AK_SUPPORTS_EVENT_DRIVEN_LOADING
+
 #if AK_FIOSYSTEM_AVAILABLE
-#if AK_SUPPORTS_EVENT_DRIVEN_LOADING
 		if (!GNewAsyncIO)
-#endif
 		{
 			FScopeLock ScopeLock(&CriticalSection);
 			auto Filename = FileCustomParam->Filename;
@@ -526,10 +493,10 @@ void CAkUnrealIOHookDeferred::CleanFileDescriptor( AkFileDesc& out_fileDesc )
 
 // Returns the block size for the file or its storage device. 
 AkUInt32 CAkUnrealIOHookDeferred::GetBlockSize(
-    AkFileDesc &  /*in_fileDesc*/     // File descriptor.
+    AkFileDesc &  in_fileDesc     // File descriptor.
     )
 {
-    return 1;
+    return AkFileCustomParamPolicy::GetBlockSize(in_fileDesc);
 }
 
 // Returns a description for the streaming device above this low-level hook.

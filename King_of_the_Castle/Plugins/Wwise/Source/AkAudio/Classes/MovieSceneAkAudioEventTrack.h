@@ -4,6 +4,8 @@
 
 #include "MovieSceneAkTrack.h"
 #include "IMovieScenePlayer.h"
+#include "AkInclude.h"
+#include "AkAudioEvent.h"
 #include "MovieSceneAkAudioEventTrack.generated.h"
 
 
@@ -13,39 +15,24 @@ class UMovieSceneAkAudioEventTrack : public UMovieSceneAkTrack
 	GENERATED_BODY()
 
 public:
-
-	UMovieSceneAkAudioEventTrack() 
+	UMovieSceneAkAudioEventTrack()
 	{
-#if WITH_EDITORONLY_DATA && AK_SUPPORTS_LEVEL_SEQUENCER
+#if WITH_EDITORONLY_DATA
 		SetColorTint(FColor(0, 156, 255, 65));
 #endif
 	}
 
-#if AK_SUPPORTS_LEVEL_SEQUENCER
-	virtual UMovieSceneSection* CreateNewSection() override;
+	AKAUDIO_API virtual UMovieSceneSection* CreateNewSection() override;
 	virtual bool SupportsMultipleRows() const override { return true; }
 
-	virtual FName GetTrackName() const override;
+	AKAUDIO_API virtual FName GetTrackName() const override;
 
 #if WITH_EDITORONLY_DATA
-	virtual FText GetDisplayName() const override;
+	AKAUDIO_API virtual FText GetDisplayName() const override;
 #endif
 
 	AKAUDIO_API bool AddNewEvent(float Time, UAkAudioEvent* Event, const FString& EventName = FString());
 
-#if AK_SUPPORTS_LEVEL_SEQUENCER_TEMPLATES
 protected:
-	virtual FMovieSceneEvalTemplatePtr CreateTemplateForSection(const UMovieSceneSection& InSection) const override;
-#else
-public:
-	virtual TSharedPtr<IMovieSceneTrackInstance> CreateInstance() override;
-	void Update(EMovieSceneUpdateData& UpdateData, const TArray<TWeakObjectPtr<UObject>>& RuntimeObjects, IMovieScenePlayer& Player, FMovieSceneSequenceInstance& SequenceInstance);
-	void ClearInstance();
-
-#if AKAUDIOEVENTTRACK_CACHE_AKCOMPONENTS
-	TSet<TWeakObjectPtr<UAkComponent>> AkComponents;
-	EMovieScenePlayerStatus::Type PreviousPlayerStatus = EMovieScenePlayerStatus::Stopped;
-#endif // AKAUDIOEVENTTRACK_CACHE_AKCOMPONENTS
-#endif // AK_SUPPORTS_LEVEL_SEQUENCER_TEMPLATES
-#endif // AK_SUPPORTS_LEVEL_SEQUENCER
+	AKAUDIO_API virtual FMovieSceneEvalTemplatePtr CreateTemplateForSection(const UMovieSceneSection& InSection) const override;
 };

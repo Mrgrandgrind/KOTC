@@ -42,19 +42,9 @@ public:
 
 	virtual bool SupportsType(TSubclassOf<UMovieSceneTrack> Type) const override;
 
-#if AK_MATINEE_TO_LEVEL_SEQUENCE_MODULE_MODIFICATIONS
 	virtual void BuildTrackContextMenu(FMenuBuilder& MenuBuilder, UMovieSceneTrack* Track) override;
-#endif
 
 	virtual const FSlateBrush* GetIconBrush() const override;
-
-protected:
-
-	/** Delegate for AnimatablePropertyChanged in HandleAssetAdded for master sounds */
-	bool AddNewMasterSound(float KeyTime, UAkAudioEvent* Event);
-
-	/** Delegate for AnimatablePropertyChanged in HandleAssetAdded for attached sounds */
-	bool AddNewAttachedSound(float KeyTime, UAkAudioEvent* Event, TArray<TWeakObjectPtr<UObject>> ObjectsToAttachTo);
 
 private:
 

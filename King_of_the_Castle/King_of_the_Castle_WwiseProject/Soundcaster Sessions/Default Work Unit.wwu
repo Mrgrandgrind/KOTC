@@ -30,6 +30,10 @@
 							<Position X="1" Y="2"/>
 						</Module>
 						<Module>
+							<ObjectRef Name="Back" ID="{5EEC0F39-F920-48C7-8CC4-5D5992F0035E}" WorkUnitID="{8F1EA8B4-C444-40AD-B9D4-72B61B06D617}"/>
+							<Position X="1" Y="3"/>
+						</Module>
+						<Module>
 							<ObjectRef Name="fs_player_sprint" ID="{11CE960B-A191-4EFB-8AAC-350280E47806}" WorkUnitID="{8F1EA8B4-C444-40AD-B9D4-72B61B06D617}"/>
 							<Position X="2" Y="0"/>
 						</Module>
@@ -42,6 +46,10 @@
 							<Position X="2" Y="2"/>
 						</Module>
 						<Module>
+							<ObjectRef Name="Confirm" ID="{79C7BCF5-1466-4ADB-933A-977435D4D0ED}" WorkUnitID="{8F1EA8B4-C444-40AD-B9D4-72B61B06D617}"/>
+							<Position X="2" Y="3"/>
+						</Module>
+						<Module>
 							<ObjectRef Name="fs_jump" ID="{AA8E9F86-5BA9-41DE-A340-C3634DB6B769}" WorkUnitID="{8F1EA8B4-C444-40AD-B9D4-72B61B06D617}"/>
 							<Position X="3" Y="0"/>
 						</Module>
@@ -52,6 +60,10 @@
 						<Module>
 							<ObjectRef Name="base_captured" ID="{8D6E05FE-3EAC-4A4E-ABDB-00B1452C386B}" WorkUnitID="{8F1EA8B4-C444-40AD-B9D4-72B61B06D617}"/>
 							<Position X="3" Y="2"/>
+						</Module>
+						<Module>
+							<ObjectRef Name="Select" ID="{83CF2A7B-8EC2-4B6E-A7E0-2941EDAF27BE}" WorkUnitID="{8F1EA8B4-C444-40AD-B9D4-72B61B06D617}"/>
+							<Position X="3" Y="3"/>
 						</Module>
 						<Module>
 							<ObjectRef Name="storm hit" ID="{44412BC9-497C-46B1-B791-1A6DF12E182C}" WorkUnitID="{8127FDF0-9DDC-4CDA-88BF-F0E890BD9377}"/>
@@ -97,7 +109,7 @@
 						</RTPCValue>
 					</RTPCValueList>
 					<CurrentStateList ShowAll="true">
-						<CurrentStateRef Name="Storm" ID="{3FA59924-4522-4EF2-B024-6A09EC6BEF79}"/>
+						<CurrentStateRef Name="Menu" ID="{B6DF969F-2DAD-4D71-B4E9-EE81D6BA8F02}"/>
 					</CurrentStateList>
 					<CurrentSwitchList ShowAll="true">
 						<CurrentSwitchRef Name="Cardboard" ID="{4769ACB1-3733-48C8-8D91-B6B8BCD6FC26}"/>

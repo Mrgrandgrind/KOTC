@@ -12,6 +12,11 @@
 								</ModifierInfo>
 							</ModifierList>
 						</Property>
+						<Property Name="UseMaxSoundPerInstance" Type="bool">
+							<ValueList>
+								<Value>True</Value>
+							</ValueList>
+						</Property>
 						<Property Name="Volume" Type="Real64">
 							<ValueList>
 								<Value>-12</Value>
@@ -197,8 +202,11 @@
 													<Custom>
 														<Effect Name="Wwise Parametric EQ (Custom)" ID="{2ABD5BAA-9AF1-43D4-845F-DBC292640665}" ShortID="674308444" PluginName="Wwise Parametric EQ" CompanyID="0" PluginID="105" PluginType="3">
 															<PropertyList>
+																<Property Name="FilterTypeBand3" Type="int32" Value="6"/>
 																<Property Name="FrequencyBand2" Type="Real32" Value="160"/>
+																<Property Name="FrequencyBand3" Type="Real32" Value="849"/>
 																<Property Name="GainBand2" Type="Real32" Value="-8.5"/>
+																<Property Name="GainBand3" Type="Real32" Value="-10.5"/>
 															</PropertyList>
 														</Effect>
 													</Custom>
@@ -794,8 +802,11 @@
 													<Custom>
 														<Effect Name="Wwise Parametric EQ (Custom)" ID="{6539628A-59A3-4125-A0AC-B30EF7C1D78C}" ShortID="266211200" PluginName="Wwise Parametric EQ" CompanyID="0" PluginID="105" PluginType="3">
 															<PropertyList>
+																<Property Name="FilterTypeBand3" Type="int32" Value="6"/>
 																<Property Name="FrequencyBand2" Type="Real32" Value="146"/>
+																<Property Name="FrequencyBand3" Type="Real32" Value="849"/>
 																<Property Name="GainBand2" Type="Real32" Value="-4.5"/>
+																<Property Name="GainBand3" Type="Real32" Value="-10.5"/>
 															</PropertyList>
 														</Effect>
 													</Custom>
@@ -1961,6 +1972,21 @@
 										<MusicTransition Name="Transition" ID="{06921358-CA35-43A0-8C7A-AD6178251EF6}">
 											<TransitionInfo/>
 										</MusicTransition>
+										<MusicTransition Name="Transition" ID="{54689135-478D-4FF9-99DC-D4EF01A83D2F}">
+											<PropertyList>
+												<Property Name="EnableSourceFadeOut" Type="bool" Value="True"/>
+											</PropertyList>
+											<TransitionInfo>
+												<SourceFadeOut>
+													<MusicFade Name="Source Fade-out" ID="{633C90E3-0427-4903-9DFD-D9C47708FE74}">
+														<PropertyList>
+															<Property Name="FadeTime" Type="Real64" Value="1.6"/>
+															<Property Name="FadeType" Type="int16" Value="1"/>
+														</PropertyList>
+													</MusicFade>
+												</SourceFadeOut>
+											</TransitionInfo>
+										</MusicTransition>
 									</ChildrenList>
 									<TransitionInfo/>
 								</MusicTransition>
@@ -2536,6 +2562,7 @@
 									<ChildrenList>
 										<MusicPlaylistItem Name="" ID="{E0ED07D4-AAD3-43B7-B3CB-F133FDD8D881}" ShortID="678812472">
 											<PropertyList>
+												<Property Name="LoopCount" Type="int16" Value="2"/>
 												<Property Name="PlaylistItemType" Type="int16" Value="1"/>
 											</PropertyList>
 											<SegmentRef Name="storm trump" ID="{74867CC2-355B-4478-A923-30970F7C09BE}"/>
@@ -2641,6 +2668,32 @@
 								</MusicPlaylistItem>
 							</Playlist>
 						</MusicPlaylistContainer>
+						<MusicPlaylistContainer Name="Mute" ID="{31BE4128-A454-4119-8842-FAF34C09FB3F}" ShortID="849706642">
+							<ReferenceList>
+								<Reference Name="Conversion">
+									<ObjectRef Name="Default Conversion Settings" ID="{6D1B890C-9826-4384-BF07-C15223E9FB56}" WorkUnitID="{DA703431-4CA6-40F5-A79F-388A834BC633}"/>
+								</Reference>
+								<Reference Name="OutputBus">
+									<ObjectRef Name="Master Audio Bus" ID="{1514A4D8-1DA6-412A-A17E-75CA0C2149F3}" WorkUnitID="{595FBF53-CB24-4065-93BD-6130ED85C4F8}"/>
+								</Reference>
+							</ReferenceList>
+							<TransitionList>
+								<MusicTransition Name="Root" ID="{A1DA041E-9843-4689-BE2D-CB89605AF643}">
+									<PropertyList>
+										<Property Name="IsFolder" Type="bool" Value="True"/>
+									</PropertyList>
+									<ChildrenList>
+										<MusicTransition Name="Transition" ID="{C48F2577-6CA8-45CE-ACB4-6B2BE5F2C7CD}">
+											<TransitionInfo/>
+										</MusicTransition>
+									</ChildrenList>
+									<TransitionInfo/>
+								</MusicTransition>
+							</TransitionList>
+							<Playlist>
+								<MusicPlaylistItem Name="" ID="{160F0A2A-8AEA-4D84-AE9C-9C02F6BD5B42}" ShortID="356350925"/>
+							</Playlist>
+						</MusicPlaylistContainer>
 					</ChildrenList>
 					<TransitionList>
 						<MusicTransition Name="Root" ID="{C0192C63-6A9B-47CF-AAB0-7DB65D65A803}">
@@ -2655,57 +2708,6 @@
 									</PropertyList>
 									<TransitionInfo>
 										<TransitionObjectRef Name="Timpani Roll" ID="{48AACBBA-8E6F-4CD6-BEC1-7D7C3A826C6A}" WorkUnitID="{246E0727-97E6-4A22-B039-2F4E93924145}"/>
-									</TransitionInfo>
-								</MusicTransition>
-								<MusicTransition Name="Transition" ID="{2FAB6DE6-70FF-4C55-A712-537CBAE5AF6B}">
-									<PropertyList>
-										<Property Name="DestinationContextType" Type="int16" Value="2"/>
-										<Property Name="EnableSourceFadeOut" Type="bool" Value="True"/>
-										<Property Name="ExitSourceAt" Type="int16" Value="2"/>
-										<Property Name="PlayDestinationPreEntry" Type="bool" Value="False"/>
-										<Property Name="UseTransitionObject" Type="bool" Value="True"/>
-									</PropertyList>
-									<ReferenceList>
-										<Reference Name="DestinationContextObject">
-											<ObjectRef Name="storm" ID="{387F1D7B-85AC-46A5-95B2-B8C7F866EFC8}" WorkUnitID="{246E0727-97E6-4A22-B039-2F4E93924145}"/>
-										</Reference>
-									</ReferenceList>
-									<TransitionInfo>
-										<TransitionObjectRef Name="Timpani Roll" ID="{48AACBBA-8E6F-4CD6-BEC1-7D7C3A826C6A}" WorkUnitID="{246E0727-97E6-4A22-B039-2F4E93924145}"/>
-										<SourceFadeOut>
-											<MusicFade Name="Source Fade-out" ID="{4509FD9E-5AA0-4BC4-A817-F2C48022FB85}">
-												<PropertyList>
-													<Property Name="FadeOffset" Type="Real64" Value="0.9"/>
-													<Property Name="FadeTime" Type="Real64" Value="1"/>
-													<Property Name="FadeType" Type="int16" Value="1"/>
-												</PropertyList>
-											</MusicFade>
-										</SourceFadeOut>
-									</TransitionInfo>
-								</MusicTransition>
-								<MusicTransition Name="Transition" ID="{59838B50-C549-4331-B389-1A22E3C216BA}">
-									<PropertyList>
-										<Property Name="EnableSourceFadeOut" Type="bool" Value="True"/>
-										<Property Name="ExitSourceAt" Type="int16" Value="2"/>
-										<Property Name="SourceContextType" Type="int16" Value="2"/>
-										<Property Name="UseTransitionObject" Type="bool" Value="True"/>
-									</PropertyList>
-									<ReferenceList>
-										<Reference Name="SourceContextObject">
-											<ObjectRef Name="storm" ID="{387F1D7B-85AC-46A5-95B2-B8C7F866EFC8}" WorkUnitID="{246E0727-97E6-4A22-B039-2F4E93924145}"/>
-										</Reference>
-									</ReferenceList>
-									<TransitionInfo>
-										<TransitionObjectRef Name="Timpani Roll" ID="{48AACBBA-8E6F-4CD6-BEC1-7D7C3A826C6A}" WorkUnitID="{246E0727-97E6-4A22-B039-2F4E93924145}"/>
-										<SourceFadeOut>
-											<MusicFade Name="Source Fade-out" ID="{95CC46A2-C03F-4314-9920-D4FA255E3938}">
-												<PropertyList>
-													<Property Name="FadeOffset" Type="Real64" Value="1.6"/>
-													<Property Name="FadeTime" Type="Real64" Value="1.5"/>
-													<Property Name="FadeType" Type="int16" Value="1"/>
-												</PropertyList>
-											</MusicFade>
-										</SourceFadeOut>
 									</TransitionInfo>
 								</MusicTransition>
 								<MusicTransition Name="Transition" ID="{821BE216-2F6C-4622-88D6-8DBA4D474BFF}">
@@ -2725,29 +2727,6 @@
 									</ReferenceList>
 									<TransitionInfo>
 										<TransitionObjectRef Name="Timpani Roll" ID="{48AACBBA-8E6F-4CD6-BEC1-7D7C3A826C6A}" WorkUnitID="{246E0727-97E6-4A22-B039-2F4E93924145}"/>
-									</TransitionInfo>
-								</MusicTransition>
-								<MusicTransition Name="Transition" ID="{627B0DDE-E54B-4B98-9689-F4149D7D6E1C}">
-									<PropertyList>
-										<Property Name="DestinationContextType" Type="int16" Value="2"/>
-										<Property Name="EnableDestinationFadeIn" Type="bool" Value="True"/>
-										<Property Name="ExitSourceAt" Type="int16" Value="2"/>
-										<Property Name="UseTransitionObject" Type="bool" Value="True"/>
-									</PropertyList>
-									<ReferenceList>
-										<Reference Name="DestinationContextObject">
-											<ObjectRef Name="Menu" ID="{F74FD935-E7C8-449D-B1AE-7250E58D43E8}" WorkUnitID="{246E0727-97E6-4A22-B039-2F4E93924145}"/>
-										</Reference>
-									</ReferenceList>
-									<TransitionInfo>
-										<TransitionObjectRef Name="Timpani Roll" ID="{48AACBBA-8E6F-4CD6-BEC1-7D7C3A826C6A}" WorkUnitID="{246E0727-97E6-4A22-B039-2F4E93924145}"/>
-										<DestinationFadeIn>
-											<MusicFade Name="Destination Fade-in" ID="{C0D57DA1-D320-401F-94F0-2D26EE120FB7}">
-												<PropertyList>
-													<Property Name="FadeTime" Type="Real64" Value="1.4"/>
-												</PropertyList>
-											</MusicFade>
-										</DestinationFadeIn>
 									</TransitionInfo>
 								</MusicTransition>
 								<MusicTransition Name="Transition" ID="{5C4E706F-2393-4F25-A746-E357BDB4F6C9}">
@@ -2774,6 +2753,135 @@
 											</MusicFade>
 										</SourceFadeOut>
 									</TransitionInfo>
+								</MusicTransition>
+								<MusicTransition Name="Transition" ID="{627B0DDE-E54B-4B98-9689-F4149D7D6E1C}">
+									<PropertyList>
+										<Property Name="DestinationContextType" Type="int16" Value="2"/>
+										<Property Name="EnableDestinationFadeIn" Type="bool" Value="True"/>
+										<Property Name="ExitSourceAt" Type="int16" Value="2"/>
+										<Property Name="UseTransitionObject" Type="bool" Value="True"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="DestinationContextObject">
+											<ObjectRef Name="Menu" ID="{F74FD935-E7C8-449D-B1AE-7250E58D43E8}" WorkUnitID="{246E0727-97E6-4A22-B039-2F4E93924145}"/>
+										</Reference>
+									</ReferenceList>
+									<TransitionInfo>
+										<TransitionObjectRef Name="Timpani Roll" ID="{48AACBBA-8E6F-4CD6-BEC1-7D7C3A826C6A}" WorkUnitID="{246E0727-97E6-4A22-B039-2F4E93924145}"/>
+										<DestinationFadeIn>
+											<MusicFade Name="Destination Fade-in" ID="{C0D57DA1-D320-401F-94F0-2D26EE120FB7}">
+												<PropertyList>
+													<Property Name="FadeTime" Type="Real64" Value="1.4"/>
+												</PropertyList>
+											</MusicFade>
+										</DestinationFadeIn>
+									</TransitionInfo>
+								</MusicTransition>
+								<MusicTransition Name="Transition" ID="{59838B50-C549-4331-B389-1A22E3C216BA}">
+									<PropertyList>
+										<Property Name="EnableSourceFadeOut" Type="bool" Value="True"/>
+										<Property Name="ExitSourceAt" Type="int16" Value="4"/>
+										<Property Name="SourceContextType" Type="int16" Value="2"/>
+										<Property Name="UseTransitionObject" Type="bool" Value="True"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="SourceContextObject">
+											<ObjectRef Name="storm" ID="{387F1D7B-85AC-46A5-95B2-B8C7F866EFC8}" WorkUnitID="{246E0727-97E6-4A22-B039-2F4E93924145}"/>
+										</Reference>
+									</ReferenceList>
+									<TransitionInfo>
+										<TransitionObjectRef Name="Timpani Roll" ID="{48AACBBA-8E6F-4CD6-BEC1-7D7C3A826C6A}" WorkUnitID="{246E0727-97E6-4A22-B039-2F4E93924145}"/>
+										<SourceFadeOut>
+											<MusicFade Name="Source Fade-out" ID="{95CC46A2-C03F-4314-9920-D4FA255E3938}">
+												<PropertyList>
+													<Property Name="FadeOffset" Type="Real64" Value="1.6"/>
+													<Property Name="FadeTime" Type="Real64" Value="1.5"/>
+													<Property Name="FadeType" Type="int16" Value="1"/>
+												</PropertyList>
+											</MusicFade>
+										</SourceFadeOut>
+									</TransitionInfo>
+								</MusicTransition>
+								<MusicTransition Name="Transition" ID="{2FAB6DE6-70FF-4C55-A712-537CBAE5AF6B}">
+									<PropertyList>
+										<Property Name="DestinationContextType" Type="int16" Value="2"/>
+										<Property Name="EnableSourceFadeOut" Type="bool" Value="True"/>
+										<Property Name="ExitSourceAt" Type="int16" Value="2"/>
+										<Property Name="UseTransitionObject" Type="bool" Value="True"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="DestinationContextObject">
+											<ObjectRef Name="storm" ID="{387F1D7B-85AC-46A5-95B2-B8C7F866EFC8}" WorkUnitID="{246E0727-97E6-4A22-B039-2F4E93924145}"/>
+										</Reference>
+									</ReferenceList>
+									<TransitionInfo>
+										<TransitionObjectRef Name="Timpani Roll" ID="{48AACBBA-8E6F-4CD6-BEC1-7D7C3A826C6A}" WorkUnitID="{246E0727-97E6-4A22-B039-2F4E93924145}"/>
+										<SourceFadeOut>
+											<MusicFade Name="Source Fade-out" ID="{4509FD9E-5AA0-4BC4-A817-F2C48022FB85}">
+												<PropertyList>
+													<Property Name="FadeOffset" Type="Real64" Value="0.9"/>
+													<Property Name="FadeTime" Type="Real64" Value="1"/>
+													<Property Name="FadeType" Type="int16" Value="1"/>
+												</PropertyList>
+											</MusicFade>
+										</SourceFadeOut>
+									</TransitionInfo>
+								</MusicTransition>
+								<MusicTransition Name="Transition" ID="{0F1AC123-C469-45D6-B103-A650F0AA7722}">
+									<PropertyList>
+										<Property Name="DestinationContextType" Type="int16" Value="2"/>
+										<Property Name="EnableSourceFadeOut" Type="bool" Value="True"/>
+										<Property Name="ExitSourceAt" Type="int16" Value="2"/>
+										<Property Name="UseTransitionObject" Type="bool" Value="True"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="DestinationContextObject">
+											<ObjectRef Name="Victory" ID="{C9447500-66CF-4F12-9169-982EC1CF180C}" WorkUnitID="{246E0727-97E6-4A22-B039-2F4E93924145}"/>
+										</Reference>
+									</ReferenceList>
+									<TransitionInfo>
+										<TransitionObjectRef Name="Timpani Roll" ID="{48AACBBA-8E6F-4CD6-BEC1-7D7C3A826C6A}" WorkUnitID="{246E0727-97E6-4A22-B039-2F4E93924145}"/>
+										<SourceFadeOut>
+											<MusicFade Name="Source Fade-out" ID="{A8C5638B-EFA4-4A36-9DBE-D68D2EA1CA43}">
+												<PropertyList>
+													<Property Name="FadeOffset" Type="Real64" Value="0.3"/>
+													<Property Name="FadeTime" Type="Real64" Value="0.8"/>
+													<Property Name="FadeType" Type="int16" Value="1"/>
+												</PropertyList>
+											</MusicFade>
+										</SourceFadeOut>
+									</TransitionInfo>
+								</MusicTransition>
+								<MusicTransition Name="Transition" ID="{D2D464BC-AE7B-421D-A55D-874B230E1EED}">
+									<PropertyList>
+										<Property Name="DestinationContextType" Type="int16" Value="2"/>
+										<Property Name="ExitSourceAt" Type="int16" Value="2"/>
+										<Property Name="SourceContextType" Type="int16" Value="2"/>
+										<Property Name="UseTransitionObject" Type="bool" Value="True"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="DestinationContextObject">
+											<ObjectRef Name="Victory" ID="{C9447500-66CF-4F12-9169-982EC1CF180C}" WorkUnitID="{246E0727-97E6-4A22-B039-2F4E93924145}"/>
+										</Reference>
+										<Reference Name="SourceContextObject">
+											<ObjectRef Name="storm" ID="{387F1D7B-85AC-46A5-95B2-B8C7F866EFC8}" WorkUnitID="{246E0727-97E6-4A22-B039-2F4E93924145}"/>
+										</Reference>
+									</ReferenceList>
+									<TransitionInfo>
+										<TransitionObjectRef Name="Timpani Roll" ID="{48AACBBA-8E6F-4CD6-BEC1-7D7C3A826C6A}" WorkUnitID="{246E0727-97E6-4A22-B039-2F4E93924145}"/>
+									</TransitionInfo>
+								</MusicTransition>
+								<MusicTransition Name="Transition" ID="{50E10A12-3CB8-4A41-9279-090C58E8867F}">
+									<PropertyList>
+										<Property Name="ExitSourceAt" Type="int16" Value="3"/>
+										<Property Name="SourceContextType" Type="int16" Value="2"/>
+									</PropertyList>
+									<ReferenceList>
+										<Reference Name="SourceContextObject">
+											<ObjectRef Name="Mute" ID="{31BE4128-A454-4119-8842-FAF34C09FB3F}" WorkUnitID="{246E0727-97E6-4A22-B039-2F4E93924145}"/>
+										</Reference>
+									</ReferenceList>
+									<TransitionInfo/>
 								</MusicTransition>
 							</ChildrenList>
 							<TransitionInfo/>
@@ -2804,7 +2912,7 @@
 								<PathElementRef Name="Music" ID="{6FE8F527-20BC-40B4-A8BF-360ECDF7231A}"/>
 							</Path>
 							<AudioNodeInfo>
-								<NoObject Platform="Linked"/>
+								<AudioNodeRef Name="Mute" ID="{31BE4128-A454-4119-8842-FAF34C09FB3F}" WorkUnitID="{246E0727-97E6-4A22-B039-2F4E93924145}" Platform="Linked"/>
 							</AudioNodeInfo>
 						</Entry>
 						<Entry>
@@ -2853,6 +2961,14 @@
 							</Path>
 							<AudioNodeInfo>
 								<AudioNodeRef Name="Menu" ID="{F74FD935-E7C8-449D-B1AE-7250E58D43E8}" WorkUnitID="{246E0727-97E6-4A22-B039-2F4E93924145}" Platform="Linked"/>
+							</AudioNodeInfo>
+						</Entry>
+						<Entry>
+							<Path>
+								<PathElementRef Name="Mute" ID="{635A55EC-4C68-47F7-AA3F-E7DA1209774F}"/>
+							</Path>
+							<AudioNodeInfo>
+								<NoObject Platform="Linked"/>
 							</AudioNodeInfo>
 						</Entry>
 					</EntryList>

@@ -98,7 +98,6 @@ protected:
 	/**
 	 * Check for errors
 	 */
-	virtual void CheckForErrors() override;
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 #endif
 

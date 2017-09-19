@@ -22,6 +22,7 @@
 #include "AssetTypeActions_AkAudioBank.h"
 #include "AssetTypeActions_AkAudioEvent.h"
 #include "AssetTypeActions_AkAuxBus.h"
+#include "AssetTypeActions_AkAcousticTexture.h"
 #include "Editor/LevelEditor/Public/LevelEditor.h"
 #include "ISettingsModule.h"
 #include "AkSettings.h"
@@ -35,25 +36,25 @@
 #include "UnrealEdMisc.h"
 #include "Editor/UnrealEdEngine.h"
 #include "Settings/ProjectPackagingSettings.h"
+#include "PropertyEditorModule.h"
 
-#if UE_4_15_OR_LATER
 #include "UnrealEdGlobals.h"
 #include "WorkspaceMenuStructure.h"
-#endif
 
 #include "WorkspaceMenuStructureModule.h"
 
-#if AK_SUPPORTS_LEVEL_SEQUENCER
 #include "ISequencerModule.h"
 #include "MovieScene.h"
 #include "MovieSceneAkAudioRTPCTrackEditor.h"
 #include "MovieSceneAkAudioEventTrackEditor.h"
-#endif
 
-#if AK_MATINEE_TO_LEVEL_SEQUENCE_MODULE_MODIFICATIONS
 #include "AkMatineeImportTools.h"
 #include "MatineeToLevelSequenceModule.h"
-#endif
+
+#include "AkSurfaceReflectorSetDetailsCustomization.h"
+#include "AkLateReverbComponentDetailsCustomization.h"
+#include "AkRoomComponentDetailsCustomization.h"
+#include "AkSurfaceReflectorSetComponentVisualizer.h"
 
 #define LOCTEXT_NAMESPACE "AkAudio"
 
@@ -202,7 +203,6 @@ class FAudiokineticToolsModule : public IAudiokineticTools
 
 	void LateRegistrationOfMatineeToLevelSequencer()
 	{
-#if AK_MATINEE_TO_LEVEL_SEQUENCE_MODULE_MODIFICATIONS
 		IMatineeToLevelSequenceModule& Module = FModuleManager::LoadModuleChecked<IMatineeToLevelSequenceModule>(TEXT("MatineeToLevelSequence"));
 
 		ConvertMatineeRTPCTrackHandle = Module.RegisterTrackConverterForMatineeClass(UInterpTrackAkAudioRTPC::StaticClass(), 
@@ -226,9 +226,7 @@ class FAudiokineticToolsModule : public IAudiokineticTools
 				FAkMatineeImportTools::CopyInterpAkAudioEventTrack(MatineeAkAudioEventTrack, AkAudioEventTrack);
 			}
 		}));
-#endif
 
-#if AK_SUPPORTS_LEVEL_SEQUENCER
 		ISequencerModule& SequencerModule = FModuleManager::LoadModuleChecked<ISequencerModule>(TEXT("Sequencer"));
 #if UE_4_16_OR_LATER
 		RTPCTrackEditorHandle = SequencerModule.RegisterTrackEditor(FOnCreateTrackEditor::CreateStatic(&FMovieSceneAkAudioRTPCTrackEditor::CreateTrackEditor));
@@ -237,7 +235,6 @@ class FAudiokineticToolsModule : public IAudiokineticTools
 		RTPCTrackEditorHandle = SequencerModule.RegisterTrackEditor_Handle(FOnCreateTrackEditor::CreateStatic(&FMovieSceneAkAudioRTPCTrackEditor::CreateTrackEditor));
 		EventTrackEditorHandle = SequencerModule.RegisterTrackEditor_Handle(FOnCreateTrackEditor::CreateStatic(&FMovieSceneAkAudioEventTrackEditor::CreateTrackEditor));
 #endif // UE_4_16_OR_LATER
-#endif // AK_SUPPORTS_LEVEL_SEQUENCER
 
 		FAssetRegistryModule& AssetRegistryModule = FModuleManager::LoadModuleChecked<FAssetRegistryModule>("AssetRegistry");
 		AssetRegistryModule.Get().OnFilesLoaded().Remove(LateRegistrationOfMatineeToLevelSequencerHandle);
@@ -257,6 +254,9 @@ class FAudiokineticToolsModule : public IAudiokineticTools
 
 		AkAuxBusAssetTypeActions = MakeShareable(new FAssetTypeActions_AkAuxBus(AudiokineticAssetCategoryBit));
 		AssetTools.RegisterAssetTypeActions(AkAuxBusAssetTypeActions.ToSharedRef());
+
+		AkAcousticTextureAssetTypeActions = MakeShareable(new FAssetTypeActions_AkAcousticTexture(AudiokineticAssetCategoryBit));
+		AssetTools.RegisterAssetTypeActions(AkAcousticTextureAssetTypeActions.ToSharedRef());
 
 		if ( FModuleManager::Get().IsModuleLoaded( "LevelEditor" ) )
 		{
@@ -317,6 +317,11 @@ class FAudiokineticToolsModule : public IAudiokineticTools
 				GEditor->ActorFactories.Add(NewFactory);
 			}
 		}
+
+		FPropertyEditorModule& PropertyModule = FModuleManager::LoadModuleChecked<FPropertyEditorModule>("PropertyEditor");
+		PropertyModule.RegisterCustomClassLayout(UAkSurfaceReflectorSetComponent::StaticClass()->GetFName(), FOnGetDetailCustomizationInstance::CreateStatic(&FAkSurfaceReflectorSetDetailsCustomization::MakeInstance));
+		PropertyModule.RegisterCustomClassLayout(UAkLateReverbComponent::StaticClass()->GetFName(), FOnGetDetailCustomizationInstance::CreateStatic(&FAkLateReverbComponentDetailsCustomization::MakeInstance));
+		PropertyModule.RegisterCustomClassLayout(UAkRoomComponent::StaticClass()->GetFName(), FOnGetDetailCustomizationInstance::CreateStatic(&FAkRoomComponentDetailsCustomization::MakeInstance));
 	}
 
 	virtual void ShutdownModule() override
@@ -324,13 +329,16 @@ class FAudiokineticToolsModule : public IAudiokineticTools
 		// Only unregister if the asset tools module is loaded.  We don't want to forcibly load it during shutdown phase.
 		check( AkAudioBankAssetTypeActions.IsValid() );
 		check( AkAudioEventAssetTypeActions.IsValid() );
+		check( AkAcousticTextureAssetTypeActions.IsValid() );
 		if( FModuleManager::Get().IsModuleLoaded( "AssetTools" ) )
 		{
 			FModuleManager::GetModuleChecked< FAssetToolsModule >( "AssetTools" ).Get().UnregisterAssetTypeActions( AkAudioBankAssetTypeActions.ToSharedRef() );
 			FModuleManager::GetModuleChecked< FAssetToolsModule >( "AssetTools" ).Get().UnregisterAssetTypeActions( AkAudioEventAssetTypeActions.ToSharedRef() );
+			FModuleManager::GetModuleChecked< FAssetToolsModule >( "AssetTools" ).Get().UnregisterAssetTypeActions( AkAcousticTextureAssetTypeActions.ToSharedRef() );
 		}
 		AkAudioBankAssetTypeActions.Reset();
 		AkAudioEventAssetTypeActions.Reset();
+		AkAcousticTextureAssetTypeActions.Reset();
 
 		// Remove Audiokinetic build menu extenders
 		if ( FModuleManager::Get().IsModuleLoaded( "LevelEditor" ) )
@@ -352,7 +360,6 @@ class FAudiokineticToolsModule : public IAudiokineticTools
 		FGlobalTabmanager::Get()->UnregisterTabSpawner("Wwise Picker");
 		FAudiokineticToolsStyle::Shutdown();
 
-#if AK_MATINEE_TO_LEVEL_SEQUENCE_MODULE_MODIFICATIONS
 		auto MatineeToLevelSequenceModule = FModuleManager::GetModulePtr<IMatineeToLevelSequenceModule>(TEXT("MatineeToLevelSequence"));
 		if (0 && MatineeToLevelSequenceModule)
 		{
@@ -360,9 +367,7 @@ class FAudiokineticToolsModule : public IAudiokineticTools
 			MatineeToLevelSequenceModule->UnregisterTrackConverterForMatineeClass(ConvertMatineeRTPCTrackHandle);
 			MatineeToLevelSequenceModule->UnregisterTrackConverterForMatineeClass(ConvertMatineeEventTrackHandle);
 		}
-#endif
 
-#if AK_SUPPORTS_LEVEL_SEQUENCER
 		if (FModuleManager::Get().IsModuleLoaded(TEXT("Sequencer")))
 		{
 			ISequencerModule& SequencerModule = FModuleManager::GetModuleChecked<ISequencerModule>(TEXT("Sequencer"));
@@ -374,9 +379,24 @@ class FAudiokineticToolsModule : public IAudiokineticTools
 			SequencerModule.UnRegisterTrackEditor_Handle(EventTrackEditorHandle);
 #endif // UE_4_16_OR_LATER
 		}
-#endif 
 
 		FEditorDelegates::EndPIE.RemoveAll(this);
+
+		// Only found way to close the tab in the case of a hot-reload. We need a pointer to the DockTab, and the only way of getting it seems to be InvokeTab.
+		if(GUnrealEd && !GUnrealEd->IsPendingKill())
+			FGlobalTabmanager::Get()->InvokeTab(SWwisePicker::WwisePickerTabName)->RequestCloseTab();
+
+		FGlobalTabmanager::Get()->UnregisterNomadTabSpawner(SWwisePicker::WwisePickerTabName);
+
+		if (UObjectInitialized())
+		{
+			FComponentAssetBrokerage::UnregisterBroker(AkEventBroker);
+		}
+
+		FPropertyEditorModule& PropertyModule = FModuleManager::LoadModuleChecked<FPropertyEditorModule>("PropertyEditor");
+		PropertyModule.UnregisterCustomClassLayout(UAkSurfaceReflectorSetComponent::StaticClass()->GetFName());
+		PropertyModule.UnregisterCustomClassLayout(UAkLateReverbComponent::StaticClass()->GetFName());
+		PropertyModule.UnregisterCustomClassLayout(UAkRoomComponent::StaticClass()->GetFName());
 	}
 
 	/**
@@ -418,6 +438,7 @@ private:
 	TSharedPtr< FAssetTypeActions_AkAudioBank > AkAudioBankAssetTypeActions;
 	TSharedPtr< FAssetTypeActions_AkAudioEvent > AkAudioEventAssetTypeActions;
 	TSharedPtr< FAssetTypeActions_AkAuxBus > AkAuxBusAssetTypeActions;
+	TSharedPtr< FAssetTypeActions_AkAcousticTexture > AkAcousticTextureAssetTypeActions;
 	TSharedPtr<FExtender> MainMenuExtender;
 	FLevelEditorModule::FLevelEditorMenuExtender LevelViewportToolbarBuildMenuExtenderAk;
 	FDelegateHandle LevelViewportToolbarBuildMenuExtenderAkHandle;
@@ -425,10 +446,8 @@ private:
 	FDelegateHandle LateRegistrationOfMatineeToLevelSequencerHandle;
 	FDelegateHandle RTPCTrackEditorHandle;
 	FDelegateHandle EventTrackEditorHandle;
-#if AK_MATINEE_TO_LEVEL_SEQUENCE_MODULE_MODIFICATIONS
 	FDelegateHandle ConvertMatineeRTPCTrackHandle;
 	FDelegateHandle ConvertMatineeEventTrackHandle;
-#endif
 
 	/** Allow to create an AkComponent when Drag & Drop of an AkEvent */
 	TSharedPtr<IComponentAssetBroker> AkEventBroker;
@@ -560,6 +579,7 @@ void VerifyAkSettings()
 	if (GUnrealEd != NULL)
 	{
 		GUnrealEd->RegisterComponentVisualizer(UAkComponent::StaticClass()->GetFName(), MakeShareable(new FAkComponentVisualizer));
+		GUnrealEd->RegisterComponentVisualizer(UAkSurfaceReflectorSetComponent::StaticClass()->GetFName(), MakeShareable(new FAkSurfaceReflectorSetComponentVisualizer));
 	}
 
 }

@@ -2,6 +2,8 @@
 #include "AudiokineticToolsPrivatePCH.h"
 #include "WwisePicker/WwiseTreeItem.h"
 #include "AudiokineticToolsStyle.h"
+#include "Styling/SlateStyle.h"
+#include "Styling/SlateStyleRegistry.h"
 
 #define IMAGE_BRUSH( RelativePath, ... ) FSlateImageBrush( WwiseContentDir / RelativePath + TEXT(".png"), __VA_ARGS__ )
 
@@ -49,6 +51,7 @@ TSharedRef< FSlateStyleSet > FAudiokineticToolsStyle::Create()
 	{
 		Style.Set("AudiokineticTools.WwisePickerTabIcon", new IMAGE_BRUSH("WwisePicker/wwise_logo_32", Icon16x16));
 		Style.Set("AudiokineticTools.EventIcon", new IMAGE_BRUSH("WwisePicker/event_nor", Icon16x16));
+		Style.Set("AudiokineticTools.AcousticTextureIcon", new IMAGE_BRUSH("WwisePicker/acotex_nor", Icon16x16));
 		Style.Set("AudiokineticTools.AuxBusIcon", new IMAGE_BRUSH("WwisePicker/auxbus_nor", Icon16x16));
 		Style.Set("AudiokineticTools.BusIcon", new IMAGE_BRUSH("WwisePicker/bus_nor", Icon16x16));
 		Style.Set("AudiokineticTools.FolderIcon", new IMAGE_BRUSH("WwisePicker/folder_nor", Icon16x16));
@@ -70,25 +73,32 @@ const ISlateStyle& FAudiokineticToolsStyle::Get()
 
 const FSlateBrush* FAudiokineticToolsStyle::GetBrush(EWwiseTreeItemType::Type ItemType)
 {
-	switch (ItemType)
+	if (StyleInstance.IsValid())
 	{
-	case EWwiseTreeItemType::Event:
-		return StyleInstance->GetBrush("AudiokineticTools.EventIcon");
-	case EWwiseTreeItemType::AuxBus:
-		return StyleInstance->GetBrush("AudiokineticTools.AuxBusIcon");
-	case EWwiseTreeItemType::Bus:
-		return StyleInstance->GetBrush("AudiokineticTools.BusIcon");
-	case EWwiseTreeItemType::Folder:
-		return StyleInstance->GetBrush("AudiokineticTools.FolderIcon");
-	case EWwiseTreeItemType::Project:
-		return StyleInstance->GetBrush("AudiokineticTools.ProjectIcon");
-	case EWwiseTreeItemType::PhysicalFolder:
-		return StyleInstance->GetBrush("AudiokineticTools.PhysicalFolderIcon");
-	case EWwiseTreeItemType::StandaloneWorkUnit:
-	case EWwiseTreeItemType::NestedWorkUnit:
-		return StyleInstance->GetBrush("AudiokineticTools.WorkUnitIcon");
-	default:
-		return NULL;
+		switch (ItemType)
+		{
+		case EWwiseTreeItemType::Event:
+			return StyleInstance->GetBrush("AudiokineticTools.EventIcon");
+		case EWwiseTreeItemType::AcousticTexture:
+			return StyleInstance->GetBrush("AudiokineticTools.AcousticTextureIcon");
+		case EWwiseTreeItemType::AuxBus:
+			return StyleInstance->GetBrush("AudiokineticTools.AuxBusIcon");
+		case EWwiseTreeItemType::Bus:
+			return StyleInstance->GetBrush("AudiokineticTools.BusIcon");
+		case EWwiseTreeItemType::Folder:
+			return StyleInstance->GetBrush("AudiokineticTools.FolderIcon");
+		case EWwiseTreeItemType::Project:
+			return StyleInstance->GetBrush("AudiokineticTools.ProjectIcon");
+		case EWwiseTreeItemType::PhysicalFolder:
+			return StyleInstance->GetBrush("AudiokineticTools.PhysicalFolderIcon");
+		case EWwiseTreeItemType::StandaloneWorkUnit:
+		case EWwiseTreeItemType::NestedWorkUnit:
+			return StyleInstance->GetBrush("AudiokineticTools.WorkUnitIcon");
+		default:
+			return NULL;
+		}
 	}
+	
+	return NULL;
 }
 

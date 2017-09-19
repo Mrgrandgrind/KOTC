@@ -3,18 +3,14 @@
 #include "AkAudioDevice.h"
 #include "AkAudioClasses.h"
 
-#if AK_SUPPORTS_LEVEL_SEQUENCER
-
 #include "MovieSceneAkAudioRTPCSection.h"
 
-#if AK_SUPPORTS_LEVEL_SEQUENCER_TEMPLATES
 #include "MovieSceneAkAudioRTPCTemplate.h"
 
 FMovieSceneEvalTemplatePtr UMovieSceneAkAudioRTPCSection::GenerateTemplate() const
 {
 	return FMovieSceneAkAudioRTPCTemplate(*this);
 }
-#endif // AK_SUPPORTS_LEVEL_SEQUENCER_TEMPLATES
 
 float UMovieSceneAkAudioRTPCSection::Eval(float Position) const
 {
@@ -101,4 +97,29 @@ void UMovieSceneAkAudioRTPCSection::ClearDefaults()
 	FloatCurve.ClearDefaultValue();
 }
 
-#endif // AK_SUPPORTS_LEVEL_SEQUENCER
+#if WITH_EDITOR
+void UMovieSceneAkAudioRTPCSection::PreEditChange(UProperty* PropertyAboutToChange)
+{
+	PreviousName = Name;
+}
+
+void UMovieSceneAkAudioRTPCSection::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
+{
+	const FName PropertyName = (PropertyChangedEvent.Property != nullptr) ? PropertyChangedEvent.Property->GetFName() : NAME_None;
+
+	if (PropertyName == GET_MEMBER_NAME_CHECKED(UMovieSceneAkAudioRTPCSection, Name))
+	{
+		if (!IsRTPCNameValid())
+		{
+			Name = PreviousName;
+		}
+	}
+
+	Super::PostEditChangeProperty(PropertyChangedEvent);
+}
+
+bool UMovieSceneAkAudioRTPCSection::IsRTPCNameValid()
+{
+	return !Name.IsEmpty();
+}
+#endif

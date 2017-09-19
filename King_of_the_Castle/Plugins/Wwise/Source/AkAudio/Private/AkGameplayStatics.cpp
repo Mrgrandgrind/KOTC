@@ -8,12 +8,14 @@
 #include "AkAudioClasses.h"
 #include "Net/UnrealNetwork.h"
 #include "EngineUtils.h"
+#include "Model.h"
 #include "UObject/UObjectIterator.h"
 #include "Engine/GameEngine.h"
-
-#if ENGINE_MAJOR_VERSION == 4 && ENGINE_MINOR_VERSION >= 14
 #include "Misc/ScopeLock.h"
-#endif
+
+
+bool UAkGameplayStatics::m_bSoundEngineRecording = false;
+float UAkGameplayStatics::OcclusionScalingFactor = 1.0f;
 
 /*-----------------------------------------------------------------------------
 	UAkGameplayStatics.
@@ -42,6 +44,20 @@ class UAkComponent * UAkGameplayStatics::GetAkComponent( class USceneComponent* 
 	return NULL;
 }
 
+void UAkGameplayStatics::TriggerRecording()
+{
+	if (m_bSoundEngineRecording)
+	{
+		AK::SoundEngine::StopOutputCapture();
+		m_bSoundEngineRecording = false;
+	}
+	else
+	{
+		//AK::SoundEngine::StartOutputCapture("OutputTestSynthSpace.wav");
+		m_bSoundEngineRecording = true;
+	}
+}
+
 struct AkDeviceAndWorld
 {
 	FAkAudioDevice* AkAudioDevice;
@@ -54,7 +70,11 @@ struct AkDeviceAndWorld
 
 	AkDeviceAndWorld(UObject* in_pWorldContextObject) :
 		AkAudioDevice(FAkAudioDevice::Get()),
+#if UE_4_17_OR_LATER
+		CurrentWorld(GEngine->GetWorldFromContextObject(in_pWorldContextObject, EGetWorldErrorMode::ReturnNull))
+#else
 		CurrentWorld(GEngine->GetWorldFromContextObject(in_pWorldContextObject))
+#endif // UE_4_17_OR_LATER
 	{}
 
 	bool IsValid() const { return (CurrentWorld && CurrentWorld->AllowAudioPlayback() && AkAudioDevice); }
@@ -133,12 +153,12 @@ void UAkGameplayStatics::PostEventAtLocationByName(const FString& EventName, FVe
 	PostEventAtLocation(NULL, Location, Orientation, EventName, WorldContextObject);
 }
 
-UAkComponent* UAkGameplayStatics::SpawnAkComponentAtLocation(UObject* WorldContextObject, class UAkAudioEvent* AkEvent, FVector Location, FRotator Orientation, bool AutoPost, const FString& EventName, bool AutoDestroy /* = true*/ )
+UAkComponent* UAkGameplayStatics::SpawnAkComponentAtLocation(UObject* WorldContextObject, class UAkAudioEvent* AkEvent, class UAkAuxBus* EarlyReflectionsBus, FVector Location, FRotator Orientation, bool AutoPost, const FString& EventName, const FString& EarlyReflectionsBusName, bool AutoDestroy /* = true*/)
 {
 	AkDeviceAndWorld DeviceAndWorld(WorldContextObject);
 	if (DeviceAndWorld.IsValid())
 	{
-		return DeviceAndWorld.AkAudioDevice->SpawnAkComponentAtLocation(AkEvent, Location, Orientation, AutoPost, EventName, AutoDestroy, DeviceAndWorld.CurrentWorld);
+		return DeviceAndWorld.AkAudioDevice->SpawnAkComponentAtLocation(AkEvent, EarlyReflectionsBus, Location, Orientation, AutoPost, EventName, EarlyReflectionsBusName, AutoDestroy, DeviceAndWorld.CurrentWorld);
 	}
 
 	return nullptr;
@@ -211,6 +231,34 @@ void UAkGameplayStatics::UseReverbVolumes(bool inUseReverbVolumes, class AActor*
 	}
 }
 
+void UAkGameplayStatics::UseEarlyReflections(class AActor* Actor,
+	class UAkAuxBus* AuxBus,
+	bool Left,
+	bool Right,
+	bool Floor,
+	bool Ceiling,
+	bool Back,
+	bool Front,
+	bool SpotReflectors,
+	const FString& AuxBusName) 
+{
+	if (Actor == NULL) 
+	{
+		UE_LOG(LogScript, Warning, TEXT("UAkGameplayStatics::UseEarlyReflections: NULL Actor specified!"));
+		return;
+	}
+
+	FAkAudioDevice * AudioDevice = FAkAudioDevice::Get(); 
+	if (AudioDevice)
+	{
+		UAkComponent * ComponentToSet = AudioDevice->GetAkComponent(Actor->GetRootComponent(), FName(), NULL, EAttachLocation::KeepRelativeOffset);
+		if (ComponentToSet != NULL)
+		{
+			ComponentToSet->UseEarlyReflections(AuxBus, Left, Right, Floor, Ceiling, Back, Front, SpotReflectors, AuxBusName);
+		}
+	}
+}
+
 void UAkGameplayStatics::SetOutputBusVolume(float BusVolume, class AActor* Actor)
 {
 	if (Actor == NULL)
@@ -227,6 +275,86 @@ void UAkGameplayStatics::SetOutputBusVolume(float BusVolume, class AActor* Actor
 		{
 			ComponentToSet->SetOutputBusVolume(BusVolume);
 		}
+	}
+}
+
+void UAkGameplayStatics::GetChannelConfig(AkChannelConfiguration ChannelConfiguration, AkChannelConfig& config)
+{
+	switch (ChannelConfiguration)
+	{
+	case AkChannelConfiguration::Ak_1_0:
+		config.SetStandard(AK_SPEAKER_SETUP_MONO);
+		break;
+	case AkChannelConfiguration::Ak_2_0:
+		config.SetStandard(AK_SPEAKER_SETUP_STEREO);
+		break;
+	case AkChannelConfiguration::Ak_3_0:
+		config.SetStandard(AK_SPEAKER_SETUP_3STEREO);
+		break;
+	case AkChannelConfiguration::Ak_4_0:
+		config.SetStandard(AK_SPEAKER_SETUP_4);
+		break;
+	case AkChannelConfiguration::Ak_5_1:
+		config.SetStandard(AK_SPEAKER_SETUP_5POINT1);
+		break;
+	case AkChannelConfiguration::Ak_7_1:
+		config.SetStandard(AK_SPEAKER_SETUP_7POINT1);
+		break;
+	case AkChannelConfiguration::Ak_5_1_2:
+		config.SetStandard(AK_SPEAKER_SETUP_DOLBY_5_1_2);
+		break;
+	case AkChannelConfiguration::Ak_7_1_2:
+		config.SetStandard(AK_SPEAKER_SETUP_DOLBY_7_1_2);
+		break;
+	case AkChannelConfiguration::Ak_7_1_4:
+		config.SetStandard(AK_SPEAKER_SETUP_DOLBY_7_1_4);
+		break;
+	case AkChannelConfiguration::Ak_Auro_9_1:
+		config.SetStandard(AK_SPEAKER_SETUP_AURO_9POINT1);
+		break;
+	case AkChannelConfiguration::Ak_Auro_10_1:
+		config.SetStandard(AK_SPEAKER_SETUP_AURO_10POINT1);
+		break;
+	case AkChannelConfiguration::Ak_Auro_11_1:
+		config.SetStandard(AK_SPEAKER_SETUP_AURO_11POINT1);
+		break;
+	case AkChannelConfiguration::Ak_Auro_13_1:
+		config.SetStandard(AK_SPEAKER_SETUP_AURO_13POINT1_751);
+		break;
+	case AkChannelConfiguration::Ak_Ambisonics_1st_order:
+		config.SetAmbisonic(4);
+		break;
+	case AkChannelConfiguration::Ak_Ambisonics_2nd_order:
+		config.SetAmbisonic(9);
+		break;
+	case AkChannelConfiguration::Ak_Ambisonics_3rd_order:
+		config.SetAmbisonic(16);
+		break;
+	case AkChannelConfiguration::Ak_Parent:
+	default:
+		config.Clear();
+		break;
+	}
+}
+
+void UAkGameplayStatics::SetBusConfig(const FString& in_BusName, AkChannelConfiguration ChannelConfiguration)
+{
+	FAkAudioDevice * AudioDevice = FAkAudioDevice::Get();
+	if (AudioDevice)
+	{
+		AkChannelConfig config;
+		GetChannelConfig(ChannelConfiguration, config);
+		AudioDevice->SetBusConfig(in_BusName, config);
+	}
+}
+
+void UAkGameplayStatics::SetPanningRule(PanningRule PanRule)
+{
+	FAkAudioDevice * AudioDevice = FAkAudioDevice::Get();
+	if (AudioDevice)
+	{
+		AkPanningRule AkPanRule = (PanRule == PanningRule::PanningRule_Headphones) ? AkPanningRule_Headphones : AkPanningRule_Speakers;
+		AudioDevice->SetPanningRule(AkPanRule);
 	}
 }
 

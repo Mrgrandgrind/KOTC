@@ -39,9 +39,7 @@ public:
 
 	virtual TSharedRef<ISequencerSection> MakeSectionInterface(UMovieSceneSection& SectionObject, UMovieSceneTrack& Track, FGuid ObjectBinding) override;
 
-#if AK_MATINEE_TO_LEVEL_SEQUENCE_MODULE_MODIFICATIONS
 	virtual void BuildTrackContextMenu(FMenuBuilder& MenuBuilder, UMovieSceneTrack* Track) override;
-#endif 
 
 	virtual const FSlateBrush* GetIconBrush() const override;
 

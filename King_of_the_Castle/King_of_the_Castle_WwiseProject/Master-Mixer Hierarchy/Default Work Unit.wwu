@@ -19,10 +19,10 @@
 							<Custom CreatedFrom="{3FF9AD86-E377-40F8-970F-3D4EE73288B5}">
 								<Effect Name="Brick_Wall_Minus_6dB_Peak_Fast_Release (Custom)" ID="{4E61BF7A-960F-4C9B-A210-D2BF1DDA7F40}" ShortID="1045742201" PluginName="Wwise Peak Limiter" CompanyID="0" PluginID="110" PluginType="3">
 									<PropertyList>
-										<Property Name="OutputGain" Type="Real32" Value="10.2"/>
+										<Property Name="OutputGain" Type="Real32" Value="7.9"/>
 										<Property Name="Ratio" Type="Real32" Value="50"/>
 										<Property Name="ReleaseTime" Type="Real32" Value="0.15"/>
-										<Property Name="Threshold" Type="Real32" Value="-16.7"/>
+										<Property Name="Threshold" Type="Real32" Value="-6.1"/>
 									</PropertyList>
 								</Effect>
 							</Custom>

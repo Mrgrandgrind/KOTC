@@ -5,8 +5,6 @@
 #include "AkAudioDevice.h"
 #include "AkAudioClasses.h"
 
-#if AK_MATINEE_TO_LEVEL_SEQUENCE_MODULE_MODIFICATIONS
-
 #include "AkMatineeImportTools.h"
 #include "MatineeImportTools.h"
 
@@ -106,4 +104,3 @@ ECopyInterpAkAudioResult FAkMatineeImportTools::CopyInterpAkAudioEventTrack(cons
 
 #undef LOCTEXT_NAMESPACE
 
-#endif // AK_MATINEE_TO_LEVEL_SEQUENCE_MODULE_MODIFICATIONS

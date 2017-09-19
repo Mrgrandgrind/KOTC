@@ -11,18 +11,15 @@
 #include "ContentBrowserModule.h"
 #include "AudiokineticToolsStyle.h"
 #include "Factories/Factory.h"
+#include "AkAcousticTexture.h"
 #include "AkAudioEvent.h"
 #include "AkAuxBus.h"
+#include "AkAcousticTextureFactory.h"
 #include "AkAudioEventFactory.h"
 #include "AkAuxBusFactory.h"
 #include "IAssetTools.h"
 #include "AssetToolsModule.h"
 #include "ModuleManager.h"
-
-#if AK_SPATIAL_AUDIO_AVAILABLE
-#include "AkAcousticTexture.h"
-#include "AkAcousticTextureFactory.h"
-#endif
 
 #define LOCTEXT_NAMESPACE "AkAudio"
 
@@ -105,6 +102,12 @@ void FWwiseEventDragDropOp::RecurseCreateAssets(TSharedPtr<FWwiseTreeItem>& Asse
 		Name = Asset->DisplayName;
 		Factory = UAkAudioEventFactory::StaticClass()->GetDefaultObject<UFactory>();
 		Class = UAkAudioEvent::StaticClass();
+	}
+	if (Asset->ItemType == EWwiseTreeItemType::AcousticTexture)
+	{
+		Name = Asset->DisplayName;
+		Factory = UAkAcousticTextureFactory::StaticClass()->GetDefaultObject<UFactory>();
+		Class = UAkAcousticTexture::StaticClass();
 	}
 	else if (Asset->ItemType == EWwiseTreeItemType::AuxBus)
 	{

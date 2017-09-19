@@ -17,6 +17,8 @@
 #include "Editor.h"
 #include "Framework/Application/SlateApplication.h"
 #include "Framework/Application/MenuStack.h"
+#include "IMatinee.h"
+
 #define LOCTEXT_NAMESPACE "Audiokinetic"
 
 static TWeakPtr< class IMenu > EntryMenu;

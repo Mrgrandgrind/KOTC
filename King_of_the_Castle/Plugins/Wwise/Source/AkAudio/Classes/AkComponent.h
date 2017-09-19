@@ -11,6 +11,14 @@
 #include "Components/SceneComponent.h"
 #include "AkComponent.generated.h"
 
+UENUM(Meta = (Bitflags))
+enum class EReflectionFilterBits
+{
+	Wall,
+	Ceiling,
+	Floor
+};
+
 // PostEvent functions need to return the PlayingID (uint32), but Blueprints only work with int32.
 // Make sure AkPlayingID is always 32 bits, or else we're gonna have a bad time.
 static_assert(sizeof(AkPlayingID) == sizeof(int32), "AkPlayingID is not 32 bits anymore. Change return value of PostEvent functions!");
@@ -24,6 +32,38 @@ class AKAUDIO_API UAkComponent: public USceneComponent
 	GENERATED_UCLASS_BODY()
 
 public:
+
+	/** Wwise Auxiliary Bus for early reflection processing */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, AdvancedDisplay, Category = "AkComponent|Spatial Audio")
+	class UAkAuxBus * EarlyReflectionAuxBus;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, AdvancedDisplay, Category = "AkComponent|Spatial Audio")
+	FString EarlyReflectionAuxBusName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, AdvancedDisplay, Category = "AkComponent|Spatial Audio", meta = (ClampMin = "0", ClampMax = "4"))
+	int EarlyReflectionOrder;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, AdvancedDisplay, Category = "AkComponent|Spatial Audio", meta = (ClampMin = "0.0", ClampMax = "1.0"))
+	float EarlyReflectionBusSendGain;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, AdvancedDisplay, Category = "AkComponent|Spatial Audio", meta = (ClampMin = "0.0"))
+	float EarlyReflectionMaxPathLength;
+
+	// Note: Reflection fiters are not currently supported on individual polygons in AkSpatialAudioVolume, so it is useless to have it here and therefor hidden from the UI.
+	//UPROPERTY(EditAnywhere, AdvancedDisplay, Category = "AkComponent|Spatial Audio", Meta = (Bitmask, BitmaskEnum = "EReflectionFilterBits"))
+	int32 ReflectionFilter;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, AdvancedDisplay, Category = "AkComponent|Spatial Audio")
+	uint32 EnableSpotReflectors : 1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, AdvancedDisplay, Category = "AkComponent|Spatial Audio|Debug Draw")
+	uint32 DrawFirstOrderReflections : 1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, AdvancedDisplay, Category = "AkComponent|Spatial Audio|Debug Draw")
+	uint32 DrawSecondOrderReflections : 1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, AdvancedDisplay, Category = "AkComponent|Spatial Audio|Debug Draw")
+	uint32 DrawHigherOrderReflections : 1;
 
 	/** Stop sound when owner is destroyed? */
 	UPROPERTY()
@@ -100,8 +140,8 @@ public:
 	 *
 	 * @param in_uListenerMask	Bitmask representing the active listeners (LSB = Listener 0, set to 1 means active)
 	 */
-	UFUNCTION(BlueprintCallable, BlueprintCosmetic, BlueprintNativeEvent, Category="Audiokinetic|AkComponent")
-	void SetActiveListeners( int32 in_uListenerMask );
+	UFUNCTION(BlueprintCallable, BlueprintCosmetic, Category="Audiokinetic|AkComponent")
+	void SetListeners( const TArray<UAkComponent*>& Listeners );
 
 	// Reverb volumes functions
 
@@ -113,6 +153,31 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintCosmetic, Category="Audiokinetic|AkComponent")
 	void UseReverbVolumes(bool inUseReverbVolumes);
 
+	// Early Reflections
+
+	/**
+	* UseEarlyReflections. Enable (or disable) early reflections for this ak component.
+	*
+	* @param AuxBus	Aux bus that contains the AkReflect plugin
+	* @param Left	Enable reflections off left wall.
+	* @param Right	Enable reflections off right wall.
+	* @param Floor	Enable reflections off floor.
+	* @param Ceiling	Enable reflections off front wall.
+	* @param Back	Enable reflections off front wall.
+	* @param Front	Enable reflections off front wall.
+	* @param EnableSpotReflectors	Enable reflections off spot reflectors.
+	* @param AuxBusName	Aux bus name that contains the AkReflect plugin
+	*/
+	UFUNCTION(BlueprintCallable, Category = "Audiokinetic|AkComponent", meta = (AdvancedDisplay = "8"))
+	void UseEarlyReflections(class UAkAuxBus* AuxBus,
+								bool Left,
+								bool Right,
+								bool Floor,
+								bool Ceiling,
+								bool Back, 
+								bool Front,
+								bool SpotReflectors,
+								const FString& AuxBusName = FString(""));
 
 	/**
 	* Set the output bus volume (direct) to be used for the specified game object.
@@ -131,7 +196,7 @@ public:
 	float AttenuationScalingFactor;
 
 	/** Sets the attenuation scaling factor, which modifies the attenuation computations on this game object to simulate sounds with a a larger or smaller area of effect. */
-	UFUNCTION(BlueprintCallable, BlueprintCosmetic, BlueprintNativeEvent, Category = "Audiokinetic|AkComponent")
+	UFUNCTION(BlueprintCallable, BlueprintCosmetic, Category = "Audiokinetic|AkComponent")
 	void SetAttenuationScalingFactor(float Value);
 
 	/** Time interval between occlusion/obstruction checks. Set to 0 to disable occlusion on this component. */
@@ -141,7 +206,7 @@ public:
 	/**
 	 * Return the real attenuation radius for this component (AttenuationScalingFactor * AkAudioEvent->MaxAttenuationRadius)
 	 */
-	UFUNCTION(BlueprintCallable, BlueprintCosmetic, BlueprintNativeEvent, Category="Audiokinetic|AkComponent")
+	UFUNCTION(BlueprintCallable, BlueprintCosmetic, Category="Audiokinetic|AkComponent")
 	float GetAttenuationRadius() const;
 
 	/** Modifies the attenuation computations on this game object to simulate sounds with a a larger or smaller area of effect. */
@@ -151,8 +216,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, AdvancedDisplay, Category = "AkComponent")
 	FString EventName;
 
-	UFUNCTION(BlueprintNativeEvent, Category = "Audiokinetic|AkComponent")
 	void UpdateGameObjectPosition();
+
+	void GetAkGameObjectName(FString& Name) const;
 
 #if CPP
 
@@ -184,25 +250,41 @@ public:
 
 	// Begin USceneComponent Interface
 	virtual void Activate(bool bReset=false) override;
-#if ENGINE_MAJOR_VERSION == 4 && ENGINE_MINOR_VERSION <= 11
-	virtual void OnUpdateTransform(bool bSkipPhysicsMove, ETeleportType Teleport = ETeleportType::None) override; 
-#else
 	virtual void OnUpdateTransform(EUpdateTransformFlags UpdateTransformFlags, ETeleportType Teleport = ETeleportType::None) override;
-#endif
 	// End USceneComponent Interface
 
-	/** Gets all AkReverbVolumes at the AkComponent's current location, and puts them in a list
+	/** Gets all AkLateReverbComponents at the AkComponent's current location, and puts them in a list
 	 *
-	 * @param OutReverbVolumes		Array containing the found AkReverbVolumes
 	 * @param Loc					The location of the AkComponent
 	 */
-	void UpdateAkReverbVolumeList(FVector Loc);
+	void UpdateAkLateReverbComponentList(FVector Loc);
 
-	void CalculateOcclusionValues(bool CalledFromTick);
+	/** Gets the current room the AkComponent is in.
+	 * 
+	 * @param Location			The location of the AkComponent
+	 */
+	void UpdateSpatialAudioRoom(FVector Location);
+
+	void CalculateObstructionOcclusionValues(bool CalledFromTick);
 
 	void SetAutoDestroy(bool in_AutoDestroy) { bAutoDestroy = in_AutoDestroy; }
 
+	bool UseDefaultListeners() const { return bUseDefaultListeners; }
+
 	bool HasActiveEvents() const;
+
+	void OnListenerUnregistered(UAkComponent* in_pListener)
+	{
+		ListenerInfoMap.Remove(in_pListener);
+	}
+
+	void OnDefaultListenerAdded(UAkComponent* in_pListener)
+	{
+		check(bUseDefaultListeners);
+		ListenerInfoMap.FindOrAdd(in_pListener);
+	}
+
+	const TSet<UAkComponent*>& GetEmitters();
 
 	AkGameObjectID GetAkGameObjectID() const;
 
@@ -210,7 +292,24 @@ public:
 
 	bool VerifyEventName(const FString& in_EventName) const;
 
+	AkRoomID GetSpatialAudioRoom() const;
+
+	const FTransform& GetTransform() const;
+
+protected:
+#if WITH_EDITOR
+	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+#endif
+
 private:
+	enum EFaces { MINX, MAXX, MINY, MAXY, MINZ, MAXZ };
+	
+	void FaceToVertices(EFaces in_face, FBox in_boundingBox, FVector in_hitpoint, TArray<FVector>& out_Points);
+
+	void FaceToVertex(EFaces in_faceA, EFaces in_faceB, const FBox& in_boundingBox, const FVector& in_hitpoint, FVector& out_Point);
+	void FaceToVertexHelper(EFaces in_face, const FBox& in_boundingBox, FVector& out_Point);
+	bool LineTrace(const FVector& in_From, const FVector& in_To, FHitResult& out_Hit, const struct FCollisionQueryParams& collisionQueryParam);
+
 	/**
 	 * Register the component with Wwise
 	 */
@@ -220,6 +319,8 @@ private:
 	 * Unregister the component from Wwise
 	 */
 	void UnregisterGameObject();
+
+	FVector GetPosition() const;
 
 	// Reverb Volume features ---------------------------------------------------------------------
 
@@ -237,8 +338,7 @@ private:
 	}
 
 	/** Look if a new AkReverbVolume is in this component's CurrentAkReverbVolumes. */
-	int32 FindNewAkReverbVolumeInCurrentlist(uint32 AuxBusId);
-
+	int32 FindNewAkLateReverbComponentInCurrentlist(uint32 AuxBusId);
 
 	/** Apply the current list of AkReverbVolumes 
 	 *
@@ -246,7 +346,13 @@ private:
 	 */
 	void ApplyAkReverbVolumeList(float DeltaTime);
 
-	struct AkReverbVolumeFadeControl
+	bool FindPathAroundObstacle(FVector in_origin, FVector in_destination, FBox in_boundingBox, FVector& out_toPoint, FVector& out_newPoint, bool& out_bDestinationWhitinLastBoundingBox);
+	bool FindBestCornerPath(FVector in_origin, FVector in_destination, TArray<FVector>& in_pointsTo, FVector& out_bestTo);
+	bool FindBestPath(FVector in_origin, FVector in_destination, TArray<FVector>& in_pointsTo, TArray<FVector>& in_pointsAwayFrom, FVector& out_bestTo, FVector& out_bestAwayFrom);
+
+	bool IntersecBoundingBox(FBox in_boundingBox, FVector in_origin, FVector in_destination, TArray<FVector>& out_hitpointTo, TArray<FVector>& out_hitpointFrom);
+
+	struct AkReverbFadeControl
 	{
 		uint32 AuxBusId;
 		float CurrentControlValue;
@@ -255,7 +361,7 @@ private:
 		bool bIsFadingOut;
 		float Priority;
 
-		AkReverbVolumeFadeControl(uint32 InAuxBusId, float InCurrentControlValue, float InTargetControlValue, float InFadeRate, bool InbIsFadingOut, float InPriority) :
+		AkReverbFadeControl(uint32 InAuxBusId, float InCurrentControlValue, float InTargetControlValue, float InFadeRate, bool InbIsFadingOut, float InPriority) :
 			AuxBusId(InAuxBusId),
 			CurrentControlValue(InCurrentControlValue),
 			TargetControlValue(InTargetControlValue),
@@ -266,7 +372,10 @@ private:
 	};
 
 	/** Array of the active AkReverbVolumes at the AkComponent's location */
-	TArray<AkReverbVolumeFadeControl> CurrentAkReverbVolumes;
+	TArray<AkReverbFadeControl> CurrentLateReverbComponents;
+
+	/** Room the AkComponent is currently in. nullptr if none */
+	class UAkRoomComponent* CurrentRoom;
 
 	/** Whether to use reverb volumes or not */
 	bool bUseReverbVolumes;
@@ -277,7 +386,6 @@ private:
 	/** Whether an event was posted on the component. Never reset to false. */
 	bool bStarted;
 
-
 	// Occlusion/obstruction features -------------------------------------------------------------
 
 	/** 
@@ -285,25 +393,41 @@ private:
 	 * 
 	 * @param DeltaTime		Time elasped since last function call.
 	 */
-	void SetOcclusion(const float DeltaTime);
+	void SetObstructionOcclusion(const float DeltaTime);
 	void ClearOcclusionValues();
 
 	/** Last time occlusion was refreshed */
-	float LastOcclusionRefresh;
+	float LastObstructionOcclusionRefresh;
 
-	struct FAkListenerOcclusion
+	static const int kMaxVirtualPos = 8;
+	AkSoundPosition VirtualPositions[kMaxVirtualPos];
+	int NumVirtualPos;
+
+	struct FAkListenerOcclusionObstruction
 	{
 		float CurrentValue;
 		float TargetValue;
+		float Rate;
 
-		FAkListenerOcclusion( float in_TargetValue = 0.0f, float in_CurrentValue = 0.0f) :
-			CurrentValue(in_CurrentValue),
-			TargetValue(in_TargetValue){};
+		FAkListenerOcclusionObstruction(float in_TargetValue = 0.0f, float in_CurrentValue = 0.0f);
+
+		void SetTarget(float in_TargetValue, float in_refreshTime);
+		bool Update(float DeltaTime);
 	};
 
-	TArray< FAkListenerOcclusion > ListenerOcclusionInfo;
-	bool ClearingOcclusion;
-	static const float OCCLUSION_FADE_RATE;
+	struct FAkListenerOcclusionObstructionPair
+	{
+		FAkListenerOcclusionObstruction Occ;
+		FAkListenerOcclusionObstruction Obs;
+
+		bool Update(float DeltaTime);
+	};
+
+	void SetOcclusionForListener(const UAkComponent* in_Listener, FAkListenerOcclusionObstructionPair& OccObs);
+	bool CalculateObstructionBasedOnShoeboxes(const FVector& SourcePosition, AkRoomID SourceRoom, const FVector& ListenerPosition, AkRoomID ListenerRoom, FAkListenerOcclusionObstructionPair& OccObs);
+
+	static const float OCCLUSION_OBSTRUCTION_FADE_RATE;
+	bool ClearingOcclusionObstruction;
 
 #endif
 
@@ -311,4 +435,15 @@ private:
 	/** Utility function that updates which texture is displayed on the sprite dependent on the properties of the Audio Component. */
 	void UpdateSpriteTexture();
 #endif
+
+	bool bUseDefaultListeners;
+	TMap<UAkComponent*, FAkListenerOcclusionObstructionPair> ListenerInfoMap;
+	
+	//NOTE: This set of emitters is only valid if this UAkComopnent is a listener, and it it is not a default listener. See GetEmitters().
+	TSet<UAkComponent*> Emitters;
+
+	void CheckEmitterListenerConsistancy();
+
+	void DebugDrawReflections() const;
+	void _DebugDrawReflections(const AkVector& akEmitterPos, const AkVector& akListenerPos, const AkSoundPathInfo* paths, AkUInt32 uNumPaths) const;
 };

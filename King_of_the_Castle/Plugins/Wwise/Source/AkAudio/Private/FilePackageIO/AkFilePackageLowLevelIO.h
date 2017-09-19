@@ -264,6 +264,34 @@ protected:
 	AkFileHandle		m_hFile;	// Platform-independent file handle (cached from READER).
 };
 
+
+class CAkDefaultFileCustomParamPolicy
+{
+	// Returns true if file described by in_fileDesc is in a package.
+	static bool IsInPackage(const AkFileDesc& in_fileDesc) { return in_fileDesc.uCustomParamSize > 0; }
+
+	template <class T_LLIOHOOK_FILELOC>
+	static AkUInt32 GetBlockSize(AkFileDesc& in_fileDesc, T_LLIOHOOK_FILELOC* myThis)
+	{
+		if (IsInPackage(in_fileDesc))
+		{
+			// This file is part of a package. At Open(), we used the 
+			// AkFileDesc.uCustomParamSize field to store the block size.
+			return in_fileDesc.uCustomParamSize;
+		}
+
+		return myThis->T_LLIOHOOK_FILELOC::GetBlockSize(in_fileDesc);
+	}
+
+	template<class T_PACKAGE, class T_ENTRY>
+	static void SetInPackageFileDesc(AkFileDesc& out_fileDesc, T_PACKAGE* in_pPackage, const T_ENTRY* in_pEntry)
+	{
+		// NOTE: We use the uCustomParamSize to store the block size.
+		out_fileDesc.pCustomParam = NULL;
+		out_fileDesc.uCustomParamSize = in_pEntry->uBlockSize;
+	}
+};
+
 //-----------------------------------------------------------------------------
 // Name: class CAkFilePackageLowLevelIO.
 // Desc: Extends default Low-level IO implementation with packaged file support.
@@ -276,16 +304,15 @@ protected:
 //		 of files opened from a package, and relies on the fact that it is 0 
 //		 when they are not part of the package.
 //-----------------------------------------------------------------------------
-template <class T_LLIOHOOK_FILELOC, class T_PACKAGE = CAkDiskPackage>
+template <class T_LLIOHOOK_FILELOC, class T_PACKAGE = CAkDiskPackage, class U_CUSTOMPARAM_POLICY = CAkDefaultFileCustomParamPolicy>
 class CAkFilePackageLowLevelIO : public T_LLIOHOOK_FILELOC
 {
+	typedef CAkFilePackageLowLevelIO<T_LLIOHOOK_FILELOC, T_PACKAGE, U_CUSTOMPARAM_POLICY> MyType;
+
 public:
 
     CAkFilePackageLowLevelIO();
     virtual ~CAkFilePackageLowLevelIO();
-
-	// Loads all file packages found in the SoundBank base path
-	bool LoadAllFilePackages();
 
 	// File package loading:
     // Opens a package file, parses its header, fills LUT.
@@ -327,7 +354,6 @@ public:
     void Term();
 
 protected:
-
 	//
 	// IAkFileLocationResolver interface overriden methods.
 	// ---------------------------------------------------------------
@@ -378,7 +404,7 @@ protected:
 		void * in_pCookie						// Cookie that was passed to AddLanguageChangeObserver().
 		)
 	{
-		((CAkFilePackageLowLevelIO<T_LLIOHOOK_FILELOC, T_PACKAGE>*)in_pCookie)->OnLanguageChange( in_pLanguageName );
+		((MyType*)in_pCookie)->OnLanguageChange( in_pLanguageName );
 	}
 
 	// Updates language of all loaded packages. Packages keep a language ID to help them find 
@@ -410,21 +436,12 @@ protected:
 		AkFileDesc &		out_fileDesc	// Returned file descriptor.
 		);
 
-	virtual void InitFileDesc( T_PACKAGE * /*in_pPackage*/, AkFileDesc & /*io_fileDesc*/){};
-	
-	// Returns true if file described by in_fileDesc is in a package.
-	inline bool IsInPackage( 
-		const AkFileDesc & in_fileDesc		// File descriptor.
-		)
-	{
-		return T_LLIOHOOK_FILELOC::IsInPackage(in_fileDesc);
-	}
+	virtual void InitFileDesc( T_PACKAGE * /*in_pPackage*/, AkFileDesc & /*io_fileDesc*/) {}
 
 protected:
 	// List of loaded packages.
 	ListFilePackages	m_packages;
 	bool				m_bRegisteredToLangChg;	// True after registering to language change notifications.
-
 };
 
 #include "AkFilePackageLowLevelIO.inl"

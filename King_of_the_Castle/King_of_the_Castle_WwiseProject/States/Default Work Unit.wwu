@@ -14,6 +14,7 @@
 						<State Name="Level_4" ID="{ECD9E445-AD1B-4E6F-92FE-3537EBC18C2B}"/>
 						<State Name="Storm" ID="{3FA59924-4522-4EF2-B024-6A09EC6BEF79}"/>
 						<State Name="Menu" ID="{B6DF969F-2DAD-4D71-B4E9-EE81D6BA8F02}"/>
+						<State Name="Mute" ID="{635A55EC-4C68-47F7-AA3F-E7DA1209774F}"/>
 					</ChildrenList>
 				</StateGroup>
 			</ChildrenList>

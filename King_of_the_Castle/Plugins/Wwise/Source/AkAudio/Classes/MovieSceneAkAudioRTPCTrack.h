@@ -3,7 +3,8 @@
 #pragma once
 
 #include "MovieSceneAkTrack.h"
-
+#include "AkInclude.h"
+#include "AkAudioEvent.h"
 #include "MovieSceneAkAudioRTPCTrack.generated.h"
 
 
@@ -19,25 +20,18 @@ public:
 
 	UMovieSceneAkAudioRTPCTrack()
 	{
-#if WITH_EDITORONLY_DATA && AK_SUPPORTS_LEVEL_SEQUENCER
+#if WITH_EDITORONLY_DATA
 		SetColorTint(FColor(58, 111, 143, 65));
 #endif
 	}
 
-#if AK_SUPPORTS_LEVEL_SEQUENCER
-#if AK_SUPPORTS_LEVEL_SEQUENCER_TEMPLATES
-	virtual FMovieSceneEvalTemplatePtr CreateTemplateForSection(const UMovieSceneSection& InSection) const override;
-#else
-	void Update(EMovieSceneUpdateData& UpdateData, const TArray<TWeakObjectPtr<UObject>>& RuntimeObjects, IMovieScenePlayer& Player, FMovieSceneSequenceInstance& SequenceInstance);
-	virtual TSharedPtr<IMovieSceneTrackInstance> CreateInstance() override;
-#endif // AK_SUPPORTS_LEVEL_SEQUENCER_TEMPLATES
+	AKAUDIO_API virtual FMovieSceneEvalTemplatePtr CreateTemplateForSection(const UMovieSceneSection& InSection) const override;
 
-	virtual UMovieSceneSection* CreateNewSection() override;
+	AKAUDIO_API virtual UMovieSceneSection* CreateNewSection() override;
 
-	virtual FName GetTrackName() const override;
+	AKAUDIO_API virtual FName GetTrackName() const override;
 
 #if WITH_EDITORONLY_DATA
-	virtual FText GetDisplayName() const override;
+	AKAUDIO_API virtual FText GetDisplayName() const override;
 #endif
-#endif // AK_SUPPORTS_LEVEL_SEQUENCER
 };

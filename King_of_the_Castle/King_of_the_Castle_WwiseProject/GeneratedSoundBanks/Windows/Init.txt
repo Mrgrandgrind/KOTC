@@ -11,6 +11,7 @@ State	ID	Name	State Group			Notes
 	2068062714	Bridge	Music			
 	2607556080	Menu	Music			
 	2716678721	Victory	Music			
+	2974103762	Mute	Music			
 
 Audio Bus	ID	Name			Wwise Object Path	Notes
 	393239870	SFX			\Default Work Unit\Master Audio Bus\SFX	

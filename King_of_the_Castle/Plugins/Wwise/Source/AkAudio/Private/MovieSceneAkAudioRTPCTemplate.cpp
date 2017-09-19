@@ -1,12 +1,7 @@
 #include "AkAudioDevice.h"
 #include "AkAudioClasses.h"
-
 #include "MovieSceneAkAudioRTPCTemplate.h"
 #include "MovieSceneAkAudioRTPCSection.h"
-
-
-#if AK_SUPPORTS_LEVEL_SEQUENCER_TEMPLATES
-
 #include "MovieSceneExecutionToken.h"
 #include "IMovieScenePlayer.h"
 
@@ -85,4 +80,3 @@ void FMovieSceneAkAudioRTPCTemplate::Setup(FPersistentEvaluationData& Persistent
 		PersistentData.AddSectionData<FAkAudioRTPCEvaluationData>().SectionData = MakeShareable(new FMovieSceneAkAudioRTPCSectionData(*Section));
 	}
 }
-#endif // AK_SUPPORTS_LEVEL_SEQUENCER_TEMPLATES

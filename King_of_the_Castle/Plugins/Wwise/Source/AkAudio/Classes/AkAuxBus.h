@@ -16,6 +16,7 @@ class AKAUDIO_API UAkAuxBus : public UObject
 {
 	GENERATED_UCLASS_BODY()
 
+public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bank")
 	class UAkAudioBank * RequiredBank;
 

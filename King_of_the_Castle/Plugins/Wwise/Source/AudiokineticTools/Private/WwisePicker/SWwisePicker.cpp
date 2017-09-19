@@ -6,17 +6,16 @@
 
 #include "AudiokineticToolsPrivatePCH.h"
 #include "AkAudioDevice.h"
+#include "AkAudioBankGenerationHelpers.h"
+#include "AudiokineticToolsStyle.h"
 #include "WwisePicker/SWwisePicker.h"
 #include "WwisePicker/WwiseEventDragDropOp.h"
 #include "WwisePicker/WwiseWwuParser.h"
-#include "SSearchBox.h"
-#include "AkAudioBankGenerationHelpers.h"
-#include "AudiokineticToolsStyle.h"
 #include "DirectoryWatcherModule.h"
-
-#if ENGINE_MAJOR_VERSION == 4 && ENGINE_MINOR_VERSION >= 15
 #include "IDirectoryWatcher.h"
-#endif
+#include "Input/SSearchBox.h"
+#include "Layout/SSeparator.h"
+#include "Misc/ScopedSlowTask.h"
 
 #define LOCTEXT_NAMESPACE "AkAudio"
 
@@ -55,7 +54,7 @@ void SWwisePicker::OnProjectDirectoryChanged(const TArray<struct FFileChangeData
 	{
 		FPaths::NormalizeDirectoryName(File.Filename);
 		if(File.Filename.EndsWith(FString(TEXT(".wwu"))) &&
-			(File.Filename.Contains(TEXT("/Events/")) || File.Filename.Contains(TEXT("/Master-Mixer Hierarchy/"))) )
+			(File.Filename.Contains(TEXT("/Events/")) || File.Filename.Contains(TEXT("/Master-Mixer Hierarchy/")) || File.Filename.Contains(TEXT("/Virtual Acoustics/"))) )
 		{
 			bFoundWorkUnit = true;
 		}
@@ -319,7 +318,6 @@ FText SWwisePicker::GetHighlightText() const
 
 void SWwisePicker::FilterUpdated()
 {
-
 	FScopedSlowTask SlowTask(2.f, LOCTEXT("AK_PopulatingPicker", "Populating Wwise Picker..."));
 	SlowTask.MakeDialog();
 	for(int32 i = 0; i < RootItems.Num(); i++)

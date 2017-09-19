@@ -9,6 +9,7 @@
 #include "WwisePicker/SWwisePicker.h"
 #include "WwisePicker/WwiseWwuParser.h"
 #include "AkAudioBankGenerationHelpers.h"
+#include "Misc/ScopedSlowTask.h"
 
 #define LOCTEXT_NAMESPACE "AkAudio"
 
@@ -342,6 +343,13 @@ bool FWwiseWwuParser::RecurseChildren(const FXmlNode* NodeToParse, TSharedPtr<FW
 		if( CurrentTag == TEXT("Event") )
 		{
 			TreeItem->Children.Add(MakeShareable(new FWwiseTreeItem(CurrentName, CurrentPath, TreeItem, ItemType)));
+		}
+		else if (CurrentTag == TEXT("AcousticTexture"))
+		{
+			if (ItemType == EWwiseTreeItemType::Type::AcousticTexture)
+			{
+				TreeItem->Children.Add(MakeShareable(new FWwiseTreeItem(CurrentName, CurrentPath, TreeItem, ItemType)));
+			}
 		}
 		else if (CurrentTag == TEXT("AuxBus"))
 		{

@@ -15,6 +15,7 @@ namespace EWwiseTreeItemType
 	{
 		Event,
 		AuxBus,
+		AcousticTexture,
 		NUM_DRAGGABLE_WWISE_ITEMS,
 		Bus,
 		Project,
@@ -24,9 +25,46 @@ namespace EWwiseTreeItemType
 		Folder,
 	};
 
-	const FString ItemNames[NUM_DRAGGABLE_WWISE_ITEMS] = { TEXT("Event"), TEXT("AuxBus") };
-	const FString DisplayNames[NUM_DRAGGABLE_WWISE_ITEMS] = { TEXT("Events"), TEXT("Busses") };
-	const FString FolderNames[NUM_DRAGGABLE_WWISE_ITEMS] = { TEXT("Events"), TEXT("Master-Mixer Hierarchy") };
+	const FString ItemNames[NUM_DRAGGABLE_WWISE_ITEMS] = { TEXT("Event"), TEXT("AuxBus"), TEXT("AcousticTexture") };
+	const FString DisplayNames[NUM_DRAGGABLE_WWISE_ITEMS] = { TEXT("Events"), TEXT("Busses"), TEXT("VirtualAcoustics") };
+	const FString FolderNames[NUM_DRAGGABLE_WWISE_ITEMS] = { TEXT("Events"), TEXT("Master-Mixer Hierarchy"), TEXT("Virtual Acoustics") };
+	const FString PickerLabel[NUM_DRAGGABLE_WWISE_ITEMS] = { TEXT("Events"), TEXT("Auxiliary Busses"), TEXT("Textures") };
+
+	inline Type FromString(const FString& ItemName)
+	{
+		if (ItemName == "Event")
+		{
+			return Type::Event;
+		}
+		else if (ItemName == "AuxBus")
+		{
+			return Type::AuxBus;
+		}
+		else if (ItemName == "Bus")
+		{
+			return Type::Bus;
+		}
+		else if (ItemName == "Project")
+		{
+			return Type::Project;
+		}
+		else if (ItemName == "WorkUnit")
+		{
+			return Type::StandaloneWorkUnit;
+		}
+		else if (ItemName == "PhysicalFolder")
+		{
+			return Type::PhysicalFolder;
+		}
+		else if (ItemName == "Folder")
+		{
+			return Type::Folder;
+		}
+		else
+		{
+			return Type::NUM_DRAGGABLE_WWISE_ITEMS; // return something invalid
+		}
+	}
 };
 
 struct FWwiseTreeItem : public TSharedFromThis<FWwiseTreeItem>

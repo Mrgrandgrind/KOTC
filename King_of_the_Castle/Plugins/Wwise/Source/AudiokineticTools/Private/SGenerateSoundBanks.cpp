@@ -21,15 +21,12 @@
 #include "GenericPlatform/GenericPlatformFile.h"
 #include "HAL/PlatformFileManager.h"
 #include "Serialization/JsonReader.h"
+#include "Serialization/JsonSerializer.h"
 
-#if ENGINE_MAJOR_VERSION == 4 && ENGINE_MINOR_VERSION >= 14
 #include "Misc/FileHelper.h"
 #include "Misc/MessageDialog.h"
-#endif
 
-#if ENGINE_MAJOR_VERSION == 4 && ENGINE_MINOR_VERSION >= 15
 #include "ProjectDescriptor.h"
-#endif
 
 #define LOCTEXT_NAMESPACE "AkAudio"
 DEFINE_LOG_CATEGORY_STATIC(LogAkBanks, Log, All);
@@ -448,6 +445,15 @@ bool SGenerateSoundBanks::FetchAttenuationInfo(const TMap<FString, TSet<UAkAudio
 					if (Event->MaxAttenuationRadius != EventRadius)
 					{
 						Event->MaxAttenuationRadius = EventRadius;
+						Changed = true;
+					}
+				}
+				else
+				{
+					if (Event->MaxAttenuationRadius != 0)
+					{
+						// No attenuation info in json file, set to 0.
+						Event->MaxAttenuationRadius = 0;
 						Changed = true;
 					}
 				}

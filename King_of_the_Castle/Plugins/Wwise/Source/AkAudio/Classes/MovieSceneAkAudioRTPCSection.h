@@ -4,11 +4,9 @@
 
 #include "AkInclude.h"
 #include "AkAudioEvent.h"
-#if AK_SUPPORTS_LEVEL_SEQUENCER
 #include "Curves/RichCurve.h"
 #include "MovieSceneSection.h"
 #include "IKeyframeSection.h"
-#endif // AK_SUPPORTS_LEVEL_SEQUENCER
 
 #include "MovieSceneAkAudioRTPCSection.generated.h"
 
@@ -18,13 +16,10 @@
 UCLASS(MinimalAPI)
 class UMovieSceneAkAudioRTPCSection
 	: public UMovieSceneSection
-#if AK_SUPPORTS_LEVEL_SEQUENCER
 	, public IKeyframeSection<float>
-#endif
 {
 	GENERATED_BODY()
 
-#if AK_SUPPORTS_LEVEL_SEQUENCER
 public:
 	/**
 	* Updates this section
@@ -58,9 +53,7 @@ public:
 	AKAUDIO_API virtual void GetKeyHandles(TSet<FKeyHandle>& OutKeyHandles, TRange<float> TimeRange) const override;
 	AKAUDIO_API virtual TOptional<float> GetKeyTime(FKeyHandle KeyHandle) const override;
 	AKAUDIO_API virtual void SetKeyTime(FKeyHandle KeyHandle, float Time) override;
-#if AK_SUPPORTS_LEVEL_SEQUENCER_TEMPLATES
-	virtual FMovieSceneEvalTemplatePtr GenerateTemplate() const override;
-#endif // AK_SUPPORTS_LEVEL_SEQUENCER_TEMPLATES
+	AKAUDIO_API virtual FMovieSceneEvalTemplatePtr GenerateTemplate() const override;
 
 	/** @return the name of the RTPC being modified by this track */
 	const FString& GetRTPCName() const { return Name; }
@@ -71,14 +64,26 @@ public:
 	* @param InRTPCName The RTPC being modified
 	*/
 	void SetRTPCName(const FString& InRTPCName) { Name = InRTPCName; }
-#endif // AK_SUPPORTS_LEVEL_SEQUENCER
+
+#if WITH_EDITOR
+	virtual void PreEditChange(UProperty* PropertyAboutToChange) override;
+	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
+#endif
+
 protected:
 
 	/** Name of the RTPC to modify. */
-	UPROPERTY(EditAnywhere, Category = "AkAudioRTPC")
+	UPROPERTY(EditAnywhere, Category = "AkAudioRTPC", meta = (NoResetToDefault))
 	FString Name;
 
 	/** Curve data */
 	UPROPERTY()
 	FRichCurve FloatCurve;
+
+private:
+#if WITH_EDITOR
+	bool IsRTPCNameValid();
+
+	FString PreviousName;
+#endif
 };

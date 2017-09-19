@@ -26,22 +26,9 @@ public:
 	bool IsValid() const { return Event != nullptr || !EventName.IsEmpty(); }
 
 	/** returns the minimum and maximum durations for the specified Event or EventName */
-	FFloatRange GetAudioDuration();
+	AKAUDIO_API FFloatRange GetAudioDuration();
 
-#if AK_SUPPORTS_LEVEL_SEQUENCER_TEMPLATES
-	virtual FMovieSceneEvalTemplatePtr GenerateTemplate() const override;
-#else
-	bool IsPlaying() const { return PlayingIDs.Num() > 0; }
-
-	void AddPlayingID(AkPlayingID PlayingID) { PlayingIDs.Add(PlayingID); }
-	void ClearPlayingIDs() { PlayingIDs.Empty(); }
-
-	void StopAllPlayingEvents(FAkAudioDevice* AudioDevice);
-	void StopAllPlayingEvents(FAkAudioDevice* AudioDevice, float Time);
-
-private:
-	TArray<AkPlayingID> PlayingIDs;
-#endif // AK_SUPPORTS_LEVEL_SEQUENCER_TEMPLATES
+	AKAUDIO_API virtual FMovieSceneEvalTemplatePtr GenerateTemplate() const override;
 
 private:
 	/** The AkAudioEvent represented by this section */

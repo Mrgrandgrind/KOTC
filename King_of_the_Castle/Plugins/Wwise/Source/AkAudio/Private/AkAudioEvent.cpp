@@ -21,14 +21,6 @@ UAkAudioEvent::UAkAudioEvent(const class FObjectInitializer& ObjectInitializer)
 }
 
 /**
- * Called after load process is complete.
- */
-void UAkAudioEvent::PostLoad()
-{
-	Super::PostLoad();
-}
-
-/**
  * Load the required bank.
  *
  * @return true if the bank was loaded, otherwise false

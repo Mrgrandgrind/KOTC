@@ -3,69 +3,18 @@
 #include "AkAudioDevice.h"
 #include "AkAudioClasses.h"
 
-#if AK_SUPPORTS_LEVEL_SEQUENCER
-
 #include "IMovieScenePlayer.h"
 #include "MovieSceneCommonHelpers.h"
 
 #include "MovieSceneAkAudioRTPCSection.h"
 #include "MovieSceneAkAudioRTPCTrack.h"
 
-#if AK_SUPPORTS_LEVEL_SEQUENCER_TEMPLATES
 #include "MovieSceneAkAudioRTPCTemplate.h"
 
 FMovieSceneEvalTemplatePtr UMovieSceneAkAudioRTPCTrack::CreateTemplateForSection(const UMovieSceneSection& InSection) const
 {
 	return InSection.GenerateTemplate();
 }
-#else
-TSharedPtr<IMovieSceneTrackInstance> UMovieSceneAkAudioRTPCTrack::CreateInstance()
-{
-	return MakeShareable(new UMovieSceneAkTrackInstance<UMovieSceneAkAudioRTPCTrack>(*this));
-}
-
-void UMovieSceneAkAudioRTPCTrack::Update(EMovieSceneUpdateData& UpdateData, const TArray<TWeakObjectPtr<UObject>>& RuntimeObjects, IMovieScenePlayer& Player, FMovieSceneSequenceInstance& SequenceInstance)
-{
-	auto AudioDevice = FAkAudioDevice::Get();
-	if (!AudioDevice)
-	{
-		return;
-	}
-
-	auto Section = CastChecked<UMovieSceneAkAudioRTPCSection>(MovieSceneHelpers::FindNearestSectionAtTime(Sections, UpdateData.Position));
-	if (!Section || !Section->IsActive())
-	{
-		return;
-	}
-
-	auto& RTPCName = Section->GetRTPCName();
-	if (!RTPCName.Len())
-	{
-		return;
-	}
-
-	auto RTPCNameString = *RTPCName;
-	const float Value = Section->Eval(UpdateData.Position);
-
-	for (auto ObjectPtr : RuntimeObjects)
-	{
-		auto Object = ObjectPtr.Get();
-		if (Object)
-		{
-			auto Actor = CastChecked<AActor>(Object);
-			if (Actor)
-			{
-				AudioDevice->SetRTPCValue(RTPCNameString, Value, 0, Actor);
-			}
-		}
-	}
-
-	if (IsAMasterTrack())
-	{
-		AudioDevice->SetRTPCValue(RTPCNameString, Value, 0, nullptr);
-	}
-}
-#endif // AK_SUPPORTS_LEVEL_SEQUENCER_TEMPLATES
 
 UMovieSceneSection* UMovieSceneAkAudioRTPCTrack::CreateNewSection()
 {
@@ -84,4 +33,3 @@ FName UMovieSceneAkAudioRTPCTrack::GetTrackName() const
 	const auto Section = CastChecked<UMovieSceneAkAudioRTPCSection>(MovieSceneHelpers::FindNearestSectionAtTime(Sections, 0));
 	return (Section != nullptr) ? FName(*Section->GetRTPCName()) : FName(NAME_None);
 }
-#endif // AK_SUPPORTS_LEVEL_SEQUENCER

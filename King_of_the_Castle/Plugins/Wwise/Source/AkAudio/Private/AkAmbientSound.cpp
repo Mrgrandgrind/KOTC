@@ -46,7 +46,7 @@ void AAkAmbientSound::PostLoad()
 void AAkAmbientSound::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
-	AkComponent->UpdateAkReverbVolumeList(AkComponent->GetComponentLocation());
+	AkComponent->UpdateAkLateReverbComponentList(AkComponent->GetComponentLocation());
 }
 
 void AAkAmbientSound::BeginPlay()
@@ -60,11 +60,6 @@ void AAkAmbientSound::BeginPlay()
 
 
 #if WITH_EDITOR
-void AAkAmbientSound::CheckForErrors()
-{
-	Super::CheckForErrors();
-}
-
 void AAkAmbientSound::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 {
 	if( AkComponent )

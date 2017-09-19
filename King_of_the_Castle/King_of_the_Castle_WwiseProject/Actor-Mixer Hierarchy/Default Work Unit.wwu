@@ -785,6 +785,7 @@
 											</ValueList>
 										</Property>
 										<Property Name="OverrideEffect" Type="bool" Value="True"/>
+										<Property Name="OverridePositioning" Type="bool" Value="True"/>
 										<Property Name="UseMaxSoundPerInstance" Type="bool">
 											<ValueList>
 												<Value>True</Value>
@@ -893,6 +894,7 @@
 								</RandomSequenceContainer>
 								<RandomSequenceContainer Name="Captured" ID="{2CC0FCE6-4FE3-42A1-B20B-EC5B2DF74661}" ShortID="715393818">
 									<PropertyList>
+										<Property Name="OverridePositioning" Type="bool" Value="True"/>
 										<Property Name="Volume" Type="Real64">
 											<ValueList>
 												<Value>-2</Value>
@@ -981,6 +983,7 @@
 								</RandomSequenceContainer>
 								<Sound Name="PartyTime" ID="{308C79DA-A6DD-4455-A1F1-9F1D8AD4325D}" ShortID="7387306">
 									<PropertyList>
+										<Property Name="OverridePositioning" Type="bool" Value="True"/>
 										<Property Name="Pitch" Type="int32">
 											<ModifierList>
 												<ModifierInfo>

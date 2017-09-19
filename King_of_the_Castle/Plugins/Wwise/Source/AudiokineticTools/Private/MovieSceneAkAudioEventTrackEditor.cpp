@@ -5,8 +5,6 @@
 #include "AkAudioDevice.h"
 #include "AkAudioClasses.h"
 
-#if AK_SUPPORTS_LEVEL_SEQUENCER
-
 #include "MovieScene.h"
 #include "MovieSceneCommonHelpers.h"
 #include "MovieSceneAkAudioEventTrack.h"
@@ -21,10 +19,9 @@
 
 #include "ScopedTransaction.h"
 
-#if ENGINE_MAJOR_VERSION == 4 && ENGINE_MINOR_VERSION >= 15
 #include "SequencerSectionPainter.h"
 #include "IContentBrowserSingleton.h"
-#endif
+
 #include "IAssetRegistry.h"
 #include "AssetRegistryModule.h"
 
@@ -52,10 +49,12 @@ public:
 
 	virtual UMovieSceneSection* GetSectionObject() override { return Section; }
 
+#if !UE_4_17_OR_LATER
 	virtual FText GetDisplayName() const override
 	{ 
 		return LOCTEXT("DisplayName", "AkAudioEvent");
 	}
+#endif // !UE_4_17_OR_LATER
 	
 	virtual FText GetSectionTitle() const override
 	{
@@ -99,7 +98,6 @@ bool FMovieSceneAkAudioEventTrackEditor::SupportsType(TSubclassOf<UMovieSceneTra
 	return Type == UMovieSceneAkAudioEventTrack::StaticClass();
 }
 
-#if AK_MATINEE_TO_LEVEL_SEQUENCE_MODULE_MODIFICATIONS
 void FMovieSceneAkAudioEventTrackEditor::BuildTrackContextMenu(FMenuBuilder& MenuBuilder, UMovieSceneTrack* Track)
 {
 	auto MatineeAkAudioEventTrack = FAkMatineeImportTools::GetTrackFromMatineeCopyPasteBuffer<UInterpTrackAkAudioEvent>();
@@ -124,50 +122,10 @@ void FMovieSceneAkAudioEventTrackEditor::BuildTrackContextMenu(FMenuBuilder& Men
 		)
 	);
 }
-#endif // AK_MATINEE_TO_LEVEL_SEQUENCE_MODULE_MODIFICATIONS
 
 TSharedRef<ISequencerSection> FMovieSceneAkAudioEventTrackEditor::MakeSectionInterface(UMovieSceneSection& SectionObject, UMovieSceneTrack& Track, FGuid ObjectBinding)
 {
 	return MakeShareable(new FMovieSceneAkAudioEventSection(SectionObject));
-}
-
-bool FMovieSceneAkAudioEventTrackEditor::AddNewMasterSound(float KeyTime, UAkAudioEvent* Event)
-{
-	auto TrackResult = FindOrCreateMasterTrack<UMovieSceneAkAudioEventTrack>();
-	TrackResult.Track->SetIsAMasterTrack(true);
-	TrackResult.Track->AddNewEvent(KeyTime, Event);
-	return true;
-}
-
-bool FMovieSceneAkAudioEventTrackEditor::AddNewAttachedSound(float KeyTime, UAkAudioEvent* Event, TArray<TWeakObjectPtr<UObject>> ObjectsToAttachTo)
-{
-	bool bHandleCreated = false;
-	bool bTrackCreated = false;
-	bool bTrackModified = false;
-
-	for (int32 ObjectIndex = 0; ObjectIndex < ObjectsToAttachTo.Num(); ++ObjectIndex)
-	{
-		UObject* Object = ObjectsToAttachTo[ObjectIndex].Get();
-
-		FFindOrCreateHandleResult HandleResult = FindOrCreateHandleToObject(Object);
-		FGuid ObjectHandle = HandleResult.Handle;
-		bHandleCreated |= HandleResult.bWasCreated;
-
-		if (ObjectHandle.IsValid())
-		{
-			FFindOrCreateTrackResult TrackResult = FindOrCreateTrackForObject(ObjectHandle, UMovieSceneAkAudioEventTrack::StaticClass());
-			bTrackCreated |= TrackResult.bWasCreated;
-
-			if (ensure(TrackResult.Track))
-			{
-				auto AudioTrack = Cast<UMovieSceneAkAudioEventTrack>(TrackResult.Track);
-				AudioTrack->AddNewEvent(KeyTime, Event);
-				bTrackModified = true;
-			}
-		}
-	}
-
-	return bHandleCreated || bTrackCreated || bTrackModified;
 }
 
 bool FMovieSceneAkAudioEventTrackEditor::HandleAssetAdded(UObject* Asset, const FGuid& TargetObjectGuid)
@@ -178,22 +136,69 @@ bool FMovieSceneAkAudioEventTrackEditor::HandleAssetAdded(UObject* Asset, const 
 
 		if (TargetObjectGuid.IsValid())
 		{
-			TArray<TWeakObjectPtr<UObject>> OutObjects;
-
-#if ENGINE_MAJOR_VERSION == 4 && ENGINE_MINOR_VERSION >= 15
+			TArray<TWeakObjectPtr<UObject>> ObjectsToAttachTo;
 			for (TWeakObjectPtr<> Object : GetSequencer()->FindObjectsInCurrentSequence(TargetObjectGuid))
-			{
-				OutObjects.Add(Object);
-			}
-#else
-			GetSequencer()->GetRuntimeObjects(GetSequencer()->GetFocusedMovieSceneSequenceInstance(), TargetObjectGuid, OutObjects);
-#endif
+				ObjectsToAttachTo.Add(Object);
 
-			AnimatablePropertyChanged(FOnKeyProperty::CreateRaw(this, &FMovieSceneAkAudioEventTrackEditor::AddNewAttachedSound, Event, OutObjects));
+			auto AddNewAttachedSound = [Event, ObjectsToAttachTo, this](float KeyTime)
+			{
+				bool bHandleCreated = false;
+				bool bTrackCreated = false;
+				bool bTrackModified = false;
+
+				for (int32 ObjectIndex = 0; ObjectIndex < ObjectsToAttachTo.Num(); ++ObjectIndex)
+				{
+					UObject* Object = ObjectsToAttachTo[ObjectIndex].Get();
+
+					FFindOrCreateHandleResult HandleResult = FindOrCreateHandleToObject(Object);
+					FGuid ObjectHandle = HandleResult.Handle;
+					bHandleCreated |= HandleResult.bWasCreated;
+
+					if (ObjectHandle.IsValid())
+					{
+						FFindOrCreateTrackResult TrackResult = FindOrCreateTrackForObject(ObjectHandle, UMovieSceneAkAudioEventTrack::StaticClass());
+						bTrackCreated |= TrackResult.bWasCreated;
+
+						if (ensure(TrackResult.Track))
+						{
+							auto AudioTrack = Cast<UMovieSceneAkAudioEventTrack>(TrackResult.Track);
+							AudioTrack->AddNewEvent(KeyTime, Event);
+							bTrackModified = true;
+						}
+					}
+				}
+
+#if UE_4_17_OR_LATER
+				FKeyPropertyResult Result;
+				Result.bTrackModified = bTrackModified;
+				Result.bHandleCreated = bHandleCreated;
+				Result.bTrackCreated = bTrackCreated;
+				return Result;
+#else
+				return bHandleCreated || bTrackCreated || bTrackModified;
+#endif // UE_4_17_OR_LATER
+			};
+
+			AnimatablePropertyChanged(FOnKeyProperty::CreateLambda(AddNewAttachedSound));
 		}
 		else
 		{
-			AnimatablePropertyChanged(FOnKeyProperty::CreateRaw(this, &FMovieSceneAkAudioEventTrackEditor::AddNewMasterSound, Event));
+			auto AddNewMasterSound = [Event, this](float KeyTime)
+			{
+				auto TrackResult = FindOrCreateMasterTrack<UMovieSceneAkAudioEventTrack>();
+				TrackResult.Track->SetIsAMasterTrack(true);
+				TrackResult.Track->AddNewEvent(KeyTime, Event);
+
+#if UE_4_17_OR_LATER
+				FKeyPropertyResult Result;
+				Result.bTrackModified = Result.bHandleCreated = Result.bTrackCreated = true;
+				return Result;
+#else
+				return true;
+#endif // UE_4_17_OR_LATER
+			};
+
+			AnimatablePropertyChanged(FOnKeyProperty::CreateLambda(AddNewMasterSound));
 		}
 
 		return true;
@@ -337,4 +342,3 @@ void FMovieSceneAkAudioEventTrackEditor::BuildObjectBindingTrackMenu(FMenuBuilde
 }
 
 #undef LOCTEXT_NAMESPACE
-#endif // AK_SUPPORTS_LEVEL_SEQUENCER

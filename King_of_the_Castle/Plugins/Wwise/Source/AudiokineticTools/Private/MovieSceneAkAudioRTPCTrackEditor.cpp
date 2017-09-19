@@ -4,7 +4,7 @@
 
 #include "AkAudioDevice.h"
 #include "AkAudioClasses.h"
-#if AK_SUPPORTS_LEVEL_SEQUENCER
+
 #include "MovieScene.h"
 #include "MovieSceneCommonHelpers.h"
 #include "MovieSceneAkAudioRTPCTrack.h"
@@ -23,6 +23,7 @@
 
 #include "ScopedTransaction.h"
 #include "Layout/SBorder.h"
+#include "Layout/SUniformGridPanel.h"
 #include "Input/SEditableTextBox.h"
 #include "EditorStyleSet.h"
 #include "Editor.h"
@@ -47,10 +48,12 @@ public:
 
 	virtual UMovieSceneSection* GetSectionObject() override { return Section; }
 
+#if !UE_4_17_OR_LATER
 	virtual FText GetDisplayName() const override
 	{
 		return LOCTEXT("DisplayName", "AkAudioRTPC");
 	}
+#endif // !UE_4_17_OR_LATER
 
 	virtual FText GetSectionTitle() const override
 	{
@@ -88,7 +91,6 @@ TSharedRef<ISequencerTrackEditor> FMovieSceneAkAudioRTPCTrackEditor::CreateTrack
 	return MakeShareable(new FMovieSceneAkAudioRTPCTrackEditor(InSequencer));
 }
 
-#if AK_MATINEE_TO_LEVEL_SEQUENCE_MODULE_MODIFICATIONS
 static void CopyInterpAkAudioRTPCTrack(TSharedRef<ISequencer> Sequencer, const UInterpTrackAkAudioRTPC* MatineeAkAudioRTPCTrack, UMovieSceneAkAudioRTPCTrack* AkAudioRTPCTrack)
 {
 	switch (FAkMatineeImportTools::CopyInterpAkAudioRTPCTrack(MatineeAkAudioRTPCTrack, AkAudioRTPCTrack))
@@ -121,7 +123,6 @@ void FMovieSceneAkAudioRTPCTrackEditor::BuildTrackContextMenu(FMenuBuilder& Menu
 		)
 	);
 }
-#endif // AK_MATINEE_TO_LEVEL_SEQUENCE_MODULE_MODIFICATIONS
 
 TSharedRef<ISequencerSection> FMovieSceneAkAudioRTPCTrackEditor::MakeSectionInterface(UMovieSceneSection& SectionObject, UMovieSceneTrack& Track, FGuid ObjectBinding)
 {
@@ -200,6 +201,7 @@ public:
 							.OnTextCommitted(this, &SCreateAkAudioRTPCSectionDialog::OnEventNameCommited)
 							.OnTextChanged(this, &SCreateAkAudioRTPCSectionDialog::OnEventNameCommited, ETextCommit::Default)
 							.MinDesiredWidth(200)
+							.RevertTextOnEscape(true)
 						]
 					]
 				]
@@ -359,4 +361,3 @@ void FMovieSceneAkAudioRTPCTrackEditor::BuildObjectBindingTrackMenu(FMenuBuilder
 }
 
 #undef LOCTEXT_NAMESPACE
-#endif // AK_SUPPORTS_LEVEL_SEQUENCER

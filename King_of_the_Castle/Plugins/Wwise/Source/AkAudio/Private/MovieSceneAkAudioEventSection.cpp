@@ -3,18 +3,12 @@
 #include "AkAudioDevice.h"
 #include "AkAudioClasses.h"
 
-#if AK_SUPPORTS_LEVEL_SEQUENCER
-
 #include "KeyParams.h"
 #include "MovieScene.h"
 #include "MovieSceneCommonHelpers.h"
 #include "MovieSceneSection.h"
-
 #include "MovieSceneAkAudioEventSection.h"
-
-#if AK_SUPPORTS_LEVEL_SEQUENCER_TEMPLATES
 #include "MovieSceneAkAudioEventTemplate.h"
-#endif // AK_SUPPORTS_LEVEL_SEQUENCER_TEMPLATES
 
 
 namespace AkAudioEventSectionHelper
@@ -48,39 +42,7 @@ FFloatRange UMovieSceneAkAudioEventSection::GetAudioDuration()
 	return AkAudioEventSectionHelper::GetDuration(Event);
 }
 
-#if AK_SUPPORTS_LEVEL_SEQUENCER_TEMPLATES
 FMovieSceneEvalTemplatePtr UMovieSceneAkAudioEventSection::GenerateTemplate() const
 {
 	return FMovieSceneAkAudioEventTemplate(this);
 }
-#else
-void UMovieSceneAkAudioEventSection::StopAllPlayingEvents(FAkAudioDevice* AudioDevice)
-{
-	if (AudioDevice)
-	{
-		for (auto PlayingID : PlayingIDs)
-		{
-			AudioDevice->StopPlayingID(PlayingID);
-		}
-	}
-
-	ClearPlayingIDs();
-}
-
-void UMovieSceneAkAudioEventSection::StopAllPlayingEvents(FAkAudioDevice* AudioDevice, float Time)
-{
-	if (Time > GetEndTime())
-	{
-		if (Event == nullptr || GetStartTime() + GetAudioDuration().GetUpperBoundValue() > Time)
-		{
-			StopAllPlayingEvents(AudioDevice);
-		}
-		else
-		{
-			ClearPlayingIDs();
-		}
-	}
-}
-#endif // AK_SUPPORTS_LEVEL_SEQUENCER_TEMPLATES
-
-#endif // AK_SUPPORTS_LEVEL_SEQUENCER

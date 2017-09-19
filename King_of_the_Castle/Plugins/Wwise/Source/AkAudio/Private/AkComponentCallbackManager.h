@@ -29,25 +29,6 @@ struct AkUserCallbackPackage
 	{}
 };
 
-/** Define hashing for AkGameObjectID. */
-template<typename ValueType, bool bInAllowDuplicateKeys>
-struct AkGameObjectIdKeyFuncs : TDefaultMapKeyFuncs<AkGameObjectID, ValueType, bInAllowDuplicateKeys>
-{
-	static FORCEINLINE uint32 GetKeyHash(AkGameObjectID Key)
-	{
-		if (sizeof(Key) <= 4)
-		{
-			return (uint32)Key;
-		}
-		else
-		{
-			// Copied from GetTypeHash( const uint64 A ) found in ...\Engine\Source\Runtime\Core\Public\Templates\TypeHash.h
-			uint64 tempKey = (uint64)Key;
-			return (uint32)tempKey + ((uint32)(tempKey >> 32) * 23);
-		}
-	}
-};
-
 class FAkComponentCallbackManager
 {
 public:

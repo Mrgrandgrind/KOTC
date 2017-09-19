@@ -3,9 +3,7 @@
 #include "AkAudioDevice.h"
 #include "AkSettings.h"
 #if WITH_EDITOR
-#if UE_4_14_OR_LATER
 #include "Misc/MessageDialog.h"
-#endif
 #include "HAL/FileManager.h"
 #endif
 
@@ -16,19 +14,15 @@
 
 UAkSettings::UAkSettings(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
-	, MaxSimultaneousReverbVolumes(4)
 {
 	TCHAR WwiseDir[AK_MAX_PATH];
 	FPlatformMisc::GetEnvironmentVariable(TEXT("WWISEROOT"), WwiseDir, AK_MAX_PATH);
 
 	WwiseWindowsInstallationPath.Path = FString(WwiseDir);
-    bRequestRefresh = false;
-	SuppressWwiseProjectPathWarnings = false;
 }
 
 #if WITH_EDITOR
 #include "SDockTab.h"
-//#include "WwisePicker/SWwisePicker.h"
 
 void UAkSettings::PreEditChange(UProperty* PropertyAboutToChange)
 {

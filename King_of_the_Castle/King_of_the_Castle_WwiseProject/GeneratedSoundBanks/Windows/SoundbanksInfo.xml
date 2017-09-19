@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <SoundBanksInfo Platform="Windows" BasePlatform="Windows" SchemaVersion="11" SoundbankVersion="125">
 	<RootPaths>
-		<ProjectRoot>D:\GitHub\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\</ProjectRoot>
-		<SourceFilesRoot>D:\GitHub\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\.cache\Windows\</SourceFilesRoot>
-		<SoundBanksRoot>D:\GitHub\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\GeneratedSoundBanks\Windows\</SoundBanksRoot>
+		<ProjectRoot>D:\GitHub\ktcNEWER\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\</ProjectRoot>
+		<SourceFilesRoot>D:\GitHub\ktcNEWER\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\.cache\Windows\</SourceFilesRoot>
+		<SoundBanksRoot>D:\GitHub\ktcNEWER\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\GeneratedSoundBanks\Windows\</SoundBanksRoot>
 		<ExternalSourcesInputFile></ExternalSourcesInputFile>
-		<ExternalSourcesOutputRoot>D:\GitHub\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\GeneratedSoundBanks\Windows\</ExternalSourcesOutputRoot>
+		<ExternalSourcesOutputRoot>D:\GitHub\ktcNEWER\KingOfTheCastle\King_of_the_Castle\King_of_the_Castle_WwiseProject\GeneratedSoundBanks\Windows\</ExternalSourcesOutputRoot>
 	</RootPaths>
 	<DialogueEvents/>
 	<StreamedFiles/>
@@ -294,7 +294,7 @@
 				</File>
 				<File Id="624135576" Language="SFX">
 					<ShortName>rain.wav</ShortName>
-					<Path>SFX\rain_6EE19A03.wem</Path>
+					<Path>SFX\rain_9E24702D.wem</Path>
 				</File>
 				<File Id="636859540" Language="SFX">
 					<ShortName>UI3.wav</ShortName>

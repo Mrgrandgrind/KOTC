@@ -13,6 +13,34 @@
 // Make sure AkPlayingID is always 32 bits, or else we're gonna have a bad time.
 static_assert(sizeof(AkPlayingID) == sizeof(int32), "AkPlayingID is not 32 bits anymore. Change return value of PostEvent functions!");
 
+UENUM(BlueprintType)
+enum class AkChannelConfiguration : uint8
+{
+	Ak_Parent = 0,
+	Ak_1_0,
+	Ak_2_0,
+	Ak_3_0,
+	Ak_4_0,
+	Ak_5_1,
+	Ak_7_1,
+	Ak_5_1_2,
+	Ak_7_1_2,
+	Ak_7_1_4,
+	Ak_Auro_9_1,
+	Ak_Auro_10_1,
+	Ak_Auro_11_1,
+	Ak_Auro_13_1,
+	Ak_Ambisonics_1st_order,
+	Ak_Ambisonics_2nd_order,
+	Ak_Ambisonics_3rd_order
+};
+
+UENUM(BlueprintType)
+enum class PanningRule : uint8
+{
+	PanningRule_Speakers = 0,	///< Left and right positioned 60 degrees apart (by default - see AK::SoundEngine::GetSpeakerAngles()).
+	PanningRule_Headphones = 1		///< Left and right positioned 180 degrees apart.
+};
 
 UCLASS()
 class AKAUDIO_API UAkGameplayStatics : public UBlueprintFunctionLibrary
@@ -22,8 +50,11 @@ class AKAUDIO_API UAkGameplayStatics : public UBlueprintFunctionLibrary
 	/** Get an AkComponent attached to and following the specified component. 
 	 * @param AttachPointName - Optional named point within the AttachComponent to play the sound at.
 	 */
-	UFUNCTION(BlueprintCallable, BlueprintCosmetic, Category="Audiokinetic")
+	UFUNCTION(BlueprintCallable, Category="Audiokinetic")
 	static class UAkComponent * GetAkComponent( class USceneComponent* AttachToComponent, FName AttachPointName = NAME_None, FVector Location = FVector(ForceInit), EAttachLocation::Type LocationType = EAttachLocation::KeepRelativeOffset );
+
+	UFUNCTION(BlueprintCallable, Category = "Audiokinetic")
+	static void TriggerRecording();
 
 	/** Posts a Wwise Event attached to and following the specified component.
 	 * @param AkEvent - Wwise Event to post.
@@ -77,13 +108,15 @@ class AKAUDIO_API UAkGameplayStatics : public UBlueprintFunctionLibrary
 
 	/** Spawn an AkComponent at a location. Allows, for example, to set a switch on a fire and forget sound.
 	 * @param AkEvent - Wwise Event to post.
+	 * @param EarlyReflectionsBus - Use the provided auxiliary bus to process early reflections.  If NULL, EarlyReflectionsBusName will be used.
 	 * @param Location - Location from which to post the Wwise Event.
 	 * @param Orientation - Orientation of the event.
 	 * @param AutoPost - Automatically post the event once the AkComponent is created.
+	 * @param EarlyReflectionsBusName - Use the provided auxiliary bus to process early reflections.  If empty, no early reflections will be processed.
 	 * @param AutoDestroy - Automatically destroy the AkComponent once the event is finished.
 	 */
-	UFUNCTION(BlueprintCallable, BlueprintCosmetic, Category="Audiokinetic", meta=(WorldContext="WorldContextObject", AdvancedDisplay = "5"))
-	static class UAkComponent* SpawnAkComponentAtLocation(UObject* WorldContextObject, class UAkAudioEvent* AkEvent, FVector Location, FRotator Orientation, bool AutoPost, const FString& EventName, bool AutoDestroy = true );
+	UFUNCTION(BlueprintCallable, BlueprintCosmetic, Category="Audiokinetic", meta=(WorldContext="WorldContextObject", AdvancedDisplay = "6"))
+	static class UAkComponent* SpawnAkComponentAtLocation(UObject* WorldContextObject, class UAkAudioEvent* AkEvent, class UAkAuxBus* EarlyReflectionsBus, FVector Location, FRotator Orientation, bool AutoPost, const FString& EventName, const FString& EarlyReflectionsBusName = FString(""), bool AutoDestroy = true);
 
 	/**
 	 * Sets the value of a Game Parameter, optionally targetting the root component of a specified actor.
@@ -130,6 +163,32 @@ class AKAUDIO_API UAkGameplayStatics : public UBlueprintFunctionLibrary
 	static void UseReverbVolumes(bool inUseReverbVolumes, class AActor* Actor);
 
 	/**
+	* Sets UseEarlyReflections flag on a specified actor. Set value to true to use calculate and render early reflections on this component.
+	*
+	* @param Actor - Actor on which to set the flag
+	* @param AuxBus	Aux bus that contains the AkReflect plugin
+	* @param Left	Enable reflections off left wall.
+	* @param Right	Enable reflections off right wall.
+	* @param Floor	Enable reflections off floor.
+	* @param Ceiling	Enable reflections off front wall.
+	* @param Back	Enable reflections off front wall.
+	* @param Front	Enable reflections off front wall.
+	* @param EnableSpotReflectors	Enable reflections off spot reflectors.
+	* @param AuxBusName	Aux bus name that contains the AkReflect plugin
+	*/
+	UFUNCTION(BlueprintCallable, Category = "Audiokinetic|Actor", meta = (AdvancedDisplay = "9"))
+	static void UseEarlyReflections(class AActor* Actor, 
+		class UAkAuxBus* AuxBus,
+		bool Left,
+		bool Right,
+		bool Floor,
+		bool Ceiling,
+		bool Back,
+		bool Front,
+		bool SpotReflectors,
+		const FString& AuxBusName = FString(""));
+
+	/**
 	* Set the output bus volume (direct) to be used for the specified game object.
 	* The control value is a number ranging from 0.0f to 1.0f.
 	*
@@ -139,6 +198,29 @@ class AKAUDIO_API UAkGameplayStatics : public UBlueprintFunctionLibrary
 	UFUNCTION(BlueprintCallable, BlueprintCosmetic, Category = "Audiokinetic|Actor")
 	static void SetOutputBusVolume(float BusVolume, class AActor* Actor);
 
+	/**
+	* Force channel configuration for the specified bus.
+	* This function has unspecified behavior when changing the configuration of a bus that
+	* is currently playing.
+	* You cannot change the configuration of the master bus.
+	*
+	* @param BusName				Bus Name
+	* @param ChannelConfiguration	Desired channel configuration.
+	* @return Always returns AK_Success
+	*/
+	UFUNCTION(BlueprintCallable, Category = "Audiokinetic")
+	static void SetBusConfig(const FString& BusName, AkChannelConfiguration ChannelConfiguration);
+
+	/**
+	*  Set the panning rule of the specified output.
+	*  This may be changed anytime once the sound engine is initialized.
+	*  @warning This function posts a message through the sound engine's internal message queue, whereas GetPanningRule() queries the current panning rule directly.
+	*
+	* @param PanRule	Panning rule.
+	*/
+	UFUNCTION(BlueprintCallable, Category = "Audiokinetic")
+	static void SetPanningRule(PanningRule PanRule);
+	
 	/**
 	 * Sets the occlusion calculation refresh interval, targetting the root component of a specified actor.
 	 * @param RefreshInterval - Value of the wanted refresh interval
@@ -256,4 +338,24 @@ class AKAUDIO_API UAkGameplayStatics : public UBlueprintFunctionLibrary
 	 */
 	UFUNCTION(BlueprintCallable, BlueprintCosmetic, Category="Audiokinetic|Debug")
 	static void StopProfilerCapture();
+
+	/**
+	* Allows to globally tweak the occlusion with a multiplicative factor.
+	*/
+	UFUNCTION(BlueprintCallable, Category = "Audiokinetic")
+	static void SetOcclusionScalingFactor(float ScalingFactor) { OcclusionScalingFactor = ScalingFactor; }
+
+	/**
+	* Allows to globally tweak the occlusion with a multiplicative factor.
+	*/
+	UFUNCTION(BlueprintCallable, Category = "Audiokinetic")
+	static float GetOcclusionScalingFactor() { return OcclusionScalingFactor; }
+
+	static bool m_bSoundEngineRecording;
+
+private:
+	static inline void GetChannelConfig(AkChannelConfiguration ChannelConfiguration, AkChannelConfig& config);
+
+	static float OcclusionScalingFactor;
+
 };
