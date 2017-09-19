@@ -11,11 +11,12 @@ UCountdownComponent::UCountdownComponent()
 
 	this->m_Duration = 5.0f;
 	this->m_GoDuration = 1.0f;
-	this->m_WaitDuration = 1.0f;
+	this->m_WaitDuration = 2.0f;
 	this->m_TextScale = 4.0f;
 	this->m_TextColor = DEFAULT_TEXT_COLOR;
 	this->m_BkgScale = 1.18f;
 	this->m_BkgMaterial = nullptr;
+	this->m_BkgMaterialDynamic = nullptr;
 
 	Super::m_bRenderOnLast = true;
 }
@@ -29,10 +30,22 @@ void UCountdownComponent::Render(AGameHUD *hud, const FVector2D& origin, const F
 		return;
 	}
 
+	UMaterialInstanceDynamic *material = Cast<UMaterialInstanceDynamic>(this->m_BkgMaterialDynamic);
+	if (material == nullptr)
+	{
+		if (this->m_BkgMaterial == nullptr)
+		{
+			return;
+		}
+		this->m_BkgMaterialDynamic = material = UMaterialInstanceDynamic::Create(this->m_BkgMaterial, Super::GetOuter());
+		material->SetScalarParameterValue(TEXT("Time Delay"), this->m_WaitDuration);
+	}
+	material->SetScalarParameterValue(TEXT("Time"), FMath::Min(this->m_Counter, this->m_Duration));
+
 	bool bkg = true;
 	FString text;
 	float x = origin.X, y = origin.Y, width, height;
-	if (this->m_Counter <= this->m_Duration + this->m_WaitDuration - this->m_GoDuration + 1.0f)
+	if (this->m_Counter < this->m_Duration + this->m_WaitDuration - this->m_GoDuration + 1.0f)
 	{
 		text = FString::Printf(TEXT("%d"), FMath::Min(int(this->m_Duration),
 			int(this->m_Duration - (this->m_Counter - this->m_WaitDuration)) + 1));

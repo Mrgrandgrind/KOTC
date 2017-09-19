@@ -138,7 +138,7 @@ void ABaseGameMode::Tick(float delta)
 		{
 			Super::GetWorldTimerManager().ClearAllTimersForObject(itr->Get()->GetPawn());
 		}
-		UGameplayStatics::OpenLevel(Super::GetWorld(), TEXT("Main_Level"));
+		UGameplayStatics::OpenLevel(Super::GetWorld(), TEXT("DareMenuMap"));
 		return;
 	}
 

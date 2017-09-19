@@ -12,6 +12,33 @@ UHUDComponent::UHUDComponent()
 	this->m_bRenderWhenPaused = false;
 }
 
+void UHUDComponent::DrawDashedRect(class AGameHUD *hud, const FLinearColor& color,
+	const float& x, const float& y, const float& width, const float& height, const float& gap) const
+{
+	for (float x2 = x; x2 < x + width; x2 += gap * 2.0f)
+	{
+		hud->DrawRect(color, x2, y - height / 2.0f, gap, height);
+	}
+}
+
+void UHUDComponent::DrawBorderBox(AGameHUD* hud, const FLinearColor& foreground, const float& x, const float& y,
+	const float& width, const float& height, const float& borderSize, const FLinearColor& border)
+{
+	hud->DrawRect(foreground, x, y, width, height);
+
+	//left border
+	hud->DrawRect(border, x - borderSize, y, borderSize, height);
+
+	//right border
+	hud->DrawRect(border, x + width, y, borderSize, height);
+
+	//top border
+	hud->DrawRect(border, x - borderSize, y - borderSize, width + borderSize * 2.0f, borderSize);
+
+	//bottom border
+	hud->DrawRect(border, x - borderSize, y + height, width + borderSize * 2.0f, borderSize);
+}
+
 void UHUDComponent::DrawComponent(class AGameHUD *hud, const FVector2D& origin, const FVector2D& extent, const float& scale, const bool& forceRender)
 {
 	if (!this->m_bRender && !forceRender)

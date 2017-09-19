@@ -47,15 +47,6 @@ void UScoresOverlayComponent::SetVisible(const bool& visible)
 	}
 }
 
-void UScoresOverlayComponent::DrawDashedRect(class AGameHUD *hud, const FLinearColor& color, 
-	const float& x, const float& y, const float& width, const float& height, const float& gap) const
-{
-	for (float x2 = x; x2 < x + width; x2 += gap * 2.0f)
-	{
-		hud->DrawRect(color, x2, y - height / 2.0f, gap, height);
-	}
-}
-
 void UScoresOverlayComponent::Render(class AGameHUD *hud, const FVector2D& origin, const FVector2D& extent, const float& scale)
 {
 	AGMCapturePoints *gamemode = GetGameMode<AGMCapturePoints>(hud->GetWorld());
@@ -139,7 +130,7 @@ void UScoresOverlayComponent::Render(class AGameHUD *hud, const FVector2D& origi
 	float goalLineGap = scale * 4.0f, goalLineHeight = this->m_GoalLineHeight * scale;
 	float gx = origin.X + extent.X / 2.0f - graphWidth / 2.0f - axisSize;
 	float gy = origin.Y + extent.Y / 2.0f - graphHeight / 2.0f + this->m_GoalHeightOffset * scale - goalLineHeight / 2.0f;
-	this->DrawDashedRect(hud, this->m_GoalColor, gx, gy, graphWidth + axisSize, goalLineHeight, goalLineGap);
+	Super::DrawDashedRect(hud, this->m_GoalColor, gx, gy, graphWidth + axisSize, goalLineHeight, goalLineGap);
 
 	FString goalText = FString("GOAL");
 	hud->GetTextSize(goalText, width, height, hud->GetFont(), this->m_GoalTextScale * scale);

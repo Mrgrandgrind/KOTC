@@ -42,4 +42,7 @@ protected:
 
 private:
 	float m_Counter;
+
+	UPROPERTY()
+	UMaterialInterface *m_BkgMaterialDynamic;
 };
