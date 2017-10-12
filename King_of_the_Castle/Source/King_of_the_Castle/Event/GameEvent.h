@@ -44,6 +44,10 @@ public:
 
 	FORCEINLINE void SetTimer(float *timer) { this->m_Timer = timer; }
 
+	FORCEINLINE const float& GetFadeInDuration() const { return this->m_FadeInDuration; }
+
+	FORCEINLINE const float& GetFadeOutDuration() const { return this->m_FadeOutDuration; }
+
 protected:
 	bool IsFadeActive() const;
 

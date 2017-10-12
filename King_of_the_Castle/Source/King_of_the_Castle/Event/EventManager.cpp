@@ -32,11 +32,16 @@ void AEventManager::Tick(float delta)
 		return;
 	}
 
+	ABaseGameMode *gamemode = GetGameMode(Super::GetWorld());
+
 	this->m_EventTimer += delta;
 	if (this->m_Event != nullptr)
 	{
 		// Game will tick the actor for us
-
+		if(gamemode->IsGameOver() && this->m_EventTimer < this->m_Event->GetDuration() - this->m_Event->GetFadeOutDuration())
+		{
+			this->m_EventTimer = this->m_Event->GetDuration() - this->m_Event->GetFadeOutDuration();
+		}
 		if (this->m_EventTimer >= this->m_Event->GetDuration())
 		{
 			this->TriggerEvent(-1);
@@ -56,7 +61,7 @@ void AEventManager::Tick(float delta)
 		else if (this->m_EventTimer >= DEFAULT_EVENT_TRIGGER_DELAY)
 		{
 #if KOTC_EVENTS_ENABLED
-			if (FMath::FRand() < this->m_EventTriggerChance)
+			if (!gamemode->IsGameOver() && FMath::FRand() < this->m_EventTriggerChance)
 			{
 				// If trigger was successful and we want an event to happen. 
 				// We will just pick a completely random event from our enum. (This can technically be 'None', in which case nothing will happen)
@@ -68,7 +73,7 @@ void AEventManager::Tick(float delta)
 	}
 	else // If an event has been triggered and we are just waiting before we activate it
 	{
-		if (this->m_EventTimer >= DEFAULT_EVENT_ACTIVATE_DELAY)
+		if (!gamemode->IsGameOver() && this->m_EventTimer >= DEFAULT_EVENT_ACTIVATE_DELAY)
 		{
 			this->TriggerEvent(this->m_NextEventId);
 			this->m_NextEventId = -1;
