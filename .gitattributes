@@ -1,7 +1,6 @@
 *.a filter=lfs diff=lfs merge=lfs -text
 */PCH.AkAUdio.h.pch filter=lfs diff=lfs merge=lfs -text
 PCH.AkAUdio.h.pch filter=lfs diff=lfs merge=lfs -text
-King_of_the_Castle/Plugins/Wwise/Intermediate/Build/Win64/UE4Editor/Development/AkAudio/PCH.AkAudio.h.pch filter=lfs diff=lfs merge=lfs -text
 *.pch filter=lfs diff=lfs merge=lfs -text
 *PCH.AkAudio.h* filter=lfs diff=lfs merge=lfs -text
 *.pch
